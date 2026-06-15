@@ -10,8 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="css/main.css">
-<link rel="stylesheet" href="css/tools.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/tools.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 </head>
 <body>
@@ -21,10 +21,10 @@
     <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
     <div class="nav-tabs" role="tablist">
       <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab" href="converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
-      <a class="nav-tab" href="sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
-      <a class="nav-tab" href="weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
-      <a class="nav-tab" href="tools.html" class="nav-tab active"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <a class="nav-tab" href="/converter"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/tools" class="nav-tab active"><i class="ti ti-tool"></i> <span>Tools</span></a>
     </div>
     <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
     <div class="nav-btns">
@@ -171,9 +171,9 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
-<script src="data/cities.js"></script>
-<script src="js/util.js"></script>
-<script src="js/tools.js"></script>
+<script src="/cities.js"></script>
+<script src="/util.js"></script>
+<script src="/tools.js"></script>
 <script>
 // Populate year select
 var ys=document.getElementById('hol-year-sel');
