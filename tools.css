@@ -1,0 +1,79 @@
+/* tools.css */
+.tools-nav{display:flex;gap:4px;flex-wrap:wrap;padding:16px 0 0;}
+.tnav-btn{display:flex;align-items:center;gap:6px;padding:9px 16px;border:1px solid var(--clr-border2);border-radius:30px;background:none;color:var(--clr-text2);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
+.tnav-btn:hover,.tnav-btn.active{background:var(--clr-brand);border-color:var(--clr-brand);color:#fff;}
+.tool-section{display:none;padding:20px 0 48px;}
+.tool-section.active{display:block;}
+.tool-card{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rxl);overflow:hidden;box-shadow:var(--sh);margin-bottom:16px;}
+.tool-card-hdr{background:var(--clr-bg3);border-bottom:1px solid var(--clr-border);padding:12px 20px;font-size:13px;font-weight:700;color:var(--clr-text);display:flex;align-items:center;gap:8px;}
+.tool-card-body{padding:20px;}
+
+/* Timer / Stopwatch */
+.timer-display{font-family:var(--mono);font-size:clamp(36px,8vw,72px);font-weight:500;color:var(--clr-brand);text-align:center;letter-spacing:-.02em;padding:20px 0;}
+.timer-btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+.tbtn{padding:10px 24px;border-radius:30px;border:2px solid var(--clr-brand);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;font-family:var(--sans);}
+.tbtn.primary{background:var(--clr-brand);color:#fff;}
+.tbtn.primary:hover{background:var(--clr-brand2);}
+.tbtn.secondary{background:none;color:var(--clr-brand);}
+.tbtn.secondary:hover{background:var(--clr-brand);color:#fff;}
+.tbtn.danger{border-color:#c62828;color:#c62828;background:none;}
+.tbtn.danger:hover{background:#c62828;color:#fff;}
+.laps{max-height:220px;overflow-y:auto;margin-top:16px;}
+.lap-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--clr-border);font-size:13px;font-family:var(--mono);}
+.lap-row:last-child{border-bottom:none;}
+/* Countdown */
+.countdown-input{display:flex;justify-content:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.cd-unit{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.cd-unit input{width:70px;height:48px;text-align:center;font-size:24px;font-family:var(--mono);font-weight:500;border:1.5px solid var(--clr-border2);border-radius:var(--r);background:var(--clr-bg);color:var(--clr-text);}
+.cd-unit label{font-size:11px;color:var(--clr-text2);text-transform:uppercase;letter-spacing:.07em;}
+
+/* Date calculator */
+.date-calc-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.dc-group{display:flex;flex-direction:column;gap:6px;}
+.dc-label{font-size:12px;font-weight:600;color:var(--clr-text2);}
+.dc-input{height:36px;padding:0 10px;border:1px solid var(--clr-border2);border-radius:var(--r);background:var(--clr-bg);color:var(--clr-text);font-size:14px;font-family:var(--sans);outline:none;}
+.dc-input:focus{border-color:var(--clr-brand);}
+.dc-result{background:var(--clr-bg3);border-radius:var(--rlg);padding:16px;margin-top:16px;text-align:center;}
+.dc-result .big{font-size:32px;font-weight:700;color:var(--clr-brand);}
+.dc-result .sub{font-size:13px;color:var(--clr-text2);margin-top:4px;}
+.dc-add-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:8px;}
+.dc-add-inp{display:flex;align-items:center;gap:6px;}
+.dc-add-inp input{width:70px;height:32px;padding:0 8px;border:1px solid var(--clr-border2);border-radius:var(--r);background:var(--clr-bg);color:var(--clr-text);font-size:13px;text-align:center;}
+.dc-add-inp label{font-size:12px;color:var(--clr-text2);}
+
+/* Sun/Moon */
+.sun-city-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
+.sun-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.sun-card{background:var(--clr-bg3);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:14px;text-align:center;}
+.sun-icon{font-size:32px;margin-bottom:6px;}
+.sun-val{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--clr-brand);}
+.sun-lbl{font-size:11px;color:var(--clr-text2);margin-top:3px;}
+.moon-phase{font-size:48px;text-align:center;padding:10px 0;}
+.moon-info{font-size:13px;color:var(--clr-text2);text-align:center;}
+
+/* Weather */
+.wx-city-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.wx-current{display:flex;align-items:center;gap:20px;background:var(--clr-bg3);border-radius:var(--rlg);padding:16px;margin-bottom:12px;flex-wrap:wrap;}
+.wx-big{font-size:48px;font-weight:300;color:var(--clr-brand);}
+.wx-desc{font-size:14px;font-weight:600;color:var(--clr-text);}
+.wx-meta{font-size:12px;color:var(--clr-text2);}
+.wx-icon{font-size:56px;}
+.wx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;}
+.wx-day{background:var(--clr-bg3);border:1px solid var(--clr-border);border-radius:var(--r);padding:10px;text-align:center;}
+.wx-day-nm{font-size:11px;color:var(--clr-text2);font-weight:600;}
+.wx-day-ic{font-size:22px;margin:4px 0;}
+.wx-day-t{font-size:13px;font-weight:600;color:var(--clr-text);}
+.wx-loading{text-align:center;padding:24px;color:var(--clr-text3);}
+.wx-sel{height:34px;padding:0 10px;border:1px solid var(--clr-border2);border-radius:var(--r);background:var(--clr-bg);color:var(--clr-text);font-size:13px;}
+
+/* Holidays */
+.hol-ctrls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.hol-list{list-style:none;}
+.hol-item{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--clr-border);font-size:13px;}
+.hol-item:last-child{border-bottom:none;}
+.hol-date{font-family:var(--mono);font-size:12px;color:var(--clr-text2);min-width:85px;}
+.hol-name{flex:1;font-weight:500;}
+.hol-type{font-size:10px;padding:2px 7px;border-radius:12px;background:var(--clr-bg3);color:var(--clr-text2);white-space:nowrap;}
+.hol-loading{text-align:center;padding:24px;color:var(--clr-text3);}
+
+@media(max-width:600px){.date-calc-grid{grid-template-columns:1fr;}.dc-add-grid{grid-template-columns:repeat(2,1fr);}.wx-current{gap:12px;}.tnav-btn{padding:8px 12px;font-size:12px;}}
