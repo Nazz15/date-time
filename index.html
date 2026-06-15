@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="Free world clock showing live local times for 130+ cities worldwide. Switch between table, compact, digital and analog views.">
+<meta name="keywords" content="world clock,current time,time zones,live clock,city time,international time">
+<title>World Clock — Live Times for Every City | WorldClock</title>
+<link rel="canonical" href="https://yoursite.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/">
+      <span>🌍</span>
+      <span class="logo-name">World<em>Clock</em></span>
+    </a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/" class="nav-tab active"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<!-- My Cities -->
+<section class="my-section" aria-label="My Cities">
+  <div class="wrap">
+    <div class="my-head">
+      <h2 class="my-title"><i class="ti ti-map-pin" aria-hidden="true"></i> My Cities</h2>
+      <div class="search-wrap">
+        <div class="search-pill" onclick="document.getElementById('srch').focus()">
+          <i class="ti ti-search search-ico" aria-hidden="true"></i>
+          <input type="search" id="srch" placeholder="Add a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search for a city">
+        </div>
+        <div id="srch-dd" class="search-dd" hidden></div>
+      </div>
+    </div>
+    <div id="my-strip" role="list" aria-label="Pinned cities"></div>
+  </div>
+</section>
+
+<!-- Section bar -->
+<div class="sec-bar" role="banner">
+  <h1 class="sec-bar-title">Current Local Times Around the World</h1>
+  <div class="bar-ctrls">
+    <div class="bar-grp">
+      <label class="bar-lbl" for="cities-filter">Region:</label>
+      <select id="cities-filter" class="bar-sel" onchange="filterRegion(this.value)">
+        <option value="all">All Cities</option>
+        <option value="asia">Asia</option>
+        <option value="europe">Europe</option>
+        <option value="americas">Americas</option>
+        <option value="africa">Africa</option>
+        <option value="oceania">Oceania</option>
+      </select>
+    </div>
+    <div class="bar-grp">
+      <label class="bar-lbl" for="sort-sel">Sort:</label>
+      <select id="sort-sel" class="bar-sel" onchange="setSort(this.value)">
+        <option value="city">By City</option>
+        <option value="country">By Country</option>
+        <option value="time">By Time</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- View tabs -->
+<div class="view-tabs" role="tablist" aria-label="Clock view">
+  <button class="view-tab" data-v="table"   onclick="setView('table')"  role="tab"><i class="ti ti-list" aria-hidden="true"></i> <span>Table</span></button>
+  <button class="view-tab" data-v="compact" onclick="setView('compact')" role="tab"><i class="ti ti-layout-grid" aria-hidden="true"></i> <span>Compact</span></button>
+  <button class="view-tab" data-v="digital" onclick="setView('digital')" role="tab"><i class="ti ti-clock-2" aria-hidden="true"></i> <span>Digital</span></button>
+  <button class="view-tab" data-v="analog"  onclick="setView('analog')"  role="tab"><i class="ti ti-clock" aria-hidden="true"></i> <span>Analog</span></button>
+</div>
+
+<main class="wrap" style="padding-top:20px;padding-bottom:48px">
+
+  <!-- TABLE -->
+  <div id="v-table">
+    <div class="tbl-wrap">
+      <table class="city-tbl" aria-label="World clock times">
+        <thead><tr>
+          <th onclick="setSort('city')">City</th>
+          <th class="col-country" onclick="setSort('country')">Country</th>
+          <th onclick="setSort('time')">Local Time</th>
+          <th class="col-date">Date</th>
+          <th class="col-offset">UTC</th>
+          <th style="width:40px;text-align:center">Add</th>
+        </tr></thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+    <p class="footnote">* Daylight Saving Time active</p>
+  </div>
+
+  <!-- COMPACT -->
+  <div id="v-compact" style="display:none">
+    <div class="compact-grid" id="cg" aria-label="Compact world clock"></div>
+    <p class="footnote">* Daylight Saving Time active</p>
+  </div>
+
+  <!-- DIGITAL -->
+  <div id="v-digital" style="display:none">
+    <div class="dg-grid" id="dg"></div>
+    <p class="footnote" style="margin-top:12px">Digital view shows your pinned cities. Use the search above to add cities.</p>
+  </div>
+
+  <!-- ANALOG -->
+  <div id="v-analog" style="display:none">
+    <div class="al-grid" id="ag"></div>
+    <p class="footnote" style="margin-top:12px">Analog view shows your pinned cities. Use the search above to add cities.</p>
+  </div>
+
+  <!-- SEO content -->
+  <section class="seo-sec" aria-label="About World Clock">
+    <h2>Free World Clock — Live Times for Every City</h2>
+    <p>Our world clock shows the current local time for 130+ major cities across every continent. Times update every second and automatically reflect Daylight Saving Time. Switch between four views — Table, Compact, Digital, and Analog — to find the format that works best for you.</p>
+    <div class="seo-grid">
+      <article class="seo-card">
+        <h3>Pin Your Cities</h3>
+        <p>Search and pin your most-used cities to "My Cities" at the top of the page. Your selections are saved in your browser — they'll be there every time you return.</p>
+      </article>
+      <article class="seo-card">
+        <h3>Timezone Converter</h3>
+        <p>Need to schedule across timezones? Use our <a href="converter.html">Timezone Converter</a> to convert between any cities, plan meetings, and find the best overlap time.</p>
+      </article>
+      <article class="seo-card">
+        <h3>More Time Tools</h3>
+        <p>Explore our <a href="tools.html">Time Tools</a> — including a Countdown Timer, Stopwatch, Date Calculator, Sun &amp; Moon times, and Holiday Calendar.</p>
+      </article>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="data/cities.js"></script>
+<script src="js/util.js"></script>
+<script src="js/clock.js"></script>
+</body>
+</html>

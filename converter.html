@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="Free timezone converter, meeting planner and time difference calculator. Convert between 130+ cities instantly.">
+<meta name="keywords" content="timezone converter,meeting planner,time difference,world time,UTC converter">
+<title>Timezone Converter & Meeting Planner | WorldClock</title>
+<link rel="canonical" href="https://yoursite.com/converter.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/converter.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="converter.html" class="nav-tab active"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<!-- My Cities -->
+<section class="my-section" aria-label="My Cities">
+  <div class="wrap">
+    <div class="my-head">
+      <h2 class="my-title"><i class="ti ti-map-pin" aria-hidden="true"></i> My Cities</h2>
+    </div>
+    <div id="my-strip" role="list"></div>
+  </div>
+</section>
+
+<main class="wrap">
+
+  <!-- Tool tabs -->
+  <div class="tool-tabs" role="tablist">
+    <button class="tool-tab active" data-t="converter" onclick="setTool('converter')"><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Converter</button>
+    <button class="tool-tab" data-t="meeting" onclick="setTool('meeting')"><i class="ti ti-calendar-time" aria-hidden="true"></i> Meeting Planner</button>
+    <button class="tool-tab" data-t="diff" onclick="setTool('diff')"><i class="ti ti-chart-bar" aria-hidden="true"></i> Time Difference</button>
+  </div>
+
+  <div class="conv-layout">
+
+    <!-- Left: panels -->
+    <div>
+
+      <!-- CONVERTER PANEL -->
+      <div id="p-converter" class="tool-panel">
+        <div class="conv-card">
+          <div class="conv-hdr"><h2><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Timezone Converter</h2><p>Select a date and time. Click any city flag to make it the source.</p></div>
+          <div class="conv-body">
+            <!-- Search -->
+            <div class="search-wrap" style="margin-bottom:12px">
+              <div class="search-pill" onclick="document.getElementById('conv-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
+                <i class="ti ti-search search-ico" aria-hidden="true"></i>
+                <input type="search" id="conv-srch" placeholder="Search and add a city…" autocomplete="off" autocorrect="off">
+              </div>
+              <div id="conv-dd" class="search-dd" hidden></div>
+            </div>
+            <!-- Date/time -->
+            <div class="date-row">
+              <label>Date:</label><input type="date" id="date-inp" class="date-inp" onchange="onDateChange(this.value)">
+              <label>Time:</label><input type="time" id="time-inp" class="time-inp" onchange="onTimeChange(this.value)">
+              <button class="now-btn" onclick="CV.selDate=new Date();renderConv()">Now</button>
+            </div>
+            <!-- City rows -->
+            <div id="conv-rows" class="conv-rows"></div>
+          </div>
+        </div>
+        <!-- Quick add -->
+        <div class="sb-card" style="margin-top:12px">
+          <div class="sb-head"><i class="ti ti-bolt" aria-hidden="true"></i> Quick Add</div>
+          <div class="sb-body"><div class="quick-add" id="qa-body"></div></div>
+        </div>
+      </div>
+
+      <!-- MEETING PANEL -->
+      <div id="p-meeting" class="tool-panel" style="display:none">
+        <div class="conv-card">
+          <div class="conv-hdr"><h2><i class="ti ti-calendar-time" aria-hidden="true"></i> Meeting Planner</h2><p>Find the best overlap time. Cities shared with the Converter. Click any hour to highlight it.</p></div>
+          <div class="conv-body" style="padding-bottom:0">
+            <div class="search-wrap" style="margin-bottom:12px">
+              <div class="search-pill" onclick="document.getElementById('mtg-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
+                <i class="ti ti-search search-ico" aria-hidden="true"></i>
+                <input type="search" id="mtg-srch" placeholder="Add city to planner…" autocomplete="off" autocorrect="off" style="width:100%">
+              </div>
+              <div id="mtg-dd" class="search-dd" hidden></div>
+            </div>
+          </div>
+          <div id="mtg-wrap" style="overflow-x:auto;padding:0 0 4px"></div>
+          <div class="mtg-legend" style="padding:0 20px 14px">
+            <span><span class="leg-dot" style="background:var(--clr-work)"></span>Work (9–17)</span>
+            <span><span class="leg-dot" style="background:var(--clr-morn)"></span>Morning (7–9)</span>
+            <span><span class="leg-dot" style="background:var(--clr-eve)"></span>Evening (17–21)</span>
+            <span><span class="leg-dot" style="background:var(--clr-sleep)"></span>Sleep (21–7)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIFF PANEL -->
+      <div id="p-diff" class="tool-panel" style="display:none">
+        <div class="conv-card">
+          <div class="conv-hdr"><h2><i class="ti ti-chart-bar" aria-hidden="true"></i> Time Difference</h2><p>Live time differences. Add cities in the Converter tab.</p></div>
+          <div class="conv-body" id="diff-body"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="conv-sidebar">
+      <div class="sb-card">
+        <div class="sb-head"><i class="ti ti-link" aria-hidden="true"></i> Share Link</div>
+        <div class="sb-body">
+          <div class="share-box"><span class="share-url" id="share-url">…</span><button class="copy-btn" onclick="copyShare()">Copy</button></div>
+        </div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-head"><i class="ti ti-clock" aria-hidden="true"></i> Current UTC</div>
+        <div class="sb-clock"><div class="sb-big" id="utc-big">--:--:--</div><div class="sb-sub" id="utc-date"></div></div>
+      </div>
+      <div class="sb-card">
+        <div class="sb-head"><i class="ti ti-map-pin" aria-hidden="true"></i> Your Local Time</div>
+        <div class="sb-clock"><div class="sb-big" id="local-big">--:--:--</div><div class="sb-sub" id="local-date"></div></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- SEO -->
+  <section class="seo-sec">
+    <h2>Free Timezone Converter</h2>
+    <p>Convert times between any cities worldwide. DST-aware, real-time, no account needed. Use the Meeting Planner to find the best time for global meetings, or the Time Difference calculator to instantly see the gap between any two cities.</p>
+    <div class="seo-grid">
+      <article class="seo-card"><h3>DST Automatic</h3><p>All conversions automatically account for Daylight Saving Time. Cities with active DST show a DST badge so you always see the accurate offset.</p></article>
+      <article class="seo-card"><h3>Share a Comparison</h3><p>Use the Share Link to send your exact city comparison to anyone. The URL encodes all selected timezones so the recipient sees the same view instantly.</p></article>
+      <article class="seo-card"><h3>Meeting Planner</h3><p>The color-coded 24-hour grid shows work hours, morning, evening, and sleep time at a glance — making it easy to find windows that work for everyone.</p></article>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="data/cities.js"></script>
+<script src="js/util.js"></script>
+<script src="js/converter.js"></script>
+</body>
+</html>

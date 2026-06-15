@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="Free time tools: countdown timer, stopwatch, date calculator, sun and moon times, weather, and holiday calendar.">
+<title>Time Tools — Timer, Date Calculator, Sun &amp; Moon | WorldClock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/tools.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="tools.html" class="nav-tab active"><i class="ti ti-tool"></i> <span>Tools</span></a>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<section class="my-section"><div class="wrap"><div class="my-head"><h2 class="my-title"><i class="ti ti-map-pin"></i> My Cities</h2></div><div id="my-strip"></div></div></section>
+
+<main class="wrap">
+
+  <!-- Tool nav pills -->
+  <div class="tools-nav" role="navigation" aria-label="Time tools">
+    <button class="tnav-btn" data-tool="stopwatch" onclick="showTool('stopwatch')"><i class="ti ti-player-play"></i> Stopwatch</button>
+    <button class="tnav-btn" data-tool="countdown" onclick="showTool('countdown')"><i class="ti ti-hourglass"></i> Countdown</button>
+    <button class="tnav-btn" data-tool="datecalc"  onclick="showTool('datecalc')"><i class="ti ti-calendar"></i> Date Calculator</button>
+    <button class="tnav-btn" data-tool="sunmoon"   onclick="showTool('sunmoon')"><i class="ti ti-sun"></i> Sun &amp; Moon</button>
+    <button class="tnav-btn" data-tool="weather"   onclick="showTool('weather')"><i class="ti ti-cloud"></i> Weather</button>
+    <button class="tnav-btn" data-tool="holidays"  onclick="showTool('holidays')"><i class="ti ti-calendar-event"></i> Holidays</button>
+  </div>
+
+  <!-- STOPWATCH -->
+  <section id="stopwatch" class="tool-section" aria-label="Stopwatch">
+    <div class="tool-card">
+      <div class="tool-card-hdr"><i class="ti ti-player-play"></i> Stopwatch</div>
+      <div class="tool-card-body">
+        <div class="timer-display" id="sw-display">00:00.00</div>
+        <div class="timer-btns">
+          <button class="tbtn primary" id="sw-start" onclick="swToggle()">Start</button>
+          <button class="tbtn secondary" onclick="swLap()">Lap</button>
+          <button class="tbtn danger" onclick="swReset()">Reset</button>
+        </div>
+        <div class="laps" id="sw-laps"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section id="countdown" class="tool-section" aria-label="Countdown timer">
+    <div class="tool-card">
+      <div class="tool-card-hdr"><i class="ti ti-hourglass"></i> Countdown Timer</div>
+      <div class="tool-card-body">
+        <div class="countdown-input">
+          <div class="cd-unit"><input type="number" id="cd-h" min="0" max="99" value="0" aria-label="Hours"><label>Hours</label></div>
+          <div class="cd-unit"><input type="number" id="cd-m" min="0" max="59" value="5" aria-label="Minutes"><label>Min</label></div>
+          <div class="cd-unit"><input type="number" id="cd-s" min="0" max="59" value="0" aria-label="Seconds"><label>Sec</label></div>
+        </div>
+        <div class="timer-display" id="cd-display">00:05:00</div>
+        <div class="timer-btns">
+          <button class="tbtn primary" id="cd-start" onclick="cdStart()">Start</button>
+          <button class="tbtn danger" onclick="cdReset()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DATE CALCULATOR -->
+  <section id="datecalc" class="tool-section" aria-label="Date calculator">
+    <div class="tool-card">
+      <div class="tool-card-hdr"><i class="ti ti-calendar-minus"></i> Date Difference</div>
+      <div class="tool-card-body">
+        <div class="date-calc-grid">
+          <div class="dc-group"><label class="dc-label">Start Date</label><input type="date" id="dc-d1" class="dc-input" oninput="calcDateDiff()"></div>
+          <div class="dc-group"><label class="dc-label">End Date</label><input type="date" id="dc-d2" class="dc-input" oninput="calcDateDiff()"></div>
+        </div>
+        <div class="dc-result" id="dc-result"><p style="color:var(--clr-text3)">Select two dates above.</p></div>
+      </div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-hdr"><i class="ti ti-calendar-plus"></i> Add / Subtract Time</div>
+      <div class="tool-card-body">
+        <div class="dc-group" style="margin-bottom:12px"><label class="dc-label">Start Date</label><input type="date" id="dc-base" class="dc-input" oninput="calcAddDate()"></div>
+        <div class="dc-add-grid">
+          <div class="dc-add-inp"><input type="number" id="add-years" value="0" oninput="calcAddDate()"><label>Years</label></div>
+          <div class="dc-add-inp"><input type="number" id="add-months" value="0" oninput="calcAddDate()"><label>Months</label></div>
+          <div class="dc-add-inp"><input type="number" id="add-days" value="0" oninput="calcAddDate()"><label>Days</label></div>
+        </div>
+        <div class="dc-result" style="margin-top:12px" id="dc-add-result" style="color:var(--clr-text3)">Enter values above.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUN & MOON -->
+  <section id="sunmoon" class="tool-section" aria-label="Sun and moon times">
+    <div class="tool-card">
+      <div class="tool-card-hdr"><i class="ti ti-sun"></i> Sun &amp; Moon — <span id="sun-city-name">New York</span></div>
+      <div class="tool-card-body">
+        <div class="sun-city-row">
+          <button class="tbtn secondary" style="padding:7px 14px;font-size:12px" onclick="autoLocateSun()"><i class="ti ti-current-location"></i> Use My Location</button>
+        </div>
+        <div id="sun-info"><p style="color:var(--clr-text3)">Loading sun &amp; moon data…</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WEATHER -->
+  <section id="weather" class="tool-section" aria-label="Weather forecast">
+    <div class="tool-card">
+      <div class="tool-card-hdr"><i class="ti ti-cloud"></i> Weather — <span id="wx-city-name">New York</span>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <select class="wx-sel" onchange="setWxUnit(this.value)"><option value="celsius">°C</option><option value="fahrenheit">°F</option></select>
+          <button class="tbtn secondary" style="padding:5px 12px;font-size:12px" onclick="autoLocateWx()"><i class="ti ti-current-location"></i> My Location</button>
+        </div>
+      </div>
+      <div class="tool-card-body" id="wx-body"><div class="wx-loading">Click "My Location" or <a href="#" onclick="loadWeather();return false">load New York weather</a>.</div></div>
+    </div>
+  </section>
+
+  <!-- HOLIDAYS -->
+  <section id="holidays" class="tool-section" aria-label="Public holidays">
+    <div class="tool-card">
+      <div class="tool-card-hdr"><i class="ti ti-calendar-event"></i> Public Holidays</div>
+      <div class="tool-card-body">
+        <div class="hol-ctrls">
+          <select class="wx-sel" onchange="holCountry=this.value;loadHolidays()" aria-label="Country">
+            <option value="US">United States</option><option value="GB">United Kingdom</option><option value="IN">India</option>
+            <option value="AU">Australia</option><option value="CA">Canada</option><option value="DE">Germany</option>
+            <option value="FR">France</option><option value="JP">Japan</option><option value="BR">Brazil</option>
+            <option value="SG">Singapore</option><option value="AE">UAE</option><option value="ZA">South Africa</option>
+            <option value="NZ">New Zealand</option><option value="MX">Mexico</option><option value="IT">Italy</option>
+            <option value="ES">Spain</option><option value="NL">Netherlands</option><option value="SE">Sweden</option>
+          </select>
+          <select class="wx-sel" onchange="holYear=parseInt(this.value);loadHolidays()" aria-label="Year" id="hol-year-sel"></select>
+          <button class="tbtn primary" style="padding:7px 16px;font-size:13px" onclick="loadHolidays()">Load</button>
+        </div>
+        <div id="hol-list"><p style="color:var(--clr-text3)">Select a country and click Load.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-sec">
+    <h2>Free Time Tools</h2>
+    <p>A complete suite of free time and date tools — no account needed, no ads. All calculations happen in your browser for instant results.</p>
+    <div class="seo-grid">
+      <article class="seo-card"><h3>Stopwatch &amp; Timer</h3><p>Precision stopwatch with lap tracking, and a customizable countdown timer with an audio alert when time runs out.</p></article>
+      <article class="seo-card"><h3>Date Calculator</h3><p>Calculate the exact number of days, months, and years between any two dates, or add and subtract years, months, and days from any start date.</p></article>
+      <article class="seo-card"><h3>Sun, Moon &amp; Weather</h3><p>Sunrise, sunset, moonrise, and moon phase for any location. 7-day weather forecast powered by Open-Meteo — free, no API key.</p></article>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
+<script src="data/cities.js"></script>
+<script src="js/util.js"></script>
+<script src="js/tools.js"></script>
+<script>
+// Populate year select
+var ys=document.getElementById('hol-year-sel');
+var cy=new Date().getFullYear();
+for(var i=cy-1;i<=cy+2;i++){
+  var o=document.createElement('option');
+  o.value=i;o.textContent=i;if(i===cy)o.selected=true;
+  ys.appendChild(o);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="Free weather forecast for any city worldwide. Current conditions, hourly forecast, 7-day forecast. Compare multiple cities side by side.">
+<meta name="keywords" content="weather forecast,city weather,hourly forecast,7-day forecast,temperature,humidity,wind speed">
+<title>Weather by City — Current &amp; 7-Day Forecast | WorldClock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/weather.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab active" href="weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<section class="my-section" aria-label="My Cities">
+  <div class="wrap">
+    <div class="my-head">
+      <h2 class="my-title"><i class="ti ti-map-pin"></i> My Cities</h2>
+    </div>
+    <div id="my-strip" role="list"></div>
+  </div>
+</section>
+
+<main class="wrap" style="padding-top:20px;padding-bottom:48px">
+
+  <!-- Controls -->
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+    <div class="search-wrap">
+      <div class="search-pill" onclick="document.getElementById('wx-srch').focus()" style="width:300px">
+        <i class="ti ti-search search-ico"></i>
+        <input type="search" id="wx-srch" placeholder="Search city to add…" autocomplete="off" autocorrect="off">
+      </div>
+      <div id="wx-dd" class="search-dd" hidden></div>
+    </div>
+    <button class="tbtn secondary" style="padding:8px 16px;font-size:13px;border:1.5px solid var(--clr-brand);border-radius:30px;background:none;color:var(--clr-brand);cursor:pointer" onclick="autoLocateWx()">
+      <i class="ti ti-current-location"></i> My Location
+    </button>
+    <!-- Unit toggle -->
+    <div class="unit-toggle">
+      <button class="unit-btn active" data-u="celsius" onclick="setUnit('celsius')">°C</button>
+      <button class="unit-btn" data-u="fahrenheit" onclick="setUnit('fahrenheit')">°F</button>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--clr-text3);margin-bottom:16px">Powered by <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> — free, no API key. Cities loaded from your World Clock selections.</p>
+
+  <!-- City weather cards -->
+  <div id="wx-list" class="wx-city-list"></div>
+
+  <!-- SEO -->
+  <section class="seo-sec" style="margin-top:40px">
+    <h2>Free Weather Forecast for Any City</h2>
+    <p>Compare current weather and forecasts for multiple cities simultaneously. Powered by Open-Meteo — a fully free, open-source weather API with no key required. Data includes current temperature, humidity, wind speed, UV index, visibility, hourly forecast for the next 12 hours, and a 7-day daily forecast.</p>
+    <div class="seo-grid">
+      <article class="seo-card"><h3>No API Key</h3><p>Open-Meteo is a completely free, open-source weather API. No account, no key, no rate limits for personal use. Forecasts are updated hourly from global weather models.</p></article>
+      <article class="seo-card"><h3>Compare Cities</h3><p>Add multiple cities to compare temperature, conditions, and forecasts side by side. Great for travel planning or understanding weather differences across time zones.</p></article>
+      <article class="seo-card"><h3>°C &amp; °F</h3><p>Toggle between Celsius and Fahrenheit at any time. Your preference is saved for future visits. All forecasts update instantly when you switch units.</p></article>
+    </div>
+  </section>
+
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="data/cities.js"></script>
+<script src="js/util.js"></script>
+<script src="js/weather.js"></script>
+</body>
+</html>
