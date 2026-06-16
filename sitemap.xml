@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Generated: 2026-06-16 -->
+
+  <!-- World Clock -->
+  <url>
+    <loc>https://timezonebudy.com/</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- Sun and Moon -->
+  <url>
+    <loc>https://timezonebudy.com/sunmoon</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Weather -->
+  <url>
+    <loc>https://timezonebudy.com/weather</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Time Tools -->
+  <url>
+    <loc>https://timezonebudy.com/tools</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Timezone Converter -->
+  <url>
+    <loc>https://timezonebudy.com/converter</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Blog -->
+  <url>
+    <loc>https://timezonebudy.com/blog</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- What is UTC -->
+  <url>
+    <loc>https://timezonebudy.com/blog/what-is-utc</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- DST Explained -->
+  <url>
+    <loc>https://timezonebudy.com/blog/daylight-saving-time-explained</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Schedule Meetings -->
+  <url>
+    <loc>https://timezonebudy.com/blog/schedule-meetings-across-timezones</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+</urlset>

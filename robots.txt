@@ -1,0 +1,58 @@
+# WorldClock — robots.txt
+# https://timezonebudy.com/robots.txt
+
+# Allow all well-behaved crawlers
+User-agent: *
+Allow: /
+
+# Block access to non-content files
+Disallow: /DEPLOY.md
+Disallow: /*.zip$
+Disallow: /blog/drafts/
+
+# Sitemap location
+Sitemap: https://timezonebudy.com/sitemap.xml
+
+# === Specific bot rules ===
+
+# Google — full access
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Bing — full access
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Block AI training scrapers that don't respect content
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+# Block bad scrapers
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
