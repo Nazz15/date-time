@@ -208,5 +208,24 @@
 <script src="/cities.js"></script>
 <script src="/util.js"></script>
 <script src="/sunmoon.js"></script>
+<script>
+// Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return; // clicking inside menu shouldn't toggle
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+</script>
 </body>
 </html>
