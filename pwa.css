@@ -1,0 +1,19 @@
+/* pwa.css — install banner styling, uses the same --clr-* tokens */
+#pwa-install-banner{
+  position:fixed;bottom:16px;left:16px;right:16px;max-width:420px;margin:0 auto;
+  background:var(--clr-bg2);border:1px solid var(--clr-border2);border-radius:var(--rlg);
+  box-shadow:var(--sh2);padding:14px 16px;display:flex;align-items:center;gap:12px;
+  z-index:9000;animation:pwaSlideUp .3s ease;
+}
+@keyframes pwaSlideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.pwa-install-icon{font-size:28px;flex-shrink:0;}
+.pwa-install-text{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0;}
+.pwa-install-text strong{font-size:13px;color:var(--clr-text);}
+.pwa-install-text span{font-size:11px;color:var(--clr-text2);}
+.pwa-install-btn{padding:7px 16px;background:var(--clr-brand);color:#fff;border:none;border-radius:var(--r);font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.pwa-install-btn:hover{background:var(--clr-brand2);}
+.pwa-install-close{background:none;border:none;color:var(--clr-text3);font-size:20px;cursor:pointer;padding:0 4px;flex-shrink:0;line-height:1;}
+.pwa-install-close:hover{color:var(--clr-text);}
+@media(max-width:480px){
+  #pwa-install-banner{left:10px;right:10px;bottom:10px;padding:12px 14px;}
+}
