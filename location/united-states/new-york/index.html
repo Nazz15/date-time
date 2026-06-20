@@ -1,78 +1,213 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Current Time in New York, United States | TimezoneBudy</title>
 <meta name="description" content="Current local time and timezone info for New York, United States. UTC-04:00 · America/New_York">
 <link rel="canonical" href="https://timezonebudy.com/location/united-states/new-york">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
-<style>
-:root{--night:#0D1117;--panel:#161B22;--border:#21262D;--accent:#58A6FF;--text:#E6EDF3;--muted:#8B949E;--card:#1C2128}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--night);color:var(--text);font-family:'Inter',sans-serif}
-a{color:var(--accent);text-decoration:none}
-nav{background:var(--panel);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
-.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--accent)}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
-.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase}
-.stat-val{font-size:18px;font-weight:600;margin-top:4px}
-.chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;display:inline-block}
-.crumb{font-size:12px;color:var(--muted);margin-bottom:16px}
-.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:40px}
-.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:40px}
-</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/location.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 </head>
 <body>
-<nav>
-  <a class="logo" href="/">TimezoneBudy</a>
-  <div><a href="/location">Locations</a></div>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/index.html"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/index.html"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <div class="nav-tab loc-menu-trigger active" tabindex="0">
+        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
+        <div class="loc-mega-menu">
+        <div class="loc-menu-col">
+          <a href="/location/india/" class="loc-menu-country">
+            <span class="fi fi-in" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> India
+          </a>
+          <div class="loc-menu-cities"><a href="/location/india/mumbai/" class="loc-menu-city">Mumbai</a><a href="/location/india/delhi/" class="loc-menu-city">Delhi</a><a href="/location/india/bengaluru/" class="loc-menu-city">Bengaluru</a><a href="/location/india/hyderabad/" class="loc-menu-city">Hyderabad</a><a href="/location/india/chennai/" class="loc-menu-city">Chennai</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/united-states/" class="loc-menu-country">
+            <span class="fi fi-us" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> United States
+          </a>
+          <div class="loc-menu-cities"><a href="/location/united-states/new-york/" class="loc-menu-city">New York</a><a href="/location/united-states/los-angeles/" class="loc-menu-city">Los Angeles</a><a href="/location/united-states/chicago/" class="loc-menu-city">Chicago</a><a href="/location/united-states/houston/" class="loc-menu-city">Houston</a><a href="/location/united-states/miami/" class="loc-menu-city">Miami</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/china/" class="loc-menu-country">
+            <span class="fi fi-cn" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> China
+          </a>
+          <div class="loc-menu-cities"><a href="/location/china/beijing/" class="loc-menu-city">Beijing</a><a href="/location/china/shanghai/" class="loc-menu-city">Shanghai</a><a href="/location/china/shenzhen/" class="loc-menu-city">Shenzhen</a><a href="/location/china/guangzhou/" class="loc-menu-city">Guangzhou</a><a href="/location/china/chongqing/" class="loc-menu-city">Chongqing</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/united-kingdom/" class="loc-menu-country">
+            <span class="fi fi-gb" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> United Kingdom
+          </a>
+          <div class="loc-menu-cities"><a href="/location/united-kingdom/london/" class="loc-menu-city">London</a><a href="/location/united-kingdom/manchester/" class="loc-menu-city">Manchester</a><a href="/location/united-kingdom/birmingham/" class="loc-menu-city">Birmingham</a><a href="/location/united-kingdom/edinburgh/" class="loc-menu-city">Edinburgh</a><a href="/location/united-kingdom/glasgow/" class="loc-menu-city">Glasgow</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/united-arab-emirates/" class="loc-menu-country">
+            <span class="fi fi-ae" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> United Arab Emirates
+          </a>
+          <div class="loc-menu-cities"><a href="/location/united-arab-emirates/dubai/" class="loc-menu-city">Dubai</a><a href="/location/united-arab-emirates/abu-dhabi/" class="loc-menu-city">Abu Dhabi</a><a href="/location/united-arab-emirates/sharjah/" class="loc-menu-city">Sharjah</a><a href="/location/united-arab-emirates/ajman/" class="loc-menu-city">Ajman</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/germany/" class="loc-menu-country">
+            <span class="fi fi-de" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Germany
+          </a>
+          <div class="loc-menu-cities"><a href="/location/germany/berlin/" class="loc-menu-city">Berlin</a><a href="/location/germany/munich/" class="loc-menu-city">Munich</a><a href="/location/germany/frankfurt/" class="loc-menu-city">Frankfurt</a><a href="/location/germany/hamburg/" class="loc-menu-city">Hamburg</a><a href="/location/germany/cologne/" class="loc-menu-city">Cologne</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/japan/" class="loc-menu-country">
+            <span class="fi fi-jp" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Japan
+          </a>
+          <div class="loc-menu-cities"><a href="/location/japan/tokyo/" class="loc-menu-city">Tokyo</a><a href="/location/japan/osaka/" class="loc-menu-city">Osaka</a><a href="/location/japan/yokohama/" class="loc-menu-city">Yokohama</a><a href="/location/japan/nagoya/" class="loc-menu-city">Nagoya</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/canada/" class="loc-menu-country">
+            <span class="fi fi-ca" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Canada
+          </a>
+          <div class="loc-menu-cities"><a href="/location/canada/toronto/" class="loc-menu-city">Toronto</a><a href="/location/canada/vancouver/" class="loc-menu-city">Vancouver</a><a href="/location/canada/montreal/" class="loc-menu-city">Montreal</a><a href="/location/canada/calgary/" class="loc-menu-city">Calgary</a><a href="/location/canada/ottawa/" class="loc-menu-city">Ottawa</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/australia/" class="loc-menu-country">
+            <span class="fi fi-au" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Australia
+          </a>
+          <div class="loc-menu-cities"><a href="/location/australia/sydney/" class="loc-menu-city">Sydney</a><a href="/location/australia/melbourne/" class="loc-menu-city">Melbourne</a><a href="/location/australia/brisbane/" class="loc-menu-city">Brisbane</a><a href="/location/australia/perth/" class="loc-menu-city">Perth</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/france/" class="loc-menu-country">
+            <span class="fi fi-fr" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> France
+          </a>
+          <div class="loc-menu-cities"><a href="/location/france/paris/" class="loc-menu-city">Paris</a><a href="/location/france/marseille/" class="loc-menu-city">Marseille</a><a href="/location/france/lyon/" class="loc-menu-city">Lyon</a><a href="/location/france/nice/" class="loc-menu-city">Nice</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/singapore/" class="loc-menu-country">
+            <span class="fi fi-sg" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Singapore
+          </a>
+          <div class="loc-menu-cities"><a href="/location/singapore/singapore-city/" class="loc-menu-city">Singapore</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/brazil/" class="loc-menu-country">
+            <span class="fi fi-br" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Brazil
+          </a>
+          <div class="loc-menu-cities"><a href="/location/brazil/sao-paulo/" class="loc-menu-city">São Paulo</a><a href="/location/brazil/rio-de-janeiro/" class="loc-menu-city">Rio de Janeiro</a><a href="/location/brazil/brasilia/" class="loc-menu-city">Brasília</a><a href="/location/brazil/salvador/" class="loc-menu-city">Salvador</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/saudi-arabia/" class="loc-menu-country">
+            <span class="fi fi-sa" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Saudi Arabia
+          </a>
+          <div class="loc-menu-cities"><a href="/location/saudi-arabia/riyadh/" class="loc-menu-city">Riyadh</a><a href="/location/saudi-arabia/jeddah/" class="loc-menu-city">Jeddah</a><a href="/location/saudi-arabia/mecca/" class="loc-menu-city">Mecca</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/south-korea/" class="loc-menu-country">
+            <span class="fi fi-kr" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> South Korea
+          </a>
+          <div class="loc-menu-cities"><a href="/location/south-korea/seoul/" class="loc-menu-city">Seoul</a><a href="/location/south-korea/busan/" class="loc-menu-city">Busan</a><a href="/location/south-korea/incheon/" class="loc-menu-city">Incheon</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/mexico/" class="loc-menu-country">
+            <span class="fi fi-mx" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Mexico
+          </a>
+          <div class="loc-menu-cities"><a href="/location/mexico/mexico-city/" class="loc-menu-city">Mexico City</a><a href="/location/mexico/guadalajara/" class="loc-menu-city">Guadalajara</a><a href="/location/mexico/monterrey/" class="loc-menu-city">Monterrey</a><a href="/location/mexico/cancun/" class="loc-menu-city">Cancún</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/italy/" class="loc-menu-country">
+            <span class="fi fi-it" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Italy
+          </a>
+          <div class="loc-menu-cities"><a href="/location/italy/rome/" class="loc-menu-city">Rome</a><a href="/location/italy/milan/" class="loc-menu-city">Milan</a><a href="/location/italy/naples/" class="loc-menu-city">Naples</a><a href="/location/italy/venice/" class="loc-menu-city">Venice</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/spain/" class="loc-menu-country">
+            <span class="fi fi-es" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Spain
+          </a>
+          <div class="loc-menu-cities"><a href="/location/spain/madrid/" class="loc-menu-city">Madrid</a><a href="/location/spain/barcelona/" class="loc-menu-city">Barcelona</a><a href="/location/spain/valencia/" class="loc-menu-city">Valencia</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/indonesia/" class="loc-menu-country">
+            <span class="fi fi-id" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Indonesia
+          </a>
+          <div class="loc-menu-cities"><a href="/location/indonesia/jakarta/" class="loc-menu-city">Jakarta</a><a href="/location/indonesia/surabaya/" class="loc-menu-city">Surabaya</a><a href="/location/indonesia/bandung/" class="loc-menu-city">Bandung</a><a href="/location/indonesia/bali-denpasar/" class="loc-menu-city">Bali (Denpasar)</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/netherlands/" class="loc-menu-country">
+            <span class="fi fi-nl" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Netherlands
+          </a>
+          <div class="loc-menu-cities"><a href="/location/netherlands/amsterdam/" class="loc-menu-city">Amsterdam</a><a href="/location/netherlands/rotterdam/" class="loc-menu-city">Rotterdam</a><a href="/location/netherlands/the-hague/" class="loc-menu-city">The Hague</a></div>
+        </div>
+        <div class="loc-menu-col">
+          <a href="/location/south-africa/" class="loc-menu-country">
+            <span class="fi fi-za" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> South Africa
+          </a>
+          <div class="loc-menu-cities"><a href="/location/south-africa/johannesburg/" class="loc-menu-city">Johannesburg</a><a href="/location/south-africa/cape-town/" class="loc-menu-city">Cape Town</a><a href="/location/south-africa/durban/" class="loc-menu-city">Durban</a><a href="/location/south-africa/pretoria/" class="loc-menu-city">Pretoria</a></div>
+        </div></div>
+      </div>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
 </nav>
 
-<main style="padding:48px 24px;max-width:800px;margin:0 auto">
-  <div class="crumb">
-    <a href="/location">Locations</a> ›
-    <a href="/location/united-states">United States</a> ›
-    <span>New York</span>
-  </div>
 
-  <div style="text-align:center;margin-bottom:40px">
-    <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px">
-      Americas · United States
-    </div>
-    <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,5vw,42px)">
-      Current Time in New York
-    </h1>
-    <div style="color:var(--muted);margin:8px 0 32px">America/New_York · UTC-04:00</div>
+<section class="loc-hero">
+  <div class="wrap">
+    <nav class="loc-crumb">
+      <a href="/location/">Locations</a> ›
+      <a href="/location/united-states/">United States</a> ›
+      <span>New York</span>
+    </nav>
+    <div class="loc-eyebrow"><span class="fi fi-us" style="width:18px;height:14px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Americas · United States</div>
+    <h1 class="loc-h1">Current Time in New York</h1>
+    <div class="loc-sub">America/New_York · UTC-04:00</div>
 
-    <div style="display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 48px">
-      <span id="live-time" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,8vw,68px);font-weight:700;color:var(--accent);display:block">--:--:--</span>
-      <span id="live-date" style="color:var(--muted);font-size:14px">Loading...</span>
+    <div class="loc-clock-card">
+      <span id="live-time" class="loc-live-time">--:--:--</span>
+      <span id="live-date" class="loc-live-date">Loading…</span>
     </div>
   </div>
+</section>
 
-  <div class="grid4">
-    <div class="stat"><div class="stat-lbl">Country</div><div class="stat-val">🇺🇸 United States</div></div>
-    <div class="stat"><div class="stat-lbl">UTC Offset</div><div class="stat-val">UTC-04:00</div></div>
-    <div class="stat"><div class="stat-lbl">Currency</div><div class="stat-val">USD</div></div>
-    <div class="stat"><div class="stat-lbl">Language</div><div class="stat-val">English</div></div>
+<main class="wrap loc-main">
+  <div class="loc-stat-grid">
+    <div class="loc-stat"><div class="loc-stat-lbl">Country</div><div class="loc-stat-val"><span class="fi fi-us" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> United States</div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">UTC Offset</div><div class="loc-stat-val">UTC-04:00</div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">Currency</div><div class="loc-stat-val">USD</div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">Language</div><div class="loc-stat-val">English</div></div>
   </div>
 
-  <h2 style='font-size:16px;margin-bottom:12px'>Other Cities in United States</h2><div style='display:flex;gap:8px;flex-wrap:wrap'><a class="chip" href="/location/united-states/los-angeles">Los Angeles</a><a class="chip" href="/location/united-states/chicago">Chicago</a><a class="chip" href="/location/united-states/houston">Houston</a></div>
+  <h2 class="loc-h2">Other Cities in United States</h2><div class="loc-chip-row"><a class="loc-chip" href="/location/united-states/los-angeles/">Los Angeles</a><a class="loc-chip" href="/location/united-states/chicago/">Chicago</a><a class="loc-chip" href="/location/united-states/houston/">Houston</a></div>
+
+  <section class="seo-sec">
+    <h2>About Time in New York</h2>
+    <p>New York is located in United States and operates on America/New_York time (UTC-04:00). Use our <a href="/converter.html">Timezone Converter</a> to compare New York with any other city worldwide, or check the <a href="/weather.html">live weather</a> and <a href="/sunmoon.html">sun &amp; moon times</a> for this location.</p>
+  </section>
 </main>
+
 <script>
 const TZ = "America/New_York";
 function tick() {
   const now = new Date();
   document.getElementById('live-time').textContent =
-    now.toLocaleTimeString('en-US', { timeZone: TZ, hour12: true });
+    now.toLocaleTimeString('en-US', { timeZone: TZ, hour12: !WC.is24h });
   document.getElementById('live-date').textContent =
     now.toLocaleDateString('en-US', { timeZone: TZ, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
-tick();
-setInterval(tick, 1000);
+tick(); setInterval(tick, 1000);
 </script>
 
+
+<script src="/util.js"></script>
+<script>boot();</script>
 </body>
 </html>
