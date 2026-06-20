@@ -166,6 +166,11 @@
     <div class="loc-flag-big"><span class="fi fi-cn" style="width:56px;height:42px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span></div>
     <div class="loc-eyebrow">Asia · 6 Cities Covered</div>
     <h1 class="loc-h1">Current Time in China</h1>
+    <div class="loc-sub">Beijing · Asia/Shanghai</div>
+    <div class="loc-clock-card">
+      <span class="loc-live-time" data-tz="Asia/Shanghai">--:--:--</span>
+      <span class="loc-live-date" data-tz-date="Asia/Shanghai">Loading…</span>
+    </div>
   </div>
 </section>
 
@@ -178,7 +183,7 @@
   </div>
 
   <h2 class="loc-h2">Cities in China</h2>
-  <div class="loc-city-grid"><a class="loc-city-card" href="/location/china/beijing/"><div class="loc-city-card-name">Beijing</div><div class="loc-city-card-tz">Asia/Shanghai</div></a><a class="loc-city-card" href="/location/china/shanghai/"><div class="loc-city-card-name">Shanghai</div><div class="loc-city-card-tz">Asia/Shanghai</div></a><a class="loc-city-card" href="/location/china/shenzhen/"><div class="loc-city-card-name">Shenzhen</div><div class="loc-city-card-tz">Asia/Shanghai</div></a><a class="loc-city-card" href="/location/china/guangzhou/"><div class="loc-city-card-name">Guangzhou</div><div class="loc-city-card-tz">Asia/Shanghai</div></a><a class="loc-city-card" href="/location/china/chongqing/"><div class="loc-city-card-name">Chongqing</div><div class="loc-city-card-tz">Asia/Shanghai</div></a><a class="loc-city-card" href="/location/china/hong-kong/"><div class="loc-city-card-name">Hong Kong</div><div class="loc-city-card-tz">Asia/Hong_Kong</div></a></div>
+  <div class="loc-city-grid"><a class="loc-city-card" href="/location/china/beijing/"><div class="loc-city-card-name"><span class="fi fi-cn" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Beijing</div><div class="loc-city-card-tz" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-city-card" href="/location/china/shanghai/"><div class="loc-city-card-name"><span class="fi fi-cn" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Shanghai</div><div class="loc-city-card-tz" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-city-card" href="/location/china/shenzhen/"><div class="loc-city-card-name"><span class="fi fi-cn" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Shenzhen</div><div class="loc-city-card-tz" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-city-card" href="/location/china/guangzhou/"><div class="loc-city-card-name"><span class="fi fi-cn" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Guangzhou</div><div class="loc-city-card-tz" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-city-card" href="/location/china/chongqing/"><div class="loc-city-card-name"><span class="fi fi-cn" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Chongqing</div><div class="loc-city-card-tz" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-city-card" href="/location/china/hong-kong/"><div class="loc-city-card-name"><span class="fi fi-cn" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Hong Kong</div><div class="loc-city-card-tz" data-tz="Asia/Hong_Kong">--:--</div></a></div>
 
   <h2 class="loc-h2">More Countries in Asia</h2><div class="loc-chip-row"><a class="loc-chip" href="/location/india/"><span class="fi fi-in" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> India</a><a class="loc-chip" href="/location/united-arab-emirates/"><span class="fi fi-ae" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> United Arab Emirates</a><a class="loc-chip" href="/location/japan/"><span class="fi fi-jp" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Japan</a><a class="loc-chip" href="/location/singapore/"><span class="fi fi-sg" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Singapore</a><a class="loc-chip" href="/location/saudi-arabia/"><span class="fi fi-sa" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Saudi Arabia</a></div>
 
@@ -191,5 +196,46 @@
 
 <script src="/util.js"></script>
 <script>boot();</script>
+<script>
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return;
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+
+// Universal live-clock — works for every [data-tz] element on every location page.
+// Single source of truth: the IANA timezone string in the data-tz attribute.
+function tickAllClocks() {
+  var now = new Date();
+  var is24h = (window.WC && window.WC.is24h) || false;
+
+  document.querySelectorAll('[data-tz]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz');
+    try {
+      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
+    } catch(e) { el.textContent = '--:--'; }
+  });
+
+  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz-date');
+    try {
+      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    } catch(e) { el.textContent = ''; }
+  });
+}
+tickAllClocks();
+setInterval(tickAllClocks, 1000);
+</script>
 </body>
 </html>

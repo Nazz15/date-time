@@ -172,8 +172,8 @@
     <div class="loc-sub">America/Edmonton · UTC-06:00</div>
 
     <div class="loc-clock-card">
-      <span id="live-time" class="loc-live-time">--:--:--</span>
-      <span id="live-date" class="loc-live-date">Loading…</span>
+      <span class="loc-live-time" data-tz="America/Edmonton">--:--:--</span>
+      <span class="loc-live-date" data-tz-date="America/Edmonton">Loading…</span>
     </div>
   </div>
 </section>
@@ -194,20 +194,49 @@
   </section>
 </main>
 
-<script>
-const TZ = "America/Edmonton";
-function tick() {
-  const now = new Date();
-  document.getElementById('live-time').textContent =
-    now.toLocaleTimeString('en-US', { timeZone: TZ, hour12: !WC.is24h });
-  document.getElementById('live-date').textContent =
-    now.toLocaleDateString('en-US', { timeZone: TZ, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-}
-tick(); setInterval(tick, 1000);
-</script>
-
 
 <script src="/util.js"></script>
 <script>boot();</script>
+<script>
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return;
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+
+// Universal live-clock — works for every [data-tz] element on every location page.
+// Single source of truth: the IANA timezone string in the data-tz attribute.
+function tickAllClocks() {
+  var now = new Date();
+  var is24h = (window.WC && window.WC.is24h) || false;
+
+  document.querySelectorAll('[data-tz]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz');
+    try {
+      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
+    } catch(e) { el.textContent = '--:--'; }
+  });
+
+  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz-date');
+    try {
+      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    } catch(e) { el.textContent = ''; }
+  });
+}
+tickAllClocks();
+setInterval(tickAllClocks, 1000);
+</script>
 </body>
 </html>

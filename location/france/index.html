@@ -166,6 +166,11 @@
     <div class="loc-flag-big"><span class="fi fi-fr" style="width:56px;height:42px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span></div>
     <div class="loc-eyebrow">Europe · 4 Cities Covered</div>
     <h1 class="loc-h1">Current Time in France</h1>
+    <div class="loc-sub">Paris · Europe/Paris</div>
+    <div class="loc-clock-card">
+      <span class="loc-live-time" data-tz="Europe/Paris">--:--:--</span>
+      <span class="loc-live-date" data-tz-date="Europe/Paris">Loading…</span>
+    </div>
   </div>
 </section>
 
@@ -178,7 +183,7 @@
   </div>
 
   <h2 class="loc-h2">Cities in France</h2>
-  <div class="loc-city-grid"><a class="loc-city-card" href="/location/france/paris/"><div class="loc-city-card-name">Paris</div><div class="loc-city-card-tz">Europe/Paris</div></a><a class="loc-city-card" href="/location/france/marseille/"><div class="loc-city-card-name">Marseille</div><div class="loc-city-card-tz">Europe/Paris</div></a><a class="loc-city-card" href="/location/france/lyon/"><div class="loc-city-card-name">Lyon</div><div class="loc-city-card-tz">Europe/Paris</div></a><a class="loc-city-card" href="/location/france/nice/"><div class="loc-city-card-name">Nice</div><div class="loc-city-card-tz">Europe/Paris</div></a></div>
+  <div class="loc-city-grid"><a class="loc-city-card" href="/location/france/paris/"><div class="loc-city-card-name"><span class="fi fi-fr" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Paris</div><div class="loc-city-card-tz" data-tz="Europe/Paris">--:--</div></a><a class="loc-city-card" href="/location/france/marseille/"><div class="loc-city-card-name"><span class="fi fi-fr" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Marseille</div><div class="loc-city-card-tz" data-tz="Europe/Paris">--:--</div></a><a class="loc-city-card" href="/location/france/lyon/"><div class="loc-city-card-name"><span class="fi fi-fr" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Lyon</div><div class="loc-city-card-tz" data-tz="Europe/Paris">--:--</div></a><a class="loc-city-card" href="/location/france/nice/"><div class="loc-city-card-name"><span class="fi fi-fr" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Nice</div><div class="loc-city-card-tz" data-tz="Europe/Paris">--:--</div></a></div>
 
   <h2 class="loc-h2">More Countries in Europe</h2><div class="loc-chip-row"><a class="loc-chip" href="/location/united-kingdom/"><span class="fi fi-gb" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> United Kingdom</a><a class="loc-chip" href="/location/germany/"><span class="fi fi-de" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Germany</a><a class="loc-chip" href="/location/italy/"><span class="fi fi-it" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Italy</a><a class="loc-chip" href="/location/spain/"><span class="fi fi-es" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Spain</a><a class="loc-chip" href="/location/netherlands/"><span class="fi fi-nl" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Netherlands</a></div>
 
@@ -191,5 +196,46 @@
 
 <script src="/util.js"></script>
 <script>boot();</script>
+<script>
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return;
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+
+// Universal live-clock — works for every [data-tz] element on every location page.
+// Single source of truth: the IANA timezone string in the data-tz attribute.
+function tickAllClocks() {
+  var now = new Date();
+  var is24h = (window.WC && window.WC.is24h) || false;
+
+  document.querySelectorAll('[data-tz]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz');
+    try {
+      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
+    } catch(e) { el.textContent = '--:--'; }
+  });
+
+  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz-date');
+    try {
+      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    } catch(e) { el.textContent = ''; }
+  });
+}
+tickAllClocks();
+setInterval(tickAllClocks, 1000);
+</script>
 </body>
 </html>
