@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>About Us | TimezoneBudy</title>
+<meta name="description" content="TimezoneBudy is a free world clock, timezone converter, and weather platform built to make global time coordination simple. Learn about our mission and tools.">
+<link rel="canonical" href="https://timezonebudy.com/about.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/location.css">
+<link rel="stylesheet" href="/footer.css">
+<style>
+.legal-wrap{max-width:760px;margin:0 auto;padding:48px 20px 64px;}
+.legal-hero{text-align:center;margin-bottom:36px;}
+.legal-hero h1{font-size:clamp(26px,4.5vw,40px);font-weight:700;margin-bottom:10px;}
+.legal-hero p{color:var(--clr-text2);font-size:14px;max-width:480px;margin:0 auto;}
+.legal-wrap h2{font-size:20px;font-weight:700;margin:32px 0 12px;color:var(--clr-text);}
+.legal-wrap p{font-size:14.5px;line-height:1.8;color:var(--clr-text2);margin-bottom:14px;}
+.legal-wrap ul{padding-left:22px;margin-bottom:14px;}
+.legal-wrap li{font-size:14.5px;line-height:1.8;color:var(--clr-text2);margin-bottom:6px;}
+.mission-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:24px 0;}
+.mission-card{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:18px;box-shadow:var(--sh);}
+.mission-card i{font-size:24px;color:var(--clr-brand);margin-bottom:8px;display:block;}
+.mission-card h3{font-size:14px;font-weight:600;margin-bottom:6px;}
+.mission-card p{font-size:13px;margin-bottom:0;}
+.stat-row{display:flex;justify-content:center;gap:32px;margin:28px 0;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+.stat-item .num{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--clr-brand);}
+.stat-item .lbl{font-size:12px;color:var(--clr-text2);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+    </div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<main class="legal-wrap">
+  <div class="legal-hero">
+    <h1>About TimezoneBudy</h1>
+    <p>Free, fast, ad-light time tools for a world that never sleeps in just one timezone.</p>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-item"><div class="num">130+</div><div class="lbl">Cities Tracked</div></div>
+    <div class="stat-item"><div class="num">20</div><div class="lbl">Countries</div></div>
+    <div class="stat-item"><div class="num">0</div><div class="lbl">App Downloads Needed</div></div>
+  </div>
+
+  <h2>Our Mission</h2>
+  <p>Coordinating across time zones shouldn't require five browser tabs and a headache. TimezoneBudy brings together a world clock, timezone converter, meeting planner, weather, and sun &amp; moon data into one fast, free toolkit — built for remote teams, travelers, and anyone juggling time across borders.</p>
+  <p>We built TimezoneBudy because existing tools felt cluttered, slow, or locked behind paywalls for basic features. Our goal is simple: give people accurate, instant time information with zero friction.</p>
+
+  <div class="mission-grid">
+    <div class="mission-card"><i class="ti ti-bolt"></i><h3>Fast by Default</h3><p>No heavy frameworks, no bloated downloads. Pages load instantly and calculations happen in your browser.</p></div>
+    <div class="mission-card"><i class="ti ti-lock"></i><h3>Privacy Respecting</h3><p>We don't track your location or sell your data. Your pinned cities are stored only in your own browser.</p></div>
+    <div class="mission-card"><i class="ti ti-heart"></i><h3>Free to Use</h3><p>Every tool on TimezoneBudy is free, with no feature paywalls or forced sign-ups.</p></div>
+  </div>
+
+  <h2>What We Offer</h2>
+  <ul>
+    <li><strong>World Clock</strong> — live local time for 130+ cities, in table, compact, digital, or analog view</li>
+    <li><strong>Timezone Converter</strong> — convert any time between cities instantly, plus a visual meeting planner</li>
+    <li><strong>Sun &amp; Moon</strong> — sunrise, sunset, moon phase, and illumination for any location</li>
+    <li><strong>Weather</strong> — current conditions and 14-day forecasts powered by Open-Meteo</li>
+    <li><strong>Location Directory</strong> — browse 20 countries and their major cities with live time and key facts</li>
+  </ul>
+
+  <h2>Get in Touch</h2>
+  <p>Have feedback, found a bug, or want to suggest a new city or feature? We'd love to hear from you — visit our <a href="/contact.html">Contact page</a> and drop us a message.</p>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/">World Clock</a>
+        <a href="/converter.html">Timezone Converter</a>
+        <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/weather.html">Weather</a>
+        <a href="/tools.html">Time Tools</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/util.js"></script>
+<script>boot();</script>
+</body>
+</html>

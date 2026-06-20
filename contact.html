@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Contact Us | TimezoneBudy</title>
+<meta name="description" content="Get in touch with the TimezoneBudy team. Questions, feedback, or partnership inquiries — we read every message.">
+<link rel="canonical" href="https://timezonebudy.com/contact.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/location.css">
+<link rel="stylesheet" href="/footer.css">
+<style>
+.contact-wrap{max-width:640px;margin:0 auto;padding:48px 20px 64px;}
+.contact-hero{text-align:center;margin-bottom:32px;}
+.contact-hero h1{font-size:clamp(24px,4vw,36px);font-weight:700;margin-bottom:8px;}
+.contact-hero p{color:var(--clr-text2);font-size:14px;}
+.contact-form{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rxl);padding:28px;box-shadow:var(--sh);}
+.form-row{margin-bottom:16px;}
+.form-row label{display:block;font-size:12px;font-weight:600;color:var(--clr-text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+.form-row label .req{color:var(--clr-dst);}
+.form-row input,.form-row textarea{width:100%;padding:11px 14px;border:1.5px solid var(--clr-border2);border-radius:var(--r);background:var(--clr-bg);color:var(--clr-text);font-size:14px;font-family:var(--sans);outline:none;transition:border-color .15s;}
+.form-row input:focus,.form-row textarea:focus{border-color:var(--clr-brand);}
+.form-row textarea{min-height:130px;resize:vertical;}
+.form-hint{font-size:11px;color:var(--clr-text3);margin-top:4px;}
+.form-error{font-size:12px;color:var(--clr-dst);margin-top:4px;display:none;}
+.form-row.invalid input,.form-row.invalid textarea{border-color:var(--clr-dst);}
+.form-row.invalid .form-error{display:block;}
+/* Honeypot — invisible to humans, bots will fill it */
+.hp-field{position:absolute;left:-9999px;opacity:0;height:0;width:0;overflow:hidden;}
+.submit-btn{width:100%;padding:13px;background:var(--clr-brand);color:#fff;border:none;border-radius:var(--r);font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;}
+.submit-btn:hover{background:var(--clr-brand2);}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed;}
+.form-status{margin-top:16px;padding:12px 16px;border-radius:var(--r);font-size:13px;display:none;}
+.form-status.success{display:block;background:rgba(46,125,50,.1);border:1px solid rgba(46,125,50,.25);color:#4caf50;}
+.form-status.error{display:block;background:rgba(198,40,40,.1);border:1px solid rgba(198,40,40,.25);color:#ef5350;}
+.contact-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:24px;}
+.info-card{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:16px;text-align:center;}
+.info-card i{font-size:22px;color:var(--clr-brand);margin-bottom:6px;display:block;}
+.info-card .label{font-size:11px;color:var(--clr-text2);text-transform:uppercase;letter-spacing:.05em;}
+.info-card .val{font-size:13px;font-weight:600;color:var(--clr-text);margin-top:2px;}
+</style>
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+    </div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<main class="contact-wrap">
+  <div class="contact-hero">
+    <h1>Get in Touch</h1>
+    <p>Questions, feedback, or partnership inquiries — we read every message.</p>
+  </div>
+
+  <form class="contact-form" id="contact-form" novalidate>
+
+    <!-- Honeypot field — real users never see or fill this -->
+    <div class="hp-field" aria-hidden="true">
+      <label for="website">Website</label>
+      <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+    </div>
+
+    <div class="form-row" id="row-fullName">
+      <label for="fullName">Full Name <span class="req">*</span></label>
+      <input type="text" id="fullName" name="fullName" placeholder="Jane Smith" required minlength="2" autocomplete="name">
+      <div class="form-error">Please enter your full name (at least 2 characters).</div>
+    </div>
+
+    <div class="form-row" id="row-email">
+      <label for="email">Email Address <span class="req">*</span></label>
+      <input type="email" id="email" name="email" placeholder="jane@example.com" required autocomplete="email">
+      <div class="form-error">Please enter a valid email address.</div>
+    </div>
+
+    <div class="form-row" id="row-phone">
+      <label for="phone">Phone Number <span class="req">*</span></label>
+      <input type="tel" id="phone" name="phone" placeholder="+1 555 123 4567" required autocomplete="tel">
+      <div class="form-hint">Include country code if outside the US.</div>
+      <div class="form-error">Please enter a valid phone number (7–15 digits).</div>
+    </div>
+
+    <div class="form-row" id="row-message">
+      <label for="message">Message <span class="req">*</span></label>
+      <textarea id="message" name="message" placeholder="How can we help?" required minlength="10"></textarea>
+      <div class="form-error">Please enter a message (at least 10 characters).</div>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submit-btn">Send Message</button>
+
+    <div class="form-status" id="form-status"></div>
+  </form>
+
+  <div class="contact-info">
+    <div class="info-card"><i class="ti ti-mail"></i><div class="label">Email</div><div class="val">nazzwork09@gmail.com</div></div>
+    <div class="info-card"><i class="ti ti-clock"></i><div class="label">Response Time</div><div class="val">Within 48 hours</div></div>
+    <div class="info-card"><i class="ti ti-world"></i><div class="label">Based In</div><div class="val">India</div></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/">World Clock</a>
+        <a href="/converter.html">Timezone Converter</a>
+        <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/weather.html">Weather</a>
+        <a href="/tools.html">Time Tools</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<script src="/util.js"></script>
+<script>
+boot();
+
+const WORKER_URL = 'https://contact-form.YOUR-SUBDOMAIN.workers.dev'; // UPDATE after deploying the Worker
+
+document.getElementById('contact-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const submitBtn = document.getElementById('submit-btn');
+  const statusEl = document.getElementById('form-status');
+
+  // Clear previous error states
+  document.querySelectorAll('.form-row').forEach(function(row) { row.classList.remove('invalid'); });
+  statusEl.className = 'form-status';
+  statusEl.textContent = '';
+
+  // Client-side validation (mirrors server-side checks)
+  const fullName = form.fullName.value.trim();
+  const email = form.email.value.trim();
+  const phone = form.phone.value.trim();
+  const message = form.message.value.trim();
+  let hasError = false;
+
+  if (fullName.length < 2) { document.getElementById('row-fullName').classList.add('invalid'); hasError = true; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { document.getElementById('row-email').classList.add('invalid'); hasError = true; }
+  const phoneDigits = phone.replace(/[^\d]/g, '');
+  if (phoneDigits.length < 7 || phoneDigits.length > 15) { document.getElementById('row-phone').classList.add('invalid'); hasError = true; }
+  if (message.length < 10) { document.getElementById('row-message').classList.add('invalid'); hasError = true; }
+
+  if (hasError) return;
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending…';
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName, email, phone, message,
+        website: form.website.value // honeypot — should always be empty for real users
+      })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.ok) {
+      statusEl.className = 'form-status success';
+      statusEl.textContent = "Thanks! Your message has been sent — we'll get back to you within 48 hours.";
+      form.reset();
+    } else {
+      statusEl.className = 'form-status error';
+      statusEl.textContent = data.error || 'Something went wrong. Please try again.';
+    }
+  } catch (err) {
+    statusEl.className = 'form-status error';
+    statusEl.textContent = 'Could not send message. Please check your connection and try again.';
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send Message';
+  }
+});
+</script>
+</body>
+</html>
