@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(function() {
+  var saved = localStorage.getItem('wc_theme');
+  var isDark = saved === 'dark' ||
+    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — TimezoneBudy Blog</title>
+<link rel="stylesheet" href="/main.css">
+<style>
+.admin-wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+.admin-login-box { max-width: 360px; margin: 80px auto; padding: 28px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); }
+.admin-login-box h1 { font-size: 20px; margin-bottom: 18px; text-align: center; }
+.admin-field { margin-bottom: 14px; }
+.admin-field label { display: block; font-size: 13px; margin-bottom: 6px; opacity: 0.8; }
+.admin-field input, .admin-field textarea, .admin-field select {
+  width: 100%; padding: 10px 12px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04);
+  color: inherit; font-size: 14px; font-family: inherit;
+}
+.admin-field textarea { min-height: 240px; resize: vertical; font-family: 'JetBrains Mono', monospace; }
+.admin-btn {
+  width: 100%; padding: 11px; border-radius: 8px; border: none;
+  background: var(--accent, #58a6ff); color: #04101f; font-weight: 600;
+  font-size: 14px; cursor: pointer;
+}
+.admin-btn:hover { opacity: 0.9; }
+.admin-btn-secondary { background: rgba(255,255,255,0.08); color: inherit; }
+.admin-error { color: #f85149; font-size: 13px; margin-top: 10px; text-align: center; }
+.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.admin-post-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 16px; border-radius: 8px; background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px;
+}
+.admin-post-title { font-weight: 600; }
+.admin-post-meta { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+.admin-status-badge { font-size: 11px; padding: 3px 9px; border-radius: 12px; text-transform: uppercase; font-weight: 600; }
+.admin-status-published { background: rgba(63,185,80,0.15); color: #3fb950; }
+.admin-status-draft { background: rgba(210,153,34,0.15); color: #d29922; }
+.admin-actions button { margin-left: 6px; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: inherit; cursor: pointer; }
+.admin-actions button:hover { background: rgba(255,255,255,0.08); }
+.admin-editor-grid { display: grid; gap: 14px; }
+.admin-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.admin-hint { font-size: 12px; opacity: 0.55; margin-top: 4px; }
+.admin-toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 18px; border-radius: 8px; background: #1c2128; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; display: none; }
+.admin-toast.show { display: block; }
+</style>
+</head>
+<body>
+
+<div id="app" class="admin-wrap">Loading…</div>
+<div id="toast" class="admin-toast"></div>
+
+<script>
+const API_BASE = "https://blog-api.mankarnajeeb.workers.dev";
+const TOKEN_KEY = "wc_admin_token";
+
+function getToken() { return localStorage.getItem(TOKEN_KEY); }
+function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
+function clearToken() { localStorage.removeItem(TOKEN_KEY); }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  const div = document.createElement('div');
+  div.textContent = s;
+  return div.innerHTML;
+}
+
+async function apiFetch(path, options = {}) {
+  const token = getToken();
+  const headers = Object.assign(
+    { 'Content-Type': 'application/json' },
+    token ? { Authorization: 'Bearer ' + token } : {},
+    options.headers || {}
+  );
+  const res = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
+  if (res.status === 401) {
+    clearToken();
+    render(); // bounce back to login
+    throw new Error('Session expired, please log in again');
+  }
+  return res;
+}
+
+// ── Views ────────────────────────────────────────────────────────────────────
+
+function renderLogin() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="admin-login-box">
+      <h1>🌍 TimezoneBudy Admin</h1>
+      <form id="login-form">
+        <div class="admin-field">
+          <label>Username</label>
+          <input type="text" id="login-username" autocomplete="username" required>
+        </div>
+        <div class="admin-field">
+          <label>Password</label>
+          <input type="password" id="login-password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="admin-btn">Log In</button>
+        <div class="admin-error" id="login-error"></div>
+      </form>
+    </div>
+  `;
+
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+    const errEl = document.getElementById('login-error');
+    errEl.textContent = '';
+
+    try {
+      const res = await fetch(API_BASE + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.token) {
+        errEl.textContent = data.error || 'Login failed';
+        return;
+      }
+      setToken(data.token);
+      render();
+    } catch (err) {
+      errEl.textContent = 'Network error — please try again';
+    }
+  });
+}
+
+async function renderPostList() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="admin-header">
+      <h1>Posts</h1>
+      <div>
+        <button class="admin-btn admin-btn-secondary" id="logout-btn" style="width:auto;display:inline-block;margin-right:8px">Log Out</button>
+        <button class="admin-btn" id="new-post-btn" style="width:auto;display:inline-block">+ New Post</button>
+      </div>
+    </div>
+    <div id="post-list">Loading posts…</div>
+  `;
+
+  document.getElementById('logout-btn').addEventListener('click', () => { clearToken(); render(); });
+  document.getElementById('new-post-btn').addEventListener('click', () => renderEditor(null));
+
+  try {
+    // Admin view should see ALL posts (draft + published), not just
+    // published ones -- the API's default /api/posts?status=published
+    // filter (used by the public renderer) is intentionally NOT applied
+    // here. If the API requires an explicit param to see drafts too,
+    // adjust this query string to match — verify against your real
+    // blog-api before relying on this showing drafts.
+    const res = await apiFetch('/api/posts?limit=100');
+    const data = await res.json();
+    const posts = data.posts || [];
+
+    const listEl = document.getElementById('post-list');
+    if (!posts.length) {
+      listEl.innerHTML = '<p style="opacity:.6">No posts yet. Click "+ New Post" to write your first one.</p>';
+      return;
+    }
+
+    listEl.innerHTML = posts.map(p => `
+      <div class="admin-post-row">
+        <div>
+          <div class="admin-post-title">${escapeHtml(p.title)}</div>
+          <div class="admin-post-meta">/blog/${escapeHtml(p.slug)} · ${escapeHtml(p.category || 'General')}</div>
+        </div>
+        <div class="admin-actions" style="display:flex;align-items:center;gap:8px">
+          <span class="admin-status-badge admin-status-${p.status}">${escapeHtml(p.status)}</span>
+          <button data-id="${p.id}" class="edit-btn">Edit</button>
+          <button data-id="${p.id}" class="delete-btn">Delete</button>
+        </div>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const post = posts.find(p => String(p.id) === btn.dataset.id);
+        renderEditor(post);
+      });
+    });
+    listEl.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this post? This cannot be undone.')) return;
+        try {
+          await apiFetch('/api/posts/' + btn.dataset.id, { method: 'DELETE' });
+          toast('Post deleted');
+          renderPostList();
+        } catch (err) {
+          toast('Error: ' + err.message);
+        }
+      });
+    });
+  } catch (err) {
+    document.getElementById('post-list').innerHTML = `<p style="color:#f85149">Error loading posts: ${escapeHtml(err.message)}</p>`;
+  }
+}
+
+function renderEditor(post) {
+  const app = document.getElementById('app');
+  const isNew = !post;
+  post = post || {
+    title: '', slug: '', content: '', excerpt: '', status: 'draft',
+    seo_title: '', seo_desc: '', canonical_url: '', og_image: '',
+    featured_image: '', category: 'General', tags: '[]',
+  };
+
+  let tagsArray = [];
+  try { tagsArray = JSON.parse(post.tags || '[]'); } catch (e) { tagsArray = []; }
+
+  app.innerHTML = `
+    <div class="admin-header">
+      <h1>${isNew ? 'New Post' : 'Edit Post'}</h1>
+      <button class="admin-btn admin-btn-secondary" id="back-btn" style="width:auto;display:inline-block">&larr; Back to Posts</button>
+    </div>
+    <form id="post-form" class="admin-editor-grid">
+      <div class="admin-field">
+        <label>Title</label>
+        <input type="text" id="f-title" value="${escapeHtml(post.title)}" required>
+      </div>
+      <div class="admin-field">
+        <label>Slug (URL path: /blog/your-slug)</label>
+        <input type="text" id="f-slug" value="${escapeHtml(post.slug)}" required pattern="[a-z0-9-]+">
+        <div class="admin-hint">Lowercase letters, numbers, and hyphens only.</div>
+      </div>
+      <div class="admin-field">
+        <label>Excerpt (shown on the blog listing page)</label>
+        <textarea id="f-excerpt" style="min-height:80px">${escapeHtml(post.excerpt)}</textarea>
+      </div>
+      <div class="admin-field">
+        <label>Content (HTML)</label>
+        <textarea id="f-content">${escapeHtml(post.content)}</textarea>
+        <div class="admin-hint">Write HTML directly — paragraphs as &lt;p&gt;, headings as &lt;h2&gt;, etc.</div>
+      </div>
+      <div class="admin-row-2">
+        <div class="admin-field">
+          <label>Category</label>
+          <input type="text" id="f-category" value="${escapeHtml(post.category || 'General')}">
+        </div>
+        <div class="admin-field">
+          <label>Status</label>
+          <select id="f-status">
+            <option value="draft" ${post.status === 'draft' ? 'selected' : ''}>Draft</option>
+            <option value="published" ${post.status === 'published' ? 'selected' : ''}>Published</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-field">
+        <label>Tags (comma-separated)</label>
+        <input type="text" id="f-tags" value="${escapeHtml(tagsArray.join(', '))}">
+      </div>
+      <div class="admin-row-2">
+        <div class="admin-field">
+          <label>Featured Image URL</label>
+          <input type="text" id="f-featured-image" value="${escapeHtml(post.featured_image || '')}">
+        </div>
+        <div class="admin-field">
+          <label>Social Share Image URL (og:image)</label>
+          <input type="text" id="f-og-image" value="${escapeHtml(post.og_image || '')}">
+        </div>
+      </div>
+      <div class="admin-row-2">
+        <div class="admin-field">
+          <label>SEO Title (optional override)</label>
+          <input type="text" id="f-seo-title" value="${escapeHtml(post.seo_title || '')}">
+        </div>
+        <div class="admin-field">
+          <label>SEO Description (optional override)</label>
+          <input type="text" id="f-seo-desc" value="${escapeHtml(post.seo_desc || '')}">
+        </div>
+      </div>
+      <div class="admin-field">
+        <label>Canonical URL (optional override)</label>
+        <input type="text" id="f-canonical" value="${escapeHtml(post.canonical_url || '')}">
+      </div>
+      <button type="submit" class="admin-btn">${isNew ? 'Create Post' : 'Save Changes'}</button>
+      <div class="admin-error" id="editor-error"></div>
+    </form>
+  `;
+
+  document.getElementById('back-btn').addEventListener('click', renderPostList);
+
+  // Auto-generate slug from title for NEW posts only (don't clobber an
+  // existing post's slug if the title is edited later).
+  if (isNew) {
+    document.getElementById('f-title').addEventListener('input', (e) => {
+      const slug = e.target.value
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+      document.getElementById('f-slug').value = slug;
+    });
+  }
+
+  document.getElementById('post-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const errEl = document.getElementById('editor-error');
+    errEl.textContent = '';
+
+    const tagsInput = document.getElementById('f-tags').value;
+    const tagsArr = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
+
+    const payload = {
+      title: document.getElementById('f-title').value,
+      slug: document.getElementById('f-slug').value,
+      content: document.getElementById('f-content').value,
+      excerpt: document.getElementById('f-excerpt').value,
+      status: document.getElementById('f-status').value,
+      category: document.getElementById('f-category').value,
+      tags: JSON.stringify(tagsArr),
+      featured_image: document.getElementById('f-featured-image').value || null,
+      og_image: document.getElementById('f-og-image').value || null,
+      seo_title: document.getElementById('f-seo-title').value || null,
+      seo_desc: document.getElementById('f-seo-desc').value || null,
+      canonical_url: document.getElementById('f-canonical').value || null,
+    };
+
+    try {
+      const url = isNew ? '/api/posts' : '/api/posts/' + post.id;
+      const method = isNew ? 'POST' : 'PUT';
+      const res = await apiFetch(url, { method, body: JSON.stringify(payload) });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        errEl.textContent = data.error || 'Save failed';
+        return;
+      }
+      toast(isNew ? 'Post created' : 'Post saved');
+      renderPostList();
+    } catch (err) {
+      errEl.textContent = err.message;
+    }
+  });
+}
+
+function render() {
+  if (getToken()) {
+    renderPostList();
+  } else {
+    renderLogin();
+  }
+}
+
+render();
+</script>
+</body>
+</html>
