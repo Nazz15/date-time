@@ -40,16 +40,14 @@
     <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
     <div class="nav-tabs" role="tablist">
       <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab" href="/converter.html" class="nav-tab active"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab active" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
       <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
       <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
       <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
       <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <div class="nav-tab loc-menu-trigger" tabindex="0">
-        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
-        <div class="loc-mega-menu" data-locations-menu></div></div>
+      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
     </div>
-          <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
     <div class="nav-btns">
       <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
       <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
@@ -224,7 +222,6 @@
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="/cities.js"></script>
 <script src="/util.js"></script>
-<script src="/locations-menu.js" defer></script>
 <script src="/pwa-install.js" defer></script>
 <script src="/converter.js"></script>
 <script>
