@@ -1,8 +1,30 @@
-/* TimezoneBudy — Blog listing & article styles
-   Reuses the same color approach as time-difference.css and the
-   location pages: scoped rgba(255,255,255,...) overlays rather than
-   hardcoded hex values, so it adapts correctly to both light and dark
-   themes set via [data-theme]. */
+/* TimezoneBudy — Blog listing & article styles.
+   Uses theme-aware custom properties (defined per [data-theme]) instead
+   of hardcoded rgba(255,255,255,...) overlays. Pure-white-based rgba
+   values only look correct against dark backgrounds — on a light
+   background they fade to near-invisible, which is what was happening
+   here before this fix. */
+
+[data-theme="dark"] {
+  --blog-card-bg: rgba(255,255,255,0.03);
+  --blog-card-border: rgba(255,255,255,0.1);
+  --blog-divider: rgba(255,255,255,0.08);
+  --blog-code-bg: rgba(255,255,255,0.08);
+  --blog-pre-bg: rgba(255,255,255,0.05);
+  --blog-pre-border: rgba(255,255,255,0.1);
+  --blog-tag-bg: rgba(255,255,255,0.06);
+  --blog-tag-border: rgba(255,255,255,0.1);
+}
+[data-theme="light"] {
+  --blog-card-bg: rgba(0,0,0,0.025);
+  --blog-card-border: rgba(0,0,0,0.12);
+  --blog-divider: rgba(0,0,0,0.1);
+  --blog-code-bg: rgba(0,0,0,0.06);
+  --blog-pre-bg: rgba(0,0,0,0.04);
+  --blog-pre-border: rgba(0,0,0,0.1);
+  --blog-tag-bg: rgba(0,0,0,0.05);
+  --blog-tag-border: rgba(0,0,0,0.12);
+}
 
 .blog-main { max-width: 880px; margin: 0 auto; padding: 32px 20px 64px; }
 
@@ -20,8 +42,8 @@
 
 .blog-card {
   border-radius: 12px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: var(--blog-card-bg);
+  border: 1px solid var(--blog-card-border);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -49,7 +71,7 @@
 /* ── Pagination ───────────────────────────────────────────────────────── */
 .blog-pagination {
   display: flex; justify-content: space-between; align-items: center;
-  padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 20px; border-top: 1px solid var(--blog-divider);
   font-size: 14px;
 }
 .blog-pagination a { color: var(--accent, #58a6ff); text-decoration: none; }
@@ -84,18 +106,18 @@
 }
 .blog-article-body img { max-width: 100%; border-radius: 8px; margin: 16px 0; }
 .blog-article-body code {
-  background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px;
+  background: var(--blog-code-bg); padding: 2px 6px; border-radius: 4px;
   font-family: 'JetBrains Mono', monospace; font-size: 0.9em;
 }
 .blog-article-body pre {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  background: var(--blog-pre-bg); border: 1px solid var(--blog-pre-border);
   border-radius: 8px; padding: 16px; overflow-x: auto; margin: 20px 0;
 }
 
 .blog-article-tags { margin: 32px 0; display: flex; gap: 8px; flex-wrap: wrap; }
 .blog-tag {
   font-size: 12px; padding: 5px 12px; border-radius: 16px;
-  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  background: var(--blog-tag-bg); border: 1px solid var(--blog-tag-border);
 }
 
 .blog-404 { text-align: center; padding: 80px 0; }
