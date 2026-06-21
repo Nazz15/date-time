@@ -301,9 +301,20 @@ async function renderPostList() {
   document.getElementById('new-post-btn').addEventListener('click', () => renderEditor(null));
 
   try {
-    const res = await apiFetch('/api/posts?limit=100');
-    const data = await res.json();
-    const posts = data.posts || [];
+    // The real API (confirmed from source) only filters by exactly one
+    // status value and defaults to "published" when none is given —
+    // there is no "all statuses" option server-side. This was the actual
+    // cause of drafts never appearing here: the old call requested no
+    // status, so the API silently returned published-only. Fetch both
+    // statuses and merge them client-side instead.
+    const [pubRes, draftRes] = await Promise.all([
+      apiFetch('/api/posts?status=published&limit=100'),
+      apiFetch('/api/posts?status=draft&limit=100'),
+    ]);
+    const pubData = await pubRes.json();
+    const draftData = await draftRes.json();
+    const posts = [...(draftData.posts || []), ...(pubData.posts || [])]
+      .sort((a, b) => (b.updated_at || b.created_at || 0) - (a.updated_at || a.created_at || 0));
 
     const listEl = document.getElementById('post-list');
     if (!posts.length) {
@@ -481,14 +492,7 @@ function renderEditor(post) {
               <label>Social Share Image URL (og:image)</label>
               <input type="text" id="f-og-image" value="${escapeHtml(post.og_image || '')}">
             </div>
-            <div class="admin-field" style="margin-top:14px">
-              <label>Robots Meta</label>
-              <select id="f-robots">
-                <option value="index,follow" ${(post.robots || 'index,follow') === 'index,follow' ? 'selected' : ''}>Index (visible in search results)</option>
-                <option value="noindex,nofollow" ${post.robots === 'noindex,nofollow' ? 'selected' : ''}>Noindex (hidden from search results)</option>
-              </select>
-            </div>
-            <div class="admin-field" style="margin-bottom:0">
+            <div class="admin-field" style="margin-top:14px;margin-bottom:0">
               <label>Schema Type</label>
               <select id="f-schema-type">
                 <option value="BlogPosting" ${(post.schema_type || 'BlogPosting') === 'BlogPosting' ? 'selected' : ''}>BlogPosting</option>
@@ -761,7 +765,6 @@ function renderEditor(post) {
       seo_title: seoTitleInput.value || null,
       seo_desc: seoDescInput.value || null,
       canonical_url: document.getElementById('f-canonical').value || null,
-      robots: document.getElementById('f-robots').value,
       schema_type: document.getElementById('f-schema-type').value,
     };
 
