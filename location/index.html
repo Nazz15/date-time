@@ -40,9 +40,11 @@
       <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
       <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
       <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
-      <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
       <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+      <div class="nav-tab loc-menu-trigger active" tabindex="0">
+        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
+        <div class="loc-mega-menu" data-locations-menu></div>
+      </div>
     </div>
     <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
     <div class="nav-btns">
@@ -306,7 +308,49 @@
 </footer>
 
 <script src="/util.js"></script>
+<script src="/locations-menu.js" defer></script>
 <script src="/pwa-install.js" defer></script>
 <script>boot();</script>
+<script>
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return;
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+
+// Universal live-clock — works for every [data-tz] element on every location page.
+// Single source of truth: the IANA timezone string in the data-tz attribute.
+function tickAllClocks() {
+  var now = new Date();
+  var is24h = (window.WC && window.WC.is24h) || false;
+
+  document.querySelectorAll('[data-tz]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz');
+    try {
+      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
+    } catch(e) { el.textContent = '--:--'; }
+  });
+
+  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz-date');
+    try {
+      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    } catch(e) { el.textContent = ''; }
+  });
+}
+tickAllClocks();
+setInterval(tickAllClocks, 1000);
+</script>
 </body>
 </html>

@@ -87,8 +87,10 @@
       <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
       <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
       <a class="nav-tab active" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
-      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+      <div class="nav-tab loc-menu-trigger" tabindex="0">
+        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
+        <div class="loc-mega-menu" data-locations-menu></div>
+      </div>
     </div>
     <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
     <div class="nav-btns">
@@ -318,8 +320,27 @@
 
 <script src="/cities.js"></script>
 <script src="/util.js"></script>
+<script src="/locations-menu.js" defer></script>
 <script src="/pwa-install.js" defer></script>
 <script src="/time-difference.js"></script>
 <script>boot();</script>
+<script>
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return;
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+</script>
 </body>
 </html>

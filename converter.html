@@ -40,14 +40,16 @@
     <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
     <div class="nav-tabs" role="tablist">
       <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab active" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/converter.html" class="nav-tab active"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
       <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
       <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
       <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
       <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+      <div class="nav-tab loc-menu-trigger" tabindex="0">
+        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
+        <div class="loc-mega-menu" data-locations-menu></div></div>
     </div>
-    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+          <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
     <div class="nav-btns">
       <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
       <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
@@ -222,8 +224,28 @@
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="/cities.js"></script>
 <script src="/util.js"></script>
+<script src="/locations-menu.js" defer></script>
 <script src="/pwa-install.js" defer></script>
 <script src="/converter.js"></script>
+<script>
+// Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return; // clicking inside menu shouldn't toggle
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1accd9204922456bb187fb685895e31e","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
