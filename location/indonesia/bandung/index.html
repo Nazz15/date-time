@@ -1,189 +1,121 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Current Time in Bandung, Indonesia | TimezoneBudy</title>
 <meta name="description" content="Current local time and timezone info for Bandung, Indonesia. UTC+07:00 · Asia/Jakarta">
-<link rel="canonical" href="https://timezonebudy.com/location/indonesia/bandung/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://timezonebudy.com/location/indonesia/bandung">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css">
-<link rel="stylesheet" href="/location.css">
-<link rel="stylesheet" href="/footer.css">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0d2240">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What time is it in Bandung right now?","acceptedAnswer":{"@type":"Answer","text":"The current time in Bandung, Indonesia is shown live above. Bandung is in the Asia/Jakarta timezone (UTC+07:00), so you can use that offset to convert to your own local time."}},{"@type":"Question","name":"Is Bandung ahead or behind GMT?","acceptedAnswer":{"@type":"Answer","text":"Bandung is UTC+07:00, which means it is 6 hours ahead of London (GMT/BST). Keep in mind this gap can shift slightly when the UK observes British Summer Time."}},{"@type":"Question","name":"What is the time difference between Bandung and New York?","acceptedAnswer":{"@type":"Answer","text":"Bandung is 11 hours ahead of New York (EST/EDT). Use this when scheduling calls or flights between the two cities, since US daylight saving can change the gap by an hour."}},{"@type":"Question","name":"What is Bandung famous for?","acceptedAnswer":{"@type":"Answer","text":"Bandung is known for being one of Indonesia's key economic and cultural centers. It is Indonesia's third-largest city with a population of 2,700,000, making it one of the more significant urban centers in Indonesia."}},{"@type":"Question","name":"What is the best time to visit Bandung?","acceptedAnswer":{"@type":"Answer","text":"April to October for the dry season, which is generally the most popular and reliable time to visit. Plan around local weather patterns and any major events or holidays in Bandung for the smoothest trip."}}]}
+</script>
+<style>
+:root{--night:#0D1117;--panel:#161B22;--border:#21262D;--accent:#58A6FF;--text:#E6EDF3;--muted:#8B949E;--card:#1C2128}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--night);color:var(--text);font-family:'Inter',sans-serif}
+a{color:var(--accent);text-decoration:none}
+nav{background:var(--panel);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--accent)}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase}
+.stat-val{font-size:18px;font-weight:600;margin-top:4px}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;display:inline-block}
+.crumb{font-size:12px;color:var(--muted);margin-bottom:16px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:40px}
+.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:40px}
+section{margin-bottom:40px}
+table td, table th { border-bottom: 1px solid var(--border); }
+</style>
 </head>
 <body>
-
-<nav class="topnav" aria-label="Main navigation">
-  <div class="topnav-inner">
-    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-    <div class="nav-tabs" role="tablist">
-      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
-      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
-      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
-      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <div class="nav-tab loc-menu-trigger active" tabindex="0">
-        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
-        <div class="loc-mega-menu" data-locations-menu></div>
-      </div>
-    </div>
-    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
-    <div class="nav-btns">
-      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
-      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-    </div>
-  </div>
+<nav>
+  <a class="logo" href="/">TimezoneBudy</a>
+  <div><a href="/location">Locations</a></div>
 </nav>
 
+<main style="padding:48px 24px;max-width:800px;margin:0 auto">
+  <div class="crumb">
+    <a href="/location">Locations</a> ›
+    <a href="/location/indonesia">Indonesia</a> ›
+    <span>Bandung</span>
+  </div>
 
-<section class="loc-hero">
-  <div class="wrap">
-    <nav class="loc-crumb">
-      <a href="/location/">Locations</a> ›
-      <a href="/location/indonesia/">Indonesia</a> ›
-      <span>Bandung</span>
-    </nav>
-    <div class="loc-eyebrow"><span class="fi fi-id" style="width:18px;height:14px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Asia · Indonesia</div>
-    <h1 class="loc-h1">Current Time in Bandung</h1>
-    <div class="loc-sub">Asia/Jakarta · UTC+07:00</div>
+  <div style="text-align:center;margin-bottom:40px">
+    <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px">
+      Asia · Indonesia
+    </div>
+    <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,5vw,42px)">
+      Current Time in Bandung
+    </h1>
+    <div style="color:var(--muted);margin:8px 0 32px">Asia/Jakarta · UTC+07:00</div>
 
-    <div class="loc-clock-card">
-      <span class="loc-live-time" data-tz="Asia/Jakarta">--:--:--</span>
-      <span class="loc-live-date" data-tz-date="Asia/Jakarta">Loading…</span>
+    <div style="display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 48px">
+      <span id="live-time" style="font-family:'Space Grotesk',sans-serif;font-size:clamp(40px,8vw,68px);font-weight:700;color:var(--accent);display:block">--:--:--</span>
+      <span id="live-date" style="color:var(--muted);font-size:14px">Loading...</span>
     </div>
   </div>
+
+  <div class="grid4">
+    <div class="stat"><div class="stat-lbl">Country</div><div class="stat-val">🇮🇩 Indonesia</div></div>
+    <div class="stat"><div class="stat-lbl">UTC Offset</div><div class="stat-val">UTC+07:00</div></div>
+    <div class="stat"><div class="stat-lbl">Currency</div><div class="stat-val">IDR</div></div>
+    <div class="stat"><div class="stat-lbl">Language</div><div class="stat-val">Indonesian</div></div>
+  </div>
+
+  
+  <section>
+    <h2 style="font-size:16px;margin-bottom:12px">About Bandung, Indonesia</h2>
+    <p style="color:var(--muted);line-height:1.7">
+      Bandung is Indonesia's third-largest city, operating on
+      Asia/Jakarta (UTC+07:00). Bandung is home to approximately
+      2,700,000 people.
+      Bandung is known for being one of Indonesia's key economic and cultural centers.
+    </p>
+  </section>
+
+
+  <section><h2 style='font-size:16px;margin-bottom:12px'>Other Cities in Indonesia</h2><div style='display:flex;gap:8px;flex-wrap:wrap'><a class="chip" href="/location/indonesia/jakarta">Jakarta</a><a class="chip" href="/location/indonesia/surabaya">Surabaya</a><a class="chip" href="/location/indonesia/bali-denpasar">Bali (Denpasar)</a></div></section>
+
+  <section>
+  <h2 style="font-size:16px;margin-bottom:16px">Bandung vs World Cities — Time Difference</h2>
+  <table style="width:100%;border-collapse:collapse;margin-bottom:40px">
+    <thead><tr style="text-align:left;border-bottom:1px solid var(--border)">
+      <th style="padding:8px">City</th><th style="padding:8px">Local Time</th><th style="padding:8px">Difference from Bandung</th>
+    </tr></thead>
+    <tbody><tr><td>London</td><td data-live-clock data-tz="Europe/London">--:--</td><td>6 hours ahead of</td></tr><tr><td>New York</td><td data-live-clock data-tz="America/New_York">--:--</td><td>11 hours ahead of</td></tr><tr><td>Dubai</td><td data-live-clock data-tz="Asia/Dubai">--:--</td><td>3 hours ahead of</td></tr><tr><td>Singapore</td><td data-live-clock data-tz="Asia/Singapore">--:--</td><td>1 hour behind</td></tr><tr><td>Sydney</td><td data-live-clock data-tz="Australia/Sydney">--:--</td><td>3 hours behind</td></tr><tr><td>Tokyo</td><td data-live-clock data-tz="Asia/Tokyo">--:--</td><td>2 hours behind</td></tr></tbody>
+  </table>
 </section>
 
-<main class="wrap loc-main">
-  <div class="loc-stat-grid">
-    <div class="loc-stat"><div class="loc-stat-lbl">Country</div><div class="loc-stat-val"><a href="/location/indonesia/" style="color:inherit;text-decoration:none;display:flex;align-items:center;gap:6px;justify-content:center"><span class="fi fi-id" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Indonesia</a></div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">UTC Offset</div><div class="loc-stat-val">UTC+07:00</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Currency</div><div class="loc-stat-val">Rp IDR</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Currency Name</div><div class="loc-stat-val">Indonesian Rupiah</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Language</div><div class="loc-stat-val">Indonesian</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Dial Code</div><div class="loc-stat-val">+62</div></div>
-  </div>
-
-  <h2 class="loc-h2">Other Cities in Indonesia</h2><div class="loc-city-grid"><a class="loc-city-card" href="/location/indonesia/jakarta/"><div class="loc-city-card-name"><span class="fi fi-id" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Jakarta</div><div class="loc-city-card-tz" data-tz="Asia/Jakarta">--:--</div></a><a class="loc-city-card" href="/location/indonesia/surabaya/"><div class="loc-city-card-name"><span class="fi fi-id" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Surabaya</div><div class="loc-city-card-tz" data-tz="Asia/Jakarta">--:--</div></a><a class="loc-city-card" href="/location/indonesia/bali-denpasar/"><div class="loc-city-card-name"><span class="fi fi-id" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Bali (Denpasar)</div><div class="loc-city-card-tz" data-tz="Asia/Makassar">--:--</div></a></div>
-
-  <section class="seo-sec">
-    <h2>About Time in Bandung</h2>
-    <p>Bandung is located in <a href="/location/indonesia/">Indonesia</a> and operates on Asia/Jakarta time (UTC+07:00). Use our <a href="/converter.html">Timezone Converter</a> to compare Bandung with any other city worldwide, or check the <a href="/weather.html">live weather</a> and <a href="/sunmoon.html">sun &amp; moon times</a> for this location.</p>
-    <div class="seo-grid">
-      <article class="seo-card"><h3>Current Time Zone</h3><p>Bandung runs on Asia/Jakarta, which is UTC+07:00. This timezone does not observe Daylight Saving Time, so the offset stays the same year-round.</p></article>
-      <article class="seo-card"><h3>Plan a Meeting</h3><p>Scheduling a call with someone in Bandung? Use our <a href="/converter.html">Timezone Converter</a> to find overlapping work hours, or try the Meeting Planner to compare against your own timezone instantly.</p></article>
-      <article class="seo-card"><h3>More About Indonesia</h3><p>Bandung is one of 4 major cities we track in <a href="/location/indonesia/">Indonesia</a>. The country uses Indonesian Rupiah (IDR) and Indonesian as a primary language.</p></article>
-    </div>
-  </section>
+  <section>
+  <h2 style="font-size:16px;margin-bottom:16px">Frequently Asked Questions</h2>
+  <details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What time is it in Bandung right now?</summary><p style="margin-top:8px;color:var(--muted)">The current time in Bandung, Indonesia is shown live above. Bandung is in the Asia/Jakarta timezone (UTC+07:00), so you can use that offset to convert to your own local time.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">Is Bandung ahead or behind GMT?</summary><p style="margin-top:8px;color:var(--muted)">Bandung is UTC+07:00, which means it is 6 hours ahead of London (GMT/BST). Keep in mind this gap can shift slightly when the UK observes British Summer Time.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What is the time difference between Bandung and New York?</summary><p style="margin-top:8px;color:var(--muted)">Bandung is 11 hours ahead of New York (EST/EDT). Use this when scheduling calls or flights between the two cities, since US daylight saving can change the gap by an hour.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What is Bandung famous for?</summary><p style="margin-top:8px;color:var(--muted)">Bandung is known for being one of Indonesia's key economic and cultural centers. It is Indonesia's third-largest city with a population of 2,700,000, making it one of the more significant urban centers in Indonesia.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What is the best time to visit Bandung?</summary><p style="margin-top:8px;color:var(--muted)">April to October for the dry season, which is generally the most popular and reliable time to visit. Plan around local weather patterns and any major events or holidays in Bandung for the smoothest trip.</p></details>
+</section>
 </main>
-
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-
-      <div class="footer-col footer-brand">
-        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Tools</h4>
-        <a href="/">World Clock</a>
-        <a href="/converter.html">Timezone Converter</a>
-        <a href="/converter.html#meeting">Meeting Planner</a>
-        <a href="/sunmoon.html">Sun &amp; Moon</a>
-        <a href="/weather.html">Weather</a>
-        <a href="/tools.html">Time Tools</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Locations</h4>
-        <a href="/location/">Browse All Countries</a>
-        <a href="/location/india/">India</a>
-        <a href="/location/united-states/">United States</a>
-        <a href="/location/united-kingdom/">United Kingdom</a>
-        <a href="/location/china/">China</a>
-        <a href="/location/japan/">Japan</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Company</h4>
-        <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact Us</a>
-        <a href="/blog/">Blog</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Service</a>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <span>&copy; <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
-      <div class="footer-bottom-links">
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/contact.html">Contact</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<script src="/util.js"></script>
-<script src="/locations-menu.js" defer></script>
-<script src="/pwa-install.js" defer></script>
-<script>boot();</script>
 <script>
-document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
-  trigger.addEventListener('click', function(e) {
-    if (e.target.closest('.loc-mega-menu')) return;
-    trigger.classList.toggle('menu-open');
-  });
-});
-document.addEventListener('click', function(e) {
-  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
-    if (!t.contains(e.target)) t.classList.remove('menu-open');
-  });
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
-  }
-});
+const TZ = "Asia/Jakarta";
+function tick() {
+  const now = new Date();
+  document.getElementById('live-time').textContent =
+    now.toLocaleTimeString('en-US', { timeZone: TZ, hour12: true });
+  document.getElementById('live-date').textContent =
+    now.toLocaleDateString('en-US', { timeZone: TZ, weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+}
+tick();
+setInterval(tick, 1000);
+</script>
 
-// Universal live-clock — works for every [data-tz] element on every location page.
-// Single source of truth: the IANA timezone string in the data-tz attribute.
-function tickAllClocks() {
-  var now = new Date();
-  var is24h = (window.WC && window.WC.is24h) || false;
-
-  document.querySelectorAll('[data-tz]').forEach(function(el) {
-    var tz = el.getAttribute('data-tz');
-    try {
-      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
-    } catch(e) { el.textContent = '--:--'; }
-  });
-
-  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
-    var tz = el.getAttribute('data-tz-date');
-    try {
-      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    } catch(e) { el.textContent = ''; }
+<script>
+function tickComparisonClocks() {
+  document.querySelectorAll('[data-live-clock]').forEach(el => {
+    const tz = el.getAttribute('data-tz');
+    if (!tz) return;
+    el.textContent = new Date().toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
   });
 }
-tickAllClocks();
-setInterval(tickAllClocks, 1000);
+tickComparisonClocks();
+setInterval(tickComparisonClocks, 1000);
 </script>
 </body>
 </html>

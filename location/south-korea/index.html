@@ -1,190 +1,104 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Current Time in South Korea – All Cities & Timezones | TimezoneBudy</title>
 <meta name="description" content="Current local time across all major cities in South Korea. UTC+09:00.">
-<link rel="canonical" href="https://timezonebudy.com/location/south-korea/">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="canonical" href="https://timezonebudy.com/location/south-korea">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css">
-<link rel="stylesheet" href="/location.css">
-<link rel="stylesheet" href="/footer.css">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0d2240">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What timezone is South Korea in?","acceptedAnswer":{"@type":"Answer","text":"South Korea uses UTC+09:00. Based on its capital, Seoul, this is 8 hours ahead of London (GMT/BST) and 13 hours ahead of New York (EST/EDT)."}},{"@type":"Question","name":"Does South Korea observe Daylight Saving Time?","acceptedAnswer":{"@type":"Answer","text":"South Korea does not observe Daylight Saving Time and keeps a fixed UTC+09:00 offset year-round. This affects how far ahead or behind South Korea is compared to other countries at different times of year."}},{"@type":"Question","name":"What currency does South Korea use?","acceptedAnswer":{"@type":"Answer","text":"South Korea uses the South Korean Won (KRW, symbol \u20a9). Carry local currency for smaller vendors, though cards are widely accepted in major cities."}},{"@type":"Question","name":"What language is spoken in South Korea?","acceptedAnswer":{"@type":"Answer","text":"The official language of South Korea is Korean. Visitors relying on English should check ahead, as prevalence varies between major cities and rural areas."}},{"@type":"Question","name":"What is the best time to visit South Korea?","acceptedAnswer":{"@type":"Answer","text":"March to May or September to November for mild weather and seasonal scenery like cherry blossoms or autumn leaves. Conditions can vary significantly between regions in South Korea, so check the specific city you're visiting for more precise guidance."}},{"@type":"Question","name":"Do I need a visa to visit South Korea?","acceptedAnswer":{"@type":"Answer","text":"citizens of around 60 countries including the US, UK, EU members, Canada and Australia can visit visa-free for up to 90 days for tourism. Requirements vary significantly by nationality, so confirm current rules with South Korea's official immigration authority or your nearest consulate before booking travel."}},{"@type":"Question","name":"What is South Korea known for?","acceptedAnswer":{"@type":"Answer","text":"South Korea is known for K-pop and Korean dramas, Seoul's blend of ultramodern and traditional culture, and Korean cuisine. It's located in Asia (Eastern Asia)."}}]}
+</script>
+<style>
+:root{--night:#0D1117;--panel:#161B22;--border:#21262D;--accent:#58A6FF;--text:#E6EDF3;--muted:#8B949E;--card:#1C2128}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--night);color:var(--text);font-family:'Inter',sans-serif}
+a{color:var(--accent);text-decoration:none}
+nav{background:var(--panel);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--accent)}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px;text-align:center}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase}
+.stat-val{font-size:18px;font-weight:600;margin-top:4px}
+.chip{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:6px 16px;font-size:13px;display:inline-block}
+.crumb{font-size:12px;color:var(--muted);margin-bottom:16px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:40px}
+.gridcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:40px}
+section{margin-bottom:40px}
+table td, table th { border-bottom: 1px solid var(--border); }
+</style>
 </head>
 <body>
-
-<nav class="topnav" aria-label="Main navigation">
-  <div class="topnav-inner">
-    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-    <div class="nav-tabs" role="tablist">
-      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
-      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
-      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
-      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <div class="nav-tab loc-menu-trigger active" tabindex="0">
-        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
-        <div class="loc-mega-menu" data-locations-menu></div>
-      </div>
-    </div>
-    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
-    <div class="nav-btns">
-      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
-      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-    </div>
-  </div>
+<nav>
+  <a class="logo" href="/">TimezoneBudy</a>
+  <div><a href="/location">Locations</a></div>
 </nav>
 
+<main style="padding:48px 24px;max-width:900px;margin:0 auto">
+  <div class="crumb"><a href="/location">Locations</a> › <span>South Korea</span></div>
 
-<section class="loc-hero">
-  <div class="wrap">
-    <nav class="loc-crumb"><a href="/location/">Locations</a> › <span>South Korea</span></nav>
-    <div class="loc-flag-big"><span class="fi fi-kr" style="width:56px;height:42px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span></div>
-    <div class="loc-eyebrow">Asia · 3 Cities Covered</div>
-    <h1 class="loc-h1">Current Time in South Korea</h1>
-    <div class="loc-sub">Seoul · Asia/Seoul</div>
-    <div class="loc-clock-card">
-      <span class="loc-live-time" data-tz="Asia/Seoul">--:--:--</span>
-      <span class="loc-live-date" data-tz-date="Asia/Seoul">Loading…</span>
+  <div style="text-align:center;margin-bottom:40px">
+    <div style="font-size:48px;margin-bottom:8px">🇰🇷</div>
+    <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px">
+      Asia · 3 Cities Covered
     </div>
-  </div>
-</section>
-
-<main class="wrap loc-main">
-  <div class="loc-stat-grid">
-    <div class="loc-stat"><div class="loc-stat-lbl">Capital</div><div class="loc-stat-val">Seoul</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Population</div><div class="loc-stat-val">51,700,000</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Currency</div><div class="loc-stat-val">₩ KRW</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Currency Name</div><div class="loc-stat-val">South Korean Won</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Language</div><div class="loc-stat-val">Korean</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Dial Code</div><div class="loc-stat-val">+82</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Area</div><div class="loc-stat-val">100,210 km²</div></div>
-    <div class="loc-stat"><div class="loc-stat-lbl">Timezones</div><div class="loc-stat-val">1</div></div>
+    <h1 style="font-family:'Space Grotesk',sans-serif;font-size:clamp(26px,5vw,42px)">
+      Current Time in South Korea
+    </h1>
   </div>
 
-  <h2 class="loc-h2">Cities in South Korea</h2>
-  <div class="loc-city-grid"><a class="loc-city-card" href="/location/south-korea/seoul/"><div class="loc-city-card-name"><span class="fi fi-kr" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Seoul</div><div class="loc-city-card-tz" data-tz="Asia/Seoul">--:--</div></a><a class="loc-city-card" href="/location/south-korea/busan/"><div class="loc-city-card-name"><span class="fi fi-kr" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Busan</div><div class="loc-city-card-tz" data-tz="Asia/Seoul">--:--</div></a><a class="loc-city-card" href="/location/south-korea/incheon/"><div class="loc-city-card-name"><span class="fi fi-kr" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Incheon</div><div class="loc-city-card-tz" data-tz="Asia/Seoul">--:--</div></a></div>
+  <div class="grid4">
+    <div class="stat"><div class="stat-lbl">Capital</div><div class="stat-val">Seoul</div></div>
+    <div class="stat"><div class="stat-lbl">Population</div><div class="stat-val">51,700,000</div></div>
+    <div class="stat"><div class="stat-lbl">Currency</div><div class="stat-val">KRW</div></div>
+    <div class="stat"><div class="stat-lbl">Timezones</div><div class="stat-val">1</div></div>
+  </div>
 
-  <h2 class="loc-h2">More Countries in Asia</h2><div class="loc-chip-row"><a class="loc-chip" href="/location/india/"><span class="fi fi-in" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> India</a><a class="loc-chip" href="/location/china/"><span class="fi fi-cn" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> China</a><a class="loc-chip" href="/location/united-arab-emirates/"><span class="fi fi-ae" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> United Arab Emirates</a><a class="loc-chip" href="/location/japan/"><span class="fi fi-jp" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Japan</a><a class="loc-chip" href="/location/singapore/"><span class="fi fi-sg" style="width:14px;height:10px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Singapore</a></div>
-
-  <section class="seo-sec">
-    <h2>About South Korea</h2>
-    <p>South Korea spans 1 timezone, with the capital Seoul on UTC+09:00. The official currency is the South Korean Won (KRW). Browse individual city pages above for live local time, or use our <a href="/converter.html">Timezone Converter</a> to plan across time zones.</p>
-    <div class="seo-grid">
-      <article class="seo-card"><h3>Time Zones in South Korea</h3><p>South Korea uses a single timezone: UTC+09:00. Click any city below to see its exact local time, updated live every second.</p></article>
-      <article class="seo-card"><h3>Currency &amp; Language</h3><p>The official currency is the South Korean Won (₩ KRW). The primary language spoken is Korean, and the international dial code is +82.</p></article>
-      <article class="seo-card"><h3>Compare Across Borders</h3><p>Need to schedule something between South Korea and another country? Use our <a href="/converter.html">Timezone Converter</a> for instant comparisons, or browse <a href="/location/">all countries and cities</a> we track.</p></article>
-    </div>
+  
+  <section>
+    <h2 style="font-size:16px;margin-bottom:12px">About South Korea</h2>
+    <p style="color:var(--muted);line-height:1.7">
+      South Korea spans 1 timezone(s)
+      (UTC+09:00), with its capital Seoul
+      located in Asia. The official currency is the
+      South Korean Won (KRW)
+      and the primary language is Korean.
+      South Korea's international dial code is +82.
+    </p>
   </section>
+
+
+  <section>
+    <h2 style="font-size:16px;margin-bottom:16px">Cities in South Korea</h2>
+    <div class="gridcards"><a class="stat" style="text-align:left" href="/location/south-korea/seoul"><div style="font-weight:600;margin-bottom:4px">Seoul</div><div style="font-size:12px;color:var(--muted)">Asia/Seoul</div></a><a class="stat" style="text-align:left" href="/location/south-korea/busan"><div style="font-weight:600;margin-bottom:4px">Busan</div><div style="font-size:12px;color:var(--muted)">Asia/Seoul</div></a><a class="stat" style="text-align:left" href="/location/south-korea/incheon"><div style="font-weight:600;margin-bottom:4px">Incheon</div><div style="font-size:12px;color:var(--muted)">Asia/Seoul</div></a></div>
+  </section>
+
+  <section><h2 style='font-size:16px;margin-bottom:12px'>More Countries in Asia</h2><div style='display:flex;gap:8px;flex-wrap:wrap'><a class="chip" href="/location/india">🇮🇳 India</a><a class="chip" href="/location/china">🇨🇳 China</a><a class="chip" href="/location/united-arab-emirates">🇦🇪 United Arab Emirates</a><a class="chip" href="/location/japan">🇯🇵 Japan</a><a class="chip" href="/location/singapore">🇸🇬 Singapore</a></div></section>
+
+  
+  <section>
+    <h2 style="font-size:16px;margin-bottom:16px">South Korea at a Glance</h2>
+    <table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:8px;color:var(--muted)">Capital</th><td style="padding:8px">Seoul</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Timezones</th><td style="padding:8px">UTC+09:00</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Currency</th><td style="padding:8px">South Korean Won (KRW)</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Language</th><td style="padding:8px">Korean</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Dial Code</th><td style="padding:8px">+82</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Population</th><td style="padding:8px">51,700,000</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Area</th><td style="padding:8px">100,210 km²</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Continent</th><td style="padding:8px">Asia</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Famous For</th><td style="padding:8px">K-pop and Korean dramas, Seoul's blend of ultramodern and traditional culture, and Korean cuisine</td></tr><tr><th style="text-align:left;padding:8px;color:var(--muted)">Visa Info</th><td style="padding:8px">citizens of around 60 countries including the US, UK, EU members, Canada and Australia can visit visa-free for up to 90 days for tourism</td></tr></table>
+  </section>
+
+
+  <section>
+  <h2 style="font-size:16px;margin-bottom:16px">Frequently Asked Questions</h2>
+  <details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What timezone is South Korea in?</summary><p style="margin-top:8px;color:var(--muted)">South Korea uses UTC+09:00. Based on its capital, Seoul, this is 8 hours ahead of London (GMT/BST) and 13 hours ahead of New York (EST/EDT).</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">Does South Korea observe Daylight Saving Time?</summary><p style="margin-top:8px;color:var(--muted)">South Korea does not observe Daylight Saving Time and keeps a fixed UTC+09:00 offset year-round. This affects how far ahead or behind South Korea is compared to other countries at different times of year.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What currency does South Korea use?</summary><p style="margin-top:8px;color:var(--muted)">South Korea uses the South Korean Won (KRW, symbol ₩). Carry local currency for smaller vendors, though cards are widely accepted in major cities.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What language is spoken in South Korea?</summary><p style="margin-top:8px;color:var(--muted)">The official language of South Korea is Korean. Visitors relying on English should check ahead, as prevalence varies between major cities and rural areas.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What is the best time to visit South Korea?</summary><p style="margin-top:8px;color:var(--muted)">March to May or September to November for mild weather and seasonal scenery like cherry blossoms or autumn leaves. Conditions can vary significantly between regions in South Korea, so check the specific city you're visiting for more precise guidance.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">Do I need a visa to visit South Korea?</summary><p style="margin-top:8px;color:var(--muted)">citizens of around 60 countries including the US, UK, EU members, Canada and Australia can visit visa-free for up to 90 days for tourism. Requirements vary significantly by nationality, so confirm current rules with South Korea's official immigration authority or your nearest consulate before booking travel.</p></details><details style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">What is South Korea known for?</summary><p style="margin-top:8px;color:var(--muted)">South Korea is known for K-pop and Korean dramas, Seoul's blend of ultramodern and traditional culture, and Korean cuisine. It's located in Asia (Eastern Asia).</p></details>
+</section>
 </main>
 
-
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-
-      <div class="footer-col footer-brand">
-        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Tools</h4>
-        <a href="/">World Clock</a>
-        <a href="/converter.html">Timezone Converter</a>
-        <a href="/converter.html#meeting">Meeting Planner</a>
-        <a href="/sunmoon.html">Sun &amp; Moon</a>
-        <a href="/weather.html">Weather</a>
-        <a href="/tools.html">Time Tools</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Locations</h4>
-        <a href="/location/">Browse All Countries</a>
-        <a href="/location/india/">India</a>
-        <a href="/location/united-states/">United States</a>
-        <a href="/location/united-kingdom/">United Kingdom</a>
-        <a href="/location/china/">China</a>
-        <a href="/location/japan/">Japan</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Company</h4>
-        <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact Us</a>
-        <a href="/blog/">Blog</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Service</a>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <span>&copy; <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
-      <div class="footer-bottom-links">
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/contact.html">Contact</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<script src="/util.js"></script>
-<script src="/locations-menu.js" defer></script>
-<script src="/pwa-install.js" defer></script>
-<script>boot();</script>
 <script>
-document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
-  trigger.addEventListener('click', function(e) {
-    if (e.target.closest('.loc-mega-menu')) return;
-    trigger.classList.toggle('menu-open');
-  });
-});
-document.addEventListener('click', function(e) {
-  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
-    if (!t.contains(e.target)) t.classList.remove('menu-open');
-  });
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
-  }
-});
-
-// Universal live-clock — works for every [data-tz] element on every location page.
-// Single source of truth: the IANA timezone string in the data-tz attribute.
-function tickAllClocks() {
-  var now = new Date();
-  var is24h = (window.WC && window.WC.is24h) || false;
-
-  document.querySelectorAll('[data-tz]').forEach(function(el) {
-    var tz = el.getAttribute('data-tz');
-    try {
-      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
-    } catch(e) { el.textContent = '--:--'; }
-  });
-
-  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
-    var tz = el.getAttribute('data-tz-date');
-    try {
-      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    } catch(e) { el.textContent = ''; }
+function tickComparisonClocks() {
+  document.querySelectorAll('[data-live-clock]').forEach(el => {
+    const tz = el.getAttribute('data-tz');
+    if (!tz) return;
+    el.textContent = new Date().toLocaleTimeString('en-US', { timeZone: tz, hour: '2-digit', minute: '2-digit' });
   });
 }
-tickAllClocks();
-setInterval(tickAllClocks, 1000);
+tickComparisonClocks();
+setInterval(tickComparisonClocks, 1000);
 </script>
 </body>
 </html>
