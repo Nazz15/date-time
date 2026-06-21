@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="Free time difference calculator. Instantly compare the time difference between any two cities worldwide, with live local times and ahead/behind indicators.">
+<meta name="keywords" content="time difference calculator,time zone difference,time gap between cities,UTC offset calculator">
+<title>Time Difference Calculator – Compare Time Between Cities | TimezoneBudy</title>
+<link rel="canonical" href="https://timezonebudy.com/time-difference-calculator">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/location.css">
+<link rel="stylesheet" href="/footer.css">
+<link rel="stylesheet" href="/converter.css">
+<link rel="stylesheet" href="/time-difference.css">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d2240">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
+<link rel="stylesheet" href="/pwa.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+
+<!-- JSON-LD: FAQPage — must mirror visible FAQ section text exactly -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I calculate the time difference between two cities?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Select your source city and destination city above, and the calculator instantly shows the current local time in both locations along with the exact difference in hours and minutes, including whether the destination is ahead or behind."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the calculator account for Daylight Saving Time?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Every comparison uses each city's current UTC offset, which automatically reflects Daylight Saving Time where it applies. The displayed difference is always accurate for today's date."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the destination show as a different day?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When the time difference crosses midnight, the destination city may be on the following or previous calendar day even though only a few hours separate the two locations. The calculator labels this clearly as Today, Tomorrow, or Yesterday."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I compare a country instead of a specific city?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Selecting a country uses its capital or largest city as a representative time. Countries spanning multiple time zones, like the United States or Russia, will show this directly in the result."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab active" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
+      <div class="nav-tab loc-menu-trigger" tabindex="0">
+        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
+        <div class="loc-mega-menu" data-locations-menu></div>
+      </div>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="loc-hero">
+  <div class="wrap">
+    <div class="loc-eyebrow">Free Tool</div>
+    <h1 class="loc-h1">Time Difference Calculator</h1>
+    <p class="loc-sub" style="max-width:640px;margin:8px auto 0">
+      Compare the time difference between any two cities worldwide. See live local
+      times, the exact gap in hours and minutes, and whether your destination is
+      ahead or behind — updated automatically for Daylight Saving Time.
+    </p>
+  </div>
+</section>
+
+<main class="wrap loc-main">
+
+  <!-- ============================================================
+       CALCULATOR CARD
+       ============================================================ -->
+  <div class="conv-card tdc-card">
+    <div class="conv-hdr">
+      <h2><i class="ti ti-chart-bar" aria-hidden="true"></i> Compare Two Locations</h2>
+      <p>Search and select a source and destination city below.</p>
+    </div>
+    <div class="conv-body">
+
+      <div class="tdc-selectors">
+
+        <!-- SOURCE -->
+        <div class="tdc-selector-col">
+          <label class="tdc-label">Source City / Country</label>
+          <div class="search-wrap">
+            <div class="search-pill" onclick="document.getElementById('tdc-src-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
+              <i class="ti ti-search search-ico" aria-hidden="true"></i>
+              <input type="search" id="tdc-src-srch" placeholder="e.g. New York" autocomplete="off" autocorrect="off">
+            </div>
+            <div id="tdc-src-dd" class="search-dd" hidden></div>
+          </div>
+          <div id="tdc-src-selected" class="tdc-selected-chip" hidden></div>
+        </div>
+
+        <!-- SWAP -->
+        <button class="tdc-swap-btn" id="tdc-swap" onclick="TDC.swap()" aria-label="Swap source and destination" title="Swap source and destination">
+          <i class="ti ti-arrows-left-right" aria-hidden="true"></i>
+        </button>
+
+        <!-- DESTINATION -->
+        <div class="tdc-selector-col">
+          <label class="tdc-label">Destination City / Country</label>
+          <div class="search-wrap">
+            <div class="search-pill" onclick="document.getElementById('tdc-dst-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
+              <i class="ti ti-search search-ico" aria-hidden="true"></i>
+              <input type="search" id="tdc-dst-srch" placeholder="e.g. London" autocomplete="off" autocorrect="off">
+            </div>
+            <div id="tdc-dst-dd" class="search-dd" hidden></div>
+          </div>
+          <div id="tdc-dst-selected" class="tdc-selected-chip" hidden></div>
+        </div>
+
+      </div>
+
+      <button class="tdc-calc-btn" id="tdc-calc" onclick="TDC.calculate()" disabled>
+        <i class="ti ti-calculator" aria-hidden="true"></i> Calculate Time Difference
+      </button>
+
+      <!-- RESULT CARD -->
+      <div id="tdc-result" class="tdc-result" hidden>
+
+        <div class="tdc-result-times">
+          <div class="tdc-result-loc">
+            <div class="tdc-result-loc-name" id="tdc-res-src-name">—</div>
+            <div class="tdc-result-loc-time" id="tdc-res-src-time">--:--</div>
+            <div class="tdc-result-loc-date" id="tdc-res-src-date">—</div>
+          </div>
+          <div class="tdc-result-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
+          <div class="tdc-result-loc">
+            <div class="tdc-result-loc-name" id="tdc-res-dst-name">—</div>
+            <div class="tdc-result-loc-time" id="tdc-res-dst-time">--:--</div>
+            <div class="tdc-result-loc-date" id="tdc-res-dst-date">—</div>
+          </div>
+        </div>
+
+        <div class="tdc-result-summary">
+          <div class="tdc-result-diff" id="tdc-res-diff">—</div>
+          <div class="tdc-result-day-badge" id="tdc-res-day-badge"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       POPULAR COMPARISONS (dynamically generated)
+       ============================================================ -->
+  <section class="seo-sec">
+    <h2 class="loc-h2">Popular Time Difference Comparisons</h2>
+    <div id="tdc-popular-grid" class="tdc-chip-grid"><!-- filled by JS --></div>
+  </section>
+
+  <!-- ============================================================
+       COUNTRY VS COUNTRY (dynamically generated)
+       ============================================================ -->
+  <section class="seo-sec">
+    <h2 class="loc-h2">Country vs Country Comparisons</h2>
+    <div id="tdc-country-grid" class="tdc-chip-grid"><!-- filled by JS --></div>
+  </section>
+
+  <!-- ============================================================
+       COUNTRY VS WORLD CITIES (dynamically generated)
+       ============================================================ -->
+  <section class="seo-sec">
+    <h2 class="loc-h2">Top Country vs World City Time Differences</h2>
+    <div id="tdc-world-tabs" class="tdc-world-tabs"><!-- filled by JS --></div>
+    <div id="tdc-world-table-wrap"><!-- filled by JS --></div>
+  </section>
+
+  <!-- ============================================================
+       SEO CONTENT
+       ============================================================ -->
+  <section class="seo-sec">
+    <h2>About the Time Difference Calculator</h2>
+    <p>
+      Use this free tool to instantly find the time difference between any two
+      cities or countries in the world. Just pick a source and a destination,
+      and see both current local times side by side, along with how many hours
+      and minutes apart they are. The calculator automatically accounts for
+      Daylight Saving Time, so the result is always accurate for today.
+    </p>
+    <div class="seo-grid">
+      <article class="seo-card"><h3>Live, DST-Aware</h3><p>Every comparison uses each location's current UTC offset, which already reflects Daylight Saving Time where applicable — no manual adjustment needed.</p></article>
+      <article class="seo-card"><h3>Day Difference Indicator</h3><p>When a time difference crosses midnight, the result clearly labels whether the destination is on Today, Tomorrow, or Yesterday relative to the source.</p></article>
+      <article class="seo-card"><h3>One-Click Swap</h3><p>Quickly flip your source and destination to see the comparison from the other direction without re-entering either city.</p></article>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FAQ (visible HTML — MUST match JSON-LD above)
+       ============================================================ -->
+  <section class="seo-sec">
+    <h2 class="loc-h2">Frequently Asked Questions</h2>
+
+    <div class="tdc-faq-item">
+      <h3>How do I calculate the time difference between two cities?</h3>
+      <p>Select your source city and destination city above, and the calculator instantly shows the current local time in both locations along with the exact difference in hours and minutes, including whether the destination is ahead or behind.</p>
+    </div>
+
+    <div class="tdc-faq-item">
+      <h3>Does the calculator account for Daylight Saving Time?</h3>
+      <p>Yes. Every comparison uses each city's current UTC offset, which automatically reflects Daylight Saving Time where it applies. The displayed difference is always accurate for today's date.</p>
+    </div>
+
+    <div class="tdc-faq-item">
+      <h3>Why does the destination show as a different day?</h3>
+      <p>When the time difference crosses midnight, the destination city may be on the following or previous calendar day even though only a few hours separate the two locations. The calculator labels this clearly as Today, Tomorrow, or Yesterday.</p>
+    </div>
+
+    <div class="tdc-faq-item">
+      <h3>Can I compare a country instead of a specific city?</h3>
+      <p>Yes. Selecting a country uses its capital or largest city as a representative time. Countries spanning multiple time zones, like the United States or Russia, will show this directly in the result.</p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/">World Clock</a>
+        <a href="/converter.html">Timezone Converter</a>
+        <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/time-difference-calculator">Time Difference Calculator</a>
+        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/weather.html">Weather</a>
+        <a href="/tools.html">Time Tools</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/cities.js"></script>
+<script src="/util.js"></script>
+<script src="/locations-menu.js" defer></script>
+<script src="/pwa-install.js" defer></script>
+<script src="/time-difference.js"></script>
+<script>
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return;
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+</script>
+</body>
+</html>
