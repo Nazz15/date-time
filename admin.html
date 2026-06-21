@@ -15,43 +15,144 @@
 <title>Admin — TimezoneBudy Blog</title>
 <link rel="stylesheet" href="/main.css">
 <style>
-.admin-wrap { max-width: 900px; margin: 0 auto; padding: 32px 20px; }
+/* ── Layout ──────────────────────────────────────────────────────────── */
+.admin-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 80px; }
+.admin-topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
+.admin-topbar h1 { font-size:22px; font-weight:700; margin:0; }
+.admin-crumb { font-size:13px; opacity:.6; margin-bottom:6px; }
+.admin-crumb a { color:inherit; text-decoration:none; cursor:pointer; }
+.admin-crumb a:hover { text-decoration:underline; }
+
+/* ── Login ───────────────────────────────────────────────────────────── */
 .admin-login-box { max-width: 360px; margin: 80px auto; padding: 28px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); }
 .admin-login-box h1 { font-size: 20px; margin-bottom: 18px; text-align: center; }
+
+/* ── Generic field styles ────────────────────────────────────────────── */
 .admin-field { margin-bottom: 14px; }
-.admin-field label { display: block; font-size: 13px; margin-bottom: 6px; opacity: 0.8; }
-.admin-field input, .admin-field textarea, .admin-field select {
+.admin-field label { display: block; font-size: 13px; font-weight:600; margin-bottom: 6px; opacity: 0.85; }
+.admin-field input[type=text], .admin-field input[type=password], .admin-field textarea, .admin-field select {
   width: 100%; padding: 10px 12px; border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04);
-  color: inherit; font-size: 14px; font-family: inherit;
+  color: inherit; font-size: 14px; font-family: inherit; box-sizing:border-box;
 }
-.admin-field textarea { min-height: 240px; resize: vertical; font-family: 'JetBrains Mono', monospace; }
+.admin-field textarea { resize: vertical; }
+.admin-hint { font-size: 12px; opacity: 0.55; margin-top: 4px; }
+
+/* ── Buttons ─────────────────────────────────────────────────────────── */
 .admin-btn {
-  width: 100%; padding: 11px; border-radius: 8px; border: none;
+  padding: 10px 16px; border-radius: 8px; border: none;
   background: var(--accent, #58a6ff); color: #04101f; font-weight: 600;
-  font-size: 14px; cursor: pointer;
+  font-size: 14px; cursor: pointer; display:inline-flex; align-items:center; gap:6px;
 }
 .admin-btn:hover { opacity: 0.9; }
+.admin-btn:disabled { opacity:.5; cursor:not-allowed; }
 .admin-btn-secondary { background: rgba(255,255,255,0.08); color: inherit; }
+.admin-btn-block { width:100%; justify-content:center; }
+.admin-btn-danger { background: rgba(248,81,73,0.15); color: #f85149; }
 .admin-error { color: #f85149; font-size: 13px; margin-top: 10px; text-align: center; }
-.admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+
+/* ── Post list ───────────────────────────────────────────────────────── */
 .admin-post-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 16px; border-radius: 8px; background: rgba(255,255,255,0.03);
+  padding: 14px 16px; border-radius: 10px; background: rgba(255,255,255,0.03);
   border: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px;
 }
 .admin-post-title { font-weight: 600; }
 .admin-post-meta { font-size: 12px; opacity: 0.6; margin-top: 2px; }
-.admin-status-badge { font-size: 11px; padding: 3px 9px; border-radius: 12px; text-transform: uppercase; font-weight: 600; }
+.admin-status-badge { font-size: 11px; padding: 3px 9px; border-radius: 12px; text-transform: uppercase; font-weight: 700; letter-spacing:.3px; }
 .admin-status-published { background: rgba(63,185,80,0.15); color: #3fb950; }
 .admin-status-draft { background: rgba(210,153,34,0.15); color: #d29922; }
 .admin-actions button { margin-left: 6px; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: inherit; cursor: pointer; }
 .admin-actions button:hover { background: rgba(255,255,255,0.08); }
-.admin-editor-grid { display: grid; gap: 14px; }
-.admin-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.admin-hint { font-size: 12px; opacity: 0.55; margin-top: 4px; }
-.admin-toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 18px; border-radius: 8px; background: #1c2128; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; display: none; }
+
+/* ── Editor: two-column Shopify-style grid ──────────────────────────── */
+.editor-grid { display:grid; grid-template-columns: 1fr 320px; gap:20px; align-items:start; }
+@media (max-width: 880px) { .editor-grid { grid-template-columns: 1fr; } }
+
+.card { background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:18px; margin-bottom:16px; }
+.card h3 { margin:0 0 14px; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; opacity:.7; }
+.card-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.card-row h3 { margin:0; }
+
+.title-input { font-size:22px; font-weight:700; padding:10px 0; border:none; background:transparent; width:100%; color:inherit; }
+.title-input:focus { outline:none; }
+.title-input::placeholder { opacity:.35; }
+
+/* ── Rich text editor ────────────────────────────────────────────────── */
+.rte-toolbar { display:flex; align-items:center; gap:2px; padding:8px; border:1px solid rgba(255,255,255,0.12); border-radius:10px 10px 0 0; background:rgba(255,255,255,0.02); flex-wrap:wrap; }
+.rte-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:6px; border:none; background:transparent; color:inherit; cursor:pointer; font-size:14px; font-weight:600; }
+.rte-btn:hover { background: rgba(255,255,255,0.08); }
+.rte-btn.active { background: rgba(88,166,255,0.2); color:#58a6ff; }
+.rte-sep { width:1px; height:20px; background:rgba(255,255,255,0.12); margin:0 4px; }
+.rte-select { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.15); color:inherit; border-radius:6px; padding:5px 8px; font-size:13px; }
+.rte-spacer { flex:1; }
+.rte-code-toggle { margin-left:auto; }
+
+.rte-body {
+  min-height: 320px; max-height:600px; overflow-y:auto;
+  border: 1px solid rgba(255,255,255,0.12); border-top:none; border-radius: 0 0 10px 10px;
+  background: rgba(255,255,255,0.02); padding: 16px; font-size:15px; line-height:1.65;
+}
+.rte-body:focus { outline:none; }
+.rte-body[contenteditable]:empty:before { content: attr(data-placeholder); opacity:.35; }
+.rte-body h2 { font-size:1.4em; margin:.6em 0 .3em; }
+.rte-body h3 { font-size:1.15em; margin:.6em 0 .3em; }
+.rte-body p { margin:.5em 0; }
+.rte-body ul, .rte-body ol { margin:.5em 0; padding-left:1.4em; }
+.rte-body a { color:#58a6ff; }
+.rte-body img { max-width:100%; border-radius:8px; margin:.5em 0; }
+.rte-body blockquote { border-left:3px solid rgba(255,255,255,0.2); margin:.6em 0; padding-left:14px; opacity:.85; }
+.rte-body pre { background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; }
+.rte-body code { font-family:'JetBrains Mono',monospace; font-size:.9em; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; }
+
+.rte-code-view { display:none; }
+.rte-code-view textarea {
+  width:100%; min-height:320px; max-height:600px;
+  border: 1px solid rgba(255,255,255,0.12); border-top:none; border-radius: 0 0 10px 10px;
+  background: rgba(0,0,0,0.25); padding: 16px; font-size:13px;
+  font-family:'JetBrains Mono',monospace; color:inherit; box-sizing:border-box; resize:vertical;
+}
+.rte-code-view textarea:focus { outline:none; }
+
+/* ── Image upload box ────────────────────────────────────────────────── */
+.image-drop {
+  border: 1.5px dashed rgba(255,255,255,0.2); border-radius:10px; padding:28px 16px;
+  text-align:center; cursor:pointer; transition: border-color .15s, background .15s;
+  background: rgba(255,255,255,0.015);
+}
+.image-drop:hover, .image-drop.dragover { border-color:#58a6ff; background: rgba(88,166,255,0.05); }
+.image-drop p { font-size:12px; opacity:.55; margin:8px 0 0; }
+.image-preview-wrap { position:relative; border-radius:10px; overflow:hidden; }
+.image-preview-wrap img { width:100%; display:block; max-height:180px; object-fit:cover; }
+.image-preview-remove {
+  position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%;
+  background:rgba(0,0,0,0.6); color:#fff; border:none; cursor:pointer; font-size:14px; line-height:1;
+}
+.image-preview-remove:hover { background:rgba(0,0,0,0.8); }
+.image-upload-progress { font-size:12px; opacity:.6; margin-top:8px; text-align:center; }
+
+/* ── Sidebar specifics ───────────────────────────────────────────────── */
+.visibility-option { display:flex; align-items:center; gap:10px; padding:8px 0; cursor:pointer; font-size:14px; }
+.visibility-option input { width:auto; margin:0; accent-color:#58a6ff; }
+.tags-input-wrap { display:flex; flex-wrap:wrap; gap:6px; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.04); }
+.tag-chip { display:flex; align-items:center; gap:5px; background:rgba(88,166,255,0.15); color:#58a6ff; padding:3px 8px; border-radius:6px; font-size:12px; font-weight:600; }
+.tag-chip button { background:none; border:none; color:inherit; cursor:pointer; font-size:13px; padding:0; line-height:1; }
+.tags-input-wrap input { border:none; background:none; flex:1; min-width:80px; font-size:13px; padding:4px; }
+.tags-input-wrap input:focus { outline:none; }
+
+.seo-preview { border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px; background:rgba(255,255,255,0.02); margin-top:8px; }
+.seo-preview .seo-title { color:#8ab4f8; font-size:15px; line-height:1.3; margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.seo-preview .seo-url { color:#3fb950; font-size:12px; margin-bottom:4px; }
+.seo-preview .seo-desc { font-size:12.5px; opacity:.75; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.seo-toggle-link { font-size:12px; color:#58a6ff; cursor:pointer; background:none; border:none; padding:0; margin-top:8px; }
+.seo-fields { margin-top:12px; display:none; }
+.seo-fields.show { display:block; }
+.char-count { font-size:11px; opacity:.5; text-align:right; margin-top:2px; }
+
+/* ── Toast ───────────────────────────────────────────────────────────── */
+.admin-toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 18px; border-radius: 8px; background: #1c2128; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; display: none; z-index:100; }
 .admin-toast.show { display: block; }
+.admin-toast.error { border-color: rgba(248,81,73,0.4); color:#f85149; }
 </style>
 </head>
 <body>
@@ -67,11 +168,11 @@ function getToken() { return localStorage.getItem(TOKEN_KEY); }
 function setToken(t) { localStorage.setItem(TOKEN_KEY, t); }
 function clearToken() { localStorage.removeItem(TOKEN_KEY); }
 
-function toast(msg) {
+function toast(msg, isError) {
   const t = document.getElementById('toast');
   t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  t.className = 'admin-toast show' + (isError ? ' error' : '');
+  setTimeout(() => { t.className = 'admin-toast'; }, 3200);
 }
 
 function escapeHtml(s) {
@@ -83,21 +184,22 @@ function escapeHtml(s) {
 
 async function apiFetch(path, options = {}) {
   const token = getToken();
+  const isFormData = options.body instanceof FormData;
   const headers = Object.assign(
-    { 'Content-Type': 'application/json' },
+    isFormData ? {} : { 'Content-Type': 'application/json' },
     token ? { Authorization: 'Bearer ' + token } : {},
     options.headers || {}
   );
   const res = await fetch(API_BASE + path, Object.assign({}, options, { headers }));
   if (res.status === 401) {
     clearToken();
-    render(); // bounce back to login
+    render();
     throw new Error('Session expired, please log in again');
   }
   return res;
 }
 
-// ── Views ────────────────────────────────────────────────────────────────────
+// ── Login ────────────────────────────────────────────────────────────────
 
 function renderLogin() {
   const app = document.getElementById('app');
@@ -113,7 +215,7 @@ function renderLogin() {
           <label>Password</label>
           <input type="password" id="login-password" autocomplete="current-password" required>
         </div>
-        <button type="submit" class="admin-btn">Log In</button>
+        <button type="submit" class="admin-btn admin-btn-block">Log In</button>
         <div class="admin-error" id="login-error"></div>
       </form>
     </div>
@@ -145,14 +247,16 @@ function renderLogin() {
   });
 }
 
+// ── Post list ────────────────────────────────────────────────────────────
+
 async function renderPostList() {
   const app = document.getElementById('app');
   app.innerHTML = `
-    <div class="admin-header">
+    <div class="admin-topbar">
       <h1>Posts</h1>
       <div>
-        <button class="admin-btn admin-btn-secondary" id="logout-btn" style="width:auto;display:inline-block;margin-right:8px">Log Out</button>
-        <button class="admin-btn" id="new-post-btn" style="width:auto;display:inline-block">+ New Post</button>
+        <button class="admin-btn admin-btn-secondary" id="logout-btn" style="margin-right:8px">Log Out</button>
+        <button class="admin-btn" id="new-post-btn">+ New Post</button>
       </div>
     </div>
     <div id="post-list">Loading posts…</div>
@@ -162,12 +266,6 @@ async function renderPostList() {
   document.getElementById('new-post-btn').addEventListener('click', () => renderEditor(null));
 
   try {
-    // Admin view should see ALL posts (draft + published), not just
-    // published ones -- the API's default /api/posts?status=published
-    // filter (used by the public renderer) is intentionally NOT applied
-    // here. If the API requires an explicit param to see drafts too,
-    // adjust this query string to match — verify against your real
-    // blog-api before relying on this showing drafts.
     const res = await apiFetch('/api/posts?limit=100');
     const data = await res.json();
     const posts = data.posts || [];
@@ -206,7 +304,7 @@ async function renderPostList() {
           toast('Post deleted');
           renderPostList();
         } catch (err) {
-          toast('Error: ' + err.message);
+          toast('Error: ' + err.message, true);
         }
       });
     });
@@ -214,6 +312,8 @@ async function renderPostList() {
     document.getElementById('post-list').innerHTML = `<p style="color:#f85149">Error loading posts: ${escapeHtml(err.message)}</p>`;
   }
 }
+
+// ── Editor ───────────────────────────────────────────────────────────────
 
 function renderEditor(post) {
   const app = document.getElementById('app');
@@ -228,113 +328,363 @@ function renderEditor(post) {
   try { tagsArray = JSON.parse(post.tags || '[]'); } catch (e) { tagsArray = []; }
 
   app.innerHTML = `
-    <div class="admin-header">
+    <div class="admin-crumb"><a id="back-link">← All Posts</a></div>
+    <div class="admin-topbar">
       <h1>${isNew ? 'New Post' : 'Edit Post'}</h1>
-      <button class="admin-btn admin-btn-secondary" id="back-btn" style="width:auto;display:inline-block">&larr; Back to Posts</button>
+      <div>
+        <select id="f-status" class="rte-select" style="margin-right:10px">
+          <option value="draft" ${post.status === 'draft' ? 'selected' : ''}>Draft</option>
+          <option value="published" ${post.status === 'published' ? 'selected' : ''}>Published</option>
+        </select>
+        <button class="admin-btn" id="save-btn">${isNew ? 'Create Post' : 'Save Changes'}</button>
+      </div>
     </div>
-    <form id="post-form" class="admin-editor-grid">
-      <div class="admin-field">
-        <label>Title</label>
-        <input type="text" id="f-title" value="${escapeHtml(post.title)}" required>
-      </div>
-      <div class="admin-field">
-        <label>Slug (URL path: /blog/your-slug)</label>
-        <input type="text" id="f-slug" value="${escapeHtml(post.slug)}" required pattern="[a-z0-9-]+">
-        <div class="admin-hint">Lowercase letters, numbers, and hyphens only.</div>
-      </div>
-      <div class="admin-field">
-        <label>Excerpt (shown on the blog listing page)</label>
-        <textarea id="f-excerpt" style="min-height:80px">${escapeHtml(post.excerpt)}</textarea>
-      </div>
-      <div class="admin-field">
-        <label>Content (HTML)</label>
-        <textarea id="f-content">${escapeHtml(post.content)}</textarea>
-        <div class="admin-hint">Write HTML directly — paragraphs as &lt;p&gt;, headings as &lt;h2&gt;, etc.</div>
-      </div>
-      <div class="admin-row-2">
-        <div class="admin-field">
-          <label>Category</label>
-          <input type="text" id="f-category" value="${escapeHtml(post.category || 'General')}">
+
+    <div class="editor-grid">
+      <!-- ───── MAIN COLUMN ───── -->
+      <div>
+        <div class="card">
+          <input type="text" id="f-title" class="title-input" placeholder="Post title" value="${escapeHtml(post.title)}" required>
+          <div class="admin-hint" style="margin-top:-4px;margin-bottom:10px">URL: /blog/<span id="slug-preview">${escapeHtml(post.slug)}</span> · <a id="edit-slug-link" style="cursor:pointer;color:#58a6ff">edit</a></div>
+          <div id="slug-edit-row" style="display:none;margin-bottom:10px">
+            <input type="text" id="f-slug" placeholder="post-slug" value="${escapeHtml(post.slug)}" pattern="[a-z0-9-]+" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);color:inherit;font-size:13px;box-sizing:border-box">
+          </div>
+
+          <label style="font-size:13px;font-weight:600;opacity:.85;display:block;margin-bottom:8px">Content</label>
+          <div class="rte-toolbar" id="rte-toolbar">
+            <select class="rte-select" id="rte-block">
+              <option value="p">Paragraph</option>
+              <option value="h2">Heading 2</option>
+              <option value="h3">Heading 3</option>
+              <option value="blockquote">Quote</option>
+            </select>
+            <div class="rte-sep"></div>
+            <button type="button" class="rte-btn" data-cmd="bold" title="Bold"><b>B</b></button>
+            <button type="button" class="rte-btn" data-cmd="italic" title="Italic"><i>I</i></button>
+            <button type="button" class="rte-btn" data-cmd="underline" title="Underline"><u>U</u></button>
+            <div class="rte-sep"></div>
+            <button type="button" class="rte-btn" data-cmd="insertUnorderedList" title="Bullet list">•≡</button>
+            <button type="button" class="rte-btn" data-cmd="insertOrderedList" title="Numbered list">1≡</button>
+            <div class="rte-sep"></div>
+            <button type="button" class="rte-btn" id="rte-link-btn" title="Insert link">🔗</button>
+            <button type="button" class="rte-btn" id="rte-image-btn" title="Insert image">🖼</button>
+            <div class="rte-sep"></div>
+            <button type="button" class="rte-btn rte-code-toggle" id="rte-code-toggle" title="View HTML source">&lt;/&gt;</button>
+          </div>
+          <div class="rte-body" id="rte-body" contenteditable="true" data-placeholder="Start writing your post…">${post.content || ''}</div>
+          <div class="rte-code-view" id="rte-code-view">
+            <textarea id="f-content-raw" spellcheck="false">${escapeHtml(post.content)}</textarea>
+          </div>
+          <input type="file" id="rte-image-file-input" accept="image/*" style="display:none">
         </div>
-        <div class="admin-field">
-          <label>Status</label>
-          <select id="f-status">
-            <option value="draft" ${post.status === 'draft' ? 'selected' : ''}>Draft</option>
-            <option value="published" ${post.status === 'published' ? 'selected' : ''}>Published</option>
-          </select>
-        </div>
-      </div>
-      <div class="admin-field">
-        <label>Tags (comma-separated)</label>
-        <input type="text" id="f-tags" value="${escapeHtml(tagsArray.join(', '))}">
-      </div>
-      <div class="admin-row-2">
-        <div class="admin-field">
-          <label>Featured Image URL</label>
-          <input type="text" id="f-featured-image" value="${escapeHtml(post.featured_image || '')}">
-        </div>
-        <div class="admin-field">
-          <label>Social Share Image URL (og:image)</label>
-          <input type="text" id="f-og-image" value="${escapeHtml(post.og_image || '')}">
+
+        <div class="card">
+          <h3>Excerpt</h3>
+          <textarea id="f-excerpt" rows="3" placeholder="A short summary shown on the blog listing page…">${escapeHtml(post.excerpt)}</textarea>
         </div>
       </div>
-      <div class="admin-row-2">
-        <div class="admin-field">
-          <label>SEO Title (optional override)</label>
-          <input type="text" id="f-seo-title" value="${escapeHtml(post.seo_title || '')}">
+
+      <!-- ───── SIDEBAR ───── -->
+      <div>
+        <div class="card">
+          <h3>Visibility</h3>
+          <label class="visibility-option"><input type="radio" name="vis" value="published" ${post.status === 'published' ? 'checked' : ''}> Published</label>
+          <label class="visibility-option"><input type="radio" name="vis" value="draft" ${post.status !== 'published' ? 'checked' : ''}> Draft</label>
         </div>
-        <div class="admin-field">
-          <label>SEO Description (optional override)</label>
-          <input type="text" id="f-seo-desc" value="${escapeHtml(post.seo_desc || '')}">
+
+        <div class="card">
+          <h3>Featured Image</h3>
+          <div id="featured-image-area"></div>
+          <input type="file" id="featured-image-file-input" accept="image/*" style="display:none">
+          <input type="text" id="f-featured-image" value="${escapeHtml(post.featured_image || '')}" placeholder="Or paste an image URL" style="margin-top:10px;font-size:12px">
         </div>
+
+        <div class="card">
+          <h3>Organization</h3>
+          <div class="admin-field">
+            <label>Category</label>
+            <input type="text" id="f-category" value="${escapeHtml(post.category || 'General')}">
+          </div>
+          <div class="admin-field" style="margin-bottom:0">
+            <label>Tags</label>
+            <div class="tags-input-wrap" id="tags-wrap">
+              <input type="text" id="f-tags-entry" placeholder="Add a tag, press Enter">
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Search engine listing</h3>
+          <div class="seo-preview" id="seo-preview-box">
+            <div class="seo-title" id="seo-preview-title">${escapeHtml(post.seo_title || post.title || 'Post title')}</div>
+            <div class="seo-url">timezonebudy.com/blog/${escapeHtml(post.slug || 'post-slug')}</div>
+            <div class="seo-desc" id="seo-preview-desc">${escapeHtml(post.seo_desc || post.excerpt || 'Meta description will appear here…')}</div>
+          </div>
+          <button type="button" class="seo-toggle-link" id="seo-edit-toggle">Edit SEO details</button>
+          <div class="seo-fields" id="seo-fields">
+            <div class="admin-field">
+              <label>SEO Title</label>
+              <input type="text" id="f-seo-title" value="${escapeHtml(post.seo_title || '')}" maxlength="70">
+              <div class="char-count" id="seo-title-count">0 / 70</div>
+            </div>
+            <div class="admin-field">
+              <label>SEO Description</label>
+              <textarea id="f-seo-desc" rows="3" maxlength="160">${escapeHtml(post.seo_desc || '')}</textarea>
+              <div class="char-count" id="seo-desc-count">0 / 160</div>
+            </div>
+            <div class="admin-field" style="margin-bottom:0">
+              <label>Canonical URL (optional)</label>
+              <input type="text" id="f-canonical" value="${escapeHtml(post.canonical_url || '')}">
+            </div>
+            <div class="admin-field" style="margin-bottom:0;margin-top:14px">
+              <label>Social Share Image URL (og:image)</label>
+              <input type="text" id="f-og-image" value="${escapeHtml(post.og_image || '')}">
+            </div>
+          </div>
+        </div>
+
+        ${!isNew ? `
+        <div class="card">
+          <button type="button" class="admin-btn admin-btn-danger admin-btn-block" id="delete-post-btn">Delete Post</button>
+        </div>` : ''}
       </div>
-      <div class="admin-field">
-        <label>Canonical URL (optional override)</label>
-        <input type="text" id="f-canonical" value="${escapeHtml(post.canonical_url || '')}">
-      </div>
-      <button type="submit" class="admin-btn">${isNew ? 'Create Post' : 'Save Changes'}</button>
-      <div class="admin-error" id="editor-error"></div>
-    </form>
+    </div>
+    <div class="admin-error" id="editor-error"></div>
   `;
 
-  document.getElementById('back-btn').addEventListener('click', renderPostList);
+  // ── Back / nav ──────────────────────────────────────────────────────
+  document.getElementById('back-link').addEventListener('click', renderPostList);
 
-  // Auto-generate slug from title for NEW posts only (don't clobber an
-  // existing post's slug if the title is edited later).
+  // ── Slug edit toggle ────────────────────────────────────────────────
+  document.getElementById('edit-slug-link').addEventListener('click', () => {
+    document.getElementById('slug-edit-row').style.display = 'block';
+  });
   if (isNew) {
     document.getElementById('f-title').addEventListener('input', (e) => {
-      const slug = e.target.value
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9\s-]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-');
+      const slug = e.target.value.toLowerCase().trim()
+        .replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
       document.getElementById('f-slug').value = slug;
+      document.getElementById('slug-preview').textContent = slug;
+      document.getElementById('seo-preview-title').textContent =
+        document.getElementById('f-seo-title').value || e.target.value || 'Post title';
+      document.querySelector('.seo-url').textContent = 'timezonebudy.com/blog/' + (slug || 'post-slug');
+    });
+  }
+  document.getElementById('f-slug').addEventListener('input', (e) => {
+    document.getElementById('slug-preview').textContent = e.target.value;
+  });
+
+  // ── Status: keep dropdown + sidebar radios in sync ──────────────────
+  const statusSelect = document.getElementById('f-status');
+  document.querySelectorAll('input[name="vis"]').forEach(r => {
+    r.addEventListener('change', (e) => { statusSelect.value = e.target.value; });
+  });
+  statusSelect.addEventListener('change', (e) => {
+    document.querySelector(`input[name="vis"][value="${e.target.value}"]`).checked = true;
+  });
+
+  // ── Rich text toolbar ────────────────────────────────────────────────
+  const rteBody = document.getElementById('rte-body');
+  document.querySelectorAll('.rte-btn[data-cmd]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.execCommand(btn.dataset.cmd, false, null);
+      rteBody.focus();
+    });
+  });
+  document.getElementById('rte-block').addEventListener('change', (e) => {
+    document.execCommand('formatBlock', false, e.target.value);
+    rteBody.focus();
+  });
+  document.getElementById('rte-link-btn').addEventListener('click', () => {
+    const url = prompt('Link URL:');
+    if (url) { document.execCommand('createLink', false, url); rteBody.focus(); }
+  });
+
+  // ── Image insert INTO content body ───────────────────────────────────
+  const rteImageInput = document.getElementById('rte-image-file-input');
+  document.getElementById('rte-image-btn').addEventListener('click', () => rteImageInput.click());
+  rteImageInput.addEventListener('change', async () => {
+    const file = rteImageInput.files[0];
+    if (!file) return;
+    try {
+      const url = await uploadImage(file);
+      document.execCommand('insertImage', false, url);
+    } catch (err) {
+      toast('Image upload failed: ' + err.message, true);
+    } finally {
+      rteImageInput.value = '';
+    }
+  });
+
+  // ── Code view toggle (rich text <-> raw HTML) ────────────────────────
+  const codeView = document.getElementById('rte-code-view');
+  const rawTextarea = document.getElementById('f-content-raw');
+  const codeToggleBtn = document.getElementById('rte-code-toggle');
+  let inCodeView = false;
+  codeToggleBtn.addEventListener('click', () => {
+    if (!inCodeView) {
+      rawTextarea.value = rteBody.innerHTML;
+      rteBody.style.display = 'none';
+      codeView.style.display = 'block';
+      codeToggleBtn.classList.add('active');
+    } else {
+      rteBody.innerHTML = rawTextarea.value;
+      rteBody.style.display = 'block';
+      codeView.style.display = 'none';
+      codeToggleBtn.classList.remove('active');
+    }
+    inCodeView = !inCodeView;
+  });
+
+  // ── Featured image upload/preview ─────────────────────────────────────
+  function renderFeaturedImageArea(url) {
+    const area = document.getElementById('featured-image-area');
+    if (url) {
+      area.innerHTML = `
+        <div class="image-preview-wrap">
+          <img src="${escapeHtml(url)}" alt="">
+          <button type="button" class="image-preview-remove" id="remove-featured-img">✕</button>
+        </div>`;
+      document.getElementById('remove-featured-img').addEventListener('click', () => {
+        document.getElementById('f-featured-image').value = '';
+        renderFeaturedImageArea('');
+      });
+    } else {
+      area.innerHTML = `
+        <div class="image-drop" id="featured-drop">
+          <div style="font-size:13px">Add image</div>
+          <p>or drop an image to upload</p>
+        </div>`;
+      const drop = document.getElementById('featured-drop');
+      const fileInput = document.getElementById('featured-image-file-input');
+      drop.addEventListener('click', () => fileInput.click());
+      drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('dragover'); });
+      drop.addEventListener('dragleave', () => drop.classList.remove('dragover'));
+      drop.addEventListener('drop', async (e) => {
+        e.preventDefault(); drop.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) await handleFeaturedUpload(file);
+      });
+      fileInput.addEventListener('change', async () => {
+        const file = fileInput.files[0];
+        if (file) await handleFeaturedUpload(file);
+        fileInput.value = '';
+      });
+    }
+  }
+  async function handleFeaturedUpload(file) {
+    const area = document.getElementById('featured-image-area');
+    area.innerHTML = '<div class="image-upload-progress">Uploading…</div>';
+    try {
+      const url = await uploadImage(file);
+      document.getElementById('f-featured-image').value = url;
+      renderFeaturedImageArea(url);
+    } catch (err) {
+      toast('Image upload failed: ' + err.message, true);
+      renderFeaturedImageArea('');
+    }
+  }
+  renderFeaturedImageArea(post.featured_image || '');
+  document.getElementById('f-featured-image').addEventListener('input', (e) => {
+    if (e.target.value) renderFeaturedImageArea(e.target.value);
+  });
+
+  // ── Tags chip input ───────────────────────────────────────────────────
+  const tagsWrap = document.getElementById('tags-wrap');
+  const tagsEntry = document.getElementById('f-tags-entry');
+  let currentTags = tagsArray.slice();
+  function renderTags() {
+    tagsWrap.querySelectorAll('.tag-chip').forEach(el => el.remove());
+    currentTags.forEach((tag, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'tag-chip';
+      chip.innerHTML = `${escapeHtml(tag)} <button type="button" data-i="${i}">✕</button>`;
+      tagsWrap.insertBefore(chip, tagsEntry);
+    });
+    tagsWrap.querySelectorAll('.tag-chip button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentTags.splice(Number(btn.dataset.i), 1);
+        renderTags();
+      });
+    });
+  }
+  tagsEntry.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const val = tagsEntry.value.trim();
+      if (val && !currentTags.includes(val)) { currentTags.push(val); renderTags(); }
+      tagsEntry.value = '';
+    } else if (e.key === 'Backspace' && !tagsEntry.value && currentTags.length) {
+      currentTags.pop(); renderTags();
+    }
+  });
+  renderTags();
+
+  // ── SEO fields toggle + live preview + char counts ───────────────────
+  const seoFields = document.getElementById('seo-fields');
+  document.getElementById('seo-edit-toggle').addEventListener('click', () => {
+    seoFields.classList.toggle('show');
+  });
+  const seoTitleInput = document.getElementById('f-seo-title');
+  const seoDescInput = document.getElementById('f-seo-desc');
+  const titleInput = document.getElementById('f-title');
+  const excerptInput = document.getElementById('f-excerpt');
+
+  function updateSeoPreview() {
+    document.getElementById('seo-preview-title').textContent = seoTitleInput.value || titleInput.value || 'Post title';
+    document.getElementById('seo-preview-desc').textContent = seoDescInput.value || excerptInput.value || 'Meta description will appear here…';
+    document.getElementById('seo-title-count').textContent = seoTitleInput.value.length + ' / 70';
+    document.getElementById('seo-desc-count').textContent = seoDescInput.value.length + ' / 160';
+  }
+  [seoTitleInput, seoDescInput, titleInput, excerptInput].forEach(el => el.addEventListener('input', updateSeoPreview));
+  updateSeoPreview();
+
+  // ── Delete ────────────────────────────────────────────────────────────
+  if (!isNew) {
+    document.getElementById('delete-post-btn').addEventListener('click', async () => {
+      if (!confirm('Delete this post? This cannot be undone.')) return;
+      try {
+        await apiFetch('/api/posts/' + post.id, { method: 'DELETE' });
+        toast('Post deleted');
+        renderPostList();
+      } catch (err) {
+        toast('Error: ' + err.message, true);
+      }
     });
   }
 
-  document.getElementById('post-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+  // ── Save ──────────────────────────────────────────────────────────────
+  document.getElementById('save-btn').addEventListener('click', async () => {
     const errEl = document.getElementById('editor-error');
     errEl.textContent = '';
 
-    const tagsInput = document.getElementById('f-tags').value;
-    const tagsArr = tagsInput.split(',').map(t => t.trim()).filter(Boolean);
+    const title = document.getElementById('f-title').value.trim();
+    const slug = document.getElementById('f-slug').value.trim();
+    if (!title) { errEl.textContent = 'Title is required.'; return; }
+    if (!slug) { errEl.textContent = 'Slug is required.'; return; }
+
+    // Pull content from whichever view is currently active
+    const contentHtml = inCodeView ? rawTextarea.value : rteBody.innerHTML;
 
     const payload = {
-      title: document.getElementById('f-title').value,
-      slug: document.getElementById('f-slug').value,
-      content: document.getElementById('f-content').value,
+      title,
+      slug,
+      content: contentHtml,
       excerpt: document.getElementById('f-excerpt').value,
       status: document.getElementById('f-status').value,
       category: document.getElementById('f-category').value,
-      tags: JSON.stringify(tagsArr),
+      tags: JSON.stringify(currentTags),
       featured_image: document.getElementById('f-featured-image').value || null,
       og_image: document.getElementById('f-og-image').value || null,
-      seo_title: document.getElementById('f-seo-title').value || null,
-      seo_desc: document.getElementById('f-seo-desc').value || null,
+      seo_title: seoTitleInput.value || null,
+      seo_desc: seoDescInput.value || null,
       canonical_url: document.getElementById('f-canonical').value || null,
     };
+
+    const saveBtn = document.getElementById('save-btn');
+    saveBtn.disabled = true;
+    const originalLabel = saveBtn.textContent;
+    saveBtn.textContent = 'Saving…';
 
     try {
       const url = isNew ? '/api/posts' : '/api/posts/' + post.id;
@@ -349,8 +699,39 @@ function renderEditor(post) {
       renderPostList();
     } catch (err) {
       errEl.textContent = err.message;
+    } finally {
+      saveBtn.disabled = false;
+      saveBtn.textContent = originalLabel;
     }
   });
+}
+
+// ── Image upload helper ───────────────────────────────────────────────────
+// NOTE: This assumes your API exposes POST /api/upload accepting
+// multipart/form-data with the file under the field name "file", and
+// returns JSON like { "url": "https://cdn.timezonebudy.com/xyz.jpg" }.
+// If your real endpoint differs (different field name, different
+// response key, or a different path), this will throw a clear error
+// telling you what came back instead of failing silently — adjust the
+// field name below ('file') or the response key ('data.url') to match.
+async function uploadImage(file) {
+  if (file.size > 8 * 1024 * 1024) {
+    throw new Error('Image is larger than 8MB — please use a smaller file.');
+  }
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await apiFetch('/api/upload', { method: 'POST', body: formData });
+  if (!res.ok) {
+    const errBody = await res.text().catch(() => '');
+    throw new Error(`Server returned ${res.status}. ${errBody.slice(0, 200)}`);
+  }
+  const data = await res.json().catch(() => null);
+  const url = data && (data.url || data.imageUrl || (data.file && data.file.url));
+  if (!url) {
+    throw new Error('Upload succeeded but no image URL was found in the response. Check /api/upload\'s response shape.');
+  }
+  return url;
 }
 
 function render() {
@@ -363,5 +744,6 @@ function render() {
 
 render();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1accd9204922456bb187fb685895e31e","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
