@@ -1,0 +1,25 @@
+<!-- ============================================================
+     THEME INIT — paste this as the VERY FIRST thing inside <head>,
+     before any <link rel="stylesheet"> tags.
+
+     Why: every page currently hardcodes <html data-theme="dark">.
+     If the person has saved "light" in localStorage, the page still
+     paints dark first, then JS (boot() in util.js) corrects it a
+     moment later — causing a visible flash, and on slow connections
+     or if boot() runs late, looking like "dark mode randomly
+     turns on."
+
+     This tiny inline script runs synchronously before the browser
+     paints anything, so the CORRECT theme is set on the very first
+     frame — no flash, no race condition. It mirrors the exact same
+     logic already in util.js's WC.isDark initializer, so behavior
+     stays identical, this just runs it earlier.
+     ============================================================ -->
+<script>
+(function() {
+  var saved = localStorage.getItem('wc_theme');
+  var isDark = saved === 'dark' ||
+    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+})();
+</script>

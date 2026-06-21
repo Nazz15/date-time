@@ -125,20 +125,21 @@ const TDC = (() => {
   }
 
   // ---------------------------------------------------------------
-  // Calculate + render result
+  // Calculate + render result (LIVE — ticks every second, not a
+  // one-time snapshot)
   // ---------------------------------------------------------------
 
-  function calculate() {
+  let resultTickHandle = null;
+
+  function renderResultOnce() {
     if (!src || !dst) return;
     const now = new Date();
 
-    const srcTimeStr = now.toLocaleTimeString('en-US', { timeZone: src.tz, hour: '2-digit', minute: '2-digit', hour12: true });
-    const dstTimeStr = now.toLocaleTimeString('en-US', { timeZone: dst.tz, hour: '2-digit', minute: '2-digit', hour12: true });
+    const srcTimeStr = now.toLocaleTimeString('en-US', { timeZone: src.tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+    const dstTimeStr = now.toLocaleTimeString('en-US', { timeZone: dst.tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
     const srcDateStr = now.toLocaleDateString('en-US', { timeZone: src.tz, weekday: 'long', month: 'short', day: 'numeric' });
     const dstDateStr = now.toLocaleDateString('en-US', { timeZone: dst.tz, weekday: 'long', month: 'short', day: 'numeric' });
 
-    document.getElementById('tdc-res-src-name').textContent = cityLabel(src);
-    document.getElementById('tdc-res-dst-name').textContent = cityLabel(dst);
     document.getElementById('tdc-res-src-time').textContent = srcTimeStr;
     document.getElementById('tdc-res-dst-time').textContent = dstTimeStr;
     document.getElementById('tdc-res-src-date').textContent = srcDateStr;
@@ -156,8 +157,21 @@ const TDC = (() => {
     const label = dayLabel(src.tz, dst.tz, now);
     badge.textContent = label;
     badge.className = 'tdc-result-day-badge tdc-day-' + label.toLowerCase();
+  }
 
+  function calculate() {
+    if (!src || !dst) return;
+
+    document.getElementById('tdc-res-src-name').textContent = cityLabel(src);
+    document.getElementById('tdc-res-dst-name').textContent = cityLabel(dst);
     document.getElementById('tdc-result').hidden = false;
+
+    renderResultOnce();
+
+    // Stop any previous ticking interval before starting a new one — avoids
+    // stacking multiple intervals if Calculate is clicked more than once.
+    if (resultTickHandle) clearInterval(resultTickHandle);
+    resultTickHandle = setInterval(renderResultOnce, 1000);
   }
 
   function swap() {
@@ -189,8 +203,7 @@ const TDC = (() => {
   }
 
   function urlFor(a, b) {
-    const slug = s => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    return `/time-difference-calculator?from=${slug(a.name)}&to=${slug(b.name)}`;
+    return `/time-difference-calculator?from=${slugify(a.name)}&to=${slugify(b.name)}`;
   }
 
   function buildPopularComparisons() {
@@ -298,6 +311,47 @@ const TDC = (() => {
     setInterval(tick, 1000);
   }
 
+  function slugify(s) {
+    return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  }
+
+  function findCityBySlug(slug) {
+    return CITIES.find(c => slugify(c.name) === slug);
+  }
+
+  function selectChip(which, city) {
+    const chip = document.getElementById(which === 'src' ? 'tdc-src-selected' : 'tdc-dst-selected');
+    if (which === 'src') src = city; else dst = city;
+    chip.hidden = false;
+    chip.innerHTML = `
+      <span class="fi fi-${city.cc}" style="width:18px;height:13px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+      <span>${cityLabel(city)}</span>
+      <button type="button" class="tdc-chip-clear" aria-label="Clear">&times;</button>
+    `;
+    chip.querySelector('.tdc-chip-clear').addEventListener('click', () => {
+      if (which === 'src') src = null; else dst = null;
+      chip.hidden = true;
+      chip.innerHTML = '';
+      updateCalcButtonState();
+    });
+  }
+
+  function applyQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    const fromSlug = params.get('from');
+    const toSlug = params.get('to');
+    if (!fromSlug && !toSlug) return;
+
+    const fromCity = fromSlug ? findCityBySlug(fromSlug) : null;
+    const toCity = toSlug ? findCityBySlug(toSlug) : null;
+
+    if (fromCity) selectChip('src', fromCity);
+    if (toCity) selectChip('dst', toCity);
+
+    updateCalcButtonState();
+    if (fromCity && toCity) calculate();
+  }
+
   // ---------------------------------------------------------------
   // Init
   // ---------------------------------------------------------------
@@ -308,6 +362,7 @@ const TDC = (() => {
     buildPopularComparisons();
     buildCountryVsCountry();
     buildCountryVsWorldCities();
+    applyQueryParams();
   }
 
   document.addEventListener('DOMContentLoaded', init);

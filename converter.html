@@ -1,6 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
+<script>
+(function() {
+  var saved = localStorage.getItem('wc_theme');
+  var isDark = saved === 'dark' ||
+    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="description" content="Free timezone converter, meeting planner and time difference calculator. Convert between 130+ cities instantly.">
@@ -35,6 +43,7 @@
       <a class="nav-tab" href="/converter.html" class="nav-tab active"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
       <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
       <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
       <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
       <div class="nav-tab loc-menu-trigger" tabindex="0">
         <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
@@ -64,7 +73,6 @@
   <div class="tool-tabs" role="tablist">
     <button class="tool-tab active" data-t="converter" onclick="setTool('converter')"><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Converter</button>
     <button class="tool-tab" data-t="meeting" onclick="setTool('meeting')"><i class="ti ti-calendar-time" aria-hidden="true"></i> Meeting Planner</button>
-    <button class="tool-tab" data-t="diff" onclick="setTool('diff')"><i class="ti ti-chart-bar" aria-hidden="true"></i> Time Difference</button>
   </div>
 
   <div class="conv-layout">
@@ -125,14 +133,6 @@
         </div>
       </div>
 
-      <!-- DIFF PANEL -->
-      <div id="p-diff" class="tool-panel" style="display:none">
-        <div class="conv-card">
-          <div class="conv-hdr"><h2><i class="ti ti-chart-bar" aria-hidden="true"></i> Time Difference</h2><p>Live time differences. Add cities in the Converter tab.</p></div>
-          <div class="conv-body" id="diff-body"></div>
-        </div>
-      </div>
-
     </div>
 
     <!-- Sidebar -->
@@ -158,7 +158,7 @@
   <!-- SEO -->
   <section class="seo-sec">
     <h2>Free Timezone Converter</h2>
-    <p>Convert times between any cities worldwide. DST-aware, real-time, no account needed. Use the Meeting Planner to find the best time for global meetings, or the Time Difference calculator to instantly see the gap between any two cities.</p>
+    <p>Convert times between any cities worldwide. DST-aware, real-time, no account needed. Use the Meeting Planner to find the best time for global meetings, or our standalone <a href="/time-difference-calculator">Time Difference Calculator</a> to instantly see the gap between any two cities.</p>
     <div class="seo-grid">
       <article class="seo-card"><h3>DST Automatic</h3><p>All conversions automatically account for Daylight Saving Time. Cities with active DST show a DST badge so you always see the accurate offset.</p></article>
       <article class="seo-card"><h3>Share a Comparison</h3><p>Use the Share Link to send your exact city comparison to anyone. The URL encodes all selected timezones so the recipient sees the same view instantly.</p></article>
@@ -182,6 +182,7 @@
         <a href="/">World Clock</a>
         <a href="/converter.html">Timezone Converter</a>
         <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/time-difference-calculator">Time Difference Calculator</a>
         <a href="/sunmoon.html">Sun &amp; Moon</a>
         <a href="/weather.html">Weather</a>
         <a href="/tools.html">Time Tools</a>
@@ -245,5 +246,6 @@ document.addEventListener('keydown', function(e) {
   }
 });
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1accd9204922456bb187fb685895e31e","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
