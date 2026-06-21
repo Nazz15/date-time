@@ -2,12 +2,9 @@
 <html lang="en">
 <head>
 <script>
-(function() {
-  var saved = localStorage.getItem('wc_theme');
-  var isDark = saved === 'dark' ||
-    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-})();
+// Admin panel always loads in light mode, regardless of the site-wide
+// dark/light setting used on the public pages.
+document.documentElement.setAttribute('data-theme', 'light');
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -15,144 +12,182 @@
 <title>Admin — TimezoneBudy Blog</title>
 <link rel="stylesheet" href="/main.css">
 <style>
+/* ── Light-mode design tokens ────────────────────────────────────────── */
+:root {
+  --adm-bg: #f6f7f9;
+  --adm-panel: #ffffff;
+  --adm-border: #e1e3e8;
+  --adm-border-strong: #c9ccd3;
+  --adm-text: #1a1d23;
+  --adm-text-dim: #6b7280;
+  --adm-text-faint: #9ca3af;
+  --adm-accent: #2563eb;
+  --adm-accent-text: #ffffff;
+  --adm-hover: #f1f2f5;
+  --adm-input-bg: #ffffff;
+  --adm-green-bg: #e6f4ea;
+  --adm-green-text: #1a7f37;
+  --adm-amber-bg: #fef3e2;
+  --adm-amber-text: #9a6700;
+  --adm-red-bg: #fde8e8;
+  --adm-red-text: #c92a2a;
+}
+body { background: var(--adm-bg); color: var(--adm-text); }
+
 /* ── Layout ──────────────────────────────────────────────────────────── */
 .admin-wrap { max-width: 1180px; margin: 0 auto; padding: 28px 20px 80px; }
 .admin-topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; }
-.admin-topbar h1 { font-size:22px; font-weight:700; margin:0; }
-.admin-crumb { font-size:13px; opacity:.6; margin-bottom:6px; }
-.admin-crumb a { color:inherit; text-decoration:none; cursor:pointer; }
+.admin-topbar h1 { font-size:22px; font-weight:700; margin:0; color: var(--adm-text); }
+.admin-crumb { font-size:13px; color: var(--adm-text-dim); margin-bottom:6px; }
+.admin-crumb a { color: var(--adm-accent); text-decoration:none; cursor:pointer; }
 .admin-crumb a:hover { text-decoration:underline; }
 
 /* ── Login ───────────────────────────────────────────────────────────── */
-.admin-login-box { max-width: 360px; margin: 80px auto; padding: 28px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); }
-.admin-login-box h1 { font-size: 20px; margin-bottom: 18px; text-align: center; }
+.admin-login-box { max-width: 360px; margin: 80px auto; padding: 28px; border-radius: 12px; background: var(--adm-panel); border: 1px solid var(--adm-border); box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.admin-login-box h1 { font-size: 20px; margin-bottom: 18px; text-align: center; color: var(--adm-text); }
 
 /* ── Generic field styles ────────────────────────────────────────────── */
 .admin-field { margin-bottom: 14px; }
-.admin-field label { display: block; font-size: 13px; font-weight:600; margin-bottom: 6px; opacity: 0.85; }
+.admin-field label { display: block; font-size: 13px; font-weight:600; margin-bottom: 6px; color: var(--adm-text-dim); }
 .admin-field input[type=text], .admin-field input[type=password], .admin-field textarea, .admin-field select {
   width: 100%; padding: 10px 12px; border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.04);
-  color: inherit; font-size: 14px; font-family: inherit; box-sizing:border-box;
+  border: 1px solid var(--adm-border-strong); background: var(--adm-input-bg);
+  color: var(--adm-text); font-size: 14px; font-family: inherit; box-sizing:border-box;
 }
+.admin-field input:focus, .admin-field textarea:focus, .admin-field select:focus { outline: 2px solid var(--adm-accent); outline-offset: -1px; border-color: var(--adm-accent); }
 .admin-field textarea { resize: vertical; }
-.admin-hint { font-size: 12px; opacity: 0.55; margin-top: 4px; }
+.admin-hint { font-size: 12px; color: var(--adm-text-faint); margin-top: 4px; }
 
 /* ── Buttons ─────────────────────────────────────────────────────────── */
 .admin-btn {
   padding: 10px 16px; border-radius: 8px; border: none;
-  background: var(--accent, #58a6ff); color: #04101f; font-weight: 600;
+  background: var(--adm-accent); color: var(--adm-accent-text); font-weight: 600;
   font-size: 14px; cursor: pointer; display:inline-flex; align-items:center; gap:6px;
 }
 .admin-btn:hover { opacity: 0.9; }
 .admin-btn:disabled { opacity:.5; cursor:not-allowed; }
-.admin-btn-secondary { background: rgba(255,255,255,0.08); color: inherit; }
+.admin-btn-secondary { background: var(--adm-hover); color: var(--adm-text); border: 1px solid var(--adm-border-strong); }
 .admin-btn-block { width:100%; justify-content:center; }
-.admin-btn-danger { background: rgba(248,81,73,0.15); color: #f85149; }
-.admin-error { color: #f85149; font-size: 13px; margin-top: 10px; text-align: center; }
+.admin-btn-danger { background: var(--adm-red-bg); color: var(--adm-red-text); }
+.admin-error { color: var(--adm-red-text); font-size: 13px; margin-top: 10px; text-align: center; }
 
 /* ── Post list ───────────────────────────────────────────────────────── */
 .admin-post-row {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 14px 16px; border-radius: 10px; background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08); margin-bottom: 8px;
+  padding: 14px 16px; border-radius: 10px; background: var(--adm-panel);
+  border: 1px solid var(--adm-border); margin-bottom: 8px;
 }
-.admin-post-title { font-weight: 600; }
-.admin-post-meta { font-size: 12px; opacity: 0.6; margin-top: 2px; }
+.admin-post-title { font-weight: 600; color: var(--adm-text); }
+.admin-post-meta { font-size: 12px; color: var(--adm-text-dim); margin-top: 2px; }
 .admin-status-badge { font-size: 11px; padding: 3px 9px; border-radius: 12px; text-transform: uppercase; font-weight: 700; letter-spacing:.3px; }
-.admin-status-published { background: rgba(63,185,80,0.15); color: #3fb950; }
-.admin-status-draft { background: rgba(210,153,34,0.15); color: #d29922; }
-.admin-actions button { margin-left: 6px; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: transparent; color: inherit; cursor: pointer; }
-.admin-actions button:hover { background: rgba(255,255,255,0.08); }
+.admin-status-published { background: var(--adm-green-bg); color: var(--adm-green-text); }
+.admin-status-draft { background: var(--adm-amber-bg); color: var(--adm-amber-text); }
+.admin-actions button { margin-left: 6px; padding: 6px 12px; font-size: 12px; border-radius: 6px; border: 1px solid var(--adm-border-strong); background: var(--adm-panel); color: var(--adm-text); cursor: pointer; }
+.admin-actions button:hover { background: var(--adm-hover); }
+
+/* ── Toolbar (post list page) ────────────────────────────────────────── */
+.list-toolbar { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+.list-toolbar input[type=text] { flex:1; min-width:200px; padding:9px 12px; border-radius:8px; border:1px solid var(--adm-border-strong); background:var(--adm-panel); font-size:14px; }
+.list-toolbar select { padding:9px 12px; border-radius:8px; border:1px solid var(--adm-border-strong); background:var(--adm-panel); font-size:14px; }
+.pagination { display:flex; justify-content:center; gap:6px; margin-top:16px; }
+.pagination button { padding:6px 12px; border-radius:6px; border:1px solid var(--adm-border-strong); background:var(--adm-panel); cursor:pointer; font-size:13px; }
+.pagination button.active { background: var(--adm-accent); color:#fff; border-color: var(--adm-accent); }
+.pagination button:disabled { opacity:.4; cursor:not-allowed; }
 
 /* ── Editor: two-column Shopify-style grid ──────────────────────────── */
 .editor-grid { display:grid; grid-template-columns: 1fr 320px; gap:20px; align-items:start; }
 @media (max-width: 880px) { .editor-grid { grid-template-columns: 1fr; } }
 
-.card { background: rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:18px; margin-bottom:16px; }
-.card h3 { margin:0 0 14px; font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; opacity:.7; }
+.card { background: var(--adm-panel); border:1px solid var(--adm-border); border-radius:12px; padding:18px; margin-bottom:16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.card h3 { margin:0 0 14px; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color: var(--adm-text-dim); }
 .card-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
 .card-row h3 { margin:0; }
 
-.title-input { font-size:22px; font-weight:700; padding:10px 0; border:none; background:transparent; width:100%; color:inherit; }
+.title-input { font-size:22px; font-weight:700; padding:10px 0; border:none; background:transparent; width:100%; color: var(--adm-text); }
 .title-input:focus { outline:none; }
-.title-input::placeholder { opacity:.35; }
+.title-input::placeholder { color: var(--adm-text-faint); }
 
 /* ── Rich text editor ────────────────────────────────────────────────── */
-.rte-toolbar { display:flex; align-items:center; gap:2px; padding:8px; border:1px solid rgba(255,255,255,0.12); border-radius:10px 10px 0 0; background:rgba(255,255,255,0.02); flex-wrap:wrap; }
-.rte-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:6px; border:none; background:transparent; color:inherit; cursor:pointer; font-size:14px; font-weight:600; }
-.rte-btn:hover { background: rgba(255,255,255,0.08); }
-.rte-btn.active { background: rgba(88,166,255,0.2); color:#58a6ff; }
-.rte-sep { width:1px; height:20px; background:rgba(255,255,255,0.12); margin:0 4px; }
-.rte-select { background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.15); color:inherit; border-radius:6px; padding:5px 8px; font-size:13px; }
+.rte-toolbar { display:flex; align-items:center; gap:2px; padding:8px; border:1px solid var(--adm-border-strong); border-radius:10px 10px 0 0; background:#fafbfc; flex-wrap:wrap; }
+.rte-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:6px; border:none; background:transparent; color: var(--adm-text); cursor:pointer; font-size:14px; font-weight:600; }
+.rte-btn:hover { background: var(--adm-hover); }
+.rte-btn.active { background: #dbeafe; color: var(--adm-accent); }
+.rte-sep { width:1px; height:20px; background: var(--adm-border-strong); margin:0 4px; }
+.rte-select { background: var(--adm-panel); border:1px solid var(--adm-border-strong); color: var(--adm-text); border-radius:6px; padding:5px 8px; font-size:13px; }
 .rte-spacer { flex:1; }
 .rte-code-toggle { margin-left:auto; }
 
 .rte-body {
   min-height: 320px; max-height:600px; overflow-y:auto;
-  border: 1px solid rgba(255,255,255,0.12); border-top:none; border-radius: 0 0 10px 10px;
-  background: rgba(255,255,255,0.02); padding: 16px; font-size:15px; line-height:1.65;
+  border: 1px solid var(--adm-border-strong); border-top:none; border-radius: 0 0 10px 10px;
+  background: var(--adm-panel); padding: 16px; font-size:15px; line-height:1.65; color: var(--adm-text);
 }
 .rte-body:focus { outline:none; }
-.rte-body[contenteditable]:empty:before { content: attr(data-placeholder); opacity:.35; }
+.rte-body[contenteditable]:empty:before { content: attr(data-placeholder); color: var(--adm-text-faint); }
+.rte-body h1 { font-size:1.7em; margin:.6em 0 .3em; }
 .rte-body h2 { font-size:1.4em; margin:.6em 0 .3em; }
 .rte-body h3 { font-size:1.15em; margin:.6em 0 .3em; }
+.rte-body h4 { font-size:1em; margin:.6em 0 .3em; }
 .rte-body p { margin:.5em 0; }
 .rte-body ul, .rte-body ol { margin:.5em 0; padding-left:1.4em; }
-.rte-body a { color:#58a6ff; }
+.rte-body a { color: var(--adm-accent); }
 .rte-body img { max-width:100%; border-radius:8px; margin:.5em 0; }
-.rte-body blockquote { border-left:3px solid rgba(255,255,255,0.2); margin:.6em 0; padding-left:14px; opacity:.85; }
-.rte-body pre { background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; }
-.rte-body code { font-family:'JetBrains Mono',monospace; font-size:.9em; background:rgba(255,255,255,0.08); padding:1px 5px; border-radius:4px; }
+.rte-body blockquote { border-left:3px solid var(--adm-border-strong); margin:.6em 0; padding-left:14px; color: var(--adm-text-dim); }
+.rte-body pre { background:#f1f2f5; padding:12px; border-radius:8px; overflow-x:auto; font-family:'JetBrains Mono',monospace; font-size:13px; }
+.rte-body code { font-family:'JetBrains Mono',monospace; font-size:.9em; background:#f1f2f5; padding:1px 5px; border-radius:4px; }
+.rte-body table { border-collapse:collapse; width:100%; margin:.6em 0; }
+.rte-body table td, .rte-body table th { border:1px solid var(--adm-border-strong); padding:6px 10px; }
+.rte-body table th { background:#fafbfc; font-weight:600; }
 
 .rte-code-view { display:none; }
 .rte-code-view textarea {
   width:100%; min-height:320px; max-height:600px;
-  border: 1px solid rgba(255,255,255,0.12); border-top:none; border-radius: 0 0 10px 10px;
-  background: rgba(0,0,0,0.25); padding: 16px; font-size:13px;
-  font-family:'JetBrains Mono',monospace; color:inherit; box-sizing:border-box; resize:vertical;
+  border: 1px solid var(--adm-border-strong); border-top:none; border-radius: 0 0 10px 10px;
+  background: #1e1e1e; padding: 16px; font-size:13px;
+  font-family:'JetBrains Mono',monospace; color:#d4d4d4; box-sizing:border-box; resize:vertical;
 }
 .rte-code-view textarea:focus { outline:none; }
 
 /* ── Image upload box ────────────────────────────────────────────────── */
 .image-drop {
-  border: 1.5px dashed rgba(255,255,255,0.2); border-radius:10px; padding:28px 16px;
+  border: 1.5px dashed var(--adm-border-strong); border-radius:10px; padding:28px 16px;
   text-align:center; cursor:pointer; transition: border-color .15s, background .15s;
-  background: rgba(255,255,255,0.015);
+  background: #fafbfc;
 }
-.image-drop:hover, .image-drop.dragover { border-color:#58a6ff; background: rgba(88,166,255,0.05); }
-.image-drop p { font-size:12px; opacity:.55; margin:8px 0 0; }
-.image-preview-wrap { position:relative; border-radius:10px; overflow:hidden; }
+.image-drop:hover, .image-drop.dragover { border-color: var(--adm-accent); background: #eff6ff; }
+.image-drop div:first-child { font-weight: 600; font-size: 13px; color: var(--adm-text); }
+.image-drop p { font-size:12px; color: var(--adm-text-faint); margin:8px 0 0; }
+.image-preview-wrap { position:relative; border-radius:10px; overflow:hidden; border: 1px solid var(--adm-border); }
 .image-preview-wrap img { width:100%; display:block; max-height:180px; object-fit:cover; }
 .image-preview-remove {
   position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%;
   background:rgba(0,0,0,0.6); color:#fff; border:none; cursor:pointer; font-size:14px; line-height:1;
 }
 .image-preview-remove:hover { background:rgba(0,0,0,0.8); }
-.image-upload-progress { font-size:12px; opacity:.6; margin-top:8px; text-align:center; }
+.image-upload-progress { font-size:12px; color: var(--adm-text-dim); margin-top:8px; text-align:center; }
 
 /* ── Sidebar specifics ───────────────────────────────────────────────── */
-.visibility-option { display:flex; align-items:center; gap:10px; padding:8px 0; cursor:pointer; font-size:14px; }
-.visibility-option input { width:auto; margin:0; accent-color:#58a6ff; }
-.tags-input-wrap { display:flex; flex-wrap:wrap; gap:6px; padding:8px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.04); }
-.tag-chip { display:flex; align-items:center; gap:5px; background:rgba(88,166,255,0.15); color:#58a6ff; padding:3px 8px; border-radius:6px; font-size:12px; font-weight:600; }
+.visibility-option { display:flex; align-items:center; gap:10px; padding:8px 0; cursor:pointer; font-size:14px; color: var(--adm-text); }
+.visibility-option input { width:auto; margin:0; accent-color: var(--adm-accent); }
+.tags-input-wrap { display:flex; flex-wrap:wrap; gap:6px; padding:8px; border-radius:8px; border:1px solid var(--adm-border-strong); background: var(--adm-input-bg); }
+.tag-chip { display:flex; align-items:center; gap:5px; background:#dbeafe; color: var(--adm-accent); padding:3px 8px; border-radius:6px; font-size:12px; font-weight:600; }
 .tag-chip button { background:none; border:none; color:inherit; cursor:pointer; font-size:13px; padding:0; line-height:1; }
-.tags-input-wrap input { border:none; background:none; flex:1; min-width:80px; font-size:13px; padding:4px; }
+.tags-input-wrap input { border:none; background:none; flex:1; min-width:80px; font-size:13px; padding:4px; color: var(--adm-text); }
 .tags-input-wrap input:focus { outline:none; }
 
-.seo-preview { border:1px solid rgba(255,255,255,0.1); border-radius:8px; padding:12px; background:rgba(255,255,255,0.02); margin-top:8px; }
-.seo-preview .seo-title { color:#8ab4f8; font-size:15px; line-height:1.3; margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.seo-preview .seo-url { color:#3fb950; font-size:12px; margin-bottom:4px; }
-.seo-preview .seo-desc { font-size:12.5px; opacity:.75; line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.seo-toggle-link { font-size:12px; color:#58a6ff; cursor:pointer; background:none; border:none; padding:0; margin-top:8px; }
+.seo-preview { border:1px solid var(--adm-border); border-radius:8px; padding:12px; background:#fafbfc; margin-top:8px; }
+.seo-preview .seo-title { color:#1a0dab; font-size:15px; line-height:1.3; margin-bottom:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.seo-preview .seo-url { color:#006621; font-size:12px; margin-bottom:4px; }
+.seo-preview .seo-desc { font-size:12.5px; color: var(--adm-text-dim); line-height:1.4; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.seo-toggle-link { font-size:12px; color: var(--adm-accent); cursor:pointer; background:none; border:none; padding:0; margin-top:8px; }
 .seo-fields { margin-top:12px; display:none; }
 .seo-fields.show { display:block; }
-.char-count { font-size:11px; opacity:.5; text-align:right; margin-top:2px; }
+.char-count { font-size:11px; color: var(--adm-text-faint); text-align:right; margin-top:2px; }
 
 /* ── Toast ───────────────────────────────────────────────────────────── */
-.admin-toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 18px; border-radius: 8px; background: #1c2128; border: 1px solid rgba(255,255,255,0.15); font-size: 14px; display: none; z-index:100; }
+.admin-toast { position: fixed; bottom: 20px; right: 20px; padding: 12px 18px; border-radius: 8px; background: #1a1d23; color: #fff; border: 1px solid #2a2d33; font-size: 14px; display: none; z-index:100; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 .admin-toast.show { display: block; }
-.admin-toast.error { border-color: rgba(248,81,73,0.4); color:#f85149; }
+.admin-toast.error { background: #c92a2a; border-color: #a82424; }
 </style>
 </head>
 <body>
@@ -309,7 +344,7 @@ async function renderPostList() {
       });
     });
   } catch (err) {
-    document.getElementById('post-list').innerHTML = `<p style="color:#f85149">Error loading posts: ${escapeHtml(err.message)}</p>`;
+    document.getElementById('post-list').innerHTML = `<p style="color:#c92a2a">Error loading posts: ${escapeHtml(err.message)}</p>`;
   }
 }
 
@@ -332,6 +367,7 @@ function renderEditor(post) {
     <div class="admin-topbar">
       <h1>${isNew ? 'New Post' : 'Edit Post'}</h1>
       <div>
+        <button class="admin-btn admin-btn-secondary" id="preview-btn" style="margin-right:8px" ${isNew ? 'disabled title="Save the post first to preview it"' : ''}>Preview</button>
         <select id="f-status" class="rte-select" style="margin-right:10px">
           <option value="draft" ${post.status === 'draft' ? 'selected' : ''}>Draft</option>
           <option value="published" ${post.status === 'published' ? 'selected' : ''}>Published</option>
@@ -345,18 +381,21 @@ function renderEditor(post) {
       <div>
         <div class="card">
           <input type="text" id="f-title" class="title-input" placeholder="Post title" value="${escapeHtml(post.title)}" required>
-          <div class="admin-hint" style="margin-top:-4px;margin-bottom:10px">URL: /blog/<span id="slug-preview">${escapeHtml(post.slug)}</span> · <a id="edit-slug-link" style="cursor:pointer;color:#58a6ff">edit</a></div>
+          <div class="admin-hint" style="margin-top:-4px;margin-bottom:10px">URL: /blog/<span id="slug-preview">${escapeHtml(post.slug)}</span> · <a id="edit-slug-link" style="cursor:pointer;color:var(--adm-accent)">edit</a></div>
           <div id="slug-edit-row" style="display:none;margin-bottom:10px">
-            <input type="text" id="f-slug" placeholder="post-slug" value="${escapeHtml(post.slug)}" pattern="[a-z0-9-]+" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.04);color:inherit;font-size:13px;box-sizing:border-box">
+            <input type="text" id="f-slug" placeholder="post-slug" value="${escapeHtml(post.slug)}" pattern="[a-z0-9-]+" style="width:100%;padding:8px 10px;border-radius:6px;border:1px solid var(--adm-border-strong);background:var(--adm-input-bg);color:var(--adm-text);font-size:13px;box-sizing:border-box">
           </div>
 
-          <label style="font-size:13px;font-weight:600;opacity:.85;display:block;margin-bottom:8px">Content</label>
+          <label style="font-size:13px;font-weight:600;color:var(--adm-text-dim);display:block;margin-bottom:8px">Content</label>
           <div class="rte-toolbar" id="rte-toolbar">
             <select class="rte-select" id="rte-block">
               <option value="p">Paragraph</option>
+              <option value="h1">Heading 1</option>
               <option value="h2">Heading 2</option>
               <option value="h3">Heading 3</option>
+              <option value="h4">Heading 4</option>
               <option value="blockquote">Quote</option>
+              <option value="pre">Code block</option>
             </select>
             <div class="rte-sep"></div>
             <button type="button" class="rte-btn" data-cmd="bold" title="Bold"><b>B</b></button>
@@ -368,7 +407,9 @@ function renderEditor(post) {
             <div class="rte-sep"></div>
             <button type="button" class="rte-btn" id="rte-link-btn" title="Insert link">🔗</button>
             <button type="button" class="rte-btn" id="rte-image-btn" title="Insert image">🖼</button>
+            <button type="button" class="rte-btn" id="rte-table-btn" title="Insert table">▦</button>
             <div class="rte-sep"></div>
+            <button type="button" class="rte-btn" data-cmd="removeFormat" title="Clear formatting">⌫</button>
             <button type="button" class="rte-btn rte-code-toggle" id="rte-code-toggle" title="View HTML source">&lt;/&gt;</button>
           </div>
           <div class="rte-body" id="rte-body" contenteditable="true" data-placeholder="Start writing your post…">${post.content || ''}</div>
@@ -440,6 +481,21 @@ function renderEditor(post) {
               <label>Social Share Image URL (og:image)</label>
               <input type="text" id="f-og-image" value="${escapeHtml(post.og_image || '')}">
             </div>
+            <div class="admin-field" style="margin-top:14px">
+              <label>Robots Meta</label>
+              <select id="f-robots">
+                <option value="index,follow" ${(post.robots || 'index,follow') === 'index,follow' ? 'selected' : ''}>Index (visible in search results)</option>
+                <option value="noindex,nofollow" ${post.robots === 'noindex,nofollow' ? 'selected' : ''}>Noindex (hidden from search results)</option>
+              </select>
+            </div>
+            <div class="admin-field" style="margin-bottom:0">
+              <label>Schema Type</label>
+              <select id="f-schema-type">
+                <option value="BlogPosting" ${(post.schema_type || 'BlogPosting') === 'BlogPosting' ? 'selected' : ''}>BlogPosting</option>
+                <option value="Article" ${post.schema_type === 'Article' ? 'selected' : ''}>Article</option>
+                <option value="NewsArticle" ${post.schema_type === 'NewsArticle' ? 'selected' : ''}>NewsArticle</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -454,6 +510,19 @@ function renderEditor(post) {
 
   // ── Back / nav ──────────────────────────────────────────────────────
   document.getElementById('back-link').addEventListener('click', renderPostList);
+
+  // ── Preview ───────────────────────────────────────────────────────────
+  // Opens the live blog URL in a new tab. NOTE: if the post is still a
+  // Draft, the public Renderer Worker may 404 since it likely only serves
+  // published posts. If that happens, this button isn't broken — your
+  // renderer needs a way to show drafts (e.g. a signed preview token or
+  // a status check bypass), which isn't something I can confirm without
+  // seeing renderer/index.js.
+  if (!isNew) {
+    document.getElementById('preview-btn').addEventListener('click', () => {
+      window.open(`https://timezonebudy.com/blog/${post.slug}`, '_blank');
+    });
+  }
 
   // ── Slug edit toggle ────────────────────────────────────────────────
   document.getElementById('edit-slug-link').addEventListener('click', () => {
@@ -498,6 +567,19 @@ function renderEditor(post) {
   document.getElementById('rte-link-btn').addEventListener('click', () => {
     const url = prompt('Link URL:');
     if (url) { document.execCommand('createLink', false, url); rteBody.focus(); }
+  });
+  document.getElementById('rte-table-btn').addEventListener('click', () => {
+    const rows = parseInt(prompt('Number of rows:', '3'), 10) || 3;
+    const cols = parseInt(prompt('Number of columns:', '2'), 10) || 2;
+    let html = '<table>';
+    for (let r = 0; r < rows; r++) {
+      html += '<tr>';
+      for (let c = 0; c < cols; c++) html += '<td>&nbsp;</td>';
+      html += '</tr>';
+    }
+    html += '</table><p></p>';
+    document.execCommand('insertHTML', false, html);
+    rteBody.focus();
   });
 
   // ── Image insert INTO content body ───────────────────────────────────
@@ -679,6 +761,8 @@ function renderEditor(post) {
       seo_title: seoTitleInput.value || null,
       seo_desc: seoDescInput.value || null,
       canonical_url: document.getElementById('f-canonical').value || null,
+      robots: document.getElementById('f-robots').value,
+      schema_type: document.getElementById('f-schema-type').value,
     };
 
     const saveBtn = document.getElementById('save-btn');
