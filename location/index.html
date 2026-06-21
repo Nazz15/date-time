@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>World Time Zones — Countries & Cities Directory | TimezoneBudy</title>
+<meta name="description" content="Browse current local time across 20 countries and 83 cities worldwide. Click any location to see live time, timezone, and details.">
+<link rel="canonical" href="https://timezonebudy.com/location/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/location.css">
+<link rel="stylesheet" href="/footer.css">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d2240">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
+<link rel="stylesheet" href="/pwa.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <div class="nav-tab loc-menu-trigger active" tabindex="0">
+        <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
+        <div class="loc-mega-menu" data-locations-menu></div>
+      </div>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+
+<section class="loc-hero">
+  <div class="wrap">
+    <h1 class="loc-h1">World Time Zones — Countries &amp; Cities</h1>
+    <div class="loc-sub">20 countries · 83 cities · live local time, updated every second</div>
+  </div>
+</section>
+<main class="wrap loc-main">
+  <div class="loc-dir-list">
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/india/">
+            <span class="fi fi-in" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">India</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Kolkata">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/india/mumbai/"><span class="fi fi-in" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Mumbai</div><div class="loc-dir-country">India</div></div><div class="loc-dir-time" data-tz="Asia/Kolkata">--:--</div></a><a class="loc-dir-card" href="/location/india/delhi/"><span class="fi fi-in" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Delhi</div><div class="loc-dir-country">India</div></div><div class="loc-dir-time" data-tz="Asia/Kolkata">--:--</div></a><a class="loc-dir-card" href="/location/india/bengaluru/"><span class="fi fi-in" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Bengaluru</div><div class="loc-dir-country">India</div></div><div class="loc-dir-time" data-tz="Asia/Kolkata">--:--</div></a><a class="loc-dir-card" href="/location/india/hyderabad/"><span class="fi fi-in" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Hyderabad</div><div class="loc-dir-country">India</div></div><div class="loc-dir-time" data-tz="Asia/Kolkata">--:--</div></a><a class="loc-dir-card" href="/location/india/chennai/"><span class="fi fi-in" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Chennai</div><div class="loc-dir-country">India</div></div><div class="loc-dir-time" data-tz="Asia/Kolkata">--:--</div></a><a class="loc-dir-card" href="/location/india/kolkata/"><span class="fi fi-in" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Kolkata</div><div class="loc-dir-country">India</div></div><div class="loc-dir-time" data-tz="Asia/Kolkata">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/united-states/">
+            <span class="fi fi-us" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">United States</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="America/New_York">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/united-states/new-york/"><span class="fi fi-us" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">New York</div><div class="loc-dir-country">United States</div></div><div class="loc-dir-time" data-tz="America/New_York">--:--</div></a><a class="loc-dir-card" href="/location/united-states/los-angeles/"><span class="fi fi-us" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Los Angeles</div><div class="loc-dir-country">United States</div></div><div class="loc-dir-time" data-tz="America/Los_Angeles">--:--</div></a><a class="loc-dir-card" href="/location/united-states/chicago/"><span class="fi fi-us" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Chicago</div><div class="loc-dir-country">United States</div></div><div class="loc-dir-time" data-tz="America/Chicago">--:--</div></a><a class="loc-dir-card" href="/location/united-states/houston/"><span class="fi fi-us" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Houston</div><div class="loc-dir-country">United States</div></div><div class="loc-dir-time" data-tz="America/Chicago">--:--</div></a><a class="loc-dir-card" href="/location/united-states/miami/"><span class="fi fi-us" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Miami</div><div class="loc-dir-country">United States</div></div><div class="loc-dir-time" data-tz="America/New_York">--:--</div></a><a class="loc-dir-card" href="/location/united-states/san-francisco/"><span class="fi fi-us" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">San Francisco</div><div class="loc-dir-country">United States</div></div><div class="loc-dir-time" data-tz="America/Los_Angeles">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/china/">
+            <span class="fi fi-cn" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">China</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Shanghai">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/china/beijing/"><span class="fi fi-cn" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Beijing</div><div class="loc-dir-country">China</div></div><div class="loc-dir-time" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-dir-card" href="/location/china/shanghai/"><span class="fi fi-cn" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Shanghai</div><div class="loc-dir-country">China</div></div><div class="loc-dir-time" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-dir-card" href="/location/china/shenzhen/"><span class="fi fi-cn" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Shenzhen</div><div class="loc-dir-country">China</div></div><div class="loc-dir-time" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-dir-card" href="/location/china/guangzhou/"><span class="fi fi-cn" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Guangzhou</div><div class="loc-dir-country">China</div></div><div class="loc-dir-time" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-dir-card" href="/location/china/chongqing/"><span class="fi fi-cn" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Chongqing</div><div class="loc-dir-country">China</div></div><div class="loc-dir-time" data-tz="Asia/Shanghai">--:--</div></a><a class="loc-dir-card" href="/location/china/hong-kong/"><span class="fi fi-cn" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Hong Kong</div><div class="loc-dir-country">China</div></div><div class="loc-dir-time" data-tz="Asia/Hong_Kong">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/united-kingdom/">
+            <span class="fi fi-gb" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">United Kingdom</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Europe/London">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/united-kingdom/london/"><span class="fi fi-gb" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">London</div><div class="loc-dir-country">United Kingdom</div></div><div class="loc-dir-time" data-tz="Europe/London">--:--</div></a><a class="loc-dir-card" href="/location/united-kingdom/manchester/"><span class="fi fi-gb" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Manchester</div><div class="loc-dir-country">United Kingdom</div></div><div class="loc-dir-time" data-tz="Europe/London">--:--</div></a><a class="loc-dir-card" href="/location/united-kingdom/birmingham/"><span class="fi fi-gb" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Birmingham</div><div class="loc-dir-country">United Kingdom</div></div><div class="loc-dir-time" data-tz="Europe/London">--:--</div></a><a class="loc-dir-card" href="/location/united-kingdom/edinburgh/"><span class="fi fi-gb" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Edinburgh</div><div class="loc-dir-country">United Kingdom</div></div><div class="loc-dir-time" data-tz="Europe/London">--:--</div></a><a class="loc-dir-card" href="/location/united-kingdom/glasgow/"><span class="fi fi-gb" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Glasgow</div><div class="loc-dir-country">United Kingdom</div></div><div class="loc-dir-time" data-tz="Europe/London">--:--</div></a><a class="loc-dir-card" href="/location/united-kingdom/liverpool/"><span class="fi fi-gb" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Liverpool</div><div class="loc-dir-country">United Kingdom</div></div><div class="loc-dir-time" data-tz="Europe/London">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/united-arab-emirates/">
+            <span class="fi fi-ae" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">United Arab Emirates</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Dubai">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/united-arab-emirates/dubai/"><span class="fi fi-ae" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Dubai</div><div class="loc-dir-country">United Arab Emirates</div></div><div class="loc-dir-time" data-tz="Asia/Dubai">--:--</div></a><a class="loc-dir-card" href="/location/united-arab-emirates/abu-dhabi/"><span class="fi fi-ae" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Abu Dhabi</div><div class="loc-dir-country">United Arab Emirates</div></div><div class="loc-dir-time" data-tz="Asia/Dubai">--:--</div></a><a class="loc-dir-card" href="/location/united-arab-emirates/sharjah/"><span class="fi fi-ae" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Sharjah</div><div class="loc-dir-country">United Arab Emirates</div></div><div class="loc-dir-time" data-tz="Asia/Dubai">--:--</div></a><a class="loc-dir-card" href="/location/united-arab-emirates/ajman/"><span class="fi fi-ae" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Ajman</div><div class="loc-dir-country">United Arab Emirates</div></div><div class="loc-dir-time" data-tz="Asia/Dubai">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/germany/">
+            <span class="fi fi-de" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Germany</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Europe/Berlin">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/germany/berlin/"><span class="fi fi-de" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Berlin</div><div class="loc-dir-country">Germany</div></div><div class="loc-dir-time" data-tz="Europe/Berlin">--:--</div></a><a class="loc-dir-card" href="/location/germany/munich/"><span class="fi fi-de" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Munich</div><div class="loc-dir-country">Germany</div></div><div class="loc-dir-time" data-tz="Europe/Berlin">--:--</div></a><a class="loc-dir-card" href="/location/germany/frankfurt/"><span class="fi fi-de" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Frankfurt</div><div class="loc-dir-country">Germany</div></div><div class="loc-dir-time" data-tz="Europe/Berlin">--:--</div></a><a class="loc-dir-card" href="/location/germany/hamburg/"><span class="fi fi-de" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Hamburg</div><div class="loc-dir-country">Germany</div></div><div class="loc-dir-time" data-tz="Europe/Berlin">--:--</div></a><a class="loc-dir-card" href="/location/germany/cologne/"><span class="fi fi-de" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Cologne</div><div class="loc-dir-country">Germany</div></div><div class="loc-dir-time" data-tz="Europe/Berlin">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/japan/">
+            <span class="fi fi-jp" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Japan</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Tokyo">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/japan/tokyo/"><span class="fi fi-jp" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Tokyo</div><div class="loc-dir-country">Japan</div></div><div class="loc-dir-time" data-tz="Asia/Tokyo">--:--</div></a><a class="loc-dir-card" href="/location/japan/osaka/"><span class="fi fi-jp" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Osaka</div><div class="loc-dir-country">Japan</div></div><div class="loc-dir-time" data-tz="Asia/Tokyo">--:--</div></a><a class="loc-dir-card" href="/location/japan/yokohama/"><span class="fi fi-jp" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Yokohama</div><div class="loc-dir-country">Japan</div></div><div class="loc-dir-time" data-tz="Asia/Tokyo">--:--</div></a><a class="loc-dir-card" href="/location/japan/nagoya/"><span class="fi fi-jp" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Nagoya</div><div class="loc-dir-country">Japan</div></div><div class="loc-dir-time" data-tz="Asia/Tokyo">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/canada/">
+            <span class="fi fi-ca" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Canada</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="America/Toronto">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/canada/toronto/"><span class="fi fi-ca" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Toronto</div><div class="loc-dir-country">Canada</div></div><div class="loc-dir-time" data-tz="America/Toronto">--:--</div></a><a class="loc-dir-card" href="/location/canada/vancouver/"><span class="fi fi-ca" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Vancouver</div><div class="loc-dir-country">Canada</div></div><div class="loc-dir-time" data-tz="America/Vancouver">--:--</div></a><a class="loc-dir-card" href="/location/canada/montreal/"><span class="fi fi-ca" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Montreal</div><div class="loc-dir-country">Canada</div></div><div class="loc-dir-time" data-tz="America/Toronto">--:--</div></a><a class="loc-dir-card" href="/location/canada/calgary/"><span class="fi fi-ca" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Calgary</div><div class="loc-dir-country">Canada</div></div><div class="loc-dir-time" data-tz="America/Edmonton">--:--</div></a><a class="loc-dir-card" href="/location/canada/ottawa/"><span class="fi fi-ca" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Ottawa</div><div class="loc-dir-country">Canada</div></div><div class="loc-dir-time" data-tz="America/Toronto">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/australia/">
+            <span class="fi fi-au" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Australia</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Australia/Sydney">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/australia/sydney/"><span class="fi fi-au" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Sydney</div><div class="loc-dir-country">Australia</div></div><div class="loc-dir-time" data-tz="Australia/Sydney">--:--</div></a><a class="loc-dir-card" href="/location/australia/melbourne/"><span class="fi fi-au" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Melbourne</div><div class="loc-dir-country">Australia</div></div><div class="loc-dir-time" data-tz="Australia/Melbourne">--:--</div></a><a class="loc-dir-card" href="/location/australia/brisbane/"><span class="fi fi-au" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Brisbane</div><div class="loc-dir-country">Australia</div></div><div class="loc-dir-time" data-tz="Australia/Brisbane">--:--</div></a><a class="loc-dir-card" href="/location/australia/perth/"><span class="fi fi-au" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Perth</div><div class="loc-dir-country">Australia</div></div><div class="loc-dir-time" data-tz="Australia/Perth">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/france/">
+            <span class="fi fi-fr" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">France</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Europe/Paris">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/france/paris/"><span class="fi fi-fr" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Paris</div><div class="loc-dir-country">France</div></div><div class="loc-dir-time" data-tz="Europe/Paris">--:--</div></a><a class="loc-dir-card" href="/location/france/marseille/"><span class="fi fi-fr" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Marseille</div><div class="loc-dir-country">France</div></div><div class="loc-dir-time" data-tz="Europe/Paris">--:--</div></a><a class="loc-dir-card" href="/location/france/lyon/"><span class="fi fi-fr" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Lyon</div><div class="loc-dir-country">France</div></div><div class="loc-dir-time" data-tz="Europe/Paris">--:--</div></a><a class="loc-dir-card" href="/location/france/nice/"><span class="fi fi-fr" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Nice</div><div class="loc-dir-country">France</div></div><div class="loc-dir-time" data-tz="Europe/Paris">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/singapore/">
+            <span class="fi fi-sg" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Singapore</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Singapore">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/singapore/singapore-city/"><span class="fi fi-sg" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Singapore</div><div class="loc-dir-country">Singapore</div></div><div class="loc-dir-time" data-tz="Asia/Singapore">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/brazil/">
+            <span class="fi fi-br" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Brazil</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="America/Sao_Paulo">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/brazil/sao-paulo/"><span class="fi fi-br" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">São Paulo</div><div class="loc-dir-country">Brazil</div></div><div class="loc-dir-time" data-tz="America/Sao_Paulo">--:--</div></a><a class="loc-dir-card" href="/location/brazil/rio-de-janeiro/"><span class="fi fi-br" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Rio de Janeiro</div><div class="loc-dir-country">Brazil</div></div><div class="loc-dir-time" data-tz="America/Sao_Paulo">--:--</div></a><a class="loc-dir-card" href="/location/brazil/brasilia/"><span class="fi fi-br" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Brasília</div><div class="loc-dir-country">Brazil</div></div><div class="loc-dir-time" data-tz="America/Sao_Paulo">--:--</div></a><a class="loc-dir-card" href="/location/brazil/salvador/"><span class="fi fi-br" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Salvador</div><div class="loc-dir-country">Brazil</div></div><div class="loc-dir-time" data-tz="America/Bahia">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/saudi-arabia/">
+            <span class="fi fi-sa" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Saudi Arabia</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Riyadh">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/saudi-arabia/riyadh/"><span class="fi fi-sa" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Riyadh</div><div class="loc-dir-country">Saudi Arabia</div></div><div class="loc-dir-time" data-tz="Asia/Riyadh">--:--</div></a><a class="loc-dir-card" href="/location/saudi-arabia/jeddah/"><span class="fi fi-sa" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Jeddah</div><div class="loc-dir-country">Saudi Arabia</div></div><div class="loc-dir-time" data-tz="Asia/Riyadh">--:--</div></a><a class="loc-dir-card" href="/location/saudi-arabia/mecca/"><span class="fi fi-sa" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Mecca</div><div class="loc-dir-country">Saudi Arabia</div></div><div class="loc-dir-time" data-tz="Asia/Riyadh">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/south-korea/">
+            <span class="fi fi-kr" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">South Korea</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Seoul">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/south-korea/seoul/"><span class="fi fi-kr" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Seoul</div><div class="loc-dir-country">South Korea</div></div><div class="loc-dir-time" data-tz="Asia/Seoul">--:--</div></a><a class="loc-dir-card" href="/location/south-korea/busan/"><span class="fi fi-kr" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Busan</div><div class="loc-dir-country">South Korea</div></div><div class="loc-dir-time" data-tz="Asia/Seoul">--:--</div></a><a class="loc-dir-card" href="/location/south-korea/incheon/"><span class="fi fi-kr" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Incheon</div><div class="loc-dir-country">South Korea</div></div><div class="loc-dir-time" data-tz="Asia/Seoul">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/mexico/">
+            <span class="fi fi-mx" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Mexico</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="America/Mexico_City">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/mexico/mexico-city/"><span class="fi fi-mx" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Mexico City</div><div class="loc-dir-country">Mexico</div></div><div class="loc-dir-time" data-tz="America/Mexico_City">--:--</div></a><a class="loc-dir-card" href="/location/mexico/guadalajara/"><span class="fi fi-mx" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Guadalajara</div><div class="loc-dir-country">Mexico</div></div><div class="loc-dir-time" data-tz="America/Mexico_City">--:--</div></a><a class="loc-dir-card" href="/location/mexico/monterrey/"><span class="fi fi-mx" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Monterrey</div><div class="loc-dir-country">Mexico</div></div><div class="loc-dir-time" data-tz="America/Monterrey">--:--</div></a><a class="loc-dir-card" href="/location/mexico/cancun/"><span class="fi fi-mx" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Cancún</div><div class="loc-dir-country">Mexico</div></div><div class="loc-dir-time" data-tz="America/Cancun">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/italy/">
+            <span class="fi fi-it" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Italy</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Europe/Rome">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/italy/rome/"><span class="fi fi-it" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Rome</div><div class="loc-dir-country">Italy</div></div><div class="loc-dir-time" data-tz="Europe/Rome">--:--</div></a><a class="loc-dir-card" href="/location/italy/milan/"><span class="fi fi-it" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Milan</div><div class="loc-dir-country">Italy</div></div><div class="loc-dir-time" data-tz="Europe/Rome">--:--</div></a><a class="loc-dir-card" href="/location/italy/naples/"><span class="fi fi-it" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Naples</div><div class="loc-dir-country">Italy</div></div><div class="loc-dir-time" data-tz="Europe/Rome">--:--</div></a><a class="loc-dir-card" href="/location/italy/venice/"><span class="fi fi-it" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Venice</div><div class="loc-dir-country">Italy</div></div><div class="loc-dir-time" data-tz="Europe/Rome">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/spain/">
+            <span class="fi fi-es" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Spain</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Europe/Madrid">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/spain/madrid/"><span class="fi fi-es" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Madrid</div><div class="loc-dir-country">Spain</div></div><div class="loc-dir-time" data-tz="Europe/Madrid">--:--</div></a><a class="loc-dir-card" href="/location/spain/barcelona/"><span class="fi fi-es" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Barcelona</div><div class="loc-dir-country">Spain</div></div><div class="loc-dir-time" data-tz="Europe/Madrid">--:--</div></a><a class="loc-dir-card" href="/location/spain/valencia/"><span class="fi fi-es" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Valencia</div><div class="loc-dir-country">Spain</div></div><div class="loc-dir-time" data-tz="Europe/Madrid">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/indonesia/">
+            <span class="fi fi-id" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Indonesia</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Asia/Jakarta">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/indonesia/jakarta/"><span class="fi fi-id" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Jakarta</div><div class="loc-dir-country">Indonesia</div></div><div class="loc-dir-time" data-tz="Asia/Jakarta">--:--</div></a><a class="loc-dir-card" href="/location/indonesia/surabaya/"><span class="fi fi-id" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Surabaya</div><div class="loc-dir-country">Indonesia</div></div><div class="loc-dir-time" data-tz="Asia/Jakarta">--:--</div></a><a class="loc-dir-card" href="/location/indonesia/bandung/"><span class="fi fi-id" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Bandung</div><div class="loc-dir-country">Indonesia</div></div><div class="loc-dir-time" data-tz="Asia/Jakarta">--:--</div></a><a class="loc-dir-card" href="/location/indonesia/bali-denpasar/"><span class="fi fi-id" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Bali (Denpasar)</div><div class="loc-dir-country">Indonesia</div></div><div class="loc-dir-time" data-tz="Asia/Makassar">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/netherlands/">
+            <span class="fi fi-nl" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">Netherlands</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Europe/Amsterdam">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/netherlands/amsterdam/"><span class="fi fi-nl" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Amsterdam</div><div class="loc-dir-country">Netherlands</div></div><div class="loc-dir-time" data-tz="Europe/Amsterdam">--:--</div></a><a class="loc-dir-card" href="/location/netherlands/rotterdam/"><span class="fi fi-nl" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Rotterdam</div><div class="loc-dir-country">Netherlands</div></div><div class="loc-dir-time" data-tz="Europe/Amsterdam">--:--</div></a><a class="loc-dir-card" href="/location/netherlands/the-hague/"><span class="fi fi-nl" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">The Hague</div><div class="loc-dir-country">Netherlands</div></div><div class="loc-dir-time" data-tz="Europe/Amsterdam">--:--</div></a></div>
+        </div>
+        <div class="loc-dir-section">
+          <a class="loc-dir-country-header" href="/location/south-africa/">
+            <span class="fi fi-za" style="width:22px;height:16px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>
+            <span class="loc-dir-country-name">South Africa</span>
+            <span class="loc-dir-time loc-dir-country-time" data-tz="Africa/Johannesburg">--:--</span>
+            <i class="ti ti-chevron-right" style="margin-left:auto"></i>
+          </a>
+          <div class="loc-dir-grid"><a class="loc-dir-card" href="/location/south-africa/johannesburg/"><span class="fi fi-za" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Johannesburg</div><div class="loc-dir-country">South Africa</div></div><div class="loc-dir-time" data-tz="Africa/Johannesburg">--:--</div></a><a class="loc-dir-card" href="/location/south-africa/cape-town/"><span class="fi fi-za" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Cape Town</div><div class="loc-dir-country">South Africa</div></div><div class="loc-dir-time" data-tz="Africa/Johannesburg">--:--</div></a><a class="loc-dir-card" href="/location/south-africa/durban/"><span class="fi fi-za" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Durban</div><div class="loc-dir-country">South Africa</div></div><div class="loc-dir-time" data-tz="Africa/Johannesburg">--:--</div></a><a class="loc-dir-card" href="/location/south-africa/pretoria/"><span class="fi fi-za" style="width:20px;height:15px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span><div class="loc-dir-info"><div class="loc-dir-name">Pretoria</div><div class="loc-dir-country">South Africa</div></div><div class="loc-dir-time" data-tz="Africa/Johannesburg">--:--</div></a></div>
+        </div></div>
+
+  <section class="seo-sec">
+    <h2>Free World Clock Directory by Country and City</h2>
+    <p>Browse current local time for 20 countries and 83 major cities worldwide, organized by country for easy navigation. Every time updates live, every second, directly from your browser — no API calls, no delays.</p>
+    <div class="seo-grid">
+      <article class="seo-card"><h3>Organized by Country</h3><p>Cities are grouped under their country for easy browsing. Click any country name to see its dedicated page with capital, currency, population, and all tracked cities.</p></article>
+      <article class="seo-card"><h3>Live, Accurate Time</h3><p>Every clock on this page uses your browser's built-in <code>Intl.DateTimeFormat</code> with the correct IANA timezone for that exact city — accounting for Daylight Saving Time automatically.</p></article>
+      <article class="seo-card"><h3>Need to Convert Time?</h3><p>Once you find a city, use our <a href="/converter.html">Timezone Converter</a> to compare it against your own location, or the Meeting Planner to find overlapping work hours.</p></article>
+    </div>
+  </section>
+</main>
+
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/">World Clock</a>
+        <a href="/converter.html">Timezone Converter</a>
+        <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/weather.html">Weather</a>
+        <a href="/tools.html">Time Tools</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>&copy; <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="/util.js"></script>
+<script src="/locations-menu.js" defer></script>
+<script src="/pwa-install.js" defer></script>
+<script>boot();</script>
+<script>
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return;
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+
+// Universal live-clock — works for every [data-tz] element on every location page.
+// Single source of truth: the IANA timezone string in the data-tz attribute.
+function tickAllClocks() {
+  var now = new Date();
+  var is24h = (window.WC && window.WC.is24h) || false;
+
+  document.querySelectorAll('[data-tz]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz');
+    try {
+      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
+    } catch(e) { el.textContent = '--:--'; }
+  });
+
+  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz-date');
+    try {
+      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    } catch(e) { el.textContent = ''; }
+  });
+}
+tickAllClocks();
+setInterval(tickAllClocks, 1000);
+</script>
+</body>
+</html>

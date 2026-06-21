@@ -3,10 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="description" content="Free weather forecast for any city worldwide. Current conditions, hourly forecast, 7-day forecast. Compare multiple cities side by side.">
-<meta name="keywords" content="weather forecast,city weather,hourly forecast,7-day forecast,temperature,humidity,wind speed">
-<title>Weather by City — Current &amp; 7-Day Forecast | WorldClock</title>
-<link rel="canonical" href="https://timezonebudy.com/weather.html">
+<title>Current Time in Singapore, Singapore | TimezoneBudy</title>
+<meta name="description" content="Current local time and timezone info for Singapore, Singapore. UTC+08:00 · Asia/Singapore">
+<link rel="canonical" href="https://timezonebudy.com/location/singapore/singapore-city/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -15,12 +14,10 @@
 <link rel="stylesheet" href="/main.css">
 <link rel="stylesheet" href="/location.css">
 <link rel="stylesheet" href="/footer.css">
-<link rel="stylesheet" href="/weather.css">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TimezoneBudy">
 <link rel="stylesheet" href="/pwa.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
@@ -34,13 +31,14 @@
       <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
       <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
       <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
-      <a class="nav-tab active" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
       <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <div class="nav-tab loc-menu-trigger" tabindex="0">
+      <div class="nav-tab loc-menu-trigger active" tabindex="0">
         <i class="ti ti-map-pin"></i> <span>Locations</span> <i class="ti ti-chevron-down" style="font-size:12px"></i>
-        <div class="loc-mega-menu" data-locations-menu></div></div>
+        <div class="loc-mega-menu" data-locations-menu></div>
+      </div>
     </div>
-          <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
     <div class="nav-btns">
       <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
       <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
@@ -48,52 +46,48 @@
   </div>
 </nav>
 
-<section class="my-section" aria-label="My Cities">
+
+<section class="loc-hero">
   <div class="wrap">
-    <div class="my-head">
-      <h2 class="my-title"><i class="ti ti-map-pin"></i> My Cities</h2>
+    <nav class="loc-crumb">
+      <a href="/location/">Locations</a> ›
+      <a href="/location/singapore/">Singapore</a> ›
+      <span>Singapore</span>
+    </nav>
+    <div class="loc-eyebrow"><span class="fi fi-sg" style="width:18px;height:14px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Asia · Singapore</div>
+    <h1 class="loc-h1">Current Time in Singapore</h1>
+    <div class="loc-sub">Asia/Singapore · UTC+08:00</div>
+
+    <div class="loc-clock-card">
+      <span class="loc-live-time" data-tz="Asia/Singapore">--:--:--</span>
+      <span class="loc-live-date" data-tz-date="Asia/Singapore">Loading…</span>
     </div>
-    <div id="my-strip" role="list"></div>
   </div>
 </section>
 
-<main class="wrap" style="padding-top:20px;padding-bottom:48px">
-
-  <!-- Controls -->
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
-    <div class="search-wrap">
-      <div class="search-pill" onclick="document.getElementById('wx-srch').focus()" style="width:300px">
-        <i class="ti ti-search search-ico"></i>
-        <input type="search" id="wx-srch" placeholder="Search city to add…" autocomplete="off" autocorrect="off">
-      </div>
-      <div id="wx-dd" class="search-dd" hidden></div>
-    </div>
-    <button class="tbtn secondary" style="padding:8px 16px;font-size:13px;border:1.5px solid var(--clr-brand);border-radius:30px;background:none;color:var(--clr-brand);cursor:pointer" onclick="autoLocateWx()">
-      <i class="ti ti-current-location"></i> My Location
-    </button>
-    <!-- Unit toggle -->
-    <div class="unit-toggle">
-      <button class="unit-btn active" data-u="celsius" onclick="setUnit('celsius')">°C</button>
-      <button class="unit-btn" data-u="fahrenheit" onclick="setUnit('fahrenheit')">°F</button>
-    </div>
+<main class="wrap loc-main">
+  <div class="loc-stat-grid">
+    <div class="loc-stat"><div class="loc-stat-lbl">Country</div><div class="loc-stat-val"><a href="/location/singapore/" style="color:inherit;text-decoration:none;display:flex;align-items:center;gap:6px;justify-content:center"><span class="fi fi-sg" style="width:16px;height:12px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span> Singapore</a></div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">UTC Offset</div><div class="loc-stat-val">UTC+08:00</div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">Currency</div><div class="loc-stat-val">$ SGD</div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">Currency Name</div><div class="loc-stat-val">Singapore Dollar</div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">Language</div><div class="loc-stat-val">English/Mandarin/Malay</div></div>
+    <div class="loc-stat"><div class="loc-stat-lbl">Dial Code</div><div class="loc-stat-val">+65</div></div>
   </div>
-  <p style="font-size:12px;color:var(--clr-text3);margin-bottom:16px">Powered by <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> — free, no API key. Cities loaded from your World Clock selections.</p>
 
-  <!-- City weather cards -->
-  <div id="wx-list" class="wx-city-list"></div>
+  
 
-  <!-- SEO -->
-  <section class="seo-sec" style="margin-top:40px">
-    <h2>Free Weather Forecast for Any City</h2>
-    <p>Compare current weather and forecasts for multiple cities simultaneously. Powered by Open-Meteo — a fully free, open-source weather API with no key required. Data includes current temperature, humidity, wind speed, UV index, visibility, hourly forecast for the next 12 hours, and a 7-day daily forecast.</p>
+  <section class="seo-sec">
+    <h2>About Time in Singapore</h2>
+    <p>Singapore is located in <a href="/location/singapore/">Singapore</a> and operates on Asia/Singapore time (UTC+08:00). Use our <a href="/converter.html">Timezone Converter</a> to compare Singapore with any other city worldwide, or check the <a href="/weather.html">live weather</a> and <a href="/sunmoon.html">sun &amp; moon times</a> for this location.</p>
     <div class="seo-grid">
-      <article class="seo-card"><h3>No API Key</h3><p>Open-Meteo is a completely free, open-source weather API. No account, no key, no rate limits for personal use. Forecasts are updated hourly from global weather models.</p></article>
-      <article class="seo-card"><h3>Compare Cities</h3><p>Add multiple cities to compare temperature, conditions, and forecasts side by side. Great for travel planning or understanding weather differences across time zones.</p></article>
-      <article class="seo-card"><h3>°C &amp; °F</h3><p>Toggle between Celsius and Fahrenheit at any time. Your preference is saved for future visits. All forecasts update instantly when you switch units.</p></article>
+      <article class="seo-card"><h3>Current Time Zone</h3><p>Singapore runs on Asia/Singapore, which is UTC+08:00. This timezone does not observe Daylight Saving Time, so the offset stays the same year-round.</p></article>
+      <article class="seo-card"><h3>Plan a Meeting</h3><p>Scheduling a call with someone in Singapore? Use our <a href="/converter.html">Timezone Converter</a> to find overlapping work hours, or try the Meeting Planner to compare against your own timezone instantly.</p></article>
+      <article class="seo-card"><h3>More About Singapore</h3><p>Singapore is one of 1 major cities we track in <a href="/location/singapore/">Singapore</a>. The country uses Singapore Dollar (SGD) and English/Mandarin/Malay as a primary language.</p></article>
     </div>
   </section>
-
 </main>
+
 
 <footer class="site-footer">
   <div class="wrap">
@@ -136,7 +130,7 @@
     </div>
 
     <div class="footer-bottom">
-      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <span>&copy; <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
       <div class="footer-bottom-links">
         <a href="/privacy-policy.html">Privacy</a>
         <a href="/terms.html">Terms</a>
@@ -146,18 +140,14 @@
   </div>
 </footer>
 
-
-<div id="toast" role="status" aria-live="polite"></div>
-<script src="/cities.js"></script>
 <script src="/util.js"></script>
 <script src="/locations-menu.js" defer></script>
 <script src="/pwa-install.js" defer></script>
-<script src="/weather.js"></script>
+<script>boot();</script>
 <script>
-// Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
 document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
   trigger.addEventListener('click', function(e) {
-    if (e.target.closest('.loc-mega-menu')) return; // clicking inside menu shouldn't toggle
+    if (e.target.closest('.loc-mega-menu')) return;
     trigger.classList.toggle('menu-open');
   });
 });
@@ -171,6 +161,29 @@ document.addEventListener('keydown', function(e) {
     document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
   }
 });
+
+// Universal live-clock — works for every [data-tz] element on every location page.
+// Single source of truth: the IANA timezone string in the data-tz attribute.
+function tickAllClocks() {
+  var now = new Date();
+  var is24h = (window.WC && window.WC.is24h) || false;
+
+  document.querySelectorAll('[data-tz]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz');
+    try {
+      el.textContent = now.toLocaleTimeString('en-US', { timeZone: tz, hour12: !is24h, hour:'2-digit', minute:'2-digit', second: el.classList.contains('loc-live-time') ? '2-digit' : undefined });
+    } catch(e) { el.textContent = '--:--'; }
+  });
+
+  document.querySelectorAll('[data-tz-date]').forEach(function(el) {
+    var tz = el.getAttribute('data-tz-date');
+    try {
+      el.textContent = now.toLocaleDateString('en-US', { timeZone: tz, weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    } catch(e) { el.textContent = ''; }
+  });
+}
+tickAllClocks();
+setInterval(tickAllClocks, 1000);
 </script>
 </body>
 </html>
