@@ -14,7 +14,6 @@ function setTool(t){
   document.querySelectorAll('.tool-panel').forEach(function(p){p.style.display='none';});
   var p=document.getElementById('p-'+t); if(p) p.style.display='block';
   if(t==='meeting') renderMeeting();
-  if(t==='diff')    renderDiff();
   updateShare();
 }
 
@@ -96,24 +95,6 @@ function renderMeeting(){
 function rmMtg(i){CV.cities.splice(i,1);saveCV();renderMeeting();}
 function selHour(h){CV.selHour=CV.selHour===h?null:h;renderMeeting();}
 
-// ── Time Diff ─────────────────────────────────────────────────────────────────
-function renderDiff(){
-  var el=document.getElementById('diff-body');if(!el)return;
-  if(CV.cities.length<2){el.innerHTML='<p style="color:var(--clr-text3);padding:16px">Add at least 2 cities in the Converter tab.</p>';return;}
-  var src=CV.cities[0];
-  var html='<p style="font-size:13px;color:var(--clr-text2);margin-bottom:10px">vs '+flag(src.cc,14)+' <strong>'+src.name+'</strong> ('+utcOff(src.tz)+') — '+fmt(src.tz)+'</p><div class="diff-cards">';
-  CV.cities.slice(1).forEach(function(c){
-    var d=offMin(new Date(),c.tz)-offMin(new Date(),src.tz);
-    var abs=Math.abs(d),str=d===0?'Same time':(d>0?'+':'−')+Math.floor(abs/60)+'h'+(abs%60?abs%60+'m':'');
-    var col=d===0?'':d>0?'color:#2e7d32':'color:#c62828';
-    html+='<div class="diff-card">'+flag(c.cc,22)
-      +'<div style="flex:1"><div style="font-weight:600">'+c.name+'</div><div style="font-size:12px;color:var(--clr-text2)">'+c.country+' · '+utcOff(c.tz)+'</div></div>'
-      +'<div style="text-align:right"><div style="font-family:var(--mono);font-size:18px;font-weight:600">'+fmt(c.tz)+'</div>'
-      +'<div style="font-size:12px;font-weight:600;'+col+'">'+str+'</div></div></div>';
-  });
-  el.innerHTML=html+'</div>';
-}
-
 // ── Share URL ─────────────────────────────────────────────────────────────────
 function updateShare(){
   var el=document.getElementById('share-url');if(!el)return;
@@ -143,7 +124,7 @@ function tickSide(){
 }
 
 // ── Tick ───────────────────────────────────────────────────────────────────────
-function tick(){tickStrip();tickConv();tickSide();if(CV.tool==='diff')renderDiff();}
+function tick(){tickStrip();tickConv();tickSide();}
 function onPinsChanged(){renderStrip();}
 function onFmtChange(){renderStrip();renderConv();if(CV.tool==='meeting')renderMeeting();}
 
@@ -159,4 +140,3 @@ initSearch('mtg-srch','mtg-dd',function(city){addConvCity(city);document.getElem
 renderConv(); setTool('converter');
 tickSide(); setInterval(tick,1000);
 if(location.hash==='#meeting') setTool('meeting');
-if(location.hash==='#diff') setTool('diff');
