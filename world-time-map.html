@@ -30,216 +30,273 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 
 <style>
-/* ── Map page layout ──────────────────────────────────────── */
-.wtm-wrap { max-width:1200px; margin:0 auto; padding:28px 20px 64px; }
+/* ═══════════════════════════════════════════════════════════
+   WORLD TIME MAP — v4 — Side-panel architecture
+   ═══════════════════════════════════════════════════════════ */
 
-/* ── Page hero ────────────────────────────────────────────── */
-.wtm-hero { margin-bottom:24px; }
-.wtm-hero h1 { font-size:clamp(22px,4vw,32px); font-weight:700; margin:0 0 8px; }
-.wtm-hero p  { font-size:15px; opacity:.72; max-width:640px; margin:0; line-height:1.6; }
+/* ── Page wrapper ─────────────────────────────────────────── */
+.wtm-wrap { max-width:1280px; margin:0 auto; padding:24px 20px 64px; }
+.wtm-hero { margin-bottom:20px; }
+.wtm-hero h1 { font-size:clamp(20px,3.5vw,30px); font-weight:700; margin:0 0 6px; }
+.wtm-hero p  { font-size:14px; opacity:.68; max-width:580px; margin:0; line-height:1.55; }
 
-/* ── Map container ────────────────────────────────────────── */
+/* ── Map + panel side-by-side layout ─────────────────────── */
+.wtm-stage {
+  display:grid;
+  grid-template-columns:1fr 280px;
+  grid-template-rows:auto;
+  gap:14px;
+  align-items:start;
+}
+
+/* ── Map block ────────────────────────────────────────────── */
 .wtm-map-wrap {
-  position:relative; border-radius:16px; overflow:hidden;
-  height:clamp(340px,52vh,600px);
-  border:1px solid rgba(128,128,128,0.15);
-  box-shadow:0 4px 24px rgba(0,0,0,0.15);
+  position:relative; border-radius:14px; overflow:hidden;
+  height:clamp(320px,56vh,620px);
+  border:1px solid rgba(128,128,128,0.14);
+  box-shadow:0 4px 20px rgba(0,0,0,0.14);
+  min-width:0;
 }
 #wtm-map { width:100%; height:100%; }
 
-/* ── Search (inside map) ──────────────────────────────────── */
+/* ── Search inside map ────────────────────────────────────── */
 .wtm-search-wrap {
-  position:absolute; top:14px; left:14px; z-index:10;
-  width:min(280px,calc(100% - 80px));
+  position:absolute; top:12px; left:12px; z-index:10;
+  width:min(260px,calc(100% - 68px));
 }
 .wtm-search-wrap input {
-  width:100%; padding:10px 14px; border-radius:10px; border:none;
-  background:rgba(255,255,255,0.96); color:#1a1d23; font-size:14px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.22); box-sizing:border-box; font-family:inherit;
+  width:100%; padding:9px 13px; border-radius:9px; border:none;
+  background:rgba(255,255,255,0.97); color:#1a1d23; font-size:13.5px;
+  box-shadow:0 2px 10px rgba(0,0,0,0.2); box-sizing:border-box; font-family:inherit;
 }
 .wtm-search-wrap input:focus { outline:2px solid var(--accent,#58a6ff); }
 .wtm-search-results {
-  margin-top:4px; background:#fff; border-radius:10px;
-  box-shadow:0 4px 16px rgba(0,0,0,0.22); overflow:hidden; display:none;
+  margin-top:4px; background:#fff; border-radius:9px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2); overflow:hidden; display:none;
 }
 .wtm-search-result {
-  padding:10px 14px; font-size:13px; cursor:pointer; color:#1a1d23;
-  border-bottom:1px solid rgba(0,0,0,0.07);
+  padding:9px 13px; font-size:13px; cursor:pointer; color:#1a1d23;
+  border-bottom:1px solid rgba(0,0,0,0.06);
 }
 .wtm-search-result:last-child { border-bottom:none; }
 .wtm-search-result:hover { background:#eff6ff; }
 .wtm-search-result strong { font-weight:600; }
-.wtm-search-result span { opacity:.6; margin-left:6px; }
+.wtm-search-result span { opacity:.55; margin-left:5px; font-size:12px; }
 
-/* ── Map controls ─────────────────────────────────────────── */
+/* ── Map controls (top-right) ─────────────────────────────── */
 .wtm-controls {
-  position:absolute; top:14px; right:14px; z-index:10;
-  display:flex; flex-direction:column; gap:6px;
+  position:absolute; top:12px; right:12px; z-index:10;
+  display:flex; flex-direction:column; gap:5px;
 }
 .wtm-ctrl-btn {
-  width:36px; height:36px; border-radius:8px; border:none;
-  background:rgba(255,255,255,0.93); color:#1a1d23; font-size:16px;
+  width:34px; height:34px; border-radius:8px; border:none;
+  background:rgba(255,255,255,0.93); color:#1a1d23; font-size:15px;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.18); transition:background .15s;
+  box-shadow:0 2px 7px rgba(0,0,0,0.16); transition:background .12s;
 }
 .wtm-ctrl-btn:hover { background:#fff; }
 .wtm-ctrl-btn.active { background:var(--accent,#58a6ff); color:#fff; }
 
-/* ── Popup — redesigned ───────────────────────────────────── */
-/* MapLibre popup wrapper — always rendered relative to the map */
-.wtm-popup .maplibregl-popup-content {
-  border-radius:14px; padding:0; overflow:hidden;
-  box-shadow:0 12px 40px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.12);
-  width:240px; max-width:calc(100vw - 32px);
-  animation: popupIn .18s cubic-bezier(.2,.8,.3,1) both;
+/* ── Legend (bottom-left inside map) ─────────────────────── */
+.wtm-legend {
+  position:absolute; bottom:10px; left:12px; z-index:10;
+  border-radius:8px; padding:7px 11px;
+  background:rgba(0,0,0,0.62); color:#fff;
+  backdrop-filter:blur(4px); font-size:11px; line-height:1.9;
 }
-@keyframes popupIn {
-  from { opacity:0; transform:scale(.94) translateY(4px); }
-  to   { opacity:1; transform:scale(1)  translateY(0);    }
-}
-[data-theme="light"] .wtm-popup .maplibregl-popup-content {
-  background:#ffffff; color:#1a1d23;
-  border:1px solid rgba(0,0,0,0.08);
-}
-[data-theme="dark"] .wtm-popup .maplibregl-popup-content {
-  background:#1a2132; color:#e6edf3;
-  border:1px solid rgba(255,255,255,0.1);
-}
-/* Hide the default tip/tail and default close btn */
-.wtm-popup .maplibregl-popup-tip { display:none; }
-.wtm-popup .maplibregl-popup-close-button { display:none; }
+.wtm-legend-row { display:flex; align-items:center; gap:7px; }
+.wtm-legend-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
 
-/* ── Popup inner layout ───────────────────────────────────── */
-.popup-inner { padding:0; }
+/* ── Right-side info panel ────────────────────────────────── */
+.wtm-panel {
+  border-radius:14px; overflow:hidden;
+  border:1px solid rgba(128,128,128,0.14);
+  box-shadow:0 4px 20px rgba(0,0,0,0.1);
+  display:flex; flex-direction:column;
+  transition:box-shadow .2s;
+  /* sticky so it stays visible as user scrolls */
+  position:sticky; top:72px;
+}
+[data-theme="light"] .wtm-panel { background:#ffffff; color:#1a1d23; }
+[data-theme="dark"]  .wtm-panel { background:#151e2e; color:#e6edf3; }
 
-/* Header strip — flag + location + close btn */
-.popup-header {
-  display:flex; align-items:flex-start; gap:10px;
-  padding:14px 14px 10px;
+/* Empty state */
+.wtm-panel-empty {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:32px 20px; text-align:center; gap:10px;
+  min-height:200px;
+}
+.wtm-panel-empty-icon { font-size:32px; opacity:.35; }
+.wtm-panel-empty-text { font-size:13px; opacity:.45; line-height:1.5; }
+
+/* Panel header — flag + location + close */
+.panel-header {
+  display:flex; align-items:center; gap:10px;
+  padding:14px 14px 12px;
   border-bottom:1px solid rgba(128,128,128,0.1);
 }
-.popup-flag { font-size:28px; line-height:1; flex-shrink:0; margin-top:1px; }
-.popup-location { flex:1; min-width:0; }
-.popup-city {
+.panel-flag { font-size:26px; line-height:1; flex-shrink:0; }
+.panel-location { flex:1; min-width:0; }
+.panel-city {
   font-weight:700; font-size:15px; line-height:1.2;
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-.popup-country { font-size:12px; opacity:.55; margin-top:2px; }
-.popup-close-btn {
-  width:24px; height:24px; border-radius:6px; border:none; flex-shrink:0;
-  background:rgba(128,128,128,0.12); color:inherit; cursor:pointer;
-  font-size:13px; line-height:24px; text-align:center; margin-top:1px;
-  transition:background .15s;
+.panel-country { font-size:12px; opacity:.5; margin-top:2px; }
+.panel-close {
+  width:26px; height:26px; border-radius:7px; border:none; flex-shrink:0;
+  background:rgba(128,128,128,0.1); color:inherit; cursor:pointer;
+  font-size:13px; display:flex; align-items:center; justify-content:center;
+  transition:background .12s;
 }
-.popup-close-btn:hover { background:rgba(128,128,128,0.22); }
+.panel-close:hover { background:rgba(128,128,128,0.2); }
 
-/* Time — primary focus */
-.popup-time-block { padding:14px 14px 10px; text-align:center; }
-.popup-time {
-  font-size:38px; font-weight:700; letter-spacing:-.5px;
-  color:var(--accent,#58a6ff); font-family:'JetBrains Mono',monospace;
-  line-height:1; margin-bottom:4px;
-}
-.popup-date { font-size:12px; opacity:.6; }
-
-/* Details rows with icons */
-.popup-details { padding:0 14px 10px; }
-.popup-row {
-  display:flex; align-items:center; gap:8px;
-  font-size:12px; padding:5px 0;
+/* Panel time — primary element */
+.panel-time-block {
+  padding:18px 14px 14px; text-align:center;
   border-bottom:1px solid rgba(128,128,128,0.08);
 }
-.popup-row:last-child { border-bottom:none; }
-.popup-row-icon { font-size:13px; opacity:.5; width:16px; text-align:center; flex-shrink:0; }
-.popup-row-label { opacity:.55; flex:1; }
-.popup-row-value { font-weight:600; font-size:11.5px; text-align:right; }
-
-/* Pin button — compact, icon-style */
-.popup-footer {
-  padding:10px 14px 12px;
-  border-top:1px solid rgba(128,128,128,0.1);
+.panel-time {
+  font-size:32px; font-weight:700; letter-spacing:-.3px;
+  color:var(--accent,#58a6ff); font-family:'JetBrains Mono',monospace;
+  line-height:1; white-space:nowrap;
 }
-.popup-pin-btn {
+.panel-date { font-size:12px; opacity:.55; margin-top:5px; }
+
+/* Panel detail rows */
+.panel-details { padding:8px 14px 12px; }
+.panel-row {
+  display:flex; align-items:center; gap:9px;
+  padding:6px 0; font-size:12.5px;
+  border-bottom:1px solid rgba(128,128,128,0.07);
+}
+.panel-row:last-child { border-bottom:none; }
+.panel-row-icon {
+  width:18px; height:18px; border-radius:5px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; background:rgba(88,166,255,0.1); color:var(--accent,#58a6ff);
+}
+.panel-row-label { opacity:.5; flex:1; font-size:12px; }
+.panel-row-value { font-weight:600; font-size:12px; text-align:right; }
+
+/* Panel pin button */
+.panel-footer { padding:10px 14px 14px; }
+.panel-pin-btn {
   display:flex; align-items:center; justify-content:center; gap:6px;
-  width:100%; padding:8px 12px; border-radius:8px; border:none;
-  font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;
+  width:100%; padding:9px 12px; border-radius:9px; border:none;
+  font-size:12.5px; font-weight:600; cursor:pointer; font-family:inherit;
   transition:all .15s;
 }
-.popup-pin-btn.unpinned {
-  background:rgba(88,166,255,0.12);
-  color:var(--accent,#58a6ff);
-  border:1px solid rgba(88,166,255,0.25);
+.panel-pin-btn.unpinned {
+  background:rgba(88,166,255,0.1); color:var(--accent,#58a6ff);
+  border:1px solid rgba(88,166,255,0.22);
 }
-.popup-pin-btn.unpinned:hover {
-  background:var(--accent,#58a6ff); color:#04101f;
+.panel-pin-btn.unpinned:hover { background:var(--accent,#58a6ff); color:#04101f; }
+.panel-pin-btn.pinned {
+  background:rgba(248,81,73,0.08); color:#e24b4a;
+  border:1px solid rgba(248,81,73,0.18);
 }
-.popup-pin-btn.pinned {
-  background:rgba(248,81,73,0.1);
-  color:#e24b4a;
-  border:1px solid rgba(248,81,73,0.2);
-}
-.popup-pin-btn.pinned:hover { background:rgba(248,81,73,0.2); }
+.panel-pin-btn.pinned:hover { background:rgba(248,81,73,0.16); }
 
-/* ── Pinned cities panel ──────────────────────────────────── */
-.wtm-pins-section { margin-top:24px; }
-.wtm-pins-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.wtm-pins-header h2 { font-size:16px; font-weight:700; margin:0; }
-.wtm-pins-clear { font-size:12px; opacity:.55; background:none; border:none; cursor:pointer; color:inherit; }
-.wtm-pins-clear:hover { opacity:.85; }
-.wtm-pins-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; }
-.wtm-pin-card {
-  border-radius:12px; padding:14px 16px; position:relative;
-  border:1px solid rgba(128,128,128,0.15);
+/* ── Pinned cities strip ──────────────────────────────────── */
+.wtm-pins-section { margin-top:18px; }
+.wtm-pins-header {
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;
 }
+.wtm-pins-header h2 { font-size:15px; font-weight:700; margin:0; }
+.wtm-pins-clear {
+  font-size:12px; opacity:.5; background:none; border:none;
+  cursor:pointer; color:inherit;
+}
+.wtm-pins-clear:hover { opacity:.8; }
+.wtm-pins-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(175px,1fr));
+  gap:10px;
+}
+.wtm-pin-card {
+  border-radius:12px; padding:12px 14px; position:relative;
+  border:1px solid rgba(128,128,128,0.13);
+  transition:border-color .15s;
+}
+.wtm-pin-card:hover { border-color:var(--accent,#58a6ff); }
 [data-theme="dark"]  .wtm-pin-card { background:rgba(255,255,255,0.03); }
-[data-theme="light"] .wtm-pin-card { background:#f7f8fa; }
-.wtm-pin-flag { font-size:20px; }
-.wtm-pin-city { font-weight:700; font-size:14px; margin-top:4px; }
-.wtm-pin-meta { font-size:11px; opacity:.5; margin-bottom:4px; }
-.wtm-pin-time { font-size:24px; font-weight:700; color:var(--accent,#58a6ff); font-family:'JetBrains Mono',monospace; }
-.wtm-pin-date { font-size:11px; opacity:.55; margin-top:2px; }
+[data-theme="light"] .wtm-pin-card { background:#f8f9fb; }
+.wtm-pin-flag { font-size:18px; }
+.wtm-pin-city { font-weight:700; font-size:13px; margin-top:3px; }
+.wtm-pin-meta { font-size:10.5px; opacity:.45; margin-bottom:4px; }
+.wtm-pin-time {
+  font-size:22px; font-weight:700;
+  color:var(--accent,#58a6ff); font-family:'JetBrains Mono',monospace;
+  white-space:nowrap;
+}
+.wtm-pin-date { font-size:10.5px; opacity:.5; margin-top:2px; }
 .wtm-pin-remove {
-  position:absolute; top:8px; right:8px; width:22px; height:22px;
-  border-radius:50%; border:none; background:rgba(128,128,128,0.12);
-  color:inherit; cursor:pointer; font-size:12px; line-height:22px; text-align:center;
+  position:absolute; top:7px; right:7px; width:20px; height:20px;
+  border-radius:50%; border:none; background:rgba(128,128,128,0.1);
+  color:inherit; cursor:pointer; font-size:11px;
+  display:flex; align-items:center; justify-content:center;
 }
 .wtm-pin-remove:hover { background:rgba(220,50,50,0.18); color:#e24b4a; }
-.wtm-pins-empty { font-size:14px; opacity:.5; padding:8px 0; margin:0; }
+.wtm-pins-empty { font-size:13px; opacity:.45; padding:6px 0; margin:0; }
 
 /* ── SEO section ──────────────────────────────────────────── */
-.seo-sec { margin-top:56px; }
-.seo-sec h2 { font-size:20px; font-weight:700; margin:36px 0 10px; }
+.seo-sec { margin-top:52px; }
+.seo-sec h2 { font-size:20px; font-weight:700; margin:34px 0 10px; }
 .seo-sec h2:first-child { margin-top:0; }
 .seo-sec p  { font-size:15px; line-height:1.8; opacity:.85; margin-bottom:14px; }
-.seo-sec h3 { font-size:16px; font-weight:700; margin:22px 0 8px; }
-.seo-faq-item { margin-bottom:20px; }
-.seo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin:16px 0 28px; }
+.seo-sec h3 { font-size:16px; font-weight:700; margin:20px 0 7px; }
+.seo-faq-item { margin-bottom:18px; }
+.seo-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:12px; margin:14px 0 26px;
+}
 .seo-card {
-  border-radius:12px; padding:16px 18px;
-  border:1px solid rgba(128,128,128,0.12);
+  border-radius:12px; padding:15px 17px;
+  border:1px solid rgba(128,128,128,0.11);
 }
 [data-theme="dark"]  .seo-card { background:rgba(255,255,255,0.03); }
 [data-theme="light"] .seo-card { background:#f7f8fa; }
-.seo-card h3 { font-size:14px; font-weight:700; margin:0 0 8px; }
-.seo-card p  { font-size:13px; opacity:.75; margin:0; line-height:1.55; }
-.wtm-internal-links { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+.seo-card h3 { font-size:13.5px; font-weight:700; margin:0 0 7px; }
+.seo-card p  { font-size:13px; opacity:.72; margin:0; line-height:1.5; }
+.wtm-internal-links { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
 .wtm-internal-links a {
-  display:inline-flex; align-items:center; gap:6px;
-  padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600;
-  border:1px solid rgba(128,128,128,0.18); text-decoration:none; color:inherit;
-  transition:background .15s,border-color .15s,color .15s;
+  display:inline-flex; align-items:center; gap:5px;
+  padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:600;
+  border:1px solid rgba(128,128,128,0.16); text-decoration:none; color:inherit;
+  transition:background .12s,border-color .12s,color .12s;
 }
-[data-theme="dark"]  .wtm-internal-links a { background:rgba(255,255,255,0.04); }
+[data-theme="dark"]  .wtm-internal-links a { background:rgba(255,255,255,0.03); }
 [data-theme="light"] .wtm-internal-links a { background:#f5f6f8; }
 .wtm-internal-links a:hover {
-  background:rgba(88,166,255,0.1); border-color:var(--accent,#58a6ff);
+  background:rgba(88,166,255,0.09);
+  border-color:var(--accent,#58a6ff);
   color:var(--accent,#58a6ff);
 }
 
-@media (max-width:600px) {
+/* ══════════════════════════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════════════════════════ */
+
+/* Tablet (≤960px): narrow the panel */
+@media (max-width:960px) {
+  .wtm-stage { grid-template-columns:1fr 240px; }
+}
+
+/* Mobile (≤700px): stack — map full width, panel becomes bottom sheet */
+@media (max-width:700px) {
+  .wtm-stage { grid-template-columns:1fr; gap:0; }
+  .wtm-map-wrap { border-radius:14px 14px 0 0; height:clamp(280px,48vw,380px); }
+  .wtm-panel {
+    position:relative; top:auto; /* cancel sticky */
+    border-radius:0 0 14px 14px;
+    border-top:none;
+    max-height:0; overflow:hidden;
+    transition:max-height .3s cubic-bezier(.4,0,.2,1);
+  }
+  .wtm-panel.panel-open {
+    max-height:380px;
+  }
   .wtm-legend { display:none; }
-  .popup-time { font-size:30px; }
-  .wtm-map-wrap { height:clamp(300px,50vh,480px); }
 }
 </style>
 </head>
@@ -280,30 +337,81 @@
     <p>An interactive map showing live local times, day &amp; night regions, and time zones for cities worldwide. Click any city to see its current time, UTC offset, and time zone details.</p>
   </div>
 
-  <!-- MAP -->
-  <div class="wtm-map-wrap">
-    <div id="wtm-map"></div>
+  <!-- ── MAP + SIDE PANEL STAGE ── -->
+  <div class="wtm-stage">
 
-    <!-- Search -->
-    <div class="wtm-search-wrap">
-      <input type="text" id="wtm-search" placeholder="🔍  Search city or country…" autocomplete="off" aria-label="Search for a city">
-      <div class="wtm-search-results" id="wtm-search-results" role="listbox"></div>
+    <!-- Map -->
+    <div class="wtm-map-wrap">
+      <div id="wtm-map"></div>
+
+      <!-- Search -->
+      <div class="wtm-search-wrap">
+        <input type="text" id="wtm-search" placeholder="🔍  Search city or country…" autocomplete="off" aria-label="Search for a city">
+        <div class="wtm-search-results" id="wtm-search-results" role="listbox"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="wtm-controls" role="group" aria-label="Map controls">
+        <button class="wtm-ctrl-btn" id="btn-zoom-in"  title="Zoom in"  aria-label="Zoom in">+</button>
+        <button class="wtm-ctrl-btn" id="btn-zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
+        <button class="wtm-ctrl-btn" id="btn-reset"    title="Reset"    aria-label="Reset view"><i class="ti ti-home" style="font-size:13px"></i></button>
+        <button class="wtm-ctrl-btn active" id="btn-daynight" title="Day/Night" aria-label="Toggle day/night"><i class="ti ti-sun" style="font-size:13px"></i></button>
+      </div>
+
+      <!-- Legend -->
+      <div class="wtm-legend" aria-label="Map legend">
+        <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#fde68a"></div>Daytime</div>
+        <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#1e3a5f"></div>Night</div>
+      </div>
     </div>
 
-    <!-- Controls -->
-    <div class="wtm-controls" role="group" aria-label="Map controls">
-      <button class="wtm-ctrl-btn" id="btn-zoom-in"  title="Zoom in"           aria-label="Zoom in">+</button>
-      <button class="wtm-ctrl-btn" id="btn-zoom-out" title="Zoom out"          aria-label="Zoom out">−</button>
-      <button class="wtm-ctrl-btn" id="btn-reset"    title="Reset view"        aria-label="Reset view"><i class="ti ti-home" style="font-size:14px"></i></button>
-      <button class="wtm-ctrl-btn active" id="btn-daynight" title="Toggle day/night" aria-label="Toggle day/night overlay"><i class="ti ti-sun" style="font-size:14px"></i></button>
+    <!-- ── RIGHT-SIDE INFO PANEL ── -->
+    <div class="wtm-panel" id="wtm-panel">
+      <!-- Empty state (shown before any city selected) -->
+      <div class="wtm-panel-empty" id="panel-empty">
+        <div class="wtm-panel-empty-icon"><i class="ti ti-map-pin"></i></div>
+        <div class="wtm-panel-empty-text">Click any city on the map to see its local time and details here.</div>
+      </div>
+      <!-- City details (hidden until a city is selected) -->
+      <div id="panel-city" style="display:none">
+        <div class="panel-header">
+          <span class="panel-flag" id="panel-flag">🌍</span>
+          <div class="panel-location">
+            <div class="panel-city" id="panel-city-name">—</div>
+            <div class="panel-country" id="panel-country">—</div>
+          </div>
+          <button class="panel-close" id="panel-close" aria-label="Close panel">✕</button>
+        </div>
+        <div class="panel-time-block">
+          <div class="panel-time" id="panel-time">--:--:--</div>
+          <div class="panel-date" id="panel-date">—</div>
+        </div>
+        <div class="panel-details">
+          <div class="panel-row">
+            <span class="panel-row-icon"><i class="ti ti-clock"></i></span>
+            <span class="panel-row-label">UTC offset</span>
+            <span class="panel-row-value" id="panel-offset">—</span>
+          </div>
+          <div class="panel-row">
+            <span class="panel-row-icon"><i class="ti ti-world"></i></span>
+            <span class="panel-row-label">Time zone</span>
+            <span class="panel-row-value" id="panel-tz">—</span>
+          </div>
+          <div class="panel-row">
+            <span class="panel-row-icon"><i class="ti ti-info-circle"></i></span>
+            <span class="panel-row-label">Full name</span>
+            <span class="panel-row-value" id="panel-tzfull" style="font-size:10.5px;word-break:break-word;max-width:120px">—</span>
+          </div>
+        </div>
+        <div class="panel-footer">
+          <button class="panel-pin-btn unpinned" id="panel-pin-btn">
+            <i class="ti ti-map-pin"></i> Pin to compare
+          </button>
+        </div>
+      </div>
     </div>
 
-    <!-- Legend -->
-    <div class="wtm-legend" aria-label="Map legend">
-      <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#fde68a"></div>Daytime</div>
-      <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#1e3a5f"></div>Night</div>
-    </div>
-  </div>
+  </div><!-- /.wtm-stage -->
 
   <!-- Pinned cities -->
   <div class="wtm-pins-section">
@@ -574,7 +682,16 @@ function getOffset(tz, date) {
 }
 
 // ── Map init ──────────────────────────────────────────────────────────────
-let map, popup, dayNightOn = true;
+let map, dayNightOn = true;
+
+// Add pulse keyframe dynamically
+const styleEl = document.createElement('style');
+styleEl.textContent = `@keyframes markerPulse {
+  0%   { box-shadow:0 0 0 0   rgba(88,166,255,0.5); }
+  70%  { box-shadow:0 0 0 8px rgba(88,166,255,0); }
+  100% { box-shadow:0 0 0 0   rgba(88,166,255,0); }
+}`;
+document.head.appendChild(styleEl);
 const pinnedCities = [];
 
 function initMap() {
@@ -627,7 +744,7 @@ function initMap() {
     map.on('click', 'city-dots', e => {
       const p = e.features[0].properties;
       const c = CITIES.find(x => x.name === p.name);
-      if (c) showPopup(c, e.features[0].geometry.coordinates.slice());
+      if (c) openPanel(c);
     });
     map.on('mouseenter','city-dots', () => { map.getCanvas().style.cursor = 'pointer'; });
     map.on('mouseleave','city-dots', () => { map.getCanvas().style.cursor = ''; });
@@ -637,7 +754,7 @@ function initMap() {
       const hits = map.queryRenderedFeatures(e.point, { layers:['city-dots'] });
       if (!hits.length) {
         const nearest = nearestCity(e.lngLat.lat, e.lngLat.lng);
-        if (nearest) showPopup(nearest, [e.lngLat.lng, e.lngLat.lat]);
+        if (nearest) openPanel(nearest);
       }
     });
   });
@@ -652,104 +769,89 @@ function nearestCity(lat, lng) {
   return d < 22 ? best : null;
 }
 
-// ── Popup — redesigned with smart anchor ─────────────────────────────────
-let popupTimer = null;
+// ── Side panel — replaces popup entirely ─────────────────────────────────
+let panelCity = null;   // currently displayed city object
+let panelTimer = null;  // 1s tick for panel time
 
-function getSmartAnchor(lngLat) {
-  // Determine which quadrant the point is in relative to the map center
-  // to pick a popup anchor that keeps it fully within the map bounds
-  const mapBounds = map.getBounds();
-  const midLat = (mapBounds.getNorth() + mapBounds.getSouth()) / 2;
-  const midLng = (mapBounds.getEast() + mapBounds.getWest()) / 2;
-  const isNorth = lngLat.lat > midLat;
-  const isEast  = lngLat.lng > midLng;
-  // Return anchor opposite to position so popup opens toward center
-  if (isNorth && isEast)  return 'top-right';
-  if (isNorth && !isEast) return 'top-left';
-  if (!isNorth && isEast) return 'bottom-right';
-  return 'bottom-left';
-}
+// Small dot marker on map to show selected city (optional, not a popup)
+let selectedMarker = null;
 
-function buildPopupHTML(city, t, isPinned) {
-  const safeCity = JSON.stringify(city).replace(/"/g,'&quot;');
-  const tzShort = city.tz.split('/').pop().replace(/_/g,' ');
-  return `
-    <div class="popup-inner">
-      <div class="popup-header">
-        <span class="popup-flag">${city.flag}</span>
-        <div class="popup-location">
-          <div class="popup-city">${city.name}</div>
-          <div class="popup-country">${city.country}</div>
-        </div>
-        <button class="popup-close-btn" onclick="closePopup()" aria-label="Close">✕</button>
-      </div>
-      <div class="popup-time-block">
-        <div class="popup-time" id="pp-time">${t.time}</div>
-        <div class="popup-date" id="pp-date">${t.date}</div>
-      </div>
-      <div class="popup-details">
-        <div class="popup-row">
-          <span class="popup-row-icon"><i class="ti ti-clock"></i></span>
-          <span class="popup-row-label">UTC offset</span>
-          <span class="popup-row-value">${t.offset}</span>
-        </div>
-        <div class="popup-row">
-          <span class="popup-row-icon"><i class="ti ti-world"></i></span>
-          <span class="popup-row-label">Time zone</span>
-          <span class="popup-row-value">${tzShort}</span>
-        </div>
-        <div class="popup-row">
-          <span class="popup-row-icon"><i class="ti ti-info-circle"></i></span>
-          <span class="popup-row-label">Full name</span>
-          <span class="popup-row-value" style="font-size:10.5px;word-break:break-word;max-width:110px">${t.tzName}</span>
-        </div>
-      </div>
-      <div class="popup-footer">
-        <button class="popup-pin-btn ${isPinned ? 'pinned' : 'unpinned'}" onclick="togglePin(${safeCity})">
-          <i class="ti ti-map-pin"></i>
-          ${isPinned ? 'Unpin city' : 'Pin to compare'}
-        </button>
-      </div>
-    </div>`;
-}
+function openPanel(city) {
+  panelCity = city;
 
-function closePopup() {
-  if (popup) { popup.remove(); popup = null; }
-  if (popupTimer) { clearInterval(popupTimer); popupTimer = null; }
-}
+  // Stop previous timer
+  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
 
-function showPopup(city, coords) {
-  closePopup();
-  const isPinned = pinnedCities.some(p => p.name === city.name);
+  // Remove old selected marker
+  if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
+
+  // Add a subtle pulsing marker at the selected city
+  const el = document.createElement('div');
+  el.style.cssText = `
+    width:14px;height:14px;border-radius:50%;
+    background:var(--accent,#58a6ff);
+    border:2.5px solid #fff;
+    box-shadow:0 0 0 4px rgba(88,166,255,0.3);
+    animation:markerPulse 1.6s ease-out infinite;
+  `;
+  selectedMarker = new maplibregl.Marker({ element:el, anchor:'center' })
+    .setLngLat([city.lng, city.lat])
+    .addTo(map);
+
+  // Populate panel DOM
   const t = getLocalTime(city.tz);
-  const lngLat = { lat: coords[1], lng: coords[0] };
-  const anchor = getSmartAnchor(lngLat);
+  document.getElementById('panel-empty').style.display = 'none';
+  document.getElementById('panel-city').style.display  = 'block';
+  document.getElementById('panel-flag').textContent        = city.flag;
+  document.getElementById('panel-city-name').textContent  = city.name;
+  document.getElementById('panel-country').textContent    = city.country;
+  document.getElementById('panel-time').textContent       = t.time;
+  document.getElementById('panel-date').textContent       = t.date;
+  document.getElementById('panel-offset').textContent     = t.offset;
+  document.getElementById('panel-tz').textContent         = city.tz.split('/').pop().replace(/_/g,' ');
+  document.getElementById('panel-tzfull').textContent     = t.tzName;
 
-  popup = new maplibregl.Popup({
-    className: 'wtm-popup',
-    closeButton: false,      // using our own close button
-    closeOnClick: false,
-    anchor,
-    offset: { 'top-left':[6,6], 'top-right':[-6,6], 'bottom-left':[6,-6], 'bottom-right':[-6,-6] },
-    maxWidth: 'none'
-  })
-  .setLngLat(coords)
-  .setHTML(buildPopupHTML(city, t, isPinned))
-  .addTo(map);
+  // Update pin button state
+  updatePinBtn();
 
-  popupTimer = setInterval(() => {
-    const timeEl = document.getElementById('pp-time');
-    const dateEl = document.getElementById('pp-date');
-    if (timeEl && popup?.isOpen()) {
-      const t2 = getLocalTime(city.tz);
-      timeEl.textContent = t2.time;
-      dateEl.textContent = t2.date;
-    } else {
-      clearInterval(popupTimer);
-      popupTimer = null;
-    }
+  // On mobile: slide panel open
+  document.getElementById('wtm-panel').classList.add('panel-open');
+
+  // Start live time ticker in panel
+  panelTimer = setInterval(() => {
+    if (!panelCity) { clearInterval(panelTimer); return; }
+    const t2 = getLocalTime(panelCity.tz);
+    document.getElementById('panel-time').textContent = t2.time;
+    document.getElementById('panel-date').textContent = t2.date;
   }, 1000);
 }
+
+function closePanel() {
+  panelCity = null;
+  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
+  if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
+  document.getElementById('panel-empty').style.display = 'flex';
+  document.getElementById('panel-city').style.display  = 'none';
+  document.getElementById('wtm-panel').classList.remove('panel-open');
+}
+
+function updatePinBtn() {
+  if (!panelCity) return;
+  const isPinned = pinnedCities.some(p => p.name === panelCity.name);
+  const btn = document.getElementById('panel-pin-btn');
+  btn.className = 'panel-pin-btn ' + (isPinned ? 'pinned' : 'unpinned');
+  btn.innerHTML = isPinned
+    ? '<i class="ti ti-map-pin-off"></i> Unpin city'
+    : '<i class="ti ti-map-pin"></i> Pin to compare';
+}
+
+// Panel close button
+document.getElementById('panel-close').addEventListener('click', closePanel);
+
+// Panel pin button
+document.getElementById('panel-pin-btn').addEventListener('click', () => {
+  if (panelCity) togglePin(panelCity);
+});
 
 // ── Pin / unpin ───────────────────────────────────────────────────────────
 function togglePin(city) {
@@ -760,7 +862,7 @@ function togglePin(city) {
     if (pinnedCities.length >= 8) pinnedCities.shift();
     pinnedCities.push(city);
   }
-  if (popup) popup.remove();
+  updatePinBtn();
   renderPins();
 }
 
@@ -855,7 +957,7 @@ searchInput.addEventListener('input', () => {
       const city = CITIES.find(c => c.name === el.dataset.name);
       if (city) {
         map?.flyTo({ center:[city.lng, city.lat], zoom:5, duration:900 });
-        setTimeout(() => showPopup(city, [city.lng, city.lat]), 750);
+        setTimeout(() => openPanel(city), 500);
         searchInput.value = city.name;
         searchBox.style.display = 'none';
       }
