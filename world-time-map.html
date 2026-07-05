@@ -3,56 +3,71 @@
 <head>
 <script>
 (function() {
-  var s = localStorage.getItem('wc_theme');
-  var dark = s === 'dark' || (!s && matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+  var saved = localStorage.getItem('wc_theme');
+  var isDark = saved === 'dark' ||
+    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
 })();
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>World Time Map — Interactive Time Zones & Day/Night Map | TimezoneBudy</title>
-<meta name="description" content="Explore an interactive world time map with live day/night visualization. Click any country or city to see the current local time, UTC offset, and time zone. Free, no sign-up required.">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="Explore an interactive world time map with live day/night visualization. Click any city to see local time, UTC offset, time zone, and country flag. Free, no sign-up required.">
+<meta name="keywords" content="world time map,interactive time zones,day night map,live world clock map,UTC map,time zone map">
+<title>World Time Map — Interactive Time Zones & Live Day/Night | TimezoneBudy</title>
 <link rel="canonical" href="https://timezonebudy.com/world-time-map">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/footer.css">
 <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
-<style>
-/* ── Page layout ─────────────────────────────────────────── */
-.wtm-page { max-width:1200px; margin:0 auto; padding:28px 20px 64px; }
-.wtm-hero { text-align:center; margin-bottom:24px; }
-.wtm-hero h1 { font-size:clamp(22px,4vw,34px); font-weight:700; margin-bottom:8px; }
-.wtm-hero p { font-size:15px; opacity:.7; max-width:600px; margin:0 auto; }
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d2240">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 
-/* ── Map container ───────────────────────────────────────── */
+<style>
+/* ── Map page layout ──────────────────────────────────────── */
+.wtm-wrap { max-width:1200px; margin:0 auto; padding:28px 20px 64px; }
+
+/* ── Page hero ────────────────────────────────────────────── */
+.wtm-hero { margin-bottom:24px; }
+.wtm-hero h1 { font-size:clamp(22px,4vw,32px); font-weight:700; margin:0 0 8px; }
+.wtm-hero p  { font-size:15px; opacity:.72; max-width:640px; margin:0; line-height:1.6; }
+
+/* ── Map container ────────────────────────────────────────── */
 .wtm-map-wrap {
   position:relative; border-radius:16px; overflow:hidden;
-  height:clamp(360px,55vh,620px);
+  height:clamp(340px,52vh,600px);
   border:1px solid rgba(128,128,128,0.15);
-  box-shadow:0 4px 24px rgba(0,0,0,0.18);
+  box-shadow:0 4px 24px rgba(0,0,0,0.15);
 }
 #wtm-map { width:100%; height:100%; }
 
-/* ── Search bar ──────────────────────────────────────────── */
+/* ── Search (inside map) ──────────────────────────────────── */
 .wtm-search-wrap {
-  position:absolute; top:14px; left:14px; z-index:10; width:min(280px,calc(100% - 80px));
+  position:absolute; top:14px; left:14px; z-index:10;
+  width:min(280px,calc(100% - 80px));
 }
 .wtm-search-wrap input {
-  width:100%; padding:10px 14px; border-radius:10px;
-  border:none; background:rgba(255,255,255,0.95);
-  color:#1a1d23; font-size:14px; box-shadow:0 2px 12px rgba(0,0,0,0.2);
-  box-sizing:border-box;
+  width:100%; padding:10px 14px; border-radius:10px; border:none;
+  background:rgba(255,255,255,0.96); color:#1a1d23; font-size:14px;
+  box-shadow:0 2px 12px rgba(0,0,0,0.22); box-sizing:border-box; font-family:inherit;
 }
 .wtm-search-wrap input:focus { outline:2px solid var(--accent,#58a6ff); }
 .wtm-search-results {
   margin-top:4px; background:#fff; border-radius:10px;
-  box-shadow:0 4px 16px rgba(0,0,0,0.2); overflow:hidden; display:none;
+  box-shadow:0 4px 16px rgba(0,0,0,0.22); overflow:hidden; display:none;
 }
 .wtm-search-result {
   padding:10px 14px; font-size:13px; cursor:pointer; color:#1a1d23;
   border-bottom:1px solid rgba(0,0,0,0.07);
 }
 .wtm-search-result:last-child { border-bottom:none; }
-.wtm-search-result:hover { background:#f0f4ff; }
+.wtm-search-result:hover { background:#eff6ff; }
 .wtm-search-result strong { font-weight:600; }
 .wtm-search-result span { opacity:.6; margin-left:6px; }
 
@@ -63,198 +78,337 @@
 }
 .wtm-ctrl-btn {
   width:36px; height:36px; border-radius:8px; border:none;
-  background:rgba(255,255,255,0.92); color:#1a1d23;
-  font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,0.93); color:#1a1d23; font-size:16px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
   box-shadow:0 2px 8px rgba(0,0,0,0.18); transition:background .15s;
 }
 .wtm-ctrl-btn:hover { background:#fff; }
-.wtm-ctrl-btn.active { background: var(--accent,#58a6ff); color:#fff; }
+.wtm-ctrl-btn.active { background:var(--accent,#58a6ff); color:#fff; }
 
-/* ── Live clock bar ───────────────────────────────────────── */
-.wtm-clock-bar {
+/* ── UTC clock overlay ────────────────────────────────────── */
+.wtm-utc-bar {
   position:absolute; bottom:14px; left:14px; z-index:10;
-  background:rgba(0,0,0,0.72); color:#fff; border-radius:10px;
-  padding:10px 14px; font-size:13px; line-height:1.5;
-  backdrop-filter:blur(4px); min-width:150px;
+  background:rgba(0,0,0,0.7); color:#fff; border-radius:10px;
+  padding:10px 14px; line-height:1.5; backdrop-filter:blur(6px);
 }
-.wtm-clock-bar .utc-time { font-size:20px; font-weight:700; letter-spacing:.5px; }
-.wtm-clock-bar .utc-label { opacity:.7; font-size:11px; text-transform:uppercase; }
-
-/* ── Tooltip popup ────────────────────────────────────────── */
-.wtm-popup .maplibregl-popup-content {
-  border-radius:12px; padding:0; overflow:hidden;
-  box-shadow:0 8px 32px rgba(0,0,0,0.28); min-width:200px;
-}
-[data-theme="light"] .wtm-popup .maplibregl-popup-content { background:#fff; color:#1a1d23; }
-[data-theme="dark"] .wtm-popup .maplibregl-popup-content { background:#1e2433; color:#e6edf3; }
-.wtm-popup .maplibregl-popup-tip { display:none; }
-.popup-inner { padding:14px 16px; }
-.popup-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-.popup-flag { font-size:24px; line-height:1; }
-.popup-city { font-weight:700; font-size:16px; }
-.popup-country { font-size:12px; opacity:.6; }
-.popup-time { font-size:28px; font-weight:700; color:var(--accent,#58a6ff); margin-bottom:2px; }
-.popup-date { font-size:12px; opacity:.65; margin-bottom:10px; }
-.popup-row { display:flex; justify-content:space-between; font-size:12px; padding:3px 0; border-bottom:1px solid rgba(128,128,128,0.12); }
-.popup-row:last-child { border-bottom:none; }
-.popup-row-label { opacity:.6; }
-.popup-row-value { font-weight:600; }
-.popup-pin-btn {
-  margin-top:12px; width:100%; padding:7px; border-radius:7px; border:none;
-  background:var(--accent,#58a6ff); color:#04101f; font-weight:600; font-size:12px;
-  cursor:pointer;
-}
-.popup-pin-btn:hover { opacity:.9; }
-
-/* ── Pinned cities panel ──────────────────────────────────── */
-.wtm-pins {
-  margin-top:16px; display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px;
-}
-.wtm-pin-card {
-  border-radius:12px; padding:14px 16px;
-  background:rgba(255,255,255,0.03); border:1px solid rgba(128,128,128,0.15);
-  position:relative;
-}
-[data-theme="light"] .wtm-pin-card { background:#f7f8fa; }
-.wtm-pin-flag { font-size:22px; }
-.wtm-pin-city { font-weight:700; font-size:14px; margin-top:4px; }
-.wtm-pin-tz { font-size:11px; opacity:.55; }
-.wtm-pin-time { font-size:26px; font-weight:700; color:var(--accent,#58a6ff); margin:6px 0 2px; }
-.wtm-pin-date { font-size:11px; opacity:.6; }
-.wtm-pin-remove {
-  position:absolute; top:8px; right:8px; width:22px; height:22px;
-  border-radius:50%; border:none; background:rgba(128,128,128,0.15);
-  color:inherit; cursor:pointer; font-size:12px; line-height:22px; text-align:center;
-}
-.wtm-pin-remove:hover { background:rgba(220,50,50,0.2); color:#e24b4a; }
-.wtm-pins-empty { opacity:.5; font-size:14px; padding:12px 0; }
+.wtm-utc-bar .utc-label { font-size:10px; opacity:.65; text-transform:uppercase; letter-spacing:.4px; }
+.wtm-utc-bar .utc-time  { font-size:20px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+.wtm-utc-bar .utc-date  { font-size:11px; opacity:.6; }
 
 /* ── Legend ───────────────────────────────────────────────── */
 .wtm-legend {
   position:absolute; bottom:14px; right:14px; z-index:10;
-  background:rgba(0,0,0,0.65); border-radius:8px; padding:8px 12px;
-  font-size:11px; color:#fff; backdrop-filter:blur(4px); line-height:1.8;
+  background:rgba(0,0,0,0.65); border-radius:8px;
+  padding:8px 12px; font-size:11px; color:#fff;
+  backdrop-filter:blur(4px); line-height:1.9;
 }
-.wtm-legend-row { display:flex; align-items:center; gap:7px; }
+.wtm-legend-row { display:flex; align-items:center; gap:8px; }
 .wtm-legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
 
-/* ── SEO content ──────────────────────────────────────────── */
-.wtm-seo { margin-top:48px; max-width:800px; }
-.wtm-seo h2 { font-size:20px; font-weight:700; margin:32px 0 10px; }
-.wtm-seo p { font-size:15px; line-height:1.75; opacity:.85; margin-bottom:14px; }
-.wtm-seo h3 { font-size:16px; font-weight:700; margin:20px 0 8px; }
-.wtm-faq-item { margin-bottom:20px; }
+/* ── Popup ────────────────────────────────────────────────── */
+.wtm-popup .maplibregl-popup-content {
+  border-radius:12px; padding:0; overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,0.28); min-width:210px; max-width:260px;
+}
+[data-theme="light"] .wtm-popup .maplibregl-popup-content { background:#fff; color:#1a1d23; }
+[data-theme="dark"]  .wtm-popup .maplibregl-popup-content { background:#1e2433; color:#e6edf3; }
+.wtm-popup .maplibregl-popup-tip { display:none; }
+.wtm-popup .maplibregl-popup-close-button { color:inherit; font-size:18px; padding:6px 10px; }
+.popup-inner { padding:14px 16px; }
+.popup-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.popup-flag   { font-size:26px; line-height:1; }
+.popup-city   { font-weight:700; font-size:15px; }
+.popup-country{ font-size:12px; opacity:.6; }
+.popup-time   { font-size:28px; font-weight:700; color:var(--accent,#58a6ff); margin-bottom:2px; font-family:'JetBrains Mono',monospace; }
+.popup-date   { font-size:12px; opacity:.65; margin-bottom:10px; }
+.popup-row    { display:flex; justify-content:space-between; align-items:baseline; font-size:12px; padding:4px 0; border-bottom:1px solid rgba(128,128,128,0.1); gap:8px; }
+.popup-row:last-of-type { border-bottom:none; }
+.popup-row-label { opacity:.6; white-space:nowrap; }
+.popup-row-value { font-weight:600; text-align:right; font-size:11px; }
+.popup-pin-btn {
+  margin-top:12px; width:100%; padding:8px; border-radius:8px; border:none;
+  background:var(--accent,#58a6ff); color:#04101f; font-weight:700;
+  font-size:12px; cursor:pointer; font-family:inherit;
+}
+.popup-pin-btn:hover { opacity:.88; }
+
+/* ── Pinned cities panel ──────────────────────────────────── */
+.wtm-pins-section { margin-top:24px; }
+.wtm-pins-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.wtm-pins-header h2 { font-size:16px; font-weight:700; margin:0; }
+.wtm-pins-clear { font-size:12px; opacity:.55; background:none; border:none; cursor:pointer; color:inherit; }
+.wtm-pins-clear:hover { opacity:.85; }
+.wtm-pins-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(190px,1fr)); gap:12px; }
+.wtm-pin-card {
+  border-radius:12px; padding:14px 16px; position:relative;
+  border:1px solid rgba(128,128,128,0.15);
+}
+[data-theme="dark"]  .wtm-pin-card { background:rgba(255,255,255,0.03); }
+[data-theme="light"] .wtm-pin-card { background:#f7f8fa; }
+.wtm-pin-flag { font-size:20px; }
+.wtm-pin-city { font-weight:700; font-size:14px; margin-top:4px; }
+.wtm-pin-meta { font-size:11px; opacity:.5; margin-bottom:4px; }
+.wtm-pin-time { font-size:24px; font-weight:700; color:var(--accent,#58a6ff); font-family:'JetBrains Mono',monospace; }
+.wtm-pin-date { font-size:11px; opacity:.55; margin-top:2px; }
+.wtm-pin-remove {
+  position:absolute; top:8px; right:8px; width:22px; height:22px;
+  border-radius:50%; border:none; background:rgba(128,128,128,0.12);
+  color:inherit; cursor:pointer; font-size:12px; line-height:22px; text-align:center;
+}
+.wtm-pin-remove:hover { background:rgba(220,50,50,0.18); color:#e24b4a; }
+.wtm-pins-empty { font-size:14px; opacity:.5; padding:8px 0; margin:0; }
+
+/* ── SEO section ──────────────────────────────────────────── */
+.seo-sec { margin-top:56px; }
+.seo-sec h2 { font-size:20px; font-weight:700; margin:36px 0 10px; }
+.seo-sec h2:first-child { margin-top:0; }
+.seo-sec p  { font-size:15px; line-height:1.8; opacity:.85; margin-bottom:14px; }
+.seo-sec h3 { font-size:16px; font-weight:700; margin:22px 0 8px; }
+.seo-faq-item { margin-bottom:20px; }
+.seo-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px; margin:16px 0 28px; }
+.seo-card {
+  border-radius:12px; padding:16px 18px;
+  border:1px solid rgba(128,128,128,0.12);
+}
+[data-theme="dark"]  .seo-card { background:rgba(255,255,255,0.03); }
+[data-theme="light"] .seo-card { background:#f7f8fa; }
+.seo-card h3 { font-size:14px; font-weight:700; margin:0 0 8px; }
+.seo-card p  { font-size:13px; opacity:.75; margin:0; line-height:1.55; }
 .wtm-internal-links { display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
 .wtm-internal-links a {
+  display:inline-flex; align-items:center; gap:6px;
   padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600;
-  border:1px solid rgba(128,128,128,0.2); text-decoration:none; color:inherit;
-  transition:background .15s;
+  border:1px solid rgba(128,128,128,0.18); text-decoration:none; color:inherit;
+  transition:background .15s,border-color .15s,color .15s;
 }
-[data-theme="dark"] .wtm-internal-links a { background:rgba(255,255,255,0.04); }
+[data-theme="dark"]  .wtm-internal-links a { background:rgba(255,255,255,0.04); }
 [data-theme="light"] .wtm-internal-links a { background:#f5f6f8; }
-.wtm-internal-links a:hover { background:rgba(88,166,255,0.12); border-color:var(--accent,#58a6ff); color:var(--accent,#58a6ff); }
+.wtm-internal-links a:hover {
+  background:rgba(88,166,255,0.1); border-color:var(--accent,#58a6ff);
+  color:var(--accent,#58a6ff);
+}
+
+@media (max-width:600px) {
+  .wtm-utc-bar .utc-time { font-size:16px; }
+  .wtm-legend { display:none; }
+}
 </style>
 </head>
 <body>
 
-<!-- ── Nav included from main.css (same as other pages) ── -->
-<script src="/util.js" defer></script>
+<!-- ══════════════════════════════════════════════════════════
+     NAV — identical to index.html, World Time Map tab added
+     ══════════════════════════════════════════════════════════ -->
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather.html"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+      <a class="nav-tab active" href="/world-time-map"><i class="ti ti-map"></i> <span>World Map</span></a>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
 
-<main class="wtm-page">
+<!-- ══════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ══════════════════════════════════════════════════════════ -->
+<main class="wtm-wrap">
+
+  <!-- H1 + intro -->
   <div class="wtm-hero">
-    <h1>🗺️ World Time Map</h1>
-    <p>Live interactive map showing current time zones, day &amp; night regions, and local times worldwide.</p>
+    <h1><i class="ti ti-map" style="font-size:.9em;vertical-align:-.05em;margin-right:6px"></i>World Time Map</h1>
+    <p>An interactive map showing live local times, day &amp; night regions, and time zones for cities worldwide. Click any city to see its current time, UTC offset, and time zone details.</p>
   </div>
 
-  <!-- ── MAP ── -->
+  <!-- MAP -->
   <div class="wtm-map-wrap">
     <div id="wtm-map"></div>
 
+    <!-- Search -->
     <div class="wtm-search-wrap">
-      <input type="text" id="wtm-search" placeholder="🔍 Search city or country…" autocomplete="off">
-      <div class="wtm-search-results" id="wtm-search-results"></div>
+      <input type="text" id="wtm-search" placeholder="🔍  Search city or country…" autocomplete="off" aria-label="Search for a city">
+      <div class="wtm-search-results" id="wtm-search-results" role="listbox"></div>
     </div>
 
-    <div class="wtm-controls">
-      <button class="wtm-ctrl-btn" id="btn-zoom-in" title="Zoom in">+</button>
-      <button class="wtm-ctrl-btn" id="btn-zoom-out" title="Zoom out">−</button>
-      <button class="wtm-ctrl-btn" id="btn-reset" title="Reset view">⌂</button>
-      <button class="wtm-ctrl-btn active" id="btn-daynight" title="Toggle day/night overlay">☀</button>
+    <!-- Controls -->
+    <div class="wtm-controls" role="group" aria-label="Map controls">
+      <button class="wtm-ctrl-btn" id="btn-zoom-in"  title="Zoom in"           aria-label="Zoom in">+</button>
+      <button class="wtm-ctrl-btn" id="btn-zoom-out" title="Zoom out"          aria-label="Zoom out">−</button>
+      <button class="wtm-ctrl-btn" id="btn-reset"    title="Reset view"        aria-label="Reset view"><i class="ti ti-home" style="font-size:14px"></i></button>
+      <button class="wtm-ctrl-btn active" id="btn-daynight" title="Toggle day/night" aria-label="Toggle day/night overlay"><i class="ti ti-sun" style="font-size:14px"></i></button>
     </div>
 
-    <div class="wtm-clock-bar" id="wtm-utc-clock">
-      <div class="utc-label">UTC time</div>
+    <!-- UTC clock -->
+    <div class="wtm-utc-bar" aria-label="Current UTC time">
+      <div class="utc-label">UTC · Coordinated Universal Time</div>
       <div class="utc-time" id="utc-display">--:--:--</div>
-      <div id="utc-date" style="font-size:11px;opacity:.6;"></div>
+      <div class="utc-date" id="utc-date"></div>
     </div>
 
-    <div class="wtm-legend">
-      <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#fcd34d;opacity:.9"></div> Daytime</div>
-      <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#1e3a5f"></div> Night</div>
+    <!-- Legend -->
+    <div class="wtm-legend" aria-label="Map legend">
+      <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#fde68a"></div>Daytime</div>
+      <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#1e3a5f"></div>Night</div>
     </div>
   </div>
 
-  <!-- ── Pinned cities ── -->
-  <div style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
-    <h2 style="font-size:16px;font-weight:700;margin:0;">📌 Pinned Cities</h2>
-    <button id="btn-clear-pins" style="font-size:12px;opacity:.6;background:none;border:none;cursor:pointer;color:inherit;" onclick="clearPins()">Clear all</button>
-  </div>
-  <div class="wtm-pins" id="wtm-pins">
-    <p class="wtm-pins-empty">Click any city on the map and pin it to compare times here.</p>
+  <!-- Pinned cities -->
+  <div class="wtm-pins-section">
+    <div class="wtm-pins-header">
+      <h2><i class="ti ti-map-pin" style="font-size:.85em;vertical-align:-.05em;margin-right:6px"></i>Pinned Cities</h2>
+      <button class="wtm-pins-clear" onclick="clearPins()">Clear all</button>
+    </div>
+    <div class="wtm-pins-grid" id="wtm-pins">
+      <p class="wtm-pins-empty">Click any city on the map, then pin it to compare times here.</p>
+    </div>
   </div>
 
-  <!-- ── SEO content ── -->
-  <div class="wtm-seo">
+  <!-- SEO content -->
+  <section class="seo-sec" aria-label="About World Time Map">
+
     <h2>What Is the World Time Map?</h2>
-    <p>The World Time Map is an interactive visualization of the Earth's current time zones with a live day and night overlay. As the Earth rotates, the boundary between daylight and nighttime — called the solar terminator — moves westward at roughly 1,040 km per hour. This map updates in real time so you can always see which parts of the world are currently experiencing sunrise, daylight, sunset, or night.</p>
-    <p>Each point on the map can be clicked to reveal the exact local time, time zone name, UTC offset, and country flag for that location. You can also search for any city or country and pin multiple locations to compare their times simultaneously.</p>
+    <p>The World Time Map is a live, interactive visualization of Earth's current time zones overlaid with a real-time day and night boundary. As Earth rotates, the solar terminator — the line dividing daylight from night — moves westward at approximately 1,040 km/h. This map recalculates that boundary every 60 seconds so you always see which parts of the world are in daylight, twilight, or darkness right now.</p>
+    <p>Click any city marker to see its current local time, date, UTC offset, and time zone name. Use the search bar to jump to any location instantly, or pin multiple cities to compare their times side by side in the panel above.</p>
+
+    <div class="seo-grid">
+      <article class="seo-card">
+        <h3>Live Day &amp; Night</h3>
+        <p>The night overlay updates every 60 seconds using precise solar position math — no API required, fully computed in your browser.</p>
+      </article>
+      <article class="seo-card">
+        <h3>City Time Popups</h3>
+        <p>Click any dot to see a live clock for that city, showing local time, date, UTC offset, and full time zone name — updated every second.</p>
+      </article>
+      <article class="seo-card">
+        <h3>Pin &amp; Compare</h3>
+        <p>Pin up to 8 cities to the comparison panel below the map. All pinned clocks update live so you can track multiple time zones at once.</p>
+      </article>
+    </div>
 
     <h2>How Time Zones Work</h2>
-    <p>The Earth is divided into 24 primary time zones, each roughly 15 degrees of longitude wide, corresponding to one hour of time difference. In practice, political and geographic factors mean real-world time zone boundaries are far more irregular — some countries span multiple zones, while others (like India, Iran, and Nepal) use half-hour or quarter-hour offsets to compromise between geography and national unity.</p>
-    <p>All time zones are defined relative to Coordinated Universal Time (UTC), a precise atomic-clock standard that never changes for daylight saving. Most zones are expressed as UTC+ or UTC− offsets ranging from UTC−12 to UTC+14.</p>
+    <p>The Earth is divided into 24 primary time zones, each roughly 15 degrees of longitude wide — corresponding to one hour of time difference. In practice, political and geographic decisions mean real time zone boundaries are far more irregular than a clean 24-slice model suggests.</p>
+    <p>All time zones are defined as offsets from Coordinated Universal Time (UTC). Offsets range from UTC−12 (Baker Island) to UTC+14 (Line Islands, Kiribati). Some countries use half-hour or quarter-hour offsets — India (UTC+5:30), Iran (UTC+3:30), and Nepal (UTC+5:45) are the most well-known examples.</p>
 
     <h2>Frequently Asked Questions</h2>
 
-    <div class="wtm-faq-item">
-      <h3>How accurate is the day/night overlay?</h3>
-      <p>The terminator line is calculated mathematically from the Sun's current position using the solar declination and equation of time, updated every 60 seconds. It accurately reflects where civil twilight begins and ends on Earth, though it represents the idealized terminator on a flat map rather than accounting for local terrain or atmospheric refraction.</p>
+    <div class="seo-faq-item">
+      <h3>How accurate is the day/night boundary on this map?</h3>
+      <p>The terminator line is calculated from the Sun's current ecliptic longitude and declination, updated every 60 seconds. It accurately represents the idealized day/night boundary on a spherical Earth projected onto a flat map. It does not account for terrain elevation, atmospheric refraction, or civil vs. astronomical twilight distinctions.</p>
     </div>
 
-    <div class="wtm-faq-item">
-      <h3>What's the difference between UTC and GMT?</h3>
-      <p>GMT (Greenwich Mean Time) is the mean solar time at the Prime Meridian in Greenwich, England. UTC is the modern atomic-clock-based standard that replaced GMT as the world's time reference in 1972. The numerical difference is usually zero, but UTC is more precisely defined — it's the actual standard your computer's clock synchronizes to.</p>
+    <div class="seo-faq-item">
+      <h3>What is UTC and why does the map use it as a reference?</h3>
+      <p>UTC (Coordinated Universal Time) is the atomic-clock-based standard against which every time zone offset is defined. It replaced GMT in 1972 as the world's primary time reference. Using UTC as the anchor makes it straightforward to calculate any local time: UTC + the zone's offset = local time. Your computer's system clock synchronizes to UTC automatically.</p>
     </div>
 
-    <div class="wtm-faq-item">
-      <h3>Why do some countries use unusual UTC offsets like +5:30 or +9:30?</h3>
-      <p>Most half-hour and quarter-hour offsets exist for political or geographic reasons. India uses UTC+5:30 because a one-hour boundary would either put its west coast too early or its east coast too late, and a single national time zone was seen as important for unity. Nepal uses UTC+5:45 — the only quarter-hour offset still in active use — as a deliberate distinction from neighboring India.</p>
+    <div class="seo-faq-item">
+      <h3>Which country has the most time zones?</h3>
+      <p>France spans 12 time zones when including its overseas territories — more than any other country. Russia covers 11 time zones across its mainland, the widest span of any single contiguous landmass. The United States covers 6 time zones across the continental states, Alaska, and Hawaii.</p>
     </div>
 
-    <div class="wtm-faq-item">
-      <h3>Which country spans the most time zones?</h3>
-      <p>France spans the most time zones of any country (12, including overseas territories), followed by Russia (11) and the United States (11 including territories). Russia is the largest country by land area that spans multiple zones within its mainland, stretching from UTC+2 to UTC+12.</p>
+    <div class="seo-faq-item">
+      <h3>Why do India and Nepal use non-standard UTC offsets?</h3>
+      <p>India uses UTC+5:30 so that a single national time zone places sunrise and sunset at reasonable hours across the country's roughly 30-degree east-west span. Nepal uses UTC+5:45 — deliberately different from India's offset — as a way of asserting national distinction while still compromising geographically.</p>
     </div>
 
-    <div class="wtm-faq-item">
+    <div class="seo-faq-item">
       <h3>Can I use this map to schedule international meetings?</h3>
-      <p>Yes — pin the cities where your team members are located, and the comparison panel below the map will show their live local times simultaneously. For a full converter with custom time selection, use the Time Zone Converter tool linked below.</p>
+      <p>Yes — pin the cities where your participants are located and compare their live times in the panel below the map. For more precise meeting planning with a time selector and overlap visualizer, use the <a href="/converter.html">Time Zone Converter</a> or <a href="/time-difference-calculator">Time Difference Calculator</a>.</p>
+    </div>
+
+    <div class="seo-faq-item">
+      <h3>Does Daylight Saving Time affect the times shown?</h3>
+      <p>Yes. All times shown use the IANA time zone database via the browser's built-in <code>Intl.DateTimeFormat</code> API, which handles DST transitions automatically and accurately for every supported time zone.</p>
     </div>
 
     <h2>Explore More TimezoneBudy Tools</h2>
+    <p>The World Time Map works alongside the rest of TimezoneBudy's tool suite for a complete time zone reference experience.</p>
     <div class="wtm-internal-links">
-      <a href="/">🕐 World Clock</a>
-      <a href="/converter">⇄ Time Zone Converter</a>
-      <a href="/sunmoon">☀️ Sun &amp; Moon</a>
-      <a href="/weather">☁️ Weather</a>
-      <a href="/tools">🔧 Tools</a>
-      <a href="/blog">📝 Blog</a>
+      <a href="/"><i class="ti ti-clock"></i> World Clock</a>
+      <a href="/converter.html"><i class="ti ti-arrows-exchange"></i> Timezone Converter</a>
+      <a href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> Time Difference</a>
+      <a href="/sunmoon.html"><i class="ti ti-sun"></i> Sun &amp; Moon</a>
+      <a href="/weather.html"><i class="ti ti-cloud"></i> Weather</a>
+      <a href="/tools.html"><i class="ti ti-tool"></i> Tools</a>
+      <a href="/location/"><i class="ti ti-map-pin"></i> Locations</a>
+      <a href="/blog/"><i class="ti ti-pencil"></i> Blog</a>
     </div>
-  </div>
+
+  </section>
 </main>
 
+<!-- ══════════════════════════════════════════════════════════
+     FOOTER — identical to index.html
+     ══════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/">World Clock</a>
+        <a href="/converter.html">Timezone Converter</a>
+        <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/weather.html">Weather</a>
+        <a href="/tools.html">Time Tools</a>
+        <a href="/world-time-map">World Time Map</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
+
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Shared site scripts (same as every other page) -->
+<script src="/util.js"></script>
+
 <script>
-// ── City database (commonly searched cities with timezone & coords) ────────
+// ── City database ─────────────────────────────────────────────────────────
 const CITIES = [
   { name:'New York', country:'United States', flag:'🇺🇸', tz:'America/New_York', lat:40.71, lng:-74.01 },
   { name:'London', country:'United Kingdom', flag:'🇬🇧', tz:'Europe/London', lat:51.51, lng:-0.13 },
@@ -312,9 +466,9 @@ const CITIES = [
   { name:'Athens', country:'Greece', flag:'🇬🇷', tz:'Europe/Athens', lat:37.98, lng:23.73 },
 ];
 
-// ── Day/Night terminator calculation ──────────────────────────────────────
-function getSunPosition(date) {
-  const D = date / 86400000 - 10957.5;
+// ── Solar terminator math ─────────────────────────────────────────────────
+function getSunPosition(ts) {
+  const D = ts / 86400000 - 10957.5;
   const g = (357.529 + 0.98560028 * D) * Math.PI / 180;
   const q = 280.459 + 0.98564736 * D;
   const L = (q + 1.915 * Math.sin(g) + 0.020 * Math.sin(2*g)) * Math.PI / 180;
@@ -324,183 +478,188 @@ function getSunPosition(date) {
   const RA = Math.atan2(Math.cos(e)*Math.sin(L), Math.cos(L));
   const GMST = (18.697374558 + 24.06570982441908 * D) * Math.PI / 12;
   const lon = -(GMST - RA);
-  return { lat: dec * 180 / Math.PI, lng: ((lon * 180 / Math.PI + 540) % 360) - 180 };
+  return { lat: dec * 180/Math.PI, lng: ((lon * 180/Math.PI + 540) % 360) - 180 };
 }
 
-function getNightPolygon(date) {
-  const sun = getSunPosition(date);
+function getNightPolygon(ts) {
+  const sun = getSunPosition(ts);
   const sunLat = sun.lat * Math.PI / 180;
-  const sunLng = sun.lng;
   const coords = [];
   for (let az = 0; az <= 360; az += 2) {
     const a = az * Math.PI / 180;
-    let lat = Math.asin(Math.sin(sunLat)*Math.cos(Math.PI/2) + Math.cos(sunLat)*Math.sin(Math.PI/2)*Math.cos(a+Math.PI));
-    let lng = sunLng * Math.PI/180 + Math.atan2(Math.sin(a+Math.PI)*Math.sin(Math.PI/2)*Math.cos(sunLat), Math.cos(Math.PI/2)-Math.sin(sunLat)*Math.sin(lat));
+    const lat = Math.asin(
+      Math.sin(sunLat)*Math.cos(Math.PI/2) +
+      Math.cos(sunLat)*Math.sin(Math.PI/2)*Math.cos(a + Math.PI)
+    );
+    const lng = sun.lng * Math.PI/180 + Math.atan2(
+      Math.sin(a + Math.PI)*Math.sin(Math.PI/2)*Math.cos(sunLat),
+      Math.cos(Math.PI/2) - Math.sin(sunLat)*Math.sin(lat)
+    );
     coords.push([lng*180/Math.PI, lat*180/Math.PI]);
   }
-  // close the polygon by picking the correct pole
   const pole = sun.lat > 0 ? -90 : 90;
-  const poly = [[
-    ...coords,
-    [coords[coords.length-1][0], pole],
-    [coords[0][0], pole],
-    coords[0]
-  ]];
-  return { type:'FeatureCollection', features:[{ type:'Feature', geometry:{ type:'Polygon', coordinates: poly } }] };
+  return {
+    type:'FeatureCollection',
+    features:[{ type:'Feature', geometry:{ type:'Polygon', coordinates:[[
+      ...coords,
+      [coords[coords.length-1][0], pole],
+      [coords[0][0], pole],
+      coords[0]
+    ]] } }]
+  };
 }
 
-// ── Map init ───────────────────────────────────────────────────────────────
+// ── Time helpers ──────────────────────────────────────────────────────────
+function getLocalTime(tz) {
+  const now = new Date();
+  const use24 = localStorage.getItem('wc_24h') === '1';
+  return {
+    time: now.toLocaleTimeString('en-US', { timeZone:tz, hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:!use24 }),
+    date: now.toLocaleDateString('en-US', { timeZone:tz, weekday:'long', month:'long', day:'numeric' }),
+    offset: getOffset(tz, now),
+    tzName: new Intl.DateTimeFormat('en', { timeZone:tz, timeZoneName:'long' }).formatToParts(now).find(p=>p.type==='timeZoneName')?.value || tz
+  };
+}
+
+function getOffset(tz, date) {
+  const d = date || new Date();
+  const utcMs = new Date(d.toLocaleString('en-US',{timeZone:'UTC'}));
+  const locMs = new Date(d.toLocaleString('en-US',{timeZone:tz}));
+  const diffMin = (locMs - utcMs) / 60000;
+  const sign = diffMin >= 0 ? '+' : '-';
+  const abs = Math.abs(diffMin);
+  return `UTC${sign}${String(Math.floor(abs/60)).padStart(2,'0')}:${String(abs%60).padStart(2,'0')}`;
+}
+
+// ── Map init ──────────────────────────────────────────────────────────────
 let map, popup, dayNightOn = true;
 const pinnedCities = [];
 
 function initMap() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  const style = isDark
-    ? 'https://tiles.openfreemap.org/styles/dark'
-    : 'https://tiles.openfreemap.org/styles/positron';
-
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
   map = new maplibregl.Map({
     container: 'wtm-map',
-    style,
+    style: dark
+      ? 'https://tiles.openfreemap.org/styles/dark'
+      : 'https://tiles.openfreemap.org/styles/positron',
     center: [15, 20],
     zoom: 1.6,
     minZoom: 1,
     maxZoom: 10,
-    attributionControl: false
+    attributionControl: false,
+    pitchWithRotate: false,
   });
-
-  map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
+  map.addControl(new maplibregl.AttributionControl({ compact:true }), 'bottom-right');
 
   map.on('load', () => {
-    // Night overlay layer
+    // Night overlay
     map.addSource('nightzone', { type:'geojson', data: getNightPolygon(Date.now()) });
     map.addLayer({
-      id: 'nightzone-fill',
-      type: 'fill',
-      source: 'nightzone',
-      paint: {
-        'fill-color': '#051832',
-        'fill-opacity': isDark ? 0.55 : 0.45
-      }
+      id: 'nightzone-fill', type:'fill', source:'nightzone',
+      paint: { 'fill-color':'#051a38', 'fill-opacity': dark ? 0.58 : 0.45 }
     });
 
     // City dots
-    const cityGeoJSON = {
-      type:'FeatureCollection',
-      features: CITIES.map(c => ({
-        type:'Feature',
-        geometry: { type:'Point', coordinates:[c.lng, c.lat] },
-        properties: { name:c.name, country:c.country, flag:c.flag, tz:c.tz }
-      }))
-    };
-    map.addSource('cities', { type:'geojson', data: cityGeoJSON });
+    map.addSource('cities', {
+      type:'geojson',
+      data: {
+        type:'FeatureCollection',
+        features: CITIES.map(c => ({
+          type:'Feature',
+          geometry: { type:'Point', coordinates:[c.lng, c.lat] },
+          properties: { name:c.name, country:c.country, flag:c.flag, tz:c.tz }
+        }))
+      }
+    });
     map.addLayer({
-      id:'city-dots',
-      type:'circle',
-      source:'cities',
-      paint:{
-        'circle-radius': ['interpolate',['linear'],['zoom'], 1,3, 5,6, 8,10],
-        'circle-color':'#58a6ff',
-        'circle-stroke-width':1.5,
-        'circle-stroke-color':'#fff',
-        'circle-opacity': 0.85
+      id:'city-dots', type:'circle', source:'cities',
+      paint: {
+        'circle-radius': ['interpolate',['linear'],['zoom'], 1,3, 4,4.5, 7,8],
+        'circle-color': '#58a6ff',
+        'circle-stroke-width': 1.5,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.88
       }
     });
 
     map.on('click', 'city-dots', e => {
-      const props = e.features[0].properties;
-      const coords = e.features[0].geometry.coordinates;
-      const city = CITIES.find(c => c.name === props.name);
-      if (city) showPopup(city, coords);
+      const p = e.features[0].properties;
+      const c = CITIES.find(x => x.name === p.name);
+      if (c) showPopup(c, e.features[0].geometry.coordinates.slice());
     });
-    map.on('mouseenter','city-dots', () => map.getCanvas().style.cursor = 'pointer');
-    map.on('mouseleave','city-dots', () => map.getCanvas().style.cursor = '');
+    map.on('mouseenter','city-dots', () => { map.getCanvas().style.cursor = 'pointer'; });
+    map.on('mouseleave','city-dots', () => { map.getCanvas().style.cursor = ''; });
 
-    // Click on empty area
+    // Click on map background — snap to nearest city
     map.on('click', e => {
-      const f = map.queryRenderedFeatures(e.point, {layers:['city-dots']});
-      if (!f.length) {
-        const nearest = findNearestCity(e.lngLat.lat, e.lngLat.lng);
+      const hits = map.queryRenderedFeatures(e.point, { layers:['city-dots'] });
+      if (!hits.length) {
+        const nearest = nearestCity(e.lngLat.lat, e.lngLat.lng);
         if (nearest) showPopup(nearest, [e.lngLat.lng, e.lngLat.lat]);
       }
     });
   });
 }
 
-function findNearestCity(lat, lng) {
-  let best = null, bestDist = Infinity;
+function nearestCity(lat, lng) {
+  let best = null, d = Infinity;
   CITIES.forEach(c => {
-    const d = Math.hypot(c.lat-lat, c.lng-lng);
-    if (d < bestDist) { bestDist = d; best = c; }
+    const dist = Math.hypot(c.lat - lat, c.lng - lng);
+    if (dist < d) { d = dist; best = c; }
   });
-  return bestDist < 25 ? best : null;
+  return d < 22 ? best : null;
 }
 
-function getLocalTime(tz) {
-  const now = new Date();
-  return {
-    time: now.toLocaleTimeString('en-US', { timeZone:tz, hour:'2-digit', minute:'2-digit', second:'2-digit' }),
-    date: now.toLocaleDateString('en-US', { timeZone:tz, weekday:'long', month:'long', day:'numeric' }),
-    offset: getUTCOffset(tz, now),
-    tzName: new Intl.DateTimeFormat('en', { timeZone:tz, timeZoneName:'long' }).formatToParts(now).find(p=>p.type==='timeZoneName')?.value || tz
-  };
-}
-
-function getUTCOffset(tz, date) {
-  const d = date || new Date();
-  const utc = new Date(d.toLocaleString('en-US', {timeZone:'UTC'}));
-  const local = new Date(d.toLocaleString('en-US', {timeZone:tz}));
-  const diffMin = (local - utc) / 60000;
-  const sign = diffMin >= 0 ? '+' : '-';
-  const abs = Math.abs(diffMin);
-  const h = Math.floor(abs/60).toString().padStart(2,'0');
-  const m = (abs%60).toString().padStart(2,'0');
-  return `UTC${sign}${h}:${m}`;
-}
+// ── Popup ─────────────────────────────────────────────────────────────────
+let popupTimer = null;
 
 function showPopup(city, coords) {
   if (popup) popup.remove();
-  const t = getLocalTime(city.tz);
+  if (popupTimer) clearInterval(popupTimer);
+
   const isPinned = pinnedCities.some(p => p.name === city.name);
-  const content = `
+  const t = getLocalTime(city.tz);
+  const safeCity = JSON.stringify(city).replace(/"/g,'&quot;');
+
+  popup = new maplibregl.Popup({
+    className:'wtm-popup', closeButton:true, maxWidth:'268px', offset:10
+  })
+  .setLngLat(coords)
+  .setHTML(`
     <div class="popup-inner">
       <div class="popup-header">
         <span class="popup-flag">${city.flag}</span>
         <div><div class="popup-city">${city.name}</div><div class="popup-country">${city.country}</div></div>
       </div>
-      <div class="popup-time" id="popup-live-time">${t.time}</div>
-      <div class="popup-date" id="popup-live-date">${t.date}</div>
-      <div class="popup-row"><span class="popup-row-label">Time zone</span><span class="popup-row-value">${city.tz.split('/').pop().replace(/_/g,' ')}</span></div>
+      <div class="popup-time" id="pp-time">${t.time}</div>
+      <div class="popup-date" id="pp-date">${t.date}</div>
       <div class="popup-row"><span class="popup-row-label">UTC offset</span><span class="popup-row-value">${t.offset}</span></div>
-      <div class="popup-row"><span class="popup-row-label">Full name</span><span class="popup-row-value" style="font-size:11px">${t.tzName}</span></div>
-      <button class="popup-pin-btn" onclick="togglePin(${JSON.stringify(city).replace(/"/g,'&quot;')})">${isPinned ? '📌 Unpin city' : '📌 Pin to compare'}</button>
-    </div>`;
+      <div class="popup-row"><span class="popup-row-label">Time zone</span><span class="popup-row-value">${city.tz.split('/').pop().replace(/_/g,' ')}</span></div>
+      <div class="popup-row"><span class="popup-row-label">Full name</span><span class="popup-row-value" style="font-size:10px;word-break:break-word">${t.tzName}</span></div>
+      <button class="popup-pin-btn" onclick="togglePin(${safeCity})">${isPinned ? '✕ Unpin city' : '📌 Pin to compare'}</button>
+    </div>`)
+  .addTo(map);
 
-  popup = new maplibregl.Popup({ className:'wtm-popup', closeButton:true, maxWidth:'260px', offset:12 })
-    .setLngLat(coords)
-    .setHTML(content)
-    .addTo(map);
-
-  // Live update popup time
-  const popupTimer = setInterval(() => {
-    const el = document.getElementById('popup-live-time');
-    const el2 = document.getElementById('popup-live-date');
-    if (el && popup.isOpen()) {
+  popupTimer = setInterval(() => {
+    const timeEl = document.getElementById('pp-time');
+    const dateEl = document.getElementById('pp-date');
+    if (timeEl && popup.isOpen()) {
       const t2 = getLocalTime(city.tz);
-      el.textContent = t2.time;
-      el2.textContent = t2.date;
+      timeEl.textContent = t2.time;
+      dateEl.textContent = t2.date;
     } else {
       clearInterval(popupTimer);
     }
   }, 1000);
 }
 
+// ── Pin / unpin ───────────────────────────────────────────────────────────
 function togglePin(city) {
   const idx = pinnedCities.findIndex(p => p.name === city.name);
   if (idx >= 0) {
     pinnedCities.splice(idx, 1);
   } else {
-    if (pinnedCities.length >= 8) { pinnedCities.shift(); }
+    if (pinnedCities.length >= 8) pinnedCities.shift();
     pinnedCities.push(city);
   }
   if (popup) popup.remove();
@@ -515,102 +674,113 @@ function clearPins() {
 function renderPins() {
   const el = document.getElementById('wtm-pins');
   if (!pinnedCities.length) {
-    el.innerHTML = '<p class="wtm-pins-empty">Click any city on the map and pin it to compare times here.</p>';
+    el.innerHTML = '<p class="wtm-pins-empty">Click any city on the map, then pin it to compare times here.</p>';
     return;
   }
   el.innerHTML = pinnedCities.map(city => {
     const t = getLocalTime(city.tz);
+    const key = city.name.replace(/\s/g,'_');
+    const safeCity = JSON.stringify(city).replace(/"/g,'&quot;');
     return `
-    <div class="wtm-pin-card" id="pin-${city.name.replace(/\s/g,'_')}">
-      <button class="wtm-pin-remove" onclick="togglePin(${JSON.stringify(city).replace(/"/g,'&quot;')})" title="Remove">✕</button>
+    <div class="wtm-pin-card">
+      <button class="wtm-pin-remove" onclick="togglePin(${safeCity})" title="Remove ${city.name}">✕</button>
       <div class="wtm-pin-flag">${city.flag}</div>
       <div class="wtm-pin-city">${city.name}</div>
-      <div class="wtm-pin-tz">${t.offset} · ${city.country}</div>
-      <div class="wtm-pin-time" id="pin-time-${city.name.replace(/\s/g,'_')}">${t.time}</div>
-      <div class="wtm-pin-date" id="pin-date-${city.name.replace(/\s/g,'_')}">${t.date}</div>
+      <div class="wtm-pin-meta">${t.offset} · ${city.country}</div>
+      <div class="wtm-pin-time" id="pin-t-${key}">${t.time}</div>
+      <div class="wtm-pin-date" id="pin-d-${key}">${t.date}</div>
     </div>`;
   }).join('');
 }
 
-// ── Live UTC clock + night zone update ────────────────────────────────────
+// ── Live tick (UTC clock + pins + night overlay) ───────────────────────────
 let lastNightUpdate = 0;
 function tick() {
   const now = new Date();
+  const use24 = localStorage.getItem('wc_24h') === '1';
 
-  // UTC clock
-  const utcTime = now.toLocaleTimeString('en-US', { timeZone:'UTC', hour12:false });
-  const utcDate = now.toLocaleDateString('en-US', { timeZone:'UTC', weekday:'short', month:'short', day:'numeric', year:'numeric' });
-  const utcEl = document.getElementById('utc-display');
-  const utcDateEl = document.getElementById('utc-date');
-  if (utcEl) utcEl.textContent = utcTime;
-  if (utcDateEl) utcDateEl.textContent = utcDate;
+  // Nav UTC val (matches every other page)
+  const navUtc = document.getElementById('utc-val');
+  if (navUtc) navUtc.textContent = now.toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
 
-  // Update night overlay every 60s
+  // UTC clock overlay
+  const dispEl = document.getElementById('utc-display');
+  const dateEl = document.getElementById('utc-date');
+  if (dispEl) dispEl.textContent = now.toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  if (dateEl) dateEl.textContent = now.toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric',year:'numeric'});
+
+  // Night overlay — update every 60s
   if (map && map.isStyleLoaded() && dayNightOn && now - lastNightUpdate > 60000) {
-    map.getSource('nightzone')?.setData(getNightPolygon(now));
-    lastNightUpdate = now;
+    map.getSource('nightzone')?.setData(getNightPolygon(now.getTime()));
+    lastNightUpdate = now.getTime();
   }
 
-  // Update pinned city times
+  // Update pinned cities
   pinnedCities.forEach(city => {
-    const t = getLocalTime(city.tz);
     const key = city.name.replace(/\s/g,'_');
-    const timeEl = document.getElementById('pin-time-' + key);
-    const dateEl = document.getElementById('pin-date-' + key);
-    if (timeEl) timeEl.textContent = t.time;
-    if (dateEl) dateEl.textContent = t.date;
+    const t = getLocalTime(city.tz);
+    const tEl = document.getElementById('pin-t-' + key);
+    const dEl = document.getElementById('pin-d-' + key);
+    if (tEl) tEl.textContent = t.time;
+    if (dEl) dEl.textContent = t.date;
   });
 }
-
 setInterval(tick, 1000);
 tick();
 
-// ── Controls ───────────────────────────────────────────────────────────────
-document.getElementById('btn-zoom-in').addEventListener('click', () => map.zoomIn({ duration:400 }));
-document.getElementById('btn-zoom-out').addEventListener('click', () => map.zoomOut({ duration:400 }));
-document.getElementById('btn-reset').addEventListener('click', () => map.flyTo({ center:[15,20], zoom:1.6, duration:800 }));
+// ── Controls ──────────────────────────────────────────────────────────────
+document.getElementById('btn-zoom-in').addEventListener('click', () => map?.zoomIn({duration:350}));
+document.getElementById('btn-zoom-out').addEventListener('click', () => map?.zoomOut({duration:350}));
+document.getElementById('btn-reset').addEventListener('click', () => map?.flyTo({center:[15,20],zoom:1.6,duration:700}));
 document.getElementById('btn-daynight').addEventListener('click', function() {
   dayNightOn = !dayNightOn;
   this.classList.toggle('active', dayNightOn);
-  if (map.isStyleLoaded()) {
-    map.setLayoutProperty('nightzone-fill', 'visibility', dayNightOn ? 'visible' : 'none');
+  if (map?.isStyleLoaded()) {
+    map.setLayoutProperty('nightzone-fill','visibility', dayNightOn ? 'visible' : 'none');
   }
 });
 
-// ── Search ─────────────────────────────────────────────────────────────────
+// ── Search ────────────────────────────────────────────────────────────────
 const searchInput = document.getElementById('wtm-search');
-const searchResults = document.getElementById('wtm-search-results');
+const searchBox   = document.getElementById('wtm-search-results');
 
 searchInput.addEventListener('input', () => {
   const q = searchInput.value.trim().toLowerCase();
-  if (q.length < 2) { searchResults.style.display='none'; return; }
-  const matches = CITIES.filter(c =>
+  if (q.length < 2) { searchBox.style.display='none'; return; }
+  const hits = CITIES.filter(c =>
     c.name.toLowerCase().includes(q) || c.country.toLowerCase().includes(q)
-  ).slice(0, 6);
-  if (!matches.length) { searchResults.style.display='none'; return; }
-  searchResults.innerHTML = matches.map(c => `
-    <div class="wtm-search-result" data-name="${c.name}">
+  ).slice(0, 7);
+  if (!hits.length) { searchBox.style.display='none'; return; }
+  searchBox.innerHTML = hits.map(c => `
+    <div class="wtm-search-result" data-name="${c.name}" role="option">
       <strong>${c.flag} ${c.name}</strong><span>${c.country}</span>
     </div>`).join('');
-  searchResults.style.display = 'block';
-  searchResults.querySelectorAll('.wtm-search-result').forEach(el => {
+  searchBox.style.display = 'block';
+  searchBox.querySelectorAll('.wtm-search-result').forEach(el => {
     el.addEventListener('click', () => {
       const city = CITIES.find(c => c.name === el.dataset.name);
       if (city) {
-        map.flyTo({ center:[city.lng, city.lat], zoom:5, duration:1000 });
-        setTimeout(() => showPopup(city, [city.lng, city.lat]), 800);
+        map?.flyTo({ center:[city.lng, city.lat], zoom:5, duration:900 });
+        setTimeout(() => showPopup(city, [city.lng, city.lat]), 750);
         searchInput.value = city.name;
-        searchResults.style.display = 'none';
+        searchBox.style.display = 'none';
       }
     });
   });
 });
 
 document.addEventListener('click', e => {
-  if (!e.target.closest('.wtm-search-wrap')) searchResults.style.display = 'none';
+  if (!e.target.closest('.wtm-search-wrap')) searchBox.style.display='none';
+});
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { searchBox.style.display='none'; searchInput.blur(); }
 });
 
-// ── Boot ───────────────────────────────────────────────────────────────────
+// ── Footer year ───────────────────────────────────────────────────────────
+const fyEl = document.getElementById('footer-year');
+if (fyEl) fyEl.textContent = new Date().getFullYear();
+
+// ── Boot ──────────────────────────────────────────────────────────────────
 initMap();
 </script>
 </body>
