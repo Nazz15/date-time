@@ -85,52 +85,100 @@
 .wtm-ctrl-btn:hover { background:#fff; }
 .wtm-ctrl-btn.active { background:var(--accent,#58a6ff); color:#fff; }
 
-/* ── UTC clock overlay ────────────────────────────────────── */
-.wtm-utc-bar {
-  position:absolute; bottom:14px; left:14px; z-index:10;
-  background:rgba(0,0,0,0.7); color:#fff; border-radius:10px;
-  padding:10px 14px; line-height:1.5; backdrop-filter:blur(6px);
-}
-.wtm-utc-bar .utc-label { font-size:10px; opacity:.65; text-transform:uppercase; letter-spacing:.4px; }
-.wtm-utc-bar .utc-time  { font-size:20px; font-weight:700; font-family:'JetBrains Mono',monospace; }
-.wtm-utc-bar .utc-date  { font-size:11px; opacity:.6; }
-
-/* ── Legend ───────────────────────────────────────────────── */
-.wtm-legend {
-  position:absolute; bottom:14px; right:14px; z-index:10;
-  background:rgba(0,0,0,0.65); border-radius:8px;
-  padding:8px 12px; font-size:11px; color:#fff;
-  backdrop-filter:blur(4px); line-height:1.9;
-}
-.wtm-legend-row { display:flex; align-items:center; gap:8px; }
-.wtm-legend-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-
-/* ── Popup ────────────────────────────────────────────────── */
+/* ── Popup — redesigned ───────────────────────────────────── */
+/* MapLibre popup wrapper — always rendered relative to the map */
 .wtm-popup .maplibregl-popup-content {
-  border-radius:12px; padding:0; overflow:hidden;
-  box-shadow:0 8px 32px rgba(0,0,0,0.28); min-width:210px; max-width:260px;
+  border-radius:14px; padding:0; overflow:hidden;
+  box-shadow:0 12px 40px rgba(0,0,0,0.32), 0 2px 8px rgba(0,0,0,0.12);
+  width:240px; max-width:calc(100vw - 32px);
+  animation: popupIn .18s cubic-bezier(.2,.8,.3,1) both;
 }
-[data-theme="light"] .wtm-popup .maplibregl-popup-content { background:#fff; color:#1a1d23; }
-[data-theme="dark"]  .wtm-popup .maplibregl-popup-content { background:#1e2433; color:#e6edf3; }
+@keyframes popupIn {
+  from { opacity:0; transform:scale(.94) translateY(4px); }
+  to   { opacity:1; transform:scale(1)  translateY(0);    }
+}
+[data-theme="light"] .wtm-popup .maplibregl-popup-content {
+  background:#ffffff; color:#1a1d23;
+  border:1px solid rgba(0,0,0,0.08);
+}
+[data-theme="dark"] .wtm-popup .maplibregl-popup-content {
+  background:#1a2132; color:#e6edf3;
+  border:1px solid rgba(255,255,255,0.1);
+}
+/* Hide the default tip/tail and default close btn */
 .wtm-popup .maplibregl-popup-tip { display:none; }
-.wtm-popup .maplibregl-popup-close-button { color:inherit; font-size:18px; padding:6px 10px; }
-.popup-inner { padding:14px 16px; }
-.popup-header { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
-.popup-flag   { font-size:26px; line-height:1; }
-.popup-city   { font-weight:700; font-size:15px; }
-.popup-country{ font-size:12px; opacity:.6; }
-.popup-time   { font-size:28px; font-weight:700; color:var(--accent,#58a6ff); margin-bottom:2px; font-family:'JetBrains Mono',monospace; }
-.popup-date   { font-size:12px; opacity:.65; margin-bottom:10px; }
-.popup-row    { display:flex; justify-content:space-between; align-items:baseline; font-size:12px; padding:4px 0; border-bottom:1px solid rgba(128,128,128,0.1); gap:8px; }
-.popup-row:last-of-type { border-bottom:none; }
-.popup-row-label { opacity:.6; white-space:nowrap; }
-.popup-row-value { font-weight:600; text-align:right; font-size:11px; }
-.popup-pin-btn {
-  margin-top:12px; width:100%; padding:8px; border-radius:8px; border:none;
-  background:var(--accent,#58a6ff); color:#04101f; font-weight:700;
-  font-size:12px; cursor:pointer; font-family:inherit;
+.wtm-popup .maplibregl-popup-close-button { display:none; }
+
+/* ── Popup inner layout ───────────────────────────────────── */
+.popup-inner { padding:0; }
+
+/* Header strip — flag + location + close btn */
+.popup-header {
+  display:flex; align-items:flex-start; gap:10px;
+  padding:14px 14px 10px;
+  border-bottom:1px solid rgba(128,128,128,0.1);
 }
-.popup-pin-btn:hover { opacity:.88; }
+.popup-flag { font-size:28px; line-height:1; flex-shrink:0; margin-top:1px; }
+.popup-location { flex:1; min-width:0; }
+.popup-city {
+  font-weight:700; font-size:15px; line-height:1.2;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.popup-country { font-size:12px; opacity:.55; margin-top:2px; }
+.popup-close-btn {
+  width:24px; height:24px; border-radius:6px; border:none; flex-shrink:0;
+  background:rgba(128,128,128,0.12); color:inherit; cursor:pointer;
+  font-size:13px; line-height:24px; text-align:center; margin-top:1px;
+  transition:background .15s;
+}
+.popup-close-btn:hover { background:rgba(128,128,128,0.22); }
+
+/* Time — primary focus */
+.popup-time-block { padding:14px 14px 10px; text-align:center; }
+.popup-time {
+  font-size:38px; font-weight:700; letter-spacing:-.5px;
+  color:var(--accent,#58a6ff); font-family:'JetBrains Mono',monospace;
+  line-height:1; margin-bottom:4px;
+}
+.popup-date { font-size:12px; opacity:.6; }
+
+/* Details rows with icons */
+.popup-details { padding:0 14px 10px; }
+.popup-row {
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; padding:5px 0;
+  border-bottom:1px solid rgba(128,128,128,0.08);
+}
+.popup-row:last-child { border-bottom:none; }
+.popup-row-icon { font-size:13px; opacity:.5; width:16px; text-align:center; flex-shrink:0; }
+.popup-row-label { opacity:.55; flex:1; }
+.popup-row-value { font-weight:600; font-size:11.5px; text-align:right; }
+
+/* Pin button — compact, icon-style */
+.popup-footer {
+  padding:10px 14px 12px;
+  border-top:1px solid rgba(128,128,128,0.1);
+}
+.popup-pin-btn {
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  width:100%; padding:8px 12px; border-radius:8px; border:none;
+  font-size:12px; font-weight:600; cursor:pointer; font-family:inherit;
+  transition:all .15s;
+}
+.popup-pin-btn.unpinned {
+  background:rgba(88,166,255,0.12);
+  color:var(--accent,#58a6ff);
+  border:1px solid rgba(88,166,255,0.25);
+}
+.popup-pin-btn.unpinned:hover {
+  background:var(--accent,#58a6ff); color:#04101f;
+}
+.popup-pin-btn.pinned {
+  background:rgba(248,81,73,0.1);
+  color:#e24b4a;
+  border:1px solid rgba(248,81,73,0.2);
+}
+.popup-pin-btn.pinned:hover { background:rgba(248,81,73,0.2); }
 
 /* ── Pinned cities panel ──────────────────────────────────── */
 .wtm-pins-section { margin-top:24px; }
@@ -189,8 +237,9 @@
 }
 
 @media (max-width:600px) {
-  .wtm-utc-bar .utc-time { font-size:16px; }
   .wtm-legend { display:none; }
+  .popup-time { font-size:30px; }
+  .wtm-map-wrap { height:clamp(300px,50vh,480px); }
 }
 </style>
 </head>
@@ -247,13 +296,6 @@
       <button class="wtm-ctrl-btn" id="btn-zoom-out" title="Zoom out"          aria-label="Zoom out">−</button>
       <button class="wtm-ctrl-btn" id="btn-reset"    title="Reset view"        aria-label="Reset view"><i class="ti ti-home" style="font-size:14px"></i></button>
       <button class="wtm-ctrl-btn active" id="btn-daynight" title="Toggle day/night" aria-label="Toggle day/night overlay"><i class="ti ti-sun" style="font-size:14px"></i></button>
-    </div>
-
-    <!-- UTC clock -->
-    <div class="wtm-utc-bar" aria-label="Current UTC time">
-      <div class="utc-label">UTC · Coordinated Universal Time</div>
-      <div class="utc-time" id="utc-display">--:--:--</div>
-      <div class="utc-date" id="utc-date"></div>
     </div>
 
     <!-- Legend -->
@@ -610,45 +652,101 @@ function nearestCity(lat, lng) {
   return d < 22 ? best : null;
 }
 
-// ── Popup ─────────────────────────────────────────────────────────────────
+// ── Popup — redesigned with smart anchor ─────────────────────────────────
 let popupTimer = null;
 
-function showPopup(city, coords) {
-  if (popup) popup.remove();
-  if (popupTimer) clearInterval(popupTimer);
+function getSmartAnchor(lngLat) {
+  // Determine which quadrant the point is in relative to the map center
+  // to pick a popup anchor that keeps it fully within the map bounds
+  const mapBounds = map.getBounds();
+  const midLat = (mapBounds.getNorth() + mapBounds.getSouth()) / 2;
+  const midLng = (mapBounds.getEast() + mapBounds.getWest()) / 2;
+  const isNorth = lngLat.lat > midLat;
+  const isEast  = lngLat.lng > midLng;
+  // Return anchor opposite to position so popup opens toward center
+  if (isNorth && isEast)  return 'top-right';
+  if (isNorth && !isEast) return 'top-left';
+  if (!isNorth && isEast) return 'bottom-right';
+  return 'bottom-left';
+}
 
-  const isPinned = pinnedCities.some(p => p.name === city.name);
-  const t = getLocalTime(city.tz);
+function buildPopupHTML(city, t, isPinned) {
   const safeCity = JSON.stringify(city).replace(/"/g,'&quot;');
-
-  popup = new maplibregl.Popup({
-    className:'wtm-popup', closeButton:true, maxWidth:'268px', offset:10
-  })
-  .setLngLat(coords)
-  .setHTML(`
+  const tzShort = city.tz.split('/').pop().replace(/_/g,' ');
+  return `
     <div class="popup-inner">
       <div class="popup-header">
         <span class="popup-flag">${city.flag}</span>
-        <div><div class="popup-city">${city.name}</div><div class="popup-country">${city.country}</div></div>
+        <div class="popup-location">
+          <div class="popup-city">${city.name}</div>
+          <div class="popup-country">${city.country}</div>
+        </div>
+        <button class="popup-close-btn" onclick="closePopup()" aria-label="Close">✕</button>
       </div>
-      <div class="popup-time" id="pp-time">${t.time}</div>
-      <div class="popup-date" id="pp-date">${t.date}</div>
-      <div class="popup-row"><span class="popup-row-label">UTC offset</span><span class="popup-row-value">${t.offset}</span></div>
-      <div class="popup-row"><span class="popup-row-label">Time zone</span><span class="popup-row-value">${city.tz.split('/').pop().replace(/_/g,' ')}</span></div>
-      <div class="popup-row"><span class="popup-row-label">Full name</span><span class="popup-row-value" style="font-size:10px;word-break:break-word">${t.tzName}</span></div>
-      <button class="popup-pin-btn" onclick="togglePin(${safeCity})">${isPinned ? '✕ Unpin city' : '📌 Pin to compare'}</button>
-    </div>`)
+      <div class="popup-time-block">
+        <div class="popup-time" id="pp-time">${t.time}</div>
+        <div class="popup-date" id="pp-date">${t.date}</div>
+      </div>
+      <div class="popup-details">
+        <div class="popup-row">
+          <span class="popup-row-icon"><i class="ti ti-clock"></i></span>
+          <span class="popup-row-label">UTC offset</span>
+          <span class="popup-row-value">${t.offset}</span>
+        </div>
+        <div class="popup-row">
+          <span class="popup-row-icon"><i class="ti ti-world"></i></span>
+          <span class="popup-row-label">Time zone</span>
+          <span class="popup-row-value">${tzShort}</span>
+        </div>
+        <div class="popup-row">
+          <span class="popup-row-icon"><i class="ti ti-info-circle"></i></span>
+          <span class="popup-row-label">Full name</span>
+          <span class="popup-row-value" style="font-size:10.5px;word-break:break-word;max-width:110px">${t.tzName}</span>
+        </div>
+      </div>
+      <div class="popup-footer">
+        <button class="popup-pin-btn ${isPinned ? 'pinned' : 'unpinned'}" onclick="togglePin(${safeCity})">
+          <i class="ti ti-map-pin"></i>
+          ${isPinned ? 'Unpin city' : 'Pin to compare'}
+        </button>
+      </div>
+    </div>`;
+}
+
+function closePopup() {
+  if (popup) { popup.remove(); popup = null; }
+  if (popupTimer) { clearInterval(popupTimer); popupTimer = null; }
+}
+
+function showPopup(city, coords) {
+  closePopup();
+  const isPinned = pinnedCities.some(p => p.name === city.name);
+  const t = getLocalTime(city.tz);
+  const lngLat = { lat: coords[1], lng: coords[0] };
+  const anchor = getSmartAnchor(lngLat);
+
+  popup = new maplibregl.Popup({
+    className: 'wtm-popup',
+    closeButton: false,      // using our own close button
+    closeOnClick: false,
+    anchor,
+    offset: { 'top-left':[6,6], 'top-right':[-6,6], 'bottom-left':[6,-6], 'bottom-right':[-6,-6] },
+    maxWidth: 'none'
+  })
+  .setLngLat(coords)
+  .setHTML(buildPopupHTML(city, t, isPinned))
   .addTo(map);
 
   popupTimer = setInterval(() => {
     const timeEl = document.getElementById('pp-time');
     const dateEl = document.getElementById('pp-date');
-    if (timeEl && popup.isOpen()) {
+    if (timeEl && popup?.isOpen()) {
       const t2 = getLocalTime(city.tz);
       timeEl.textContent = t2.time;
       dateEl.textContent = t2.date;
     } else {
       clearInterval(popupTimer);
+      popupTimer = null;
     }
   }, 1000);
 }
@@ -703,11 +801,7 @@ function tick() {
   const navUtc = document.getElementById('utc-val');
   if (navUtc) navUtc.textContent = now.toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
 
-  // UTC clock overlay
-  const dispEl = document.getElementById('utc-display');
-  const dateEl = document.getElementById('utc-date');
-  if (dispEl) dispEl.textContent = now.toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-  if (dateEl) dateEl.textContent = now.toLocaleDateString('en-US',{timeZone:'UTC',weekday:'short',month:'short',day:'numeric',year:'numeric'});
+  // (UTC overlay removed — cleaner interface)
 
   // Night overlay — update every 60s
   if (map && map.isStyleLoaded() && dayNightOn && now - lastNightUpdate > 60000) {
