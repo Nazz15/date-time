@@ -4,9 +4,8 @@ var WXP = { cities:[], unit:localStorage.getItem('wx_unit')||'celsius', cache:{}
 var WX_ICONS={0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'❄️',75:'❄️',77:'❄️',80:'🌦',81:'🌧',82:'⛈',85:'🌨',86:'❄️',95:'⛈',96:'⛈',99:'⛈'};
 var WX_DESC={0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Slight rain',63:'Moderate rain',65:'Heavy rain',71:'Slight snow',73:'Moderate snow',75:'Heavy snow',77:'Snow grains',80:'Slight showers',81:'Showers',82:'Violent showers',85:'Slight snow shower',86:'Heavy snow shower',95:'Thunderstorm',96:'Thunderstorm + hail',99:'Thunderstorm + heavy hail'};
 
-// Precise lat/lon per timezone — critical for India accuracy
 var COORDS={
-  'Asia/Kolkata':{lat:19.076,lon:72.877},  // Mumbai (default for IST)
+  'Asia/Kolkata':{lat:19.076,lon:72.877},
   'Europe/London':{lat:51.507,lon:-0.128},
   'America/New_York':{lat:40.714,lon:-74.006},
   'Asia/Tokyo':{lat:35.689,lon:139.692},
@@ -94,7 +93,6 @@ var COORDS={
   'Europe/Vienna':{lat:48.209,lon:16.373},
   'Europe/Vilnius':{lat:54.687,lon:25.280},
   'Europe/Zurich':{lat:47.376,lon:8.541},
-  'Pacific/Auckland':{lat:-36.867,lon:174.770},
   'Pacific/Fiji':{lat:-18.141,lon:178.441},
   'Pacific/Honolulu':{lat:21.307,lon:-157.858},
   'Pacific/Port_Moresby':{lat:-9.479,lon:147.150},
@@ -120,17 +118,14 @@ var COORDS={
 };
 
 function getCoords(city) {
-  // If we have a custom lat/lon (from geolocation), use it
   if (city._lat != null) return {lat: city._lat, lon: city._lon};
-  // Use precise coords table
   if (COORDS[city.tz]) return COORDS[city.tz];
-  // Fallback by continent
-  if (city.tz.startsWith('Asia/'))     return {lat:25,lon:85};
-  if (city.tz.startsWith('Europe/'))   return {lat:50,lon:15};
-  if (city.tz.startsWith('America/'))  return {lat:40,lon:-80};
-  if (city.tz.startsWith('Africa/'))   return {lat:5,lon:20};
-  if (city.tz.startsWith('Australia/'))return {lat:-25,lon:135};
-  return {lat:40.714,lon:-74.006};
+  if (city.tz.startsWith('Asia/'))      return {lat:25,  lon:85};
+  if (city.tz.startsWith('Europe/'))    return {lat:50,  lon:15};
+  if (city.tz.startsWith('America/'))   return {lat:40,  lon:-80};
+  if (city.tz.startsWith('Africa/'))    return {lat:5,   lon:20};
+  if (city.tz.startsWith('Australia/')) return {lat:-25, lon:135};
+  return {lat:40.714, lon:-74.006};
 }
 
 var unitSym = function(){ return WXP.unit==='celsius'?'°C':'°F'; };
@@ -138,7 +133,9 @@ var unitSym = function(){ return WXP.unit==='celsius'?'°C':'°F'; };
 function setUnit(u) {
   WXP.unit = u;
   localStorage.setItem('wx_unit', u);
-  document.querySelectorAll('.unit-btn').forEach(function(b){ b.classList.toggle('active', b.dataset.u===u); });
+  document.querySelectorAll('.unit-btn').forEach(function(b){
+    b.classList.toggle('active', b.dataset.u===u);
+  });
   WXP.cache = {};
   renderAllWx();
 }
@@ -148,7 +145,7 @@ function fetchWx(city, cb) {
   var key = c.lat+','+c.lon+'_'+WXP.unit;
   if (WXP.cache[key]) { cb(null, WXP.cache[key]); return; }
   var url = 'https://api.open-meteo.com/v1/forecast'
-    + '?latitude=' + c.lat + '&longitude=' + c.lon
+    + '?latitude='  + c.lat + '&longitude=' + c.lon
     + '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m,uv_index,visibility'
     + '&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m'
     + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,uv_index_max'
@@ -161,7 +158,7 @@ function fetchWx(city, cb) {
       return r.json();
     })
     .then(function(d) {
-      if (!d.current) throw new Error('No current data in response');
+      if (!d.current) throw new Error('No current data');
       WXP.cache[key] = d;
       cb(null, d);
     })
@@ -172,43 +169,50 @@ function buildCard(city, i, data) {
   var cw = data.current, h = data.hourly, daily = data.daily;
   var code = cw.weather_code || 0;
   var icon = WX_ICONS[code] || '🌡';
-  var desc = WX_DESC[code] || 'Unknown';
-  var U = unitSym();
+  var desc = WX_DESC[code]  || 'Unknown';
+  var U    = unitSym();
 
-  // Find current hour index in hourly array
+  // ── BUG FIX: Open-Meteo returns hourly times in the city's LOCAL timezone
+  // (because we pass timezone=auto). The old code used toISOString() which is
+  // always UTC, so cities with a UTC offset always started at the wrong hour.
+  // Fix: compare against the city's local time string, which uses the same
+  // wall-clock format as the API response ("YYYY-MM-DDTHH").
   var baseH = 0;
   if (h && h.time) {
-    var nowISO = new Date().toISOString().slice(0,13); // "2024-06-15T12"
-    var idx = h.time.findIndex(function(t){ return t.slice(0,13) === nowISO; });
+    var localNow = new Date().toLocaleString('sv', { timeZone: city.tz });
+    // 'sv' locale gives "YYYY-MM-DD HH:MM:SS" — slice to "YYYY-MM-DDTHH"
+    var nowLocal = localNow.slice(0, 10) + 'T' + localNow.slice(11, 13);
+    var idx = h.time.findIndex(function(t){ return t.slice(0,13) === nowLocal; });
     if (idx >= 0) baseH = idx;
   }
 
-  var hum  = cw.relative_humidity_2m != null ? cw.relative_humidity_2m + '%' : 'N/A';
-  var wind = cw.wind_speed_10m != null ? cw.wind_speed_10m + ' km/h' : 'N/A';
-  var feels= cw.apparent_temperature != null ? Math.round(cw.apparent_temperature) + U : 'N/A';
-  var uv   = cw.uv_index != null ? cw.uv_index : 'N/A';
-  var vis  = cw.visibility != null ? (cw.visibility/1000).toFixed(1) + ' km' : 'N/A';
-  var rain = cw.precipitation != null ? cw.precipitation + ' mm' : 'N/A';
+  var hum   = cw.relative_humidity_2m   != null ? cw.relative_humidity_2m + '%' : 'N/A';
+  var wind  = cw.wind_speed_10m         != null ? cw.wind_speed_10m + ' km/h'   : 'N/A';
+  var feels = cw.apparent_temperature   != null ? Math.round(cw.apparent_temperature) + U : 'N/A';
+  var uv    = cw.uv_index               != null ? cw.uv_index                    : 'N/A';
+  var vis   = cw.visibility             != null ? (cw.visibility/1000).toFixed(1) + ' km' : 'N/A';
+  var rain  = cw.precipitation          != null ? cw.precipitation + ' mm'       : 'N/A';
 
-  // Wind direction arrow
   var windDir = '';
   if (cw.wind_direction_10m != null) {
     var dirs = ['N','NE','E','SE','S','SW','W','NW'];
-    windDir = ' ' + dirs[Math.round(cw.wind_direction_10m/45)%8];
+    windDir = ' ' + dirs[Math.round(cw.wind_direction_10m / 45) % 8];
   }
 
-  // Hourly — next 12 hours
+  // Hourly — next 12 hours from current local hour
   var hourlyHtml = '';
   if (h && h.time) {
     hourlyHtml = h.time.slice(baseH, baseH+12).map(function(t, k) {
       var idx = baseH + k;
-      var hr = parseInt(t.slice(11,13));
-      var lbl = WC.is24h ? String(hr).padStart(2,'0')+':00' : (hr%12||12)+(hr<12?'AM':'PM');
+      var hr  = parseInt(t.slice(11,13));
+      var lbl = (typeof WC !== 'undefined' && WC.is24h)
+        ? String(hr).padStart(2,'0') + ':00'
+        : (hr%12||12) + (hr<12?'AM':'PM');
       return '<div class="hourly-item">'
         + '<div class="hourly-time">' + lbl + '</div>'
-        + '<div class="hourly-icon">' + (WX_ICONS[h.weather_code[idx]]||'🌡') + '</div>'
-        + '<div class="hourly-temp">' + Math.round(h.temperature_2m[idx]) + U + '</div>'
-        + '<div style="font-size:9px;color:var(--clr-text3)">' + (h.precipitation_probability?h.precipitation_probability[idx]+'%':'') + '</div>'
+        + '<div class="hourly-icon">'  + (WX_ICONS[h.weather_code[idx]]||'🌡') + '</div>'
+        + '<div class="hourly-temp">'  + Math.round(h.temperature_2m[idx]) + U + '</div>'
+        + '<div class="hourly-rain">'  + (h.precipitation_probability ? h.precipitation_probability[idx]+'%' : '') + '</div>'
         + '</div>';
     }).join('');
   }
@@ -217,14 +221,15 @@ function buildCard(city, i, data) {
   var dailyHtml = '';
   if (daily && daily.time) {
     var allMax = daily.temperature_2m_max, allMin = daily.temperature_2m_min;
-    var gMin = Math.min.apply(null,allMin), gMax = Math.max.apply(null,allMax);
+    var gMin = Math.min.apply(null, allMin), gMax = Math.max.apply(null, allMax);
     dailyHtml = daily.time.map(function(t, k) {
-      var dt = new Date(t + 'T12:00');
-      var dayStr = k===0 ? 'Today' : k===1 ? 'Tomorrow' : dt.toLocaleDateString('en-US',{weekday:'short'});
-      var hi = Math.round(allMax[k]), lo = Math.round(allMin[k]);
-      var bp = gMax>gMin ? Math.round((hi-gMin)/(gMax-gMin)*100) : 50;
+      var dt   = new Date(t + 'T12:00');
+      var day  = k===0 ? 'Today' : k===1 ? 'Tomorrow' : dt.toLocaleDateString('en-US',{weekday:'short'});
+      var hi   = Math.round(allMax[k]), lo = Math.round(allMin[k]);
+      var pct  = daily.precipitation_probability_max ? daily.precipitation_probability_max[k] : 0;
+      var bp   = gMax > gMin ? Math.round((hi-gMin)/(gMax-gMin)*100) : 50;
       return '<div class="daily-row">'
-        + '<span class="daily-day">' + dayStr + '</span>'
+        + '<span class="daily-day">'  + day + '</span>'
         + '<span class="daily-icon">' + (WX_ICONS[daily.weather_code[k]]||'🌡') + '</span>'
         + '<span class="daily-desc">' + (WX_DESC[daily.weather_code[k]]||'') + '</span>'
         + '<div class="daily-bar"><div class="daily-bar-fill" style="width:'+bp+'%"></div></div>'
@@ -233,51 +238,69 @@ function buildCard(city, i, data) {
     }).join('');
   }
 
+  // ── Card HTML ────────────────────────────────────────────────────────────
   return '<div class="wx-city-card" id="wx-card-'+i+'">'
-    + '<div class="wx-card-hdr">' + flag(city.cc,22)
-    + '<div><div class="city-name">' + city.name + '</div><div class="country-name">' + city.country + '</div></div>'
-    + '<button class="wx-rm" onclick="removeWxCity('+i+')" title="Remove">&#10005;</button></div>'
-    // Current
-    + '<div class="wx-current-block">'
-    + '<div class="wx-main-icon">' + icon + '</div>'
-    + '<div class="wx-main-info">'
-    + '<div class="wx-main-temp">' + Math.round(cw.temperature_2m) + U + '</div>'
-    + '<div class="wx-main-desc">' + desc + '</div>'
-    + '<div class="wx-main-meta">Feels like ' + feels + ' · ' + wind + windDir + '</div>'
+    // Header: flag + city + remove btn
+    + '<div class="wx-card-hdr">'
+    +   '<div class="wx-card-hdr-left">' + flag(city.cc, 22)
+    +     '<div><div class="wx-city-name">'    + city.name    + '</div>'
+    +          '<div class="wx-country-name">' + city.country + '</div></div>'
+    +   '</div>'
+    +   '<button class="wx-rm" onclick="removeWxCity('+i+')" title="Remove">✕</button>'
     + '</div>'
-    + '<div class="wx-stats">'
-    + '<div class="wx-stat"><div class="wx-stat-val">' + hum + '</div><div class="wx-stat-lbl">Humidity</div></div>'
-    + '<div class="wx-stat"><div class="wx-stat-val">' + wind + '</div><div class="wx-stat-lbl">Wind</div></div>'
-    + '<div class="wx-stat"><div class="wx-stat-val">' + rain + '</div><div class="wx-stat-lbl">Rain</div></div>'
-    + '<div class="wx-stat"><div class="wx-stat-val">' + uv + '</div><div class="wx-stat-lbl">UV Index</div></div>'
-    + '<div class="wx-stat"><div class="wx-stat-val">' + vis + '</div><div class="wx-stat-lbl">Visibility</div></div>'
-    + '</div></div>'
-    // Hourly
-    + (hourlyHtml ? '<div class="wx-hourly"><h4>Next 12 Hours</h4><div class="hourly-scroll">' + hourlyHtml + '</div></div>' : '')
-    // Daily
-    + (dailyHtml ? '<div class="wx-daily"><h4>14-Day Forecast</h4>' + dailyHtml + '</div>' : '')
+    // Current weather
+    + '<div class="wx-current">'
+    +   '<div class="wx-current-left">'
+    +     '<div class="wx-main-icon">' + icon + '</div>'
+    +     '<div>'
+    +       '<div class="wx-main-temp">' + Math.round(cw.temperature_2m) + U + '</div>'
+    +       '<div class="wx-main-desc">' + desc + '</div>'
+    +       '<div class="wx-feels">Feels like ' + feels + ' · ' + wind + windDir + '</div>'
+    +     '</div>'
+    +   '</div>'
+    +   '<div class="wx-stats-grid">'
+    +     wxStat('💧', hum,  'Humidity')
+    +     wxStat('💨', wind, 'Wind')
+    +     wxStat('🌧', rain, 'Rain')
+    +     wxStat('☀️', uv,   'UV Index')
+    +     wxStat('👁', vis,  'Visibility')
+    +   '</div>'
+    + '</div>'
+    // Hourly strip
+    + (hourlyHtml
+        ? '<div class="wx-section"><div class="wx-section-label">Next 12 Hours</div>'
+        +   '<div class="hourly-scroll">' + hourlyHtml + '</div></div>'
+        : '')
+    // Daily forecast
+    + (dailyHtml
+        ? '<div class="wx-section"><div class="wx-section-label">14-Day Forecast</div>'
+        +   dailyHtml + '</div>'
+        : '')
+    + '</div>';
+}
+
+function wxStat(ico, val, lbl) {
+  return '<div class="wx-stat">'
+    + '<div class="wx-stat-ico">' + ico + '</div>'
+    + '<div class="wx-stat-val">' + val + '</div>'
+    + '<div class="wx-stat-lbl">' + lbl + '</div>'
     + '</div>';
 }
 
 function loadCard(city, i) {
-  // Set loading state
-  var el = document.getElementById('wx-card-' + i);
-  if (el) el.innerHTML = '<div class="wx-loading-block">Loading weather for ' + city.name + '…</div>';
-
   fetchWx(city, function(err, data) {
     var target = document.getElementById('wx-card-' + i);
     if (!target) return;
     if (err || !data) {
       target.innerHTML = '<div class="wx-error">'
-        + 'Weather unavailable for ' + city.name + '.'
-        + '<br><small style="color:var(--clr-text3)">' + (err ? err.message : 'No data') + '</small>'
-        + '<br><button onclick="WXP.cache={};renderAllWx()" style="margin-top:8px;padding:6px 14px;border:1px solid var(--clr-brand);border-radius:20px;background:none;color:var(--clr-brand);cursor:pointer;font-size:12px">↻ Retry</button>'
+        + '<i class="ti ti-cloud-off" style="font-size:28px;opacity:.4"></i>'
+        + '<div>Weather unavailable for <strong>' + city.name + '</strong></div>'
+        + '<small>' + (err ? err.message : 'No data') + '</small>'
+        + '<button onclick="WXP.cache={};renderAllWx()">↻ Retry</button>'
         + '</div>';
       return;
     }
-    // Build the card HTML and inject INTO the existing container (preserves id)
-    target.innerHTML = buildCard(city, i, data);
-    // buildCard wraps in a div with the same id — so swap outer
+    // Build and replace — single call, no duplicate
     var wrapper = document.createElement('div');
     wrapper.innerHTML = buildCard(city, i, data);
     var newCard = wrapper.firstElementChild;
@@ -289,15 +312,22 @@ function renderAllWx() {
   var el = document.getElementById('wx-list');
   if (!el) return;
   if (!WXP.cities.length) {
-    el.innerHTML = '<div class="sm-empty"><i class="ti ti-cloud"></i><p>Search above to add cities and compare weather.</p></div>';
+    el.innerHTML = '<div class="wx-empty">'
+      + '<i class="ti ti-cloud" style="font-size:40px;opacity:.25"></i>'
+      + '<p>Search above to add cities and compare weather.</p>'
+      + '</div>';
     return;
   }
-  // Render placeholder cards first
+  // Render skeleton placeholders first
   el.innerHTML = WXP.cities.map(function(c, i) {
-    return '<div class="wx-city-card" id="wx-card-' + i + '">'
-      + '<div class="wx-loading-block">Loading weather for ' + c.name + '…</div></div>';
+    return '<div class="wx-city-card wx-skeleton" id="wx-card-' + i + '">'
+      + '<div class="wx-skeleton-inner">'
+      + '<div class="wx-skeleton-flag"></div>'
+      + '<div><div class="wx-skeleton-title">' + c.name + '</div>'
+      + '<div class="wx-skeleton-sub">Loading weather…</div></div>'
+      + '</div></div>';
   }).join('');
-  // Fetch each one
+  // Fetch each city independently
   WXP.cities.forEach(function(c, i) { loadCard(c, i); });
 }
 
@@ -331,10 +361,8 @@ function autoLocateWx() {
           name: d.city || d.locality || 'My Location',
           country: d.countryName || '',
           cc: (d.countryCode || 'un').toLowerCase(),
-          tz: tz,
-          _lat: lat, _lon: lon  // store precise coords
+          tz: tz, _lat: lat, _lon: lon
         };
-        // Update COORDS so other pages benefit
         COORDS[tz] = {lat: lat, lon: lon};
         addWxCity(city);
       })
@@ -346,7 +374,6 @@ function autoLocateWx() {
   }, function() { toast('Location access denied'); });
 }
 
-// Callbacks
 function onPinsChanged() { renderStrip(); }
 function onFmtChange()   { renderStrip(); }
 
@@ -355,7 +382,7 @@ boot();
 loadPins();
 renderStrip();
 
-// Deduplicate pinned cities for weather
+// Load pinned cities into weather (deduplicated, max 6)
 var _seen = {};
 WXP.cities = WC.pinned.filter(function(c) {
   var k = c.tz + '_' + c.name;
@@ -364,7 +391,7 @@ WXP.cities = WC.pinned.filter(function(c) {
   return true;
 }).slice(0, 6);
 
-// Set unit buttons
+// Sync unit buttons
 document.querySelectorAll('.unit-btn').forEach(function(b) {
   b.classList.toggle('active', b.dataset.u === WXP.unit);
 });
