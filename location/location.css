@@ -55,54 +55,125 @@
   display:inline-flex; align-items:center; gap:4px;
 }
 
-/* ── City card weather enhancements ──────────────────────────── */
+/* ── City card: base improvements ──────────────────────────────── */
 .loc-city-card {
-  /* Increase min height and add flex layout for weather row */
-  display:flex; flex-direction:column; gap:6px;
+  display:flex; flex-direction:column; gap:4px;
+  transition:border-color .15s, transform .15s, box-shadow .15s;
 }
-
 .loc-city-card:hover {
-  box-shadow:0 4px 16px rgba(0,0,0,0.12);
+  border-color:var(--clr-brand);
+  transform:translateY(-2px);
+  box-shadow:0 6px 20px rgba(0,0,0,0.12);
 }
 
 .loc-city-card-name {
-  font-size:14px;
-}
-
-/* The time element — slightly larger */
-.loc-city-card-tz {
-  font-size:15px; font-weight:600;
-  color:var(--clr-brand); font-family:var(--mono);
-}
-
-/* Weather row injected by JS */
-.loc-card-wx {
+  font-size:14px; font-weight:700; color:var(--clr-text);
   display:flex; align-items:center; gap:6px;
-  margin-top:2px; flex-wrap:wrap;
 }
 
-.loc-card-wx-spin {
-  font-size:11px; opacity:.35;
+/* Time — primary info, large and bold */
+.loc-city-card-tz {
+  font-size:18px; font-weight:700;
+  color:var(--clr-brand); font-family:var(--mono);
+  margin:2px 0;
 }
 
-.loc-card-wx-icon {
-  font-size:18px; line-height:1; flex-shrink:0;
+/* Weather row: icon + temp on one line */
+.loc-card-wx { margin-top:2px; }
+
+.loc-card-wx-row {
+  display:flex; align-items:center; gap:6px;
 }
+
+.loc-card-wx-spin { font-size:11px; opacity:.35; }
+
+.loc-card-wx-icon { font-size:20px; line-height:1; }
 
 .loc-card-wx-temp {
-  font-size:14px; font-weight:700;
-  color:var(--clr-brand);
+  font-size:15px; font-weight:700; color:var(--clr-text);
 }
 
+/* Condition on its own line below */
 .loc-card-wx-desc {
-  font-size:11px; color:var(--clr-text3);
+  font-size:12px; color:var(--clr-text3);
+  margin-top:1px;
 }
 
-/* ── Responsive ──────────────────────────────────────────────── */
+/* ── Hero weather block ──────────────────────────────────────────── */
+.loc-clock-card {
+  display:inline-flex; flex-direction:column; align-items:center;
+  gap:0; max-width:580px; width:100%;
+}
+
+.loc-hero-wx {
+  width:100%;
+  border-top:1px solid rgba(255,255,255,0.1);
+  margin-top:20px; padding-top:20px;
+}
+
+.loc-hero-wx-card { width:100%; }
+
+/* Top row: big icon + temp + condition */
+.loc-hero-wx-summary {
+  display:flex; align-items:center; justify-content:center;
+  gap:14px; margin-bottom:16px;
+}
+
+.loc-hero-wx-icon { font-size:44px; line-height:1; flex-shrink:0; }
+
+.loc-hero-wx-summary-right { text-align:left; }
+
+.loc-hero-wx-temp {
+  font-size:36px; font-weight:700;
+  color:var(--clr-acc); font-family:var(--mono);
+  line-height:1;
+}
+
+.loc-hero-wx-desc {
+  font-size:15px; font-weight:500;
+  color:rgba(255,255,255,0.8);
+  margin-top:4px;
+}
+
+.loc-hero-wx-feels {
+  font-size:12px; color:rgba(255,255,255,0.45);
+  margin-top:3px;
+}
+
+/* Chips grid */
+.loc-hero-wx-chips {
+  display:flex; flex-wrap:wrap; justify-content:center;
+  gap:8px;
+}
+
+.loc-hero-wx-chip {
+  display:flex; flex-direction:column; align-items:center;
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px; padding:8px 12px; min-width:64px;
+  gap:2px;
+}
+
+.loc-hero-chip-ico { font-size:16px; }
+
+.loc-hero-chip-val {
+  font-size:13px; font-weight:700;
+  color:rgba(255,255,255,0.95);
+}
+
+.loc-hero-chip-lbl {
+  font-size:10px; color:rgba(255,255,255,0.45);
+  text-transform:uppercase; letter-spacing:.04em;
+}
+
+.loc-hero-wx-spin { font-size:12px; opacity:.4; font-style:italic; }
+
+/* ── Responsive ──────────────────────────────────────────────────── */
 @media (max-width:600px) {
-  .loc-hero-wx-main { gap:8px; }
-  .loc-hero-wx-icon { font-size:28px; }
-  .loc-hero-wx-temp { font-size:26px; }
-  .loc-hero-wx-stats { gap:6px 10px; }
-  .loc-city-grid { grid-template-columns:repeat(2,1fr); }
+  .loc-hero-wx-icon  { font-size:36px; }
+  .loc-hero-wx-temp  { font-size:28px; }
+  .loc-hero-wx-chips { gap:6px; }
+  .loc-hero-wx-chip  { padding:6px 10px; min-width:56px; }
+  .loc-city-grid     { grid-template-columns:repeat(2,1fr); }
+  .loc-city-card-tz  { font-size:16px; }
 }
