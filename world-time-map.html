@@ -283,19 +283,36 @@
 }
 
 /* Mobile (≤700px): stack — map full width, panel becomes bottom sheet */
+/* ── Panel weather block ──────────────────────────────────────── */
+.panel-weather-block {
+  padding:12px 14px;
+  border-top:1px solid rgba(128,128,128,0.1);
+  min-height:48px;
+}
+.panel-wx-main {
+  display:flex; align-items:center; gap:8px; margin-bottom:4px;
+}
+.panel-wx-icon { font-size:26px; line-height:1; }
+.panel-wx-temp {
+  font-size:24px; font-weight:700;
+  color:var(--accent,#58a6ff); font-family:'JetBrains Mono',monospace;
+}
+.panel-wx-desc { font-size:13px; opacity:.65; margin-bottom:6px; }
+.panel-wx-meta {
+  display:flex; gap:10px; flex-wrap:wrap; font-size:11.5px; opacity:.55;
+}
+
 @media (max-width:700px) {
   .wtm-stage { grid-template-columns:1fr; gap:0; }
   .wtm-map-wrap { border-radius:14px 14px 0 0; height:clamp(280px,48vw,380px); }
   .wtm-panel {
-    position:relative; top:auto; /* cancel sticky */
+    position:relative; top:auto;
     border-radius:0 0 14px 14px;
     border-top:none;
     max-height:0; overflow:hidden;
     transition:max-height .3s cubic-bezier(.4,0,.2,1);
   }
-  .wtm-panel.panel-open {
-    max-height:380px;
-  }
+  .wtm-panel.panel-open { max-height:460px; }
   .wtm-legend { display:none; }
 }
 </style>
@@ -402,7 +419,14 @@
             <span class="panel-row-label">Full name</span>
             <span class="panel-row-value" id="panel-tzfull" style="font-size:10.5px;word-break:break-word;max-width:120px">—</span>
           </div>
+          <div class="panel-row">
+            <span class="panel-row-icon"><i class="ti ti-sun"></i></span>
+            <span class="panel-row-label">Day/Night</span>
+            <span class="panel-row-value" id="panel-daynight">—</span>
+          </div>
         </div>
+        <!-- Weather block -->
+        <div class="panel-weather-block" id="panel-weather"></div>
         <div class="panel-footer">
           <button class="panel-pin-btn unpinned" id="panel-pin-btn">
             <i class="ti ti-map-pin"></i> Pin to compare
@@ -614,6 +638,64 @@ const CITIES = [
   { name:'Casablanca', country:'Morocco', flag:'🇲🇦', tz:'Africa/Casablanca', lat:33.59, lng:-7.62 },
   { name:'Kyiv', country:'Ukraine', flag:'🇺🇦', tz:'Europe/Kiev', lat:50.45, lng:30.52 },
   { name:'Athens', country:'Greece', flag:'🇬🇷', tz:'Europe/Athens', lat:37.98, lng:23.73 },
+  // New cities
+  { name:'Houston', country:'United States', flag:'🇺🇸', tz:'America/Chicago', lat:29.76, lng:-95.37 },
+  { name:'Miami', country:'United States', flag:'🇺🇸', tz:'America/New_York', lat:25.77, lng:-80.19 },
+  { name:'Seattle', country:'United States', flag:'🇺🇸', tz:'America/Los_Angeles', lat:47.61, lng:-122.33 },
+  { name:'Boston', country:'United States', flag:'🇺🇸', tz:'America/New_York', lat:42.36, lng:-71.06 },
+  { name:'Vancouver', country:'Canada', flag:'🇨🇦', tz:'America/Vancouver', lat:49.25, lng:-123.12 },
+  { name:'Montreal', country:'Canada', flag:'🇨🇦', tz:'America/Toronto', lat:45.50, lng:-73.57 },
+  { name:'Rio de Janeiro', country:'Brazil', flag:'🇧🇷', tz:'America/Sao_Paulo', lat:-22.91, lng:-43.17 },
+  { name:'Santiago', country:'Chile', flag:'🇨🇱', tz:'America/Santiago', lat:-33.46, lng:-70.65 },
+  { name:'Caracas', country:'Venezuela', flag:'🇻🇪', tz:'America/Caracas', lat:10.48, lng:-66.88 },
+  { name:'Bogota', country:'Colombia', flag:'🇨🇴', tz:'America/Bogota', lat:4.71, lng:-74.07 },
+  { name:'Lisbon', country:'Portugal', flag:'🇵🇹', tz:'Europe/Lisbon', lat:38.72, lng:-9.14 },
+  { name:'Brussels', country:'Belgium', flag:'🇧🇪', tz:'Europe/Brussels', lat:50.85, lng:4.35 },
+  { name:'Vienna', country:'Austria', flag:'🇦🇹', tz:'Europe/Vienna', lat:48.21, lng:16.37 },
+  { name:'Budapest', country:'Hungary', flag:'🇭🇺', tz:'Europe/Budapest', lat:47.50, lng:19.04 },
+  { name:'Prague', country:'Czech Republic', flag:'🇨🇿', tz:'Europe/Prague', lat:50.09, lng:14.42 },
+  { name:'Copenhagen', country:'Denmark', flag:'🇩🇰', tz:'Europe/Copenhagen', lat:55.68, lng:12.57 },
+  { name:'Helsinki', country:'Finland', flag:'🇫🇮', tz:'Europe/Helsinki', lat:60.17, lng:24.94 },
+  { name:'Oslo', country:'Norway', flag:'🇳🇴', tz:'Europe/Oslo', lat:59.91, lng:10.75 },
+  { name:'Dublin', country:'Ireland', flag:'🇮🇪', tz:'Europe/Dublin', lat:53.33, lng:-6.25 },
+  { name:'Bucharest', country:'Romania', flag:'🇷🇴', tz:'Europe/Bucharest', lat:44.43, lng:26.10 },
+  { name:'Belgrade', country:'Serbia', flag:'🇷🇸', tz:'Europe/Belgrade', lat:44.79, lng:20.46 },
+  { name:'Minsk', country:'Belarus', flag:'🇧🇾', tz:'Europe/Minsk', lat:53.91, lng:27.56 },
+  { name:'Tbilisi', country:'Georgia', flag:'🇬🇪', tz:'Asia/Tbilisi', lat:41.69, lng:44.83 },
+  { name:'Baku', country:'Azerbaijan', flag:'🇦🇿', tz:'Asia/Baku', lat:40.41, lng:49.87 },
+  { name:'Almaty', country:'Kazakhstan', flag:'🇰🇿', tz:'Asia/Almaty', lat:43.25, lng:76.94 },
+  { name:'Ankara', country:'Turkey', flag:'🇹🇷', tz:'Europe/Istanbul', lat:39.92, lng:32.85 },
+  { name:'Baghdad', country:'Iraq', flag:'🇮🇶', tz:'Asia/Baghdad', lat:33.34, lng:44.40 },
+  { name:'Beirut', country:'Lebanon', flag:'🇱🇧', tz:'Asia/Beirut', lat:33.89, lng:35.50 },
+  { name:'Doha', country:'Qatar', flag:'🇶🇦', tz:'Asia/Qatar', lat:25.29, lng:51.53 },
+  { name:'Kuwait City', country:'Kuwait', flag:'🇰🇼', tz:'Asia/Kuwait', lat:29.37, lng:47.98 },
+  { name:'Muscat', country:'Oman', flag:'🇴🇲', tz:'Asia/Muscat', lat:23.61, lng:58.59 },
+  { name:'Islamabad', country:'Pakistan', flag:'🇵🇰', tz:'Asia/Karachi', lat:33.73, lng:73.09 },
+  { name:'Kathmandu', country:'Nepal', flag:'🇳🇵', tz:'Asia/Kathmandu', lat:27.72, lng:85.32 },
+  { name:'Yangon', country:'Myanmar', flag:'🇲🇲', tz:'Asia/Rangoon', lat:16.87, lng:96.19 },
+  { name:'Hanoi', country:'Vietnam', flag:'🇻🇳', tz:'Asia/Ho_Chi_Minh', lat:21.03, lng:105.85 },
+  { name:'Ho Chi Minh City', country:'Vietnam', flag:'🇻🇳', tz:'Asia/Ho_Chi_Minh', lat:10.82, lng:106.63 },
+  { name:'Phnom Penh', country:'Cambodia', flag:'🇰🇭', tz:'Asia/Phnom_Penh', lat:11.56, lng:104.92 },
+  { name:'Osaka', country:'Japan', flag:'🇯🇵', tz:'Asia/Tokyo', lat:34.69, lng:135.50 },
+  { name:'Guangzhou', country:'China', flag:'🇨🇳', tz:'Asia/Shanghai', lat:23.13, lng:113.26 },
+  { name:'Chengdu', country:'China', flag:'🇨🇳', tz:'Asia/Shanghai', lat:30.66, lng:104.07 },
+  { name:'Melbourne', country:'Australia', flag:'🇦🇺', tz:'Australia/Melbourne', lat:-37.81, lng:144.96 },
+  { name:'Brisbane', country:'Australia', flag:'🇦🇺', tz:'Australia/Brisbane', lat:-27.47, lng:153.03 },
+  { name:'Perth', country:'Australia', flag:'🇦🇺', tz:'Australia/Perth', lat:-31.95, lng:115.86 },
+  { name:'Addis Ababa', country:'Ethiopia', flag:'🇪🇹', tz:'Africa/Addis_Ababa', lat:9.03, lng:38.75 },
+  { name:'Dar es Salaam', country:'Tanzania', flag:'🇹🇿', tz:'Africa/Dar_es_Salaam', lat:-6.79, lng:39.21 },
+  { name:'Kinshasa', country:'DR Congo', flag:'🇨🇩', tz:'Africa/Kinshasa', lat:-4.32, lng:15.32 },
+  { name:'Luanda', country:'Angola', flag:'🇦🇴', tz:'Africa/Luanda', lat:-8.84, lng:13.23 },
+  { name:'Cape Town', country:'South Africa', flag:'🇿🇦', tz:'Africa/Johannesburg', lat:-33.93, lng:18.42 },
+  { name:'Algiers', country:'Algeria', flag:'🇩🇿', tz:'Africa/Algiers', lat:36.74, lng:3.09 },
+  { name:'Tunis', country:'Tunisia', flag:'🇹🇳', tz:'Africa/Tunis', lat:36.82, lng:10.17 },
+  { name:'Kampala', country:'Uganda', flag:'🇺🇬', tz:'Africa/Kampala', lat:0.32, lng:32.58 },
+  { name:'Dakar', country:'Senegal', flag:'🇸🇳', tz:'Africa/Dakar', lat:14.69, lng:-17.45 },
+  { name:'Ulaanbaatar', country:'Mongolia', flag:'🇲🇳', tz:'Asia/Ulaanbaatar', lat:47.92, lng:106.92 },
+  { name:'Vladivostok', country:'Russia', flag:'🇷🇺', tz:'Asia/Vladivostok', lat:43.11, lng:131.89 },
+  { name:'Novosibirsk', country:'Russia', flag:'🇷🇺', tz:'Asia/Novosibirsk', lat:54.99, lng:82.90 },
+  { name:'Reykjavik', country:'Iceland', flag:'🇮🇸', tz:'Atlantic/Reykjavik', lat:64.14, lng:-21.90 },
+  { name:'Port Moresby', country:'Papua New Guinea', flag:'🇵🇬', tz:'Pacific/Port_Moresby', lat:-9.48, lng:147.15 },
 ];
 
 // ── Solar terminator math ─────────────────────────────────────────────────
@@ -711,11 +793,21 @@ function initMap() {
   map.addControl(new maplibregl.AttributionControl({ compact:true }), 'bottom-right');
 
   map.on('load', () => {
-    // Night overlay
+    // Night overlay — two layers: main dark fill + soft twilight edge
     map.addSource('nightzone', { type:'geojson', data: getNightPolygon(Date.now()) });
     map.addLayer({
       id: 'nightzone-fill', type:'fill', source:'nightzone',
-      paint: { 'fill-color':'#051a38', 'fill-opacity': dark ? 0.58 : 0.45 }
+      paint: { 'fill-color':'#000820', 'fill-opacity': dark ? 0.65 : 0.50 }
+    });
+    // Soft terminator glow (line layer for the boundary)
+    map.addLayer({
+      id: 'nightzone-line', type:'line', source:'nightzone',
+      paint: {
+        'line-color': '#4a90d9',
+        'line-width': 2,
+        'line-blur': 3,
+        'line-opacity': 0.4
+      }
     });
 
     // City dots
@@ -738,6 +830,27 @@ function initMap() {
         'circle-stroke-width': 1.5,
         'circle-stroke-color': '#ffffff',
         'circle-opacity': 0.88
+      }
+    });
+
+    // City name labels — visible from zoom 4+
+    map.addLayer({
+      id: 'city-labels', type: 'symbol', source: 'cities',
+      minzoom: 3.5,
+      layout: {
+        'text-field': ['get', 'name'],
+        'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+        'text-size': ['interpolate', ['linear'], ['zoom'], 3.5, 10, 7, 13],
+        'text-offset': [0, 1.4],
+        'text-anchor': 'top',
+        'text-allow-overlap': false,
+        'text-ignore-placement': false,
+      },
+      paint: {
+        'text-color': dark ? '#e6edf3' : '#1a1d23',
+        'text-halo-color': dark ? '#0d1117' : '#ffffff',
+        'text-halo-width': 1.5,
+        'text-opacity': ['interpolate', ['linear'], ['zoom'], 3.5, 0, 4.5, 1]
       }
     });
 
@@ -779,13 +892,10 @@ let selectedMarker = null;
 function openPanel(city) {
   panelCity = city;
 
-  // Stop previous timer
   if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
-
-  // Remove old selected marker
   if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
 
-  // Add a subtle pulsing marker at the selected city
+  // Pulsing selected marker
   const el = document.createElement('div');
   el.style.cssText = `
     width:14px;height:14px;border-radius:50%;
@@ -798,8 +908,16 @@ function openPanel(city) {
     .setLngLat([city.lng, city.lat])
     .addTo(map);
 
+  // Fly to city smoothly
+  map.flyTo({ center:[city.lng, city.lat], zoom: Math.max(map.getZoom(), 4), duration:800, essential:true });
+
   // Populate panel DOM
   const t = getLocalTime(city.tz);
+
+  // Determine day/night for this city
+  const sunPos = getSunPosition(Date.now());
+  const cityIsDay = isDaytime(city.lat, city.lng, sunPos);
+
   document.getElementById('panel-empty').style.display = 'none';
   document.getElementById('panel-city').style.display  = 'block';
   document.getElementById('panel-flag').textContent        = city.flag;
@@ -811,19 +929,100 @@ function openPanel(city) {
   document.getElementById('panel-tz').textContent         = city.tz.split('/').pop().replace(/_/g,' ');
   document.getElementById('panel-tzfull').textContent     = t.tzName;
 
-  // Update pin button state
-  updatePinBtn();
+  // Day/Night status
+  const dnEl = document.getElementById('panel-daynight');
+  if (dnEl) dnEl.textContent = cityIsDay ? '🌞 Daytime' : '🌙 Nighttime';
 
-  // On mobile: slide panel open
+  // Clear previous weather
+  const wxEl = document.getElementById('panel-weather');
+  if (wxEl) wxEl.innerHTML = '<span style="font-size:11px;opacity:.4">Loading weather…</span>';
+
+  // Fetch weather
+  fetchCityWeather(city, function(wx) {
+    const wxEl2 = document.getElementById('panel-weather');
+    if (!wxEl2 || panelCity !== city) return;
+    if (!wx) { wxEl2.innerHTML = ''; return; }
+    wxEl2.innerHTML =
+      '<div class="panel-wx-main">'
+      + '<span class="panel-wx-icon">' + wx.icon + '</span>'
+      + '<span class="panel-wx-temp">' + wx.temp + '°C</span>'
+      + '</div>'
+      + '<div class="panel-wx-desc">' + wx.desc + '</div>'
+      + '<div class="panel-wx-meta">'
+      + '<span>💧 ' + wx.hum + '%</span>'
+      + '<span>💨 ' + wx.wind + ' km/h</span>'
+      + (wx.rise ? '<span>🌅 ' + wx.rise + '</span>' : '')
+      + '</div>';
+  });
+
+  updatePinBtn();
   document.getElementById('wtm-panel').classList.add('panel-open');
 
-  // Start live time ticker in panel
   panelTimer = setInterval(() => {
     if (!panelCity) { clearInterval(panelTimer); return; }
     const t2 = getLocalTime(panelCity.tz);
     document.getElementById('panel-time').textContent = t2.time;
     document.getElementById('panel-date').textContent = t2.date;
   }, 1000);
+}
+
+// Is a point in daytime given sun position?
+function isDaytime(lat, lng, sunPos) {
+  // Simple: if the angle between the point and the sub-solar point < 90°, it's daytime
+  const lat1 = lat * Math.PI/180, lat2 = sunPos.lat * Math.PI/180;
+  const dLng = (lng - sunPos.lng) * Math.PI/180;
+  const cosAngle = Math.sin(lat1)*Math.sin(lat2) + Math.cos(lat1)*Math.cos(lat2)*Math.cos(dLng);
+  return cosAngle > 0; // > 0 means sun above horizon
+}
+
+// Open-Meteo weather fetch
+const WX_ICONS_MAP = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'❄️',75:'❄️',77:'❄️',80:'🌦',81:'🌧',82:'⛈',85:'🌨',86:'❄️',95:'⛈',96:'⛈',99:'⛈'};
+const WX_DESC_MAP  = {0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Light drizzle',53:'Drizzle',61:'Slight rain',63:'Moderate rain',65:'Heavy rain',71:'Slight snow',73:'Moderate snow',75:'Heavy snow',80:'Showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm'};
+const wxCache = {};
+
+function fetchCityWeather(city, cb) {
+  // Use CITY_COORDS from weather.js approach — inline coords
+  const coordsMap = {
+    'Mumbai':{lat:19.076,lon:72.877},'New Delhi':{lat:28.611,lon:77.209},
+    'Delhi':{lat:28.611,lon:77.209},'London':{lat:51.507,lon:-0.128},
+    'New York':{lat:40.714,lon:-74.006},'Tokyo':{lat:35.689,lon:139.692},
+    'Sydney':{lat:-33.869,lon:151.209},'Dubai':{lat:25.204,lon:55.270},
+    'Paris':{lat:48.857,lon:2.352},'Berlin':{lat:52.520,lon:13.405},
+    'Shanghai':{lat:31.230,lon:121.473},'Beijing':{lat:39.906,lon:116.391},
+    'Singapore':{lat:1.352,lon:103.820},'Los Angeles':{lat:34.052,lon:-118.244},
+    'Chicago':{lat:41.850,lon:-87.650},'Toronto':{lat:43.651,lon:-79.383},
+    'Moscow':{lat:55.752,lon:37.616},'Seoul':{lat:37.566,lon:126.978},
+    'Bangkok':{lat:13.754,lon:100.502},'Cairo':{lat:30.060,lon:31.229},
+    'Istanbul':{lat:41.013,lon:28.948},'Mexico City':{lat:19.433,lon:-99.133},
+    'São Paulo':{lat:-23.550,lon:-46.633},'Buenos Aires':{lat:-34.603,lon:-58.381},
+    'Jakarta':{lat:-6.211,lon:106.845},'Karachi':{lat:24.861,lon:67.010},
+    'Lagos':{lat:6.455,lon:3.384},'Nairobi':{lat:-1.286,lon:36.820},
+    'Miami':{lat:25.775,lon:-80.208},'Houston':{lat:29.760,lon:-95.369},
+    'Seattle':{lat:47.606,lon:-122.332},'Boston':{lat:42.360,lon:-71.059},
+    'Vancouver':{lat:49.246,lon:-123.116},'Montreal':{lat:45.509,lon:-73.554},
+  };
+  const coords = coordsMap[city.name] || {lat: city.lat, lon: city.lng};
+  const key = coords.lat + ',' + coords.lon;
+  if (wxCache[key]) { cb(wxCache[key]); return; }
+  fetch('https://api.open-meteo.com/v1/forecast?latitude=' + coords.lat + '&longitude=' + coords.lon
+    + '&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m'
+    + '&daily=sunrise,sunset&timezone=auto&forecast_days=1')
+    .then(r => r.json())
+    .then(d => {
+      if (!d.current) { cb(null); return; }
+      const code = d.current.weather_code || 0;
+      const result = {
+        temp: Math.round(d.current.temperature_2m),
+        icon: WX_ICONS_MAP[code] || '🌡',
+        desc: WX_DESC_MAP[code] || '',
+        hum:  d.current.relative_humidity_2m,
+        wind: d.current.wind_speed_10m,
+        rise: d.daily?.sunrise?.[0]?.slice(11,16) || ''
+      };
+      wxCache[key] = result;
+      cb(result);
+    })
+    .catch(() => cb(null));
 }
 
 function closePanel() {
@@ -907,7 +1106,8 @@ function tick() {
 
   // Night overlay — update every 60s
   if (map && map.isStyleLoaded() && dayNightOn && now - lastNightUpdate > 60000) {
-    map.getSource('nightzone')?.setData(getNightPolygon(now.getTime()));
+    const nightData = getNightPolygon(now.getTime());
+    map.getSource('nightzone')?.setData(nightData);
     lastNightUpdate = now.getTime();
   }
 
@@ -933,6 +1133,7 @@ document.getElementById('btn-daynight').addEventListener('click', function() {
   this.classList.toggle('active', dayNightOn);
   if (map?.isStyleLoaded()) {
     map.setLayoutProperty('nightzone-fill','visibility', dayNightOn ? 'visible' : 'none');
+    map.setLayoutProperty('nightzone-line','visibility', dayNightOn ? 'visible' : 'none');
   }
 });
 
