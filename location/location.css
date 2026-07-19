@@ -1,0 +1,108 @@
+
+/* ═══════════════════════════════════════════════════════════════
+   WEATHER ENHANCEMENTS (added by location.js dynamically)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Hero weather block ──────────────────────────────────────── */
+.loc-clock-card {
+  /* Widen card to accommodate weather block beside the time */
+  display:inline-flex; flex-direction:column; align-items:center;
+  gap:16px; max-width:560px; width:100%;
+}
+
+.loc-hero-wx {
+  width:100%;
+  border-top:1px solid rgba(255,255,255,0.1);
+  padding-top:16px;
+}
+
+.loc-hero-wx-inner {
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+
+.loc-hero-wx-spin {
+  font-size:12px; opacity:.45; font-style:italic;
+}
+
+.loc-hero-wx-main {
+  display:flex; align-items:center; gap:10px;
+}
+
+.loc-hero-wx-icon { font-size:36px; line-height:1; }
+
+.loc-hero-wx-temp {
+  font-size:32px; font-weight:700; color:var(--clr-acc);
+  font-family:var(--mono);
+}
+
+.loc-hero-wx-desc {
+  font-size:14px; color:rgba(255,255,255,0.75); font-weight:500;
+}
+
+.loc-hero-wx-feels {
+  font-size:12px; color:rgba(255,255,255,0.45);
+}
+
+.loc-hero-wx-stats {
+  display:flex; flex-wrap:wrap; justify-content:center;
+  gap:8px 14px; margin-top:4px;
+}
+
+.loc-hero-wx-stat {
+  font-size:12px; color:rgba(255,255,255,0.6);
+  background:rgba(255,255,255,0.07);
+  border-radius:20px; padding:4px 10px;
+  display:inline-flex; align-items:center; gap:4px;
+}
+
+/* ── City card weather enhancements ──────────────────────────── */
+.loc-city-card {
+  /* Increase min height and add flex layout for weather row */
+  display:flex; flex-direction:column; gap:6px;
+}
+
+.loc-city-card:hover {
+  box-shadow:0 4px 16px rgba(0,0,0,0.12);
+}
+
+.loc-city-card-name {
+  font-size:14px;
+}
+
+/* The time element — slightly larger */
+.loc-city-card-tz {
+  font-size:15px; font-weight:600;
+  color:var(--clr-brand); font-family:var(--mono);
+}
+
+/* Weather row injected by JS */
+.loc-card-wx {
+  display:flex; align-items:center; gap:6px;
+  margin-top:2px; flex-wrap:wrap;
+}
+
+.loc-card-wx-spin {
+  font-size:11px; opacity:.35;
+}
+
+.loc-card-wx-icon {
+  font-size:18px; line-height:1; flex-shrink:0;
+}
+
+.loc-card-wx-temp {
+  font-size:14px; font-weight:700;
+  color:var(--clr-brand);
+}
+
+.loc-card-wx-desc {
+  font-size:11px; color:var(--clr-text3);
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width:600px) {
+  .loc-hero-wx-main { gap:8px; }
+  .loc-hero-wx-icon { font-size:28px; }
+  .loc-hero-wx-temp { font-size:26px; }
+  .loc-hero-wx-stats { gap:6px 10px; }
+  .loc-city-grid { grid-template-columns:repeat(2,1fr); }
+}
