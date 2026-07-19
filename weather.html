@@ -24,6 +24,58 @@
 <link rel="stylesheet" href="/location.css">
 <link rel="stylesheet" href="/footer.css">
 <link rel="stylesheet" href="/weather.css">
+<style>
+/* ── Weather chips in My Cities strip ───────────────────────────────── */
+#my-strip { display:flex; flex-wrap:wrap; gap:10px; padding-top:10px; }
+
+.wx-chip {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:12px; cursor:pointer;
+  border:1.5px solid rgba(128,128,128,0.15); transition:border-color .15s,box-shadow .15s;
+  min-width:170px; position:relative; user-select:none;
+}
+[data-theme="dark"]  .wx-chip { background:rgba(255,255,255,0.04); }
+[data-theme="light"] .wx-chip { background:#ffffff; box-shadow:0 1px 4px rgba(0,0,0,0.07); }
+.wx-chip:hover       { border-color:var(--clr-brand,#58a6ff); box-shadow:0 0 0 3px rgba(88,166,255,0.1); }
+.wx-chip.active      { border-color:var(--clr-brand,#58a6ff); box-shadow:0 0 0 3px rgba(88,166,255,0.15); }
+.wx-chip-loading     { opacity:.7; }
+
+.wx-chip-flag    { flex-shrink:0; }
+.wx-chip-info    { flex:1; min-width:0; }
+.wx-chip-city    { font-weight:700; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.wx-chip-country { font-size:11px; opacity:.5; }
+
+.wx-chip-wx      { display:flex; align-items:center; gap:5px; flex-shrink:0; }
+.wx-chip-icon    { font-size:20px; line-height:1; }
+.wx-chip-temp    { font-size:15px; font-weight:700; color:var(--clr-brand,#58a6ff); }
+.wx-chip-desc    { font-size:10px; opacity:.55; display:none; }
+.wx-chip-spinner { font-size:12px; opacity:.4; }
+.wx-chip-err     { font-size:11px; opacity:.4; }
+
+.wx-chip-rm {
+  position:absolute; top:5px; right:5px; width:18px; height:18px;
+  border-radius:50%; border:none; background:rgba(128,128,128,0.12);
+  color:inherit; cursor:pointer; font-size:10px;
+  display:flex; align-items:center; justify-content:center; opacity:0;
+  transition:opacity .15s;
+}
+.wx-chip:hover .wx-chip-rm { opacity:1; }
+.wx-chip-rm:hover { background:rgba(220,50,50,0.2); color:#e24b4a; }
+
+/* Active card highlight */
+.wx-card-active {
+  border-color:var(--clr-brand,#58a6ff) !important;
+  box-shadow:0 0 0 3px rgba(88,166,255,0.12);
+}
+
+/* On mobile: chips scroll horizontally */
+@media (max-width:600px) {
+  #my-strip { flex-wrap:nowrap; overflow-x:auto; padding-bottom:6px;
+    scrollbar-width:thin; -webkit-overflow-scrolling:touch; }
+  .wx-chip  { flex-shrink:0; }
+  .wx-chip-desc { display:none !important; }
+}
+</style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -59,33 +111,33 @@
 <section class="my-section" aria-label="My Cities">
   <div class="wrap">
     <div class="my-head">
-      <h2 class="my-title"><i class="ti ti-map-pin"></i> My Cities</h2>
+      <h2 class="my-title"><i class="ti ti-cloud"></i> Weather by City</h2>
+      <div class="search-wrap">
+        <div class="search-pill" onclick="document.getElementById('wx-srch').focus()">
+          <i class="ti ti-search search-ico" aria-hidden="true"></i>
+          <input type="search" id="wx-srch" placeholder="Add a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search for a city">
+        </div>
+        <div id="wx-dd" class="search-dd" hidden></div>
+      </div>
     </div>
-    <div id="my-strip" role="list"></div>
+    <!-- Compact weather chips — populated by renderStrip() in weather.js -->
+    <div id="my-strip" role="list" aria-label="Selected cities weather"></div>
   </div>
 </section>
 
-<main class="wrap" style="padding-top:20px;padding-bottom:48px">
+<main class="wrap" style="padding-top:16px;padding-bottom:48px">
 
-  <!-- Controls -->
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
-    <div class="search-wrap">
-      <div class="search-pill" onclick="document.getElementById('wx-srch').focus()" style="width:300px">
-        <i class="ti ti-search search-ico"></i>
-        <input type="search" id="wx-srch" placeholder="Search city to add…" autocomplete="off" autocorrect="off">
-      </div>
-      <div id="wx-dd" class="search-dd" hidden></div>
-    </div>
-    <button class="tbtn secondary" style="padding:8px 16px;font-size:13px;border:1.5px solid var(--clr-brand);border-radius:30px;background:none;color:var(--clr-brand);cursor:pointer" onclick="autoLocateWx()">
+  <!-- Unit toggle + My Location -->
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px">
+    <button class="tbtn secondary" style="padding:7px 14px;font-size:13px;border:1.5px solid var(--clr-brand);border-radius:30px;background:none;color:var(--clr-brand);cursor:pointer" onclick="autoLocateWx()">
       <i class="ti ti-current-location"></i> My Location
     </button>
-    <!-- Unit toggle -->
     <div class="unit-toggle">
-      <button class="unit-btn active" data-u="celsius" onclick="setUnit('celsius')">°C</button>
-      <button class="unit-btn" data-u="fahrenheit" onclick="setUnit('fahrenheit')">°F</button>
+      <button class="unit-btn active" data-u="celsius"    onclick="setUnit('celsius')">°C</button>
+      <button class="unit-btn"        data-u="fahrenheit" onclick="setUnit('fahrenheit')">°F</button>
     </div>
+    <p style="font-size:12px;color:var(--clr-text3);margin:0">Powered by <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> — free, no API key.</p>
   </div>
-  <p style="font-size:12px;color:var(--clr-text3);margin-bottom:16px">Powered by <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> — free, no API key. Cities loaded from your World Clock selections.</p>
 
   <!-- City weather cards -->
   <div id="wx-list" class="wx-city-list"></div>
