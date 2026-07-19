@@ -1,7 +1,8 @@
 // clock.js — World Clock (index.html)
 // Depends on: util.js, cities.js
 
-var CK = { view: localStorage.getItem('wc_view')||'table', region:'all', sort:'city', asc:true };
+var CK = { view: localStorage.getItem('wc_view')||'table', region:'all', sort:'city', asc:true, tableExpanded:false, compactExpanded:false };
+var SHOW_LIMIT = 30;
 
 // Safe city map: name_with_underscores → city obj (no JSON in onclick)
 window._CM = {};
@@ -10,9 +11,11 @@ function addPinById(id){ var c=_CM[id]; if(c) addPin(c); }
 
 // ── View switching ─────────────────────────────────────────────────────────
 function setView(v){
+  // Digital removed — redirect any saved preference to table
+  if(v==='digital') v='table';
   CK.view=v; localStorage.setItem('wc_view',v);
   document.querySelectorAll('.view-tab').forEach(function(t){ t.classList.toggle('active',t.dataset.v===v); });
-  ['table','compact','digital','analog'].forEach(function(id){
+  ['table','compact','analog'].forEach(function(id){
     var el=document.getElementById('v-'+id); if(el) el.style.display=id===v?'block':'none';
   });
   renderView();
@@ -35,8 +38,10 @@ function getRows(){
 // ── TABLE ──────────────────────────────────────────────────────────────────
 function renderTable(){
   var tbody=document.getElementById('tbl-body'); if(!tbody) return;
+  var rows=getRows();
+  var visible=CK.tableExpanded ? rows : rows.slice(0,SHOW_LIMIT);
   var html=[];
-  getRows().forEach(function(c){
+  visible.forEach(function(c){
     var dst=isDST(c.tz), pin=isPinned(c), cid=c.name.replace(/[^a-zA-Z0-9]/g,'_');
     html.push('<tr>'
       +'<td><div class="td-city">'+flag(c.cc,17)+'<span class="td-name">'+c.name+(dst?'<span class="dst-star">*</span>':'')+'</span></div></td>'
@@ -48,9 +53,27 @@ function renderTable(){
       +'</tr>');
   });
   tbody.innerHTML=html.join('');
+  // View More / Show Less button
+  var btnRow=document.getElementById('tbl-viewmore-row');
+  if(!btnRow){
+    var tfoot=document.querySelector('#v-table tfoot');
+    if(!tfoot){ tfoot=document.createElement('tfoot'); tbody.parentNode.appendChild(tfoot); }
+    btnRow=document.createElement('tr');
+    btnRow.id='tbl-viewmore-row';
+    btnRow.innerHTML='<td colspan="6" style="text-align:center;padding:12px 0"></td>';
+    tfoot.appendChild(btnRow);
+  }
+  if(rows.length>SHOW_LIMIT){
+    btnRow.style.display='';
+    btnRow.firstElementChild.innerHTML='<button class="view-more-btn" onclick="CK.tableExpanded=!CK.tableExpanded;renderTable()">'
+      +(CK.tableExpanded?'Show Less ▲':'View More ('+(rows.length-SHOW_LIMIT)+' cities) ▼')+'</button>';
+  } else {
+    btnRow.style.display='none';
+  }
 }
 function tickTable(){
-  CITIES.filter(function(c){return (CK.region==='all'||c.region===CK.region)&&c.pop>0;}).forEach(function(c){
+  var rows=CK.tableExpanded ? getRows() : getRows().slice(0,SHOW_LIMIT);
+  rows.forEach(function(c){
     var el=document.getElementById('t_'+c.name.replace(/[^a-zA-Z0-9]/g,'_'));
     if(el) el.textContent=fmtDay(c.tz)+' '+fmt(c.tz);
   });
@@ -59,8 +82,10 @@ function tickTable(){
 // ── COMPACT ────────────────────────────────────────────────────────────────
 function renderCompact(){
   var el=document.getElementById('cg'); if(!el) return;
+  var rows=getRows();
+  var visible=CK.compactExpanded ? rows : rows.slice(0,SHOW_LIMIT);
   var html=[];
-  getRows().forEach(function(c){
+  visible.forEach(function(c){
     var dst=isDST(c.tz), pin=isPinned(c), cid=c.name.replace(/[^a-zA-Z0-9]/g,'_');
     html.push('<div class="cg-cell">'
       +'<div class="cg-left">'+flag(c.cc,15)+'<span class="cg-name" onclick="addPinById(\''+cid+'\')">'+c.name+(dst?'<span class="dst-star">*</span>':'')+'</span></div>'
@@ -68,10 +93,18 @@ function renderCompact(){
       +'<button class="cg-add'+(pin?' pinned':'')+'" onclick="addPinById(\''+cid+'\')">'+(pin?'&#10003;':'+')+'</button>'
       +'</div>');
   });
+  // View More button
+  if(rows.length>SHOW_LIMIT){
+    html.push('<div class="cg-viewmore">'
+      +'<button class="view-more-btn" onclick="CK.compactExpanded=!CK.compactExpanded;renderCompact()">'
+      +(CK.compactExpanded?'Show Less ▲':'View More ('+(rows.length-SHOW_LIMIT)+' cities) ▼')
+      +'</button></div>');
+  }
   el.innerHTML=html.join('');
 }
 function tickCompact(){
-  CITIES.filter(function(c){return (CK.region==='all'||c.region===CK.region)&&c.pop>0;}).forEach(function(c){
+  var rows=CK.compactExpanded ? getRows() : getRows().slice(0,SHOW_LIMIT);
+  rows.forEach(function(c){
     var el=document.getElementById('c_'+c.name.replace(/[^a-zA-Z0-9]/g,'_'));
     if(el) el.textContent=fmtDay(c.tz)+' '+fmt(c.tz);
   });
@@ -129,17 +162,15 @@ function tickAnalog(){
 
 // ── Dispatcher ─────────────────────────────────────────────────────────────
 function renderView(){
-  if(CK.view==='table') renderTable();
+  if(CK.view==='table')   renderTable();
   if(CK.view==='compact') renderCompact();
-  if(CK.view==='digital') renderDigital();
-  if(CK.view==='analog') renderAnalog();
+  if(CK.view==='analog')  renderAnalog();
 }
 function tick(){
   tickStrip();
-  if(CK.view==='table') tickTable();
+  if(CK.view==='table')   tickTable();
   if(CK.view==='compact') tickCompact();
-  if(CK.view==='digital') tickDigital();
-  if(CK.view==='analog') tickAnalog();
+  if(CK.view==='analog')  tickAnalog();
 }
 function onPinsChanged(){ renderStrip(); renderView(); }
 function onFmtChange(){ renderStrip(); renderView(); }

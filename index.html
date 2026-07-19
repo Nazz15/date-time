@@ -30,6 +30,33 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TimezoneBudy">
 <link rel="stylesheet" href="/pwa.css">
+<style>
+/* View More button */
+.view-more-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 22px; border-radius:20px; font-size:13px; font-weight:600;
+  border:1.5px solid rgba(128,128,128,0.25); background:transparent;
+  color:inherit; cursor:pointer; transition:background .15s,border-color .15s;
+  margin:4px 0;
+}
+.view-more-btn:hover { background:rgba(88,166,255,0.08); border-color:var(--accent,#58a6ff); color:var(--accent,#58a6ff); }
+.cg-viewmore { grid-column:1/-1; text-align:center; padding:10px 0 4px; }
+
+/* Compact grid responsive fix */
+.compact-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));
+  gap:6px;
+}
+.cg-cell { min-width:0; }
+.cg-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cg-time { white-space:nowrap; }
+
+/* FAQ styles */
+.faq-item { margin-bottom:20px; }
+.faq-item h3 { font-size:16px; font-weight:700; margin:0 0 6px; }
+.faq-item p  { font-size:15px; line-height:1.75; opacity:.85; margin:0; }
+</style>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 </head>
 <body>
@@ -45,7 +72,6 @@
       <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
       <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
       <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
-      <a class="nav-tab" href="/world-time-map"><i class="ti ti-map"></i> <span>World Map</span></a>
     </div>
     <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
     <div class="nav-btns">
@@ -102,7 +128,6 @@
 <div class="view-tabs" role="tablist" aria-label="Clock view">
   <button class="view-tab" data-v="table"   onclick="setView('table')"  role="tab"><i class="ti ti-list" aria-hidden="true"></i> <span>Table</span></button>
   <button class="view-tab" data-v="compact" onclick="setView('compact')" role="tab"><i class="ti ti-layout-grid" aria-hidden="true"></i> <span>Compact</span></button>
-  <button class="view-tab" data-v="digital" onclick="setView('digital')" role="tab"><i class="ti ti-clock-2" aria-hidden="true"></i> <span>Digital</span></button>
   <button class="view-tab" data-v="analog"  onclick="setView('analog')"  role="tab"><i class="ti ti-clock" aria-hidden="true"></i> <span>Analog</span></button>
 </div>
 
@@ -132,12 +157,6 @@
     <p class="footnote">* Daylight Saving Time active</p>
   </div>
 
-  <!-- DIGITAL -->
-  <div id="v-digital" style="display:none">
-    <div class="dg-grid" id="dg"></div>
-    <p class="footnote" style="margin-top:12px">Digital view shows your pinned cities. Use the search above to add cities.</p>
-  </div>
-
   <!-- ANALOG -->
   <div id="v-analog" style="display:none">
     <div class="al-grid" id="ag"></div>
@@ -146,22 +165,83 @@
 
   <!-- SEO content -->
   <section class="seo-sec" aria-label="About World Clock">
-    <h2>Free World Clock — Live Times for Every City</h2>
-    <p>Our world clock shows the current local time for 130+ major cities across every continent. Times update every second and automatically reflect Daylight Saving Time. Switch between four views — Table, Compact, Digital, and Analog — to find the format that works best for you.</p>
+    <h2>World Clock — Track the Current Time in Every City</h2>
+    <p>A world clock is an essential tool for anyone living, working, or communicating across international time zones. TimezoneBudy's free world clock displays the current local time for 130+ cities and countries simultaneously, updating every second so you always have accurate, live information at a glance.</p>
+
+    <p>Whether you're a remote worker coordinating a team spread across New York, London, and Singapore, a traveller planning an international itinerary, or a business scheduling a call with partners in Tokyo and Dubai, knowing the current time by city is critical. Getting it wrong can mean missed meetings, delayed decisions, and unnecessary confusion.</p>
+
+    <h3>How Does a World Clock Work?</h3>
+    <p>Every location on Earth is assigned a time zone — an offset measured in hours (and sometimes half-hours) from <strong>Coordinated Universal Time (UTC)</strong>, the world's universal time standard. TimezoneBudy calculates each city's local time by applying its UTC offset to your device's real-time clock. Times automatically adjust for <strong>Daylight Saving Time (DST)</strong> wherever it applies, so you never have to manually account for seasonal clock changes.</p>
+
+    <p>The global time zone system divides the Earth into 24 primary zones, each roughly 15 degrees of longitude wide. In practice, political and geographic decisions mean real boundaries are far more varied — some countries like India (UTC+5:30) and Nepal (UTC+5:45) use non-standard half-hour offsets, while China spans five geographic time zones but uses a single national time.</p>
+
+    <h3>UTC vs GMT — What's the Difference?</h3>
+    <p><strong>GMT (Greenwich Mean Time)</strong> is the mean solar time at the Royal Observatory in Greenwich, England. <strong>UTC</strong> replaced it in 1972 as the world's primary time reference, using precise atomic clocks instead of astronomical observation. The two are numerically equivalent for everyday use — both sit at UTC/GMT+0 — but UTC is the modern scientific standard that your phone, computer, and every server on the internet synchronise to.</p>
+
+    <h3>Why TimezoneBudy?</h3>
+    <p>Unlike basic world clock apps, TimezoneBudy combines a live world clock with a full suite of international time tools in one place. Pin your most-used cities for instant comparison, switch between Table and Compact views to match your workflow, and jump seamlessly to the <a href="/converter.html">Time Zone Converter</a> to schedule meetings, the <a href="/time-difference-calculator">Time Difference Calculator</a> to find the gap between any two cities, <a href="/sunmoon.html">Sun &amp; Moon times</a> for your location, or the <a href="/world-time-map">World Time Map</a> to visualise day and night across the globe in real time. All tools are free, require no sign-up, and work on any device.</p>
+
     <div class="seo-grid">
       <article class="seo-card">
         <h3>Pin Your Cities</h3>
-        <p>Search and pin your most-used cities to "My Cities" at the top of the page. Your selections are saved in your browser — they'll be there every time you return.</p>
+        <p>Search and save your most-used cities to "My Cities." Your selections persist between visits — no account needed.</p>
       </article>
       <article class="seo-card">
-        <h3>Timezone Converter</h3>
-        <p>Need to schedule across timezones? Use our <a href="/converter.html">Timezone Converter</a> to convert between any cities, plan meetings, and find the best overlap time.</p>
+        <h3><a href="/converter.html">Time Zone Converter</a></h3>
+        <p>Convert time between any two cities, plan international meetings, and find the best overlap window for distributed teams.</p>
       </article>
       <article class="seo-card">
-        <h3>More Time Tools</h3>
-        <p>Explore our <a href="/tools.html">Time Tools</a> — including a Countdown Timer, Stopwatch, Date Calculator, Sun &amp; Moon times, and Holiday Calendar.</p>
+        <h3><a href="/world-time-map">World Time Map</a></h3>
+        <p>See the live day/night boundary across the globe and click any city for its current local time and UTC offset.</p>
       </article>
     </div>
+
+    <!-- FAQ -->
+    <section aria-label="Frequently Asked Questions" style="margin-top:36px" itemscope itemtype="https://schema.org/FAQPage">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">What is a World Clock?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">A world clock is a tool that displays the current local time for multiple cities or countries simultaneously. Rather than converting manually, a world clock does the calculation automatically, accounting for each location's UTC offset and any active Daylight Saving Time adjustment. TimezoneBudy's world clock shows live times for 130+ cities updated every second.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">How does a World Clock work?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">A world clock works by taking a single reference time — Coordinated Universal Time (UTC) — and adding or subtracting each city's fixed UTC offset to calculate its local time. For example, London in winter is UTC+0, New York is UTC−5, and Mumbai is UTC+5:30. The clock updates in real time using your device's system clock, which is itself synchronised to global UTC servers. Daylight Saving Time adjustments are applied automatically based on each timezone's rules.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">What is the difference between UTC and GMT?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">GMT (Greenwich Mean Time) is a time zone based on the solar time at the Prime Meridian in Greenwich, England. UTC (Coordinated Universal Time) is a modern atomic-clock-based time standard that replaced GMT in 1972 as the world's official reference point. For practical everyday purposes the two are the same — both are at offset zero — but UTC is the precise scientific standard used by computers, servers, and international systems worldwide. TimezoneBudy uses UTC as its underlying reference for all time calculations.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">Why do different countries have different time zones?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">Time zones exist because the Earth rotates 360 degrees every 24 hours, meaning the Sun's position — and therefore local noon — differs by roughly one hour for every 15 degrees of longitude. Without time zones, clocks in cities east and west of each other would show wildly different times for midday. The system of 24 primary time zones, each one hour apart, was standardised in the late 19th century to enable coordinated railway schedules, global communication, and international trade. Today, the exact boundaries are set by governments and often reflect political borders rather than strict geography.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">How can I compare the time between two cities?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">The easiest way is to use TimezoneBudy's <a href="/time-difference-calculator">Time Difference Calculator</a>, which shows the exact number of hours between any two cities and highlights the business-hours overlap. You can also use the <a href="/converter.html">Time Zone Converter</a> to pick a specific time in one city and instantly see what it translates to in another — useful for scheduling international meetings or calls.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">How accurate is the TimezoneBudy World Clock?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">TimezoneBudy's world clock is as accurate as your device's system clock, which modern operating systems keep synchronised to within milliseconds of UTC via NTP (Network Time Protocol) servers. Time zone and Daylight Saving Time rules are maintained using the IANA Time Zone Database — the same authoritative source used by Google, Apple, and every major operating system — ensuring DST transitions are applied correctly for every country.</p>
+        </div>
+      </div>
+    </section>
   </section>
 
 </main>
