@@ -49,10 +49,28 @@
     return p === h || p.startsWith(h);
   }
 
-  // ── Build hamburger button (appended to .topnav-inner) ───────────────────────
+  // ── Build mobile control buttons + hamburger (appended to .topnav-inner) ───
   function injectHamburger() {
     var inner = document.querySelector('.topnav-inner');
     if (!inner || document.getElementById('nav-hamburger')) return;
+
+    // Mobile-always-visible buttons: 12h/24h + dark/light
+    // These sit before the hamburger and push it to the far right
+    var is24h  = localStorage.getItem('wc_24h') === '1';
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    var mobileBtns = document.createElement('div');
+    mobileBtns.className = 'nav-mobile-btns';
+    mobileBtns.innerHTML =
+      '<button id="mob-fmt-btn" class="nav-mobile-btn" onclick="toggle24h()">'
+      + (is24h ? '12h' : '24h')
+      + '</button>'
+      + '<button id="mob-theme-btn" class="nav-mobile-btn" onclick="toggleTheme()">'
+      + (isDark ? '☀️' : '🌙')
+      + '</button>';
+    inner.appendChild(mobileBtns);
+
+    // Hamburger — far right
     var btn = document.createElement('button');
     btn.id = 'nav-hamburger';
     btn.className = 'nav-hamburger';
@@ -92,14 +110,6 @@
       + '    </button>'
       + '  </div>'
       + '  <div class="nav-drawer-body">' + items + '</div>'
-      + '  <div class="nav-drawer-foot">'
-      + '    <button class="nav-btn" onclick="toggle24h()" style="flex:1">'
-      + (is24h ? '12h' : '24h')
-      + '    </button>'
-      + '    <button class="nav-btn" onclick="toggleTheme()" style="flex:1">'
-      + (isDark ? '☀️ Light' : '🌙 Dark')
-      + '    </button>'
-      + '  </div>'
       + '</nav>';
 
     var container = document.createElement('div');
@@ -138,6 +148,22 @@
     document.body.style.overflow = '';
     if (btn) { btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
   }
+
+  // ── Sync mobile button labels (called after toggleTheme/toggle24h) ──────────
+  // util.js calls onFmtChange() after format toggle — we hook into that
+  var _origOnFmtChange = window.onFmtChange;
+  window.onFmtChange = function() {
+    if (_origOnFmtChange) _origOnFmtChange();
+    var btn = document.getElementById('mob-fmt-btn');
+    if (btn) btn.textContent = (localStorage.getItem('wc_24h') === '1') ? '12h' : '24h';
+  };
+  // Theme change — watch data-theme attribute
+  var _themeObserver = new MutationObserver(function() {
+    var isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    var btn = document.getElementById('mob-theme-btn');
+    if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  });
+  _themeObserver.observe(document.documentElement, { attributes:true, attributeFilter:['data-theme'] });
 
   // ── Boot ─────────────────────────────────────────────────────────────────────
   function init() {

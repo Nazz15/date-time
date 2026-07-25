@@ -59,7 +59,11 @@ mark{background:rgba(21,101,192,.15);color:var(--clr-brand);border-radius:2px;pa
 .nav-btn{height:30px;padding:0 12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);color:rgba(255,255,255,.8);font-size:12px;font-weight:500;transition:background .15s;}
 .nav-btn:hover{background:rgba(255,255,255,.2);color:#fff;}
 
-/* ── Hamburger button (hidden on desktop) ────────────────────────────────── */
+/* ── Mobile-always-visible control buttons ───────────────────────────────── */
+/* Hidden on desktop (desktop uses .nav-btns instead) */
+.nav-mobile-btns{display:none;gap:5px;align-items:center;margin-left:auto;flex-shrink:0;}
+.nav-mobile-btn{height:30px;padding:0 10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);color:rgba(255,255,255,.85);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:background .15s;white-space:nowrap;}
+.nav-mobile-btn:hover{background:rgba(255,255,255,.2);color:#fff;}
 .nav-hamburger{display:none;align-items:center;justify-content:center;width:36px;height:36px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r);color:#fff;cursor:pointer;flex-shrink:0;margin-left:8px;transition:background .15s;}
 .nav-hamburger:hover{background:rgba(255,255,255,.2);}
 .nav-hamburger i{font-size:20px;}
@@ -243,13 +247,16 @@ mark{background:rgba(21,101,192,.15);color:var(--clr-brand);border-radius:2px;pa
   .al-grid{grid-template-columns:repeat(2,1fr);}
 }
 @media(max-width:640px){
-  /* Switch to hamburger menu */
+  /* Switch to hamburger — logo icon only, controls + hamburger on right */
   .nav-tabs{display:none;}
   .nav-btns{display:none;}
-  .nav-hamburger{display:flex;}
+  .nav-utc{display:none;}
+  .logo-name{display:none;}           /* icon-only branding on mobile */
+  .logo{margin-right:0;}
+  .nav-mobile-btns{display:flex;}     /* 12h/dark always visible */
+  .nav-hamburger{display:flex;}       /* hamburger far right */
   .wrap{padding:0 14px;}
   .topnav-inner{padding:0 14px;}
-  .logo-name{font-size:13px;}
   .search-pill{width:100%;}
   .my-head{flex-direction:column;align-items:stretch;gap:8px;}
   .sec-bar{padding:8px 14px;}
