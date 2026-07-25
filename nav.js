@@ -49,6 +49,17 @@
     return p === h || p.startsWith(h);
   }
 
+  // ── Replace logo in topnav at runtime ────────────────────────────────────────
+  // This ensures the correct logo appears on every page regardless of whether
+  // inject_favicon.py ran on that specific file or not.
+  function fixLogo() {
+    var existing = document.querySelector('.topnav-inner .logo, .topnav-inner a[href="/"]');
+    if (!existing) return;
+    existing.innerHTML =
+      LOGO_SVG
+      + '<span class="logo-name">Timezone<em>Budy</em></span>';
+  }
+
   // ── Build mobile control buttons + hamburger (appended to .topnav-inner) ───
   function injectHamburger() {
     var inner = document.querySelector('.topnav-inner');
@@ -167,6 +178,7 @@
 
   // ── Boot ─────────────────────────────────────────────────────────────────────
   function init() {
+    fixLogo();
     injectHamburger();
     injectDrawer();
   }

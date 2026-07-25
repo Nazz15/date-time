@@ -1,179 +1,216 @@
+/* location.css — uses the SAME --clr-* tokens defined in main.css.
+   No new color system, no hardcoded hex outside the tokens. */
 
-/* ═══════════════════════════════════════════════════════════════
-   WEATHER ENHANCEMENTS (added by location.js dynamically)
-   ═══════════════════════════════════════════════════════════════ */
+/* ── Locations mega menu ──────────────────────────────────────────────────── */
+.loc-menu-trigger{
+  position:relative;cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+}
+.loc-mega-menu{
+  position:fixed;top:52px;right:20px;
+  background:var(--clr-bg2);border:1px solid var(--clr-border2);
+  border-radius:var(--rlg);box-shadow:var(--sh2);
+  padding:16px;
+  display:grid;grid-template-columns:repeat(4,200px);
+  gap:6px 16px;max-height:70vh;overflow-y:auto;z-index:500;
+  visibility:hidden;opacity:0;pointer-events:none;
+  transition:opacity .12s;
+}
+.loc-menu-trigger.menu-open .loc-mega-menu{
+  visibility:visible;opacity:1;pointer-events:auto;
+}
+.loc-menu-col{padding:6px 0;}
+.loc-menu-country{
+  display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;
+  color:var(--clr-text);padding:4px 0;text-decoration:none;
+}
+.loc-menu-country:hover{color:var(--clr-brand);text-decoration:none;}
+.loc-menu-cities{display:flex;flex-direction:column;padding-left:22px;border-left:1px solid var(--clr-border);margin-top:2px;}
+.loc-menu-city{font-size:12px;color:var(--clr-text2);padding:2px 0;text-decoration:none;}
+.loc-menu-city:hover{color:var(--clr-brand);text-decoration:none;}
 
-/* ── Hero weather block ──────────────────────────────────────── */
-.loc-clock-card {
-  /* Widen card to accommodate weather block beside the time */
-  display:inline-flex; flex-direction:column; align-items:center;
-  gap:16px; max-width:560px; width:100%;
+@media(max-width:1024px){
+  .loc-mega-menu{grid-template-columns:repeat(2,1fr);width:90vw;right:5vw;left:5vw;}
+}
+@media(max-width:640px){
+  .loc-mega-menu{grid-template-columns:1fr;left:0;right:0;width:100%;border-radius:0;max-height:calc(100vh - 52px);}
 }
 
+/* ── Location hero ─────────────────────────────────────────────────────────── */
+.loc-hero{
+  background:linear-gradient(135deg,var(--clr-nav) 0%,#1a3a5c 100%);
+  color:#fff;padding:40px 0 36px;text-align:center;
+}
+.loc-crumb{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:16px;text-align:left;}
+.loc-crumb a{color:rgba(255,255,255,.7);}
+.loc-eyebrow{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--clr-acc);margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.loc-h1{font-size:clamp(24px,4.5vw,40px);font-weight:700;margin-bottom:8px;letter-spacing:-.3px;}
+.loc-sub{color:rgba(255,255,255,.65);font-size:14px;margin-bottom:24px;}
+.loc-flag-big{margin-bottom:8px;display:flex;justify-content:center;}
+
+.loc-clock-card{
+  display:inline-flex;flex-direction:column;align-items:center;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--rxl);padding:22px 44px;
+}
+.loc-live-time{font-family:var(--mono);font-size:clamp(32px,7vw,56px);font-weight:600;color:var(--clr-acc);letter-spacing:-1px;}
+.loc-live-date{color:rgba(255,255,255,.6);font-size:13px;margin-top:4px;}
+
+/* ── Main content ─────────────────────────────────────────────────────────── */
+.loc-main{padding:32px 20px 56px;}
+.loc-h2{font-size:16px;font-weight:700;color:var(--clr-text);margin:32px 0 14px;}
+
+.loc-stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:8px;}
+.loc-stat{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:16px;text-align:center;box-shadow:var(--sh);}
+.loc-stat-lbl{font-size:11px;color:var(--clr-text2);text-transform:uppercase;letter-spacing:.06em;}
+.loc-stat-val{font-size:17px;font-weight:600;color:var(--clr-text);margin-top:4px;display:flex;align-items:center;justify-content:center;gap:6px;}
+
+.loc-chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+.loc-chip{display:inline-flex;align-items:center;gap:5px;background:var(--clr-bg2);border:1px solid var(--clr-border2);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--clr-text2);text-decoration:none;transition:all .15s;}
+.loc-chip:hover{border-color:var(--clr-brand);color:var(--clr-brand);text-decoration:none;}
+
+.loc-city-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+.loc-city-card{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:16px;text-decoration:none;display:block;box-shadow:var(--sh);transition:border-color .15s,transform .15s;}
+.loc-city-card:hover{border-color:var(--clr-brand);transform:translateY(-2px);text-decoration:none;}
+.loc-city-card-name{font-weight:600;color:var(--clr-text);margin-bottom:4px;}
+.loc-city-card-tz{font-size:12px;color:var(--clr-text2);}
+
+.loc-country-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+.loc-country-card{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:20px;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:10px;box-shadow:var(--sh);transition:border-color .15s,transform .15s;}
+.loc-country-card:hover{border-color:var(--clr-brand);transform:translateY(-2px);text-decoration:none;}
+.loc-country-card-name{font-weight:600;color:var(--clr-text);font-size:14px;}
+
+@media(max-width:600px){
+  .loc-stat-grid{grid-template-columns:repeat(2,1fr);}
+  .loc-clock-card{padding:18px 24px;width:100%;}
+}
+
+/* ── Directory page (the master /location/ list) ──────────────────────────── */
+.loc-dir-list{display:flex;flex-direction:column;gap:10px;}
+.loc-dir-section{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh);}
+.loc-dir-country-header{
+  display:flex;align-items:center;gap:10px;padding:14px 18px;
+  background:var(--clr-bg3);text-decoration:none;font-weight:700;color:var(--clr-text);
+  border-bottom:1px solid var(--clr-border);
+}
+.loc-dir-country-header:hover{text-decoration:none;color:var(--clr-brand);}
+.loc-dir-country-name{font-size:15px;}
+.loc-dir-country-time{margin-left:8px;font-size:13px;color:var(--clr-text2);font-weight:500;}
+.loc-dir-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1px;background:var(--clr-border);}
+.loc-dir-card{
+  display:flex;align-items:center;gap:10px;padding:14px 18px;
+  background:var(--clr-bg2);text-decoration:none;transition:background .12s;
+}
+.loc-dir-card:hover{background:var(--clr-bg3);text-decoration:none;}
+.loc-dir-info{flex:1;min-width:0;}
+.loc-dir-name{font-weight:600;color:var(--clr-text);font-size:14px;}
+.loc-dir-country{font-size:11px;color:var(--clr-text3);}
+.loc-dir-time{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--clr-brand);white-space:nowrap;}
+
+@media(max-width:640px){
+  .loc-dir-grid{grid-template-columns:1fr;}
+  .loc-dir-country-header{flex-wrap:wrap;}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOCATION PAGE ENHANCEMENTS
+   All additions use existing --clr-* tokens from main.css
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Hero: tighter padding, better balance ──────────────────── */
+.loc-hero { padding:28px 0 24px; }
+.loc-clock-card {
+  display:inline-flex; flex-direction:column; align-items:center;
+  gap:0; max-width:560px; width:100%;
+}
+
+/* ── Hero weather block ──────────────────────────────────────── */
 .loc-hero-wx {
   width:100%;
   border-top:1px solid rgba(255,255,255,0.1);
-  padding-top:16px;
+  margin-top:18px; padding-top:18px;
 }
+.loc-hero-wx-card { width:100%; }
 
-.loc-hero-wx-inner {
-  display:flex; flex-direction:column; align-items:center; gap:6px;
+.loc-hero-wx-summary {
+  display:flex; align-items:center; justify-content:center;
+  gap:14px; margin-bottom:14px;
 }
+.loc-hero-wx-icon  { font-size:40px; line-height:1; flex-shrink:0; }
+.loc-hero-wx-summary-right { text-align:left; }
+.loc-hero-wx-temp  { font-size:32px; font-weight:700; color:var(--clr-acc); line-height:1; }
+.loc-hero-wx-desc  { font-size:14px; color:rgba(255,255,255,0.75); margin-top:4px; }
+.loc-hero-wx-feels { font-size:12px; color:rgba(255,255,255,0.45); margin-top:2px; }
 
-.loc-hero-wx-spin {
-  font-size:12px; opacity:.45; font-style:italic;
+.loc-hero-wx-chips {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:7px;
 }
-
-.loc-hero-wx-main {
-  display:flex; align-items:center; gap:10px;
+.loc-hero-wx-chip {
+  display:flex; flex-direction:column; align-items:center;
+  background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px; padding:7px 11px; min-width:60px; gap:2px;
 }
+.loc-hero-chip-ico { font-size:14px; }
+.loc-hero-chip-val { font-size:12px; font-weight:700; color:rgba(255,255,255,0.95); }
+.loc-hero-chip-lbl { font-size:9px; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:.04em; }
+.loc-hero-wx-spin  { font-size:12px; color:rgba(255,255,255,0.4); font-style:italic; }
 
-.loc-hero-wx-icon { font-size:36px; line-height:1; }
+/* ── Main content: tighter vertical rhythm ───────────────────── */
+.loc-main { padding:24px 20px 48px; }
+.loc-h2   { font-size:15px; font-weight:700; margin:24px 0 12px; }
 
-.loc-hero-wx-temp {
-  font-size:32px; font-weight:700; color:var(--clr-acc);
-  font-family:var(--mono);
+/* ── Stat grid: more compact ─────────────────────────────────── */
+.loc-stat-grid { gap:10px; margin-bottom:6px; }
+.loc-stat       { padding:12px; }
+.loc-stat-lbl   { font-size:10px; }
+.loc-stat-val   { font-size:15px; margin-top:3px; }
+
+/* ── City card redesign ──────────────────────────────────────── */
+.loc-city-grid {
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap:10px;
 }
-
-.loc-hero-wx-desc {
-  font-size:14px; color:rgba(255,255,255,0.75); font-weight:500;
-}
-
-.loc-hero-wx-feels {
-  font-size:12px; color:rgba(255,255,255,0.45);
-}
-
-.loc-hero-wx-stats {
-  display:flex; flex-wrap:wrap; justify-content:center;
-  gap:8px 14px; margin-top:4px;
-}
-
-.loc-hero-wx-stat {
-  font-size:12px; color:rgba(255,255,255,0.6);
-  background:rgba(255,255,255,0.07);
-  border-radius:20px; padding:4px 10px;
-  display:inline-flex; align-items:center; gap:4px;
-}
-
-/* ── City card: base improvements ──────────────────────────────── */
 .loc-city-card {
+  padding:14px 16px;
   display:flex; flex-direction:column; gap:4px;
   transition:border-color .15s, transform .15s, box-shadow .15s;
 }
 .loc-city-card:hover {
   border-color:var(--clr-brand);
   transform:translateY(-2px);
-  box-shadow:0 6px 20px rgba(0,0,0,0.12);
+  box-shadow:0 6px 18px rgba(0,0,0,0.1);
 }
-
 .loc-city-card-name {
-  font-size:14px; font-weight:700; color:var(--clr-text);
+  font-weight:700; font-size:14px; color:var(--clr-text);
   display:flex; align-items:center; gap:6px;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
-
-/* Time — primary info, large and bold */
+/* Time — primary, larger and bold */
 .loc-city-card-tz {
-  font-size:18px; font-weight:700;
+  font-size:17px; font-weight:700;
   color:var(--clr-brand); font-family:var(--mono);
   margin:2px 0;
 }
 
-/* Weather row: icon + temp on one line */
-.loc-card-wx { margin-top:2px; }
-
-.loc-card-wx-row {
-  display:flex; align-items:center; gap:6px;
-}
-
+/* Weather row injected by location.js */
+.loc-card-wx      { margin-top:2px; }
+.loc-card-wx-row  { display:flex; align-items:center; gap:6px; }
+.loc-card-wx-icon { font-size:18px; line-height:1; }
+.loc-card-wx-temp { font-size:14px; font-weight:700; color:var(--clr-text); }
+.loc-card-wx-desc { font-size:11px; color:var(--clr-text3); margin-top:1px; }
 .loc-card-wx-spin { font-size:11px; opacity:.35; }
 
-.loc-card-wx-icon { font-size:20px; line-height:1; }
-
-.loc-card-wx-temp {
-  font-size:15px; font-weight:700; color:var(--clr-text);
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width:768px) {
+  .loc-hero  { padding:20px 0 18px; }
+  .loc-main  { padding:18px 14px 36px; }
+  .loc-city-grid { grid-template-columns:repeat(2,1fr); }
 }
-
-/* Condition on its own line below */
-.loc-card-wx-desc {
-  font-size:12px; color:var(--clr-text3);
-  margin-top:1px;
-}
-
-/* ── Hero weather block ──────────────────────────────────────────── */
-.loc-clock-card {
-  display:inline-flex; flex-direction:column; align-items:center;
-  gap:0; max-width:580px; width:100%;
-}
-
-.loc-hero-wx {
-  width:100%;
-  border-top:1px solid rgba(255,255,255,0.1);
-  margin-top:20px; padding-top:20px;
-}
-
-.loc-hero-wx-card { width:100%; }
-
-/* Top row: big icon + temp + condition */
-.loc-hero-wx-summary {
-  display:flex; align-items:center; justify-content:center;
-  gap:14px; margin-bottom:16px;
-}
-
-.loc-hero-wx-icon { font-size:44px; line-height:1; flex-shrink:0; }
-
-.loc-hero-wx-summary-right { text-align:left; }
-
-.loc-hero-wx-temp {
-  font-size:36px; font-weight:700;
-  color:var(--clr-acc); font-family:var(--mono);
-  line-height:1;
-}
-
-.loc-hero-wx-desc {
-  font-size:15px; font-weight:500;
-  color:rgba(255,255,255,0.8);
-  margin-top:4px;
-}
-
-.loc-hero-wx-feels {
-  font-size:12px; color:rgba(255,255,255,0.45);
-  margin-top:3px;
-}
-
-/* Chips grid */
-.loc-hero-wx-chips {
-  display:flex; flex-wrap:wrap; justify-content:center;
-  gap:8px;
-}
-
-.loc-hero-wx-chip {
-  display:flex; flex-direction:column; align-items:center;
-  background:rgba(255,255,255,0.08);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:10px; padding:8px 12px; min-width:64px;
-  gap:2px;
-}
-
-.loc-hero-chip-ico { font-size:16px; }
-
-.loc-hero-chip-val {
-  font-size:13px; font-weight:700;
-  color:rgba(255,255,255,0.95);
-}
-
-.loc-hero-chip-lbl {
-  font-size:10px; color:rgba(255,255,255,0.45);
-  text-transform:uppercase; letter-spacing:.04em;
-}
-
-.loc-hero-wx-spin { font-size:12px; opacity:.4; font-style:italic; }
-
-/* ── Responsive ──────────────────────────────────────────────────── */
-@media (max-width:600px) {
-  .loc-hero-wx-icon  { font-size:36px; }
-  .loc-hero-wx-temp  { font-size:28px; }
-  .loc-hero-wx-chips { gap:6px; }
-  .loc-hero-wx-chip  { padding:6px 10px; min-width:56px; }
-  .loc-city-grid     { grid-template-columns:repeat(2,1fr); }
-  .loc-city-card-tz  { font-size:16px; }
+@media (max-width:480px) {
+  .loc-hero-wx-icon  { font-size:30px; }
+  .loc-hero-wx-temp  { font-size:26px; }
+  .loc-hero-wx-chips { gap:5px; }
+  .loc-hero-wx-chip  { padding:5px 8px; min-width:50px; }
+  .loc-city-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .loc-city-card-tz { font-size:15px; }
 }
