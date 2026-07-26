@@ -1,0 +1,21 @@
+slug,country,cca2,cca3,continent,subregion,capital_city,population,currency_code,currency_name,currency_symbol,language,dial_code,flag_emoji,area_km2,primary_timezone,num_timezones,timezones_list
+india,India,IN,IND,Asia,Southern Asia,New Delhi,1463900000,INR,Indian Rupee,₹,Hindi/English,+91,🇮🇳,3287263,UTC+05:30,1,UTC+05:30
+united-states,United States,US,USA,Americas,North America,Washington D.C.,340100000,USD,US Dollar,$,English,+1,🇺🇸,9833517,UTC-05:00,9,"UTC-12:00,UTC-11:00,UTC-10:00,UTC-09:00,UTC-08:00,UTC-07:00,UTC-06:00,UTC-05:00,UTC+10:00"
+china,China,CN,CHN,Asia,Eastern Asia,Beijing,1419300000,CNY,Chinese Yuan,¥,Mandarin,+86,🇨🇳,9596961,UTC+08:00,1,UTC+08:00
+united-kingdom,United Kingdom,GB,GBR,Europe,Northern Europe,London,68900000,GBP,British Pound,£,English,+44,🇬🇧,243610,UTC+00:00,1,UTC+00:00
+united-arab-emirates,United Arab Emirates,AE,ARE,Asia,Western Asia,Abu Dhabi,9890000,AED,UAE Dirham,د.إ,Arabic,+971,🇦🇪,83600,UTC+04:00,1,UTC+04:00
+germany,Germany,DE,DEU,Europe,Western Europe,Berlin,84500000,EUR,Euro,€,German,+49,🇩🇪,357022,UTC+01:00,1,UTC+01:00
+japan,Japan,JP,JPN,Asia,Eastern Asia,Tokyo,123200000,JPY,Japanese Yen,¥,Japanese,+81,🇯🇵,377975,UTC+09:00,1,UTC+09:00
+canada,Canada,CA,CAN,Americas,North America,Ottawa,40800000,CAD,Canadian Dollar,$,English/French,+1,🇨🇦,9984670,UTC-05:00,6,"UTC-08:00,UTC-07:00,UTC-06:00,UTC-05:00,UTC-04:00,UTC-03:30"
+australia,Australia,AU,AUS,Oceania,Australia and New Zealand,Canberra,27200000,AUD,Australian Dollar,$,English,+61,🇦🇺,7692024,UTC+10:00,3,"UTC+08:00,UTC+09:30,UTC+10:00"
+france,France,FR,FRA,Europe,Western Europe,Paris,68400000,EUR,Euro,€,French,+33,🇫🇷,551695,UTC+01:00,1,UTC+01:00
+singapore,Singapore,SG,SGP,Asia,South-Eastern Asia,Singapore,6040000,SGD,Singapore Dollar,$,English/Mandarin/Malay,+65,🇸🇬,728,UTC+08:00,1,UTC+08:00
+brazil,Brazil,BR,BRA,Americas,South America,Brasília,221800000,BRL,Brazilian Real,R$,Portuguese,+55,🇧🇷,8515767,UTC-03:00,4,"UTC-05:00,UTC-04:00,UTC-03:00,UTC-02:00"
+saudi-arabia,Saudi Arabia,SA,SAU,Asia,Western Asia,Riyadh,36900000,SAR,Saudi Riyal,﷼,Arabic,+966,🇸🇦,2149690,UTC+03:00,1,UTC+03:00
+south-korea,South Korea,KR,KOR,Asia,Eastern Asia,Seoul,51700000,KRW,South Korean Won,₩,Korean,+82,🇰🇷,100210,UTC+09:00,1,UTC+09:00
+mexico,Mexico,MX,MEX,Americas,North America,Mexico City,131900000,MXN,Mexican Peso,$,Spanish,+52,🇲🇽,1964375,UTC-06:00,4,"UTC-08:00,UTC-07:00,UTC-06:00,UTC-05:00"
+italy,Italy,IT,ITA,Europe,Southern Europe,Rome,58900000,EUR,Euro,€,Italian,+39,🇮🇹,301336,UTC+01:00,1,UTC+01:00
+spain,Spain,ES,ESP,Europe,Southern Europe,Madrid,47800000,EUR,Euro,€,Spanish,+34,🇪🇸,505992,UTC+01:00,2,"UTC+00:00,UTC+01:00"
+indonesia,Indonesia,ID,IDN,Asia,South-Eastern Asia,Jakarta,283500000,IDR,Indonesian Rupiah,Rp,Indonesian,+62,🇮🇩,1904569,UTC+07:00,3,"UTC+07:00,UTC+08:00,UTC+09:00"
+netherlands,Netherlands,NL,NLD,Europe,Western Europe,Amsterdam,18000000,EUR,Euro,€,Dutch,+31,🇳🇱,41850,UTC+01:00,1,UTC+01:00
+south-africa,South Africa,ZA,ZAF,Africa,Southern Africa,Pretoria,63200000,ZAR,South African Rand,R,English/Zulu/Afrikaans,+27,🇿🇦,1221037,UTC+02:00,1,UTC+02:00

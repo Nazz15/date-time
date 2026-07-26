@@ -111,3 +111,19 @@
   .loc-dir-grid{grid-template-columns:1fr;}
   .loc-dir-country-header{flex-wrap:wrap;}
 }
+
+/* ── SEO content section (injected by add_seo.py) ───────────────────────── */
+.loc-seo-section{padding:32px 0 8px;border-top:1px solid var(--clr-border);margin-top:32px;}
+.loc-seo-inner{max-width:860px;}
+.loc-seo-p{font-size:14px;line-height:1.8;color:var(--clr-text2);margin-bottom:14px;}
+.loc-seo-p code,.loc-seo-p strong{color:var(--clr-text);}
+.loc-seo-p code{background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:4px;padding:1px 6px;font-size:12px;}
+.faq-list{display:flex;flex-direction:column;gap:14px;margin-bottom:8px;}
+.faq-item{border:1px solid var(--clr-border);border-radius:var(--rlg);padding:16px 18px;background:var(--clr-bg2);}
+.faq-q{font-size:14px;font-weight:700;color:var(--clr-text);margin:0 0 8px;}
+.faq-a p{font-size:13px;line-height:1.75;color:var(--clr-text2);margin:0;}
+@media(max-width:640px){
+  .loc-seo-section{padding:20px 0 4px;}
+  .faq-item{padding:12px 14px;}
+  .faq-q{font-size:13px;}
+}

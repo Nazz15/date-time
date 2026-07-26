@@ -1,0 +1,84 @@
+slug,city,country_slug,lat,lng,timezone,population
+mumbai,Mumbai,india,19.0760,72.8777,Asia/Kolkata,20700000
+delhi,Delhi,india,28.7041,77.1025,Asia/Kolkata,32900000
+bengaluru,Bengaluru,india,12.9716,77.5946,Asia/Kolkata,14800000
+hyderabad,Hyderabad,india,17.3850,78.4867,Asia/Kolkata,10700000
+chennai,Chennai,india,13.0827,80.2707,Asia/Kolkata,11700000
+kolkata,Kolkata,india,22.5726,88.3639,Asia/Kolkata,16100000
+new-york,New York,united-states,40.7128,-74.0060,America/New_York,8300000
+los-angeles,Los Angeles,united-states,34.0522,-118.2437,America/Los_Angeles,3900000
+chicago,Chicago,united-states,41.8781,-87.6298,America/Chicago,2700000
+houston,Houston,united-states,29.7604,-95.3698,America/Chicago,2300000
+miami,Miami,united-states,25.7617,-80.1918,America/New_York,470000
+san-francisco,San Francisco,united-states,37.7749,-122.4194,America/Los_Angeles,870000
+beijing,Beijing,china,39.9042,116.4074,Asia/Shanghai,22900000
+shanghai,Shanghai,china,31.2304,121.4737,Asia/Shanghai,31000000
+shenzhen,Shenzhen,china,22.5431,114.0579,Asia/Shanghai,17600000
+guangzhou,Guangzhou,china,23.1291,113.2644,Asia/Shanghai,15100000
+chongqing,Chongqing,china,29.4316,106.9123,Asia/Shanghai,18500000
+hong-kong,Hong Kong,china,22.3193,114.1694,Asia/Hong_Kong,7500000
+london,London,united-kingdom,51.5074,-0.1278,Europe/London,9600000
+manchester,Manchester,united-kingdom,53.4808,-2.2426,Europe/London,2800000
+birmingham,Birmingham,united-kingdom,52.4862,-1.8904,Europe/London,2600000
+edinburgh,Edinburgh,united-kingdom,55.9533,-3.1883,Europe/London,540000
+glasgow,Glasgow,united-kingdom,55.8642,-4.2518,Europe/London,1700000
+liverpool,Liverpool,united-kingdom,53.4084,-2.9916,Europe/London,900000
+dubai,Dubai,united-arab-emirates,25.2048,55.2708,Asia/Dubai,3600000
+abu-dhabi,Abu Dhabi,united-arab-emirates,24.4539,54.3773,Asia/Dubai,1700000
+sharjah,Sharjah,united-arab-emirates,25.3463,55.4209,Asia/Dubai,1800000
+ajman,Ajman,united-arab-emirates,25.4052,55.5136,Asia/Dubai,540000
+berlin,Berlin,germany,52.5200,13.4050,Europe/Berlin,3700000
+munich,Munich,germany,48.1351,11.5820,Europe/Berlin,1500000
+frankfurt,Frankfurt,germany,50.1109,8.6821,Europe/Berlin,770000
+hamburg,Hamburg,germany,53.5511,9.9937,Europe/Berlin,1900000
+cologne,Cologne,germany,50.9375,6.9603,Europe/Berlin,1100000
+tokyo,Tokyo,japan,35.6895,139.6917,Asia/Tokyo,37000000
+osaka,Osaka,japan,34.6937,135.5023,Asia/Tokyo,18900000
+yokohama,Yokohama,japan,35.4437,139.6380,Asia/Tokyo,3800000
+nagoya,Nagoya,japan,35.1815,136.9066,Asia/Tokyo,2300000
+toronto,Toronto,canada,43.6532,-79.3832,America/Toronto,6300000
+vancouver,Vancouver,canada,49.2827,-123.1207,America/Vancouver,2700000
+montreal,Montreal,canada,45.5017,-73.5673,America/Toronto,4300000
+calgary,Calgary,canada,51.0447,-114.0719,America/Edmonton,1700000
+ottawa,Ottawa,canada,45.4215,-75.6972,America/Toronto,1500000
+sydney,Sydney,australia,-33.8688,151.2093,Australia/Sydney,5400000
+melbourne,Melbourne,australia,-37.8136,144.9631,Australia/Melbourne,5200000
+brisbane,Brisbane,australia,-27.4698,153.0251,Australia/Brisbane,2600000
+perth,Perth,australia,-31.9505,115.8605,Australia/Perth,2200000
+paris,Paris,france,48.8566,2.3522,Europe/Paris,11200000
+marseille,Marseille,france,43.2965,5.3698,Europe/Paris,870000
+lyon,Lyon,france,45.7640,4.8357,Europe/Paris,1700000
+nice,Nice,france,43.7102,7.2620,Europe/Paris,940000
+singapore-city,Singapore,singapore,1.3521,103.8198,Asia/Singapore,6040000
+sao-paulo,São Paulo,brazil,-23.5505,-46.6333,America/Sao_Paulo,23200000
+rio-de-janeiro,Rio de Janeiro,brazil,-22.9068,-43.1729,America/Sao_Paulo,14000000
+brasilia,Brasília,brazil,-15.8267,-47.9218,America/Sao_Paulo,4800000
+salvador,Salvador,brazil,-12.9777,-38.5016,America/Bahia,4100000
+riyadh,Riyadh,saudi-arabia,24.7136,46.6753,Asia/Riyadh,7900000
+jeddah,Jeddah,saudi-arabia,21.4858,39.1925,Asia/Riyadh,4800000
+mecca,Mecca,saudi-arabia,21.3891,39.8579,Asia/Riyadh,2400000
+seoul,Seoul,south-korea,37.5665,126.9780,Asia/Seoul,9900000
+busan,Busan,south-korea,35.1796,129.0756,Asia/Seoul,3400000
+incheon,Incheon,south-korea,37.4563,126.7052,Asia/Seoul,3000000
+mexico-city,Mexico City,mexico,19.4326,-99.1332,America/Mexico_City,23000000
+guadalajara,Guadalajara,mexico,20.6597,-103.3496,America/Mexico_City,5300000
+monterrey,Monterrey,mexico,25.6866,-100.3161,America/Monterrey,5300000
+cancun,Cancún,mexico,21.1619,-86.8515,America/Cancun,950000
+rome,Rome,italy,41.9028,12.4964,Europe/Rome,4300000
+milan,Milan,italy,45.4642,9.1900,Europe/Rome,3200000
+naples,Naples,italy,40.8518,14.2681,Europe/Rome,3000000
+venice,Venice,italy,45.4408,12.3155,Europe/Rome,260000
+madrid,Madrid,spain,40.4168,-3.7038,Europe/Madrid,6700000
+barcelona,Barcelona,spain,41.3851,2.1734,Europe/Madrid,5600000
+valencia,Valencia,spain,39.4699,-0.3763,Europe/Madrid,1800000
+jakarta,Jakarta,indonesia,-6.2088,106.8456,Asia/Jakarta,11200000
+surabaya,Surabaya,indonesia,-7.2575,112.7521,Asia/Jakarta,3000000
+bandung,Bandung,indonesia,-6.9175,107.6191,Asia/Jakarta,2700000
+bali-denpasar,Bali (Denpasar),indonesia,-8.6500,115.2167,Asia/Makassar,940000
+amsterdam,Amsterdam,netherlands,52.3676,4.9041,Europe/Amsterdam,920000
+rotterdam,Rotterdam,netherlands,51.9244,4.4777,Europe/Amsterdam,660000
+the-hague,The Hague,netherlands,52.0705,4.3007,Europe/Amsterdam,550000
+johannesburg,Johannesburg,south-africa,-26.2041,28.0473,Africa/Johannesburg,6200000
+cape-town,Cape Town,south-africa,-33.9249,18.4241,Africa/Johannesburg,4800000
+durban,Durban,south-africa,-29.8587,31.0218,Africa/Johannesburg,3700000
+pretoria,Pretoria,south-africa,-25.7479,28.2293,Africa/Johannesburg,2600000
