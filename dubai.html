@@ -186,14 +186,31 @@ footer{background:#0b1220;color:#cbd5e1;margin-top:30px}
   .clock .sec{font-size:20px}
   .info-grid{grid-template-columns:repeat(2,1fr)}
   .quad{grid-template-columns:repeat(2,1fr)}
-  .nearby{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity;margin-right:-4px;padding-right:8px}
-  .ncard{scroll-snap-align:start}
-  .ncard .img{width:70px}
-  .hours,.days7{gap:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;margin-right:-4px;padding-right:8px}
-  .hour{min-width:60px;scroll-snap-align:start}
-  .d7{min-width:72px;scroll-snap-align:start}
-  /* fade hint so users see there's more to scroll */
-  .card-pad{position:relative}
+
+  /* Nearby: 2-col grid, all visible, no scroll */
+  .nearby{grid-template-columns:repeat(2,1fr);grid-auto-flow:row;overflow:visible;margin:0;padding:0}
+  .ncard .img{width:46px}
+  .ncard .body{padding:8px 9px}
+
+  /* Hourly: 6 compact columns filling the width, no scroll */
+  .hours{overflow:visible;gap:2px;margin:0;padding:0}
+  .hour{min-width:0;flex:1;padding:8px 2px}
+  .hour .h{font-size:11px}
+  .hour .ic{font-size:19px;margin:4px 0}
+  .hour .t{font-size:14px}
+  .hour .p{font-size:10px}
+
+  /* 7-day: clean vertical list, one day per row, no scroll */
+  .days7{flex-direction:column;overflow:visible;gap:0;margin:0;padding:0}
+  .d7{min-width:0;width:100%;display:flex;align-items:center;gap:10px;text-align:left;
+      padding:10px 2px;border-radius:0;border-bottom:1px solid var(--line)}
+  .d7:last-child{border-bottom:0}
+  .d7 .dow{width:34px;font-size:13px}
+  .d7 .dt{width:48px;color:var(--muted);font-size:12px}
+  .d7 .ic{margin:0;width:26px;font-size:20px;flex:none;text-align:center}
+  .d7 .hi{margin-left:auto}
+  .d7 .lo{width:34px}
+  .d7 .p{width:54px;text-align:right;margin-top:0}
 }
 </style>
 </head>
