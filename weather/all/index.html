@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(function() {
+  var saved = localStorage.getItem('wc_theme');
+  var isDark = saved === 'dark' ||
+    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="Free world clock showing live local times for 130+ cities worldwide. Switch between table, compact, digital and analog views.">
+<meta name="keywords" content="world clock,current time,time zones,live clock,city time,international time">
+<title>World Clock — Live Times for Every City | WorldClock</title>
+<link rel="canonical" href="https://timezonebudy.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css?v=2">
+<link rel="stylesheet" href="/location.css?v=2">
+<link rel="stylesheet" href="/footer.css?v=2">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d2240">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
+<link rel="stylesheet" href="/pwa.css?v=2">
+<style>
+/* View More button */
+.view-more-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 22px; border-radius:20px; font-size:13px; font-weight:600;
+  border:1.5px solid rgba(128,128,128,0.25); background:transparent;
+  color:inherit; cursor:pointer; transition:background .15s,border-color .15s;
+  margin:4px 0;
+}
+.view-more-btn:hover { background:rgba(88,166,255,0.08); border-color:var(--accent,#58a6ff); color:var(--accent,#58a6ff); }
+.cg-viewmore { grid-column:1/-1; text-align:center; padding:10px 0 4px; }
+
+/* Compact grid responsive fix */
+.compact-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));
+  gap:6px;
+}
+.cg-cell { min-width:0; }
+.cg-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cg-time { white-space:nowrap; }
+
+/* FAQ styles */
+.faq-item { margin-bottom:20px; }
+.faq-item h3 { font-size:16px; font-weight:700; margin:0 0 6px; }
+.faq-item p  { font-size:15px; line-height:1.75; opacity:.85; margin:0; }
+</style>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab active" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<!-- My Cities -->
+<section class="my-section" aria-label="My Cities">
+  <div class="wrap">
+    <div class="my-head">
+      <h2 class="my-title"><i class="ti ti-map-pin" aria-hidden="true"></i> My Cities</h2>
+      <div class="search-wrap">
+        <div class="search-pill" onclick="document.getElementById('srch').focus()">
+          <i class="ti ti-search search-ico" aria-hidden="true"></i>
+          <input type="search" id="srch" placeholder="Add a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search for a city">
+        </div>
+        <div id="srch-dd" class="search-dd" hidden></div>
+      </div>
+    </div>
+    <div id="my-strip" role="list" aria-label="Pinned cities"></div>
+  </div>
+</section>
+
+<!-- Section bar -->
+<div class="sec-bar" role="banner">
+  <h1 class="sec-bar-title">Current Local Times Around the World</h1>
+  <div class="bar-ctrls">
+    <div class="bar-grp">
+      <label class="bar-lbl" for="cities-filter">Region:</label>
+      <select id="cities-filter" class="bar-sel" onchange="filterRegion(this.value)">
+        <option value="all">All Cities</option>
+        <option value="asia">Asia</option>
+        <option value="europe">Europe</option>
+        <option value="americas">Americas</option>
+        <option value="africa">Africa</option>
+        <option value="oceania">Oceania</option>
+      </select>
+    </div>
+    <div class="bar-grp">
+      <label class="bar-lbl" for="sort-sel">Sort:</label>
+      <select id="sort-sel" class="bar-sel" onchange="setSort(this.value)">
+        <option value="city">By City</option>
+        <option value="country">By Country</option>
+        <option value="time">By Time</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- View tabs -->
+<div class="view-tabs" role="tablist" aria-label="Clock view">
+  <button class="view-tab" data-v="table"   onclick="setView('table')"  role="tab"><i class="ti ti-list" aria-hidden="true"></i> <span>Table</span></button>
+  <button class="view-tab" data-v="compact" onclick="setView('compact')" role="tab"><i class="ti ti-layout-grid" aria-hidden="true"></i> <span>Compact</span></button>
+  <button class="view-tab" data-v="analog"  onclick="setView('analog')"  role="tab"><i class="ti ti-clock" aria-hidden="true"></i> <span>Analog</span></button>
+</div>
+
+<main class="wrap" style="padding-top:20px;padding-bottom:48px">
+
+  <!-- TABLE -->
+  <div id="v-table">
+    <div class="tbl-wrap">
+      <table class="city-tbl" aria-label="World clock times">
+        <thead><tr>
+          <th onclick="setSort('city')">City</th>
+          <th class="col-country" onclick="setSort('country')">Country</th>
+          <th onclick="setSort('time')">Local Time</th>
+          <th class="col-date">Date</th>
+          <th class="col-offset">UTC</th>
+          <th style="width:40px;text-align:center">Add</th>
+        </tr></thead>
+        <tbody id="tbl-body"></tbody>
+      </table>
+    </div>
+    <p class="footnote">* Daylight Saving Time active</p>
+  </div>
+
+  <!-- COMPACT -->
+  <div id="v-compact" style="display:none">
+    <div class="compact-grid" id="cg" aria-label="Compact world clock"></div>
+    <p class="footnote">* Daylight Saving Time active</p>
+  </div>
+
+  <!-- ANALOG -->
+  <div id="v-analog" style="display:none">
+    <div class="al-grid" id="ag"></div>
+    <p class="footnote" style="margin-top:12px">Analog view shows your pinned cities. Use the search above to add cities.</p>
+  </div>
+
+  <!-- SEO content -->
+  <section class="seo-sec" aria-label="About World Clock">
+    <h2>World Clock — Track the Current Time in Every City</h2>
+    <p>A world clock is an essential tool for anyone living, working, or communicating across international time zones. TimezoneBudy's free world clock displays the current local time for 130+ cities and countries simultaneously, updating every second so you always have accurate, live information at a glance.</p>
+
+    <p>Whether you're a remote worker coordinating a team spread across New York, London, and Singapore, a traveller planning an international itinerary, or a business scheduling a call with partners in Tokyo and Dubai, knowing the current time by city is critical. Getting it wrong can mean missed meetings, delayed decisions, and unnecessary confusion.</p>
+
+    <h3>How Does a World Clock Work?</h3>
+    <p>Every location on Earth is assigned a time zone — an offset measured in hours (and sometimes half-hours) from <strong>Coordinated Universal Time (UTC)</strong>, the world's universal time standard. TimezoneBudy calculates each city's local time by applying its UTC offset to your device's real-time clock. Times automatically adjust for <strong>Daylight Saving Time (DST)</strong> wherever it applies, so you never have to manually account for seasonal clock changes.</p>
+
+    <p>The global time zone system divides the Earth into 24 primary zones, each roughly 15 degrees of longitude wide. In practice, political and geographic decisions mean real boundaries are far more varied — some countries like India (UTC+5:30) and Nepal (UTC+5:45) use non-standard half-hour offsets, while China spans five geographic time zones but uses a single national time.</p>
+
+    <h3>UTC vs GMT — What's the Difference?</h3>
+    <p><strong>GMT (Greenwich Mean Time)</strong> is the mean solar time at the Royal Observatory in Greenwich, England. <strong>UTC</strong> replaced it in 1972 as the world's primary time reference, using precise atomic clocks instead of astronomical observation. The two are numerically equivalent for everyday use — both sit at UTC/GMT+0 — but UTC is the modern scientific standard that your phone, computer, and every server on the internet synchronise to.</p>
+
+    <h3>Why TimezoneBudy?</h3>
+    <p>Unlike basic world clock apps, TimezoneBudy combines a live world clock with a full suite of international time tools in one place. Pin your most-used cities for instant comparison, switch between Table and Compact views to match your workflow, and jump seamlessly to the <a href="/converter.html">Time Zone Converter</a> to schedule meetings, the <a href="/time-difference-calculator">Time Difference Calculator</a> to find the gap between any two cities, <a href="/sunmoon.html">Sun &amp; Moon times</a> for your location, or the <a href="/world-time-map">World Time Map</a> to visualise day and night across the globe in real time. All tools are free, require no sign-up, and work on any device.</p>
+
+    <div class="seo-grid">
+      <article class="seo-card">
+        <h3>Pin Your Cities</h3>
+        <p>Search and save your most-used cities to "My Cities." Your selections persist between visits — no account needed.</p>
+      </article>
+      <article class="seo-card">
+        <h3><a href="/converter.html">Time Zone Converter</a></h3>
+        <p>Convert time between any two cities, plan international meetings, and find the best overlap window for distributed teams.</p>
+      </article>
+      <article class="seo-card">
+        <h3><a href="/world-time-map">World Time Map</a></h3>
+        <p>See the live day/night boundary across the globe and click any city for its current local time and UTC offset.</p>
+      </article>
+    </div>
+
+    <!-- FAQ -->
+    <section aria-label="Frequently Asked Questions" style="margin-top:36px" itemscope itemtype="https://schema.org/FAQPage">
+      <h2>Frequently Asked Questions</h2>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">What is a World Clock?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">A world clock is a tool that displays the current local time for multiple cities or countries simultaneously. Rather than converting manually, a world clock does the calculation automatically, accounting for each location's UTC offset and any active Daylight Saving Time adjustment. TimezoneBudy's world clock shows live times for 130+ cities updated every second.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">How does a World Clock work?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">A world clock works by taking a single reference time — Coordinated Universal Time (UTC) — and adding or subtracting each city's fixed UTC offset to calculate its local time. For example, London in winter is UTC+0, New York is UTC−5, and Mumbai is UTC+5:30. The clock updates in real time using your device's system clock, which is itself synchronised to global UTC servers. Daylight Saving Time adjustments are applied automatically based on each timezone's rules.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">What is the difference between UTC and GMT?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">GMT (Greenwich Mean Time) is a time zone based on the solar time at the Prime Meridian in Greenwich, England. UTC (Coordinated Universal Time) is a modern atomic-clock-based time standard that replaced GMT in 1972 as the world's official reference point. For practical everyday purposes the two are the same — both are at offset zero — but UTC is the precise scientific standard used by computers, servers, and international systems worldwide. TimezoneBudy uses UTC as its underlying reference for all time calculations.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">Why do different countries have different time zones?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">Time zones exist because the Earth rotates 360 degrees every 24 hours, meaning the Sun's position — and therefore local noon — differs by roughly one hour for every 15 degrees of longitude. Without time zones, clocks in cities east and west of each other would show wildly different times for midday. The system of 24 primary time zones, each one hour apart, was standardised in the late 19th century to enable coordinated railway schedules, global communication, and international trade. Today, the exact boundaries are set by governments and often reflect political borders rather than strict geography.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">How can I compare the time between two cities?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">The easiest way is to use TimezoneBudy's <a href="/time-difference-calculator">Time Difference Calculator</a>, which shows the exact number of hours between any two cities and highlights the business-hours overlap. You can also use the <a href="/converter.html">Time Zone Converter</a> to pick a specific time in one city and instantly see what it translates to in another — useful for scheduling international meetings or calls.</p>
+        </div>
+      </div>
+
+      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
+        <h3 itemprop="name">How accurate is the TimezoneBudy World Clock?</h3>
+        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+          <p itemprop="text">TimezoneBudy's world clock is as accurate as your device's system clock, which modern operating systems keep synchronised to within milliseconds of UTC via NTP (Network Time Protocol) servers. Time zone and Daylight Saving Time rules are maintained using the IANA Time Zone Database — the same authoritative source used by Google, Apple, and every major operating system — ensuring DST transitions are applied correctly for every country.</p>
+        </div>
+      </div>
+    </section>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/">World Clock</a>
+        <a href="/converter.html">Timezone Converter</a>
+        <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/weather">Weather</a>
+        <a href="/tools.html">Time Tools</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
+
+    </div>
+
+    <div class="footer-bottom">
+      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="/cities.js"></script>
+<script src="/util.js?v=2"></script>
+<script src="/pwa-install.js" defer></script>
+<script src="/clock.js?v=2"></script>
+<script>
+// Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
+document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
+  trigger.addEventListener('click', function(e) {
+    if (e.target.closest('.loc-mega-menu')) return; // clicking inside menu shouldn't toggle
+    trigger.classList.toggle('menu-open');
+  });
+});
+document.addEventListener('click', function(e) {
+  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
+    if (!t.contains(e.target)) t.classList.remove('menu-open');
+  });
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+  }
+});
+</script>
+<!-- nav_inject_v2 -->
+<script src="/nav.js?v=3"></script>
+</body>
+</html>
