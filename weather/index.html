@@ -40,11 +40,13 @@
 .wx-hero {
   padding:56px 0 36px;
   text-align:center;
-  background:linear-gradient(160deg,#d9ebfb 0%,#a9cdea 55%,#e7f2fb 100%);
+  background:linear-gradient(160deg,rgba(217,235,251,0.92) 0%,rgba(169,205,234,0.88) 55%,rgba(231,242,251,0.92) 100%),
+    url('/Global_Landmarks_Across_the_Water.png') center/cover no-repeat;
   position:relative; overflow:hidden;
 }
 [data-theme="dark"] .wx-hero {
-  background:linear-gradient(160deg,#0d2240 0%,#0e2f54 55%,#0a1e38 100%);
+  background:linear-gradient(160deg,rgba(13,34,64,0.92) 0%,rgba(14,47,84,0.9) 55%,rgba(10,30,56,0.92) 100%),
+    url('/Global_Landmarks_Across_the_Water.png') center/cover no-repeat;
 }
 .wx-hero h1 {
   font-size:clamp(28px,5vw,44px); font-weight:800; margin:0 0 14px;
@@ -125,20 +127,27 @@
 [data-theme="dark"] .wx-city-card { background:#1a2132; }
 .wx-city-card:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(32,59,92,0.14); }
 .wx-city-img {
-  height:120px; position:relative; overflow:hidden;
-  display:flex; align-items:flex-end;
-  padding:12px 12px 10px;
+  height:140px; position:relative; overflow:hidden;
+  display:flex; align-items:flex-end; padding:12px 14px 10px;
+  background-size:cover; background-position:center;
 }
-/* City gradient backgrounds */
-.wx-grad-0 { background:linear-gradient(135deg,#4a7fb5,#7ec0d4); }
-.wx-grad-1 { background:linear-gradient(135deg,#5a7a9a,#b8cdd8); }
-.wx-grad-2 { background:linear-gradient(135deg,#3a6ea8,#f4c170); }
-.wx-grad-3 { background:linear-gradient(135deg,#5e8ab5,#b8d4e8); }
-.wx-grad-4 { background:linear-gradient(135deg,#4a7a96,#88bbce); }
-.wx-grad-5 { background:linear-gradient(135deg,#5a8fb0,#dfc48a); }
+.wx-city-img::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.02) 0%,rgba(0,0,0,0.55) 100%);
+}
+/* City landmark photos */
+.wx-grad-0 { background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg/800px-Southwest_corner_of_Central_Park%2C_looking_east%2C_NYC.jpg'); }
+.wx-grad-1 { background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Big_Ben_2021_from_bridge.jpg/800px-Big_Ben_2021_from_bridge.jpg'); }
+.wx-grad-2 { background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/The_Burj_Khalifa_from_below.jpg/600px-The_Burj_Khalifa_from_below.jpg'); }
+.wx-grad-3 { background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Gateway_of_India_2019.jpg/800px-Gateway_of_India_2019.jpg'); }
+.wx-grad-4 { background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Tokyo_Tower_and_around_Skyscrapers.jpg/800px-Tokyo_Tower_and_around_Skyscrapers.jpg'); }
+.wx-grad-5 { background-image:url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Marina_Bay_Sands_at_blue_hour_-_20101118.jpg/800px-Marina_Bay_Sands_at_blue_hour_-_20101118.jpg'); }
+/* Fallback gradient if image fails */
+.wx-grad-0{background-color:#4a7fb5}.wx-grad-1{background-color:#5a7a9a}.wx-grad-2{background-color:#3a6ea8}.wx-grad-3{background-color:#5e8ab5}.wx-grad-4{background-color:#4a7a96}.wx-grad-5{background-color:#5a8fb0}
 .wx-city-img-label {
-  font-size:18px; font-weight:800; color:#fff;
-  text-shadow:0 1px 4px rgba(0,0,0,0.35);
+  font-size:17px; font-weight:800; color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,0.7);
+  position:relative; z-index:1;
 }
 .wx-city-body { padding:12px 13px; }
 .wx-city-body strong { display:block; font-size:14px; font-weight:700; margin-bottom:2px; }
@@ -433,12 +442,12 @@
 <script>
 // ── Featured cities data ───────────────────────────────────────────────────
 var FEATURED = [
-  {name:'New York',  cc:'us', lat:40.714, lon:-74.006, tz:'America/New_York',     grad:0},
-  {name:'London',    cc:'gb', lat:51.507, lon:-0.128,  tz:'Europe/London',        grad:1},
-  {name:'Dubai',     cc:'ae', lat:25.204, lon:55.270,  tz:'Asia/Dubai',           grad:2},
-  {name:'Mumbai',    cc:'in', lat:19.076, lon:72.877,  tz:'Asia/Kolkata',         grad:3},
-  {name:'Tokyo',     cc:'jp', lat:35.689, lon:139.692, tz:'Asia/Tokyo',           grad:4},
-  {name:'Singapore', cc:'sg', lat:1.352,  lon:103.820, tz:'Asia/Singapore',       grad:5},
+  {name:'New York',  cc:'us', country:'United States',         lat:40.714, lon:-74.006, tz:'America/New_York',  grad:0, hash:'new-york'},
+  {name:'London',    cc:'gb', country:'United Kingdom',        lat:51.507, lon:-0.128,  tz:'Europe/London',     grad:1, hash:'london'},
+  {name:'Dubai',     cc:'ae', country:'United Arab Emirates',  lat:25.204, lon:55.270,  tz:'Asia/Dubai',        grad:2, hash:'dubai'},
+  {name:'Mumbai',    cc:'in', country:'India',                 lat:19.076, lon:72.877,  tz:'Asia/Kolkata',      grad:3, hash:'mumbai'},
+  {name:'Tokyo',     cc:'jp', country:'Japan',                 lat:35.689, lon:139.692, tz:'Asia/Tokyo',        grad:4, hash:'tokyo'},
+  {name:'Singapore', cc:'sg', country:'Singapore',             lat:1.352,  lon:103.820, tz:'Asia/Singapore',    grad:5, hash:'singapore'},
 ];
 
 var WX_ICONS = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'❄️',75:'❄️',80:'🌦',81:'🌧',82:'⛈',95:'⛈',99:'⛈'};
@@ -486,12 +495,13 @@ function renderFeatured() {
   var grid = document.getElementById('wx-featured-grid');
   if (!grid) return;
   grid.innerHTML = FEATURED.map(function(city, i) {
-    return '<a class="wx-city-card" id="wx-feat-'+i+'" href="/weather/all">'
+    return '<a class="wx-city-card" id="wx-feat-'+i+'" href="/weather/all/#'+city.hash+'">'
       + '<div class="wx-city-img wx-grad-'+city.grad+'">'
       + '<span class="wx-city-img-label">'+city.name+'</span>'
       + '</div>'
       + '<div class="wx-city-body">'
       + '<strong>'+city.name+'</strong>'
+      + '<div style="font-size:12px;color:var(--wx-muted);margin-bottom:4px">'+city.country+'</div>'
       + '<div class="wx-city-temp wx-city-loading">Loading…</div>'
       + '<div class="wx-city-cond"></div>'
       + '<span class="wx-city-link">View Weather →</span>'
