@@ -64,6 +64,30 @@ body{ background:var(--wa-bg); }
   padding:0 28px; font-weight:700; font-size:14px; cursor:pointer; white-space:nowrap;
 }
 .wa-search button:hover{ opacity:.9; }
+
+/* ── Hero 2-column layout ─────────────────────────────────── */
+.wa-hero-cols{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start;}
+.wa-hero-left h1{font-size:clamp(26px,4vw,38px);font-weight:800;margin:0 0 8px;color:var(--wa-navy);}
+[data-theme="dark"] .wa-hero-left h1{color:#e6edf3;}
+.wa-hero-left p{margin:0 0 20px;color:#59677a;font-size:15px;}
+[data-theme="dark"] .wa-hero-left p{color:rgba(255,255,255,0.6);}
+.wa-hero-right{background:#fff;border:1px solid #ccd9e9;border-radius:14px;padding:20px 22px;min-height:160px;display:flex;flex-direction:column;justify-content:center;}
+[data-theme="dark"] .wa-hero-right{background:#161b22;border-color:rgba(255,255,255,0.1);}
+.wa-panel-empty{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;opacity:.45;}
+.wa-panel-empty p{margin:0;font-size:13px;}
+.wa-panel-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.wa-panel-flag{font-size:30px;flex-shrink:0;}
+.wa-panel-name{font-size:17px;font-weight:800;color:var(--wa-navy);}
+[data-theme="dark"] .wa-panel-name{color:#e6edf3;}
+.wa-panel-country{font-size:12px;color:var(--wa-muted);margin-top:2px;}
+.wa-panel-time{font-size:12px;color:#607087;margin-bottom:12px;}
+[data-theme="dark"] .wa-panel-time{color:rgba(255,255,255,0.4);}
+.wa-panel-main{display:flex;align-items:flex-end;justify-content:space-between;}
+.wa-panel-temp{font-size:34px;font-weight:800;color:var(--wa-navy);line-height:1;}
+[data-theme="dark"] .wa-panel-temp{color:#e6edf3;}
+.wa-panel-cond{font-size:13px;color:var(--wa-muted);margin-top:5px;}
+.wa-panel-icon{font-size:46px;line-height:1;}
+@media(max-width:780px){.wa-hero-cols{grid-template-columns:1fr;}.wa-hero-right{min-height:auto;}}
 /* Search dropdown */
 .wa-search-wrap{ position:relative; flex:1; }
 .wa-dd{
@@ -248,14 +272,44 @@ main{ padding:30px 0 52px; }
     <div class="wa-breadcrumb">
       <a href="/">Home</a> › <a href="/weather">Weather</a> › All Weather Locations
     </div>
-    <h1>Weather in Cities Around the World</h1>
-    <p>Find current weather, temperature and local time for cities worldwide.</p>
-    <div class="wa-search" id="wa-search-form">
-      <div class="wa-search-wrap">
-        <input type="search" id="wa-srch" placeholder="🔍  Search for a city, country or location..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search city">
-        <div id="wa-dd" class="wa-dd" style="display:none"></div>
+    <!-- 2-column hero layout -->
+    <div class="wa-hero-cols">
+      <!-- Left: heading + search -->
+      <div class="wa-hero-left">
+        <h1>Weather in Cities Around the World</h1>
+        <p>Find current weather, temperature and local time for cities worldwide.</p>
+        <div class="wa-search" id="wa-search-form">
+          <div class="wa-search-wrap">
+            <input type="search" id="wa-srch" placeholder="🔍  Search for a city, country or location..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search city">
+            <div id="wa-dd" class="wa-dd" style="display:none"></div>
+          </div>
+          <button onclick="waDoSearch()">Search</button>
+        </div>
       </div>
-      <button onclick="waDoSearch()">Search</button>
+      <!-- Right: selected city weather panel -->
+      <div class="wa-hero-right" id="wa-hero-panel">
+        <div class="wa-panel-empty" id="wa-panel-empty">
+          <i class="ti ti-cloud" style="font-size:32px;opacity:.3"></i>
+          <p>Click a city to see its weather here</p>
+        </div>
+        <div id="wa-panel-city" style="display:none">
+          <div class="wa-panel-top">
+            <span class="wa-panel-flag fi" id="wa-panel-flag"></span>
+            <div>
+              <div class="wa-panel-name" id="wa-panel-name">—</div>
+              <div class="wa-panel-country" id="wa-panel-country">—</div>
+            </div>
+          </div>
+          <div class="wa-panel-time" id="wa-panel-time">—</div>
+          <div class="wa-panel-main">
+            <div>
+              <div class="wa-panel-temp" id="wa-panel-temp">—</div>
+              <div class="wa-panel-cond" id="wa-panel-cond">—</div>
+            </div>
+            <div class="wa-panel-icon" id="wa-panel-icon">—</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -705,6 +759,97 @@ recent.forEach(function(name) {
 
 renderPopular(primary, more);
 loadRankings();
+
+// ── Hash-based city panel ───────────────────────────────────────────────
+// Maps URL slugs to city names
+var HASH_MAP = {
+  'new-york':'New York','london':'London','dubai':'Dubai','mumbai':'Mumbai',
+  'tokyo':'Tokyo','singapore':'Singapore','los-angeles':'Los Angeles',
+  'toronto':'Toronto','sydney':'Sydney','paris':'Paris','berlin':'Berlin',
+  'bangkok':'Bangkok','new-delhi':'New Delhi','delhi':'New Delhi',
+  'karachi':'Karachi','riyadh':'Riyadh','doha':'Doha','muscat':'Muscat',
+  'moscow':'Moscow','istanbul':'Istanbul','beijing':'Beijing','shanghai':'Shanghai',
+  'seoul':'Seoul','osaka':'Osaka','jakarta':'Jakarta','kuala-lumpur':'Kuala Lumpur',
+  'cairo':'Cairo','lagos':'Lagos','nairobi':'Nairobi','johannesburg':'Johannesburg',
+  'cape-town':'Cape Town','mexico-city':'Mexico City','bogota':'Bogota',
+  'sao-paulo':'São Paulo','buenos-aires':'Buenos Aires','lima':'Lima',
+  'chicago':'Chicago','houston':'Houston','miami':'Miami','seattle':'Seattle',
+  'anchorage':'Anchorage','honolulu':'Honolulu','los-angeles':'Los Angeles',
+  'rome':'Rome','madrid':'Madrid','amsterdam':'Amsterdam','athens':'Athens',
+  'vienna':'Vienna','stockholm':'Stockholm','oslo':'Oslo','zurich':'Zurich',
+  'helsinki':'Helsinki','copenhagen':'Copenhagen','prague':'Prague',
+  'warsaw':'Warsaw','budapest':'Budapest','lisbon':'Lisbon','dublin':'Dublin',
+};
+
+function showHeroPanel(cityName, coords, wx) {
+  var U    = WX_UNIT === 'celsius' ? '°C' : '°F';
+  var code = wx ? (wx.weather_code || 0) : 0;
+  document.getElementById('wa-panel-empty').style.display = 'none';
+  document.getElementById('wa-panel-city').style.display  = 'block';
+  // Flag using CSS flag-icons class
+  var flagEl = document.getElementById('wa-panel-flag');
+  flagEl.className = 'wa-panel-flag fi fi-' + (coords.cc || 'un');
+  document.getElementById('wa-panel-name').textContent    = cityName;
+  document.getElementById('wa-panel-country').textContent = coords.country || '';
+  document.getElementById('wa-panel-time').textContent    = coords.tz ? '◷ ' + localTime(coords.tz) : '';
+  document.getElementById('wa-panel-temp').textContent    = wx ? Math.round(wx.temperature_2m) + U : '—';
+  document.getElementById('wa-panel-cond').textContent    = wx ? (WX_DESC[code] || '') : '';
+  document.getElementById('wa-panel-icon').textContent    = wx ? (WX_ICONS[code] || '🌡') : '⏳';
+  // Update URL hash without scrolling
+  history.replaceState(null, '', '#' + cityName.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,''));
+}
+
+function loadHashCity(hash) {
+  if (!hash) return;
+  var slug = hash.replace('#', '').toLowerCase();
+  var name = HASH_MAP[slug];
+  if (!name) {
+    // Try direct match from CITIES
+    if (typeof CITIES !== 'undefined') {
+      var m = CITIES.find(function(c){ return c.name.toLowerCase().replace(/\s+/g,'-') === slug && c.pop > 0; });
+      if (m) name = m.name;
+    }
+  }
+  if (!name) return;
+
+  var coords = CITY_COORDS[name];
+  if (!coords && typeof CITIES !== 'undefined') {
+    var c = CITIES.find(function(x){ return x.name === name && x.pop > 0; });
+    if (c) coords = {lat:0, lon:0, tz:c.tz, cc:c.cc, country:c.country};
+  }
+  if (!coords) return;
+
+  // Show loading state
+  document.getElementById('wa-panel-empty').style.display = 'none';
+  document.getElementById('wa-panel-city').style.display  = 'block';
+  document.getElementById('wa-panel-name').textContent    = name;
+  document.getElementById('wa-panel-country').textContent = coords.country || '';
+  document.getElementById('wa-panel-time').textContent    = coords.tz ? '◷ ' + localTime(coords.tz) : '';
+  document.getElementById('wa-panel-temp').textContent    = '…';
+  document.getElementById('wa-panel-cond').textContent    = 'Loading…';
+  document.getElementById('wa-panel-icon').textContent    = '⏳';
+  var flagEl = document.getElementById('wa-panel-flag');
+  flagEl.className = 'wa-panel-flag fi fi-' + (coords.cc || 'un');
+
+  if (coords.lat) {
+    fetchWx(coords, function(err, wx) { showHeroPanel(name, coords, err ? null : wx); });
+  }
+}
+
+// Read hash on page load
+if (location.hash) loadHashCity(location.hash);
+
+// Also update hash when user selects a city from search
+var _origWaAddSearchedCity = waAddSearchedCity;
+waAddSearchedCity = function(city) {
+  _origWaAddSearchedCity(city);
+  var coords = CITY_COORDS[city.name] || {tz:city.tz, cc:city.cc, country:city.country, lat:0, lon:0};
+  if (coords.lat) {
+    fetchWx(coords, function(err, wx){ showHeroPanel(city.name, coords, err?null:wx); });
+  } else {
+    showHeroPanel(city.name, coords, null);
+  }
+};
 </script>
 <script src="/nav.js?v=3"></script>
 </body>
