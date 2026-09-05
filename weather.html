@@ -20,10 +20,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css?v=2">
-<link rel="stylesheet" href="/location.css?v=2">
-<link rel="stylesheet" href="/footer.css?v=2">
-<link rel="stylesheet" href="/weather.css?v=2">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/location.css">
+<link rel="stylesheet" href="/footer.css">
+<link rel="stylesheet" href="/weather.css">
 <style>
 /* ── Weather chips in My Cities strip ───────────────────────────────── */
 #my-strip { display:flex; flex-wrap:wrap; gap:10px; padding-top:10px; }
@@ -82,7 +82,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css?v=2">
+<link rel="stylesheet" href="/pwa.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 </head>
 <body>
@@ -107,6 +107,72 @@
     </div>
   </div>
 </nav>
+
+<style>
+/* ── Top Cities shared styles ───────────────────────────────── */
+.tc-section { background:var(--clr-bg2); border-bottom:1px solid var(--clr-border); }
+.tc-inner   { max-width:1320px; margin:0 auto; padding:16px 20px; }
+.tc-bar     { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+.tc-title   { font-size:15px; font-weight:700; margin:0; flex:1; }
+.tc-sel     { padding:5px 10px; border-radius:6px; font-size:12px; border:1px solid var(--clr-border); background:var(--clr-bg); color:var(--clr-text); }
+.tc-view-btns { display:flex; gap:4px; }
+.tc-vbtn    { padding:5px 12px; border-radius:6px; font-size:12px; border:1px solid var(--clr-border); background:transparent; color:var(--clr-text2); cursor:pointer; }
+.tc-vbtn.active { background:var(--clr-brand); color:#fff; border-color:var(--clr-brand); }
+
+/* Table view */
+.tc-table-wrap { overflow-x:auto; }
+.tc-table   { width:100%; border-collapse:collapse; font-size:13px; }
+.tc-table th { text-align:left; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--clr-text3); padding:6px 10px; border-bottom:1px solid var(--clr-border); }
+.tc-table td { padding:9px 10px; border-bottom:1px solid var(--clr-border); vertical-align:middle; }
+.tc-table tr:last-child td { border-bottom:none; }
+.tc-table tr:hover td { background:rgba(128,128,128,0.04); }
+.tc-city-cell { display:flex; align-items:center; gap:8px; }
+.tc-city-name { font-weight:600; color:var(--clr-text); }
+.tc-country   { color:var(--clr-text3); font-size:12px; }
+.tc-temp      { font-weight:700; font-size:14px; color:var(--clr-brand); white-space:nowrap; }
+.tc-cond      { font-size:12px; color:var(--clr-text2); white-space:nowrap; }
+.tc-loading   { opacity:.4; font-size:12px; }
+
+/* Compact view */
+.tc-compact { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:8px; }
+.tc-chip    { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:10px; border:1px solid var(--clr-border); }
+[data-theme="dark"]  .tc-chip { background:rgba(255,255,255,0.03); }
+[data-theme="light"] .tc-chip { background:#fff; }
+.tc-chip-right { min-width:0; flex:1; }
+.tc-chip-city  { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tc-chip-meta  { font-size:11px; color:var(--clr-text3); margin-top:1px; white-space:nowrap; }
+
+@media(max-width:640px) {
+  .tc-compact { grid-template-columns:repeat(2,1fr); }
+  .tc-table td.tc-hide-mob, .tc-table th.tc-hide-mob { display:none; }
+}
+</style>
+
+<!-- ══ TOP CITIES ══ -->
+<section class="tc-section" id="tc-weather-section">
+  <div class="tc-inner">
+    <div class="tc-bar">
+      <h2 class="tc-title"><i class="ti ti-world" style="margin-right:6px"></i>Weather Around the World</h2>
+      <select class="tc-sel" id="tc-wx-region" onchange="tcWxFilter()">
+        <option value="all">All Regions</option>
+        <option value="asia">Asia</option>
+        <option value="europe">Europe</option>
+        <option value="americas">Americas</option>
+        <option value="africa">Africa</option>
+        <option value="oceania">Oceania</option>
+      </select>
+      <select class="tc-sel" id="tc-wx-sort" onchange="tcWxFilter()">
+        <option value="city">Sort by City</option>
+        <option value="temp">Sort by Temp</option>
+      </select>
+      <div class="tc-view-btns">
+        <button class="tc-vbtn active" id="tc-wx-table-btn" onclick="tcWxView('table')"><i class="ti ti-list"></i> Table</button>
+        <button class="tc-vbtn"       id="tc-wx-compact-btn" onclick="tcWxView('compact')"><i class="ti ti-layout-grid"></i> Compact</button>
+      </div>
+    </div>
+    <div id="tc-wx-body"><div class="tc-loading">Loading weather data…</div></div>
+  </div>
+</section>
 
 <section class="my-section" aria-label="My Cities">
   <div class="wrap">
@@ -209,9 +275,9 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="/cities.js"></script>
-<script src="/util.js?v=2"></script>
+<script src="/util.js"></script>
 <script src="/pwa-install.js" defer></script>
-<script src="/weather.js?v=2"></script>
+<script src="/weather.js"></script>
 <script>
 // Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
 document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
@@ -231,7 +297,5 @@ document.addEventListener('keydown', function(e) {
   }
 });
 </script>
-<!-- nav_inject_v2 -->
-<script src="/nav.js?v=3"></script>
 </body>
 </html>

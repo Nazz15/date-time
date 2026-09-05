@@ -471,3 +471,123 @@ initSearch('sm-srch', 'sm-dd', function(city) {
   document.getElementById('sm-srch').value = '';
   document.getElementById('sm-dd').hidden = true;
 }, {showPinned:false});
+
+// ═══════════════════════════════════════════════════════════════
+// TOP CITIES — Sun & Moon Around the World
+// Uses SunCalc (already loaded) — fully synchronous, instant render
+// ═══════════════════════════════════════════════════════════════
+
+var TC_SM = { view:'table', region:'all', sort:'city' };
+
+// Pick 30 representative cities from CITIES array
+var TC_SM_CITIES = [];
+(function() {
+  if (typeof CITIES === 'undefined') return;
+  var perRegion = {asia:8, europe:8, americas:7, africa:4, oceania:3};
+  var counts = {};
+  CITIES.forEach(function(c) {
+    if (!c.pop || c.pop < 1) return;
+    var r = c.region;
+    if (!counts[r]) counts[r] = 0;
+    if (counts[r] < (perRegion[r]||4)) {
+      TC_SM_CITIES.push(c);
+      counts[r]++;
+    }
+  });
+})();
+
+function tcSmFilter() {
+  TC_SM.region = document.getElementById('tc-sm-region').value;
+  TC_SM.sort   = document.getElementById('tc-sm-sort').value;
+  tcSmRender();
+}
+
+function tcSmView(v) {
+  TC_SM.view = v;
+  document.getElementById('tc-sm-table-btn').classList.toggle('active', v==='table');
+  document.getElementById('tc-sm-compact-btn').classList.toggle('active', v==='compact');
+  tcSmRender();
+}
+
+function tcSmRender() {
+  var el = document.getElementById('tc-sm-body');
+  if (!el || typeof SunCalc === 'undefined') {
+    if (el) el.innerHTML = '<div class="tc-loading">Loading SunCalc…</div>';
+    return;
+  }
+
+  var now = new Date();
+  var rows = TC_SM_CITIES.map(function(city) {
+    var coord = getCoords(city);
+    var times = SunCalc.getTimes(now, coord.lat, coord.lon);
+    var moon  = SunCalc.getMoonIllumination(now);
+    var ph    = moonPhase(moon.phase);
+    return {
+      city: city,
+      sr: fmtT(times.sunrise, city.tz),
+      ss: fmtT(times.sunset,  city.tz),
+      ph: ph,
+      ill: Math.round(moon.fraction * 100)
+    };
+  });
+
+  // Filter
+  if (TC_SM.region !== 'all') {
+    rows = rows.filter(function(r){ return r.city.region === TC_SM.region; });
+  }
+
+  // Sort
+  if (TC_SM.sort === 'sunrise') {
+    rows.sort(function(a,b){ return a.sr.localeCompare(b.sr); });
+  } else {
+    rows.sort(function(a,b){ return a.city.name.localeCompare(b.city.name); });
+  }
+
+  if (!rows.length) { el.innerHTML = '<div class="tc-loading">No data.</div>'; return; }
+
+  if (TC_SM.view === 'table') {
+    el.innerHTML = '<div class="tc-table-wrap"><table class="tc-table">'
+      + '<thead><tr>'
+      + '<th>City</th>'
+      + '<th class="tc-hide-mob">Country</th>'
+      + '<th>🌅 Sunrise</th>'
+      + '<th>🌇 Sunset</th>'
+      + '<th>Moon Phase</th>'
+      + '</tr></thead><tbody>'
+      + rows.map(function(r) {
+          return '<tr>'
+            + '<td><div class="tc-city-cell">'+flag(r.city.cc,16)+'<span class="tc-city-name">'+r.city.name+'</span></div></td>'
+            + '<td class="tc-hide-mob tc-country">'+r.city.country+'</td>'
+            + '<td class="tc-temp">'+r.sr+'</td>'
+            + '<td class="tc-temp">'+r.ss+'</td>'
+            + '<td class="tc-cond">'+r.ph.icon+' '+r.ph.name+' · '+r.ill+'%</td>'
+            + '</tr>';
+        }).join('')
+      + '</tbody></table></div>';
+  } else {
+    el.innerHTML = '<div class="tc-compact">'
+      + rows.map(function(r) {
+          return '<div class="tc-chip">'+flag(r.city.cc,18)
+            + '<div class="tc-chip-right">'
+            + '<div class="tc-chip-city">'+r.city.name+'</div>'
+            + '<div class="tc-chip-meta">🌅 '+r.sr+' · 🌇 '+r.ss+'</div>'
+            + '<div class="tc-chip-meta">'+r.ph.icon+' '+r.ph.name+'</div>'
+            + '</div></div>';
+        }).join('')
+      + '</div>';
+  }
+}
+
+// Boot — render immediately after SunCalc loads
+function tcSmBoot() {
+  if (typeof SunCalc !== 'undefined') {
+    tcSmRender();
+  } else {
+    setTimeout(tcSmBoot, 200);
+  }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', tcSmBoot);
+} else {
+  tcSmBoot();
+}

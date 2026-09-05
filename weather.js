@@ -381,3 +381,155 @@ initSearch('wx-srch', 'wx-dd', function(city) {
   document.getElementById('wx-srch').value = '';
   document.getElementById('wx-dd').hidden = true;
 }, {showPinned: false});
+
+// ═══════════════════════════════════════════════════════════════
+// TOP CITIES — Weather Around the World
+// Uses the same CITIES array from cities.js (already loaded)
+// Batches Open-Meteo requests, caches results, renders table/compact
+// ═══════════════════════════════════════════════════════════════
+
+var TC_WX = {
+  view: 'table',
+  region: 'all',
+  sort: 'city',
+  cache: {},       // key: "lat,lon" → weather data
+  data: [],        // [{city, wx}] after fetch
+  fetched: false
+};
+
+// Top cities to show — 30 major cities, deduplicated, covers all regions
+var TC_CITIES = (typeof CITIES !== 'undefined') ? CITIES.filter(function(c){ return c.pop > 0; }).slice(0, 120) : [];
+
+// Batch fetch weather for all TC_CITIES using Open-Meteo multi-location
+function tcWxFetch() {
+  if (TC_WX.fetched) return;
+  TC_WX.fetched = true;
+
+  // Pick representative cities per region (max 30 total for performance)
+  var picks = [];
+  var regions = ['asia','europe','americas','africa','oceania'];
+  var perRegion = {asia:8, europe:8, americas:7, africa:4, oceania:3};
+  regions.forEach(function(r) {
+    var found = TC_CITIES.filter(function(c){ return c.region===r; }).slice(0, perRegion[r]||4);
+    picks = picks.concat(found);
+  });
+  picks = picks.slice(0, 30);
+
+  // Fetch individually (Open-Meteo doesn't do true batching, but we stagger)
+  var results = [];
+  var done = 0;
+
+  picks.forEach(function(city) {
+    var coord = getCoords(city);
+    var key = coord.lat.toFixed(2)+','+coord.lon.toFixed(2);
+    var unit = WXP.unit || 'celsius';
+    var cacheKey = key + '_' + unit;
+
+    if (WXP.cache[cacheKey]) {
+      var d = WXP.cache[cacheKey];
+      results.push({city: city, temp: Math.round(d.current.temperature_2m), code: d.current.weather_code||0});
+      done++;
+      if (done === picks.length) { TC_WX.data = results; tcWxRender(); }
+      return;
+    }
+
+    var url = 'https://api.open-meteo.com/v1/forecast'
+      + '?latitude=' + coord.lat + '&longitude=' + coord.lon
+      + '&current=temperature_2m,weather_code'
+      + '&temperature_unit=' + unit
+      + '&timezone=auto&forecast_days=1';
+
+    fetch(url)
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        if (d && d.current) {
+          WXP.cache[cacheKey] = d;
+          results.push({city: city, temp: Math.round(d.current.temperature_2m), code: d.current.weather_code||0});
+        }
+      })
+      .catch(function(){})
+      .finally(function(){
+        done++;
+        if (done === picks.length) { TC_WX.data = results; tcWxRender(); }
+      });
+  });
+}
+
+function tcWxFilter() {
+  TC_WX.region = document.getElementById('tc-wx-region').value;
+  TC_WX.sort   = document.getElementById('tc-wx-sort').value;
+  tcWxRender();
+}
+
+function tcWxView(v) {
+  TC_WX.view = v;
+  document.getElementById('tc-wx-table-btn').classList.toggle('active', v==='table');
+  document.getElementById('tc-wx-compact-btn').classList.toggle('active', v==='compact');
+  tcWxRender();
+}
+
+var WX_ICONS_TC = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'❄️',75:'❄️',80:'🌦',81:'🌧',82:'⛈',95:'⛈',99:'⛈'};
+var WX_DESC_TC  = {0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Light drizzle',53:'Drizzle',61:'Light rain',63:'Moderate rain',65:'Heavy rain',71:'Light snow',73:'Moderate snow',75:'Heavy snow',80:'Showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm'};
+
+function tcWxRender() {
+  var el = document.getElementById('tc-wx-body');
+  if (!el) return;
+  var U = (WXP.unit === 'celsius') ? '°C' : '°F';
+
+  var rows = TC_WX.data.slice();
+
+  // Filter
+  if (TC_WX.region !== 'all') {
+    rows = rows.filter(function(r){ return r.city.region === TC_WX.region; });
+  }
+
+  // Sort
+  if (TC_WX.sort === 'temp') {
+    rows.sort(function(a,b){ return b.temp - a.temp; });
+  } else {
+    rows.sort(function(a,b){ return a.city.name.localeCompare(b.city.name); });
+  }
+
+  if (!rows.length) {
+    el.innerHTML = '<div class="tc-loading">No data available yet…</div>';
+    return;
+  }
+
+  if (TC_WX.view === 'table') {
+    el.innerHTML = '<div class="tc-table-wrap"><table class="tc-table">'
+      + '<thead><tr>'
+      + '<th>City</th>'
+      + '<th class="tc-hide-mob">Country</th>'
+      + '<th>Weather</th>'
+      + '<th>Temp</th>'
+      + '</tr></thead><tbody>'
+      + rows.map(function(r) {
+          return '<tr>'
+            + '<td><div class="tc-city-cell">'+flag(r.city.cc,16)+'<span class="tc-city-name">'+r.city.name+'</span></div></td>'
+            + '<td class="tc-hide-mob tc-country">'+r.city.country+'</td>'
+            + '<td class="tc-cond">'+(WX_ICONS_TC[r.code]||'🌡')+' '+(WX_DESC_TC[r.code]||'')+'</td>'
+            + '<td class="tc-temp">'+r.temp+U+'</td>'
+            + '</tr>';
+        }).join('')
+      + '</tbody></table></div>';
+  } else {
+    el.innerHTML = '<div class="tc-compact">'
+      + rows.map(function(r) {
+          return '<div class="tc-chip">'+flag(r.city.cc,18)
+            + '<div class="tc-chip-right">'
+            + '<div class="tc-chip-city">'+r.city.name+'</div>'
+            + '<div class="tc-chip-meta">'+(WX_ICONS_TC[r.code]||'🌡')+' '+r.temp+U+' · '+(WX_DESC_TC[r.code]||'')+'</div>'
+            + '</div></div>';
+        }).join('')
+      + '</div>';
+  }
+}
+
+// Boot Top Cities
+(function() {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tcWxFetch);
+  } else {
+    tcWxFetch();
+  }
+})();
