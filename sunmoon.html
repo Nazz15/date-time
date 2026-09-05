@@ -24,6 +24,96 @@
 <link rel="stylesheet" href="/location.css?v=2">
 <link rel="stylesheet" href="/footer.css?v=2">
 <link rel="stylesheet" href="/sunmoon.css">
+<style>
+/* ── Sun/Moon chips (my-strip) ─────────────────────────────── */
+#my-strip { display:flex; flex-wrap:wrap; gap:10px; padding-top:10px; }
+
+.sm-chip {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 14px; border-radius:12px; cursor:pointer;
+  border:1.5px solid rgba(128,128,128,0.15);
+  transition:border-color .15s, box-shadow .15s; position:relative;
+}
+[data-theme="dark"]  .sm-chip { background:rgba(255,255,255,0.04); }
+[data-theme="light"] .sm-chip { background:#ffffff; box-shadow:0 1px 4px rgba(0,0,0,0.07); }
+.sm-chip:hover, .sm-chip.active {
+  border-color:var(--clr-brand); box-shadow:0 0 0 3px rgba(88,166,255,0.12);
+}
+.sm-chip-flag  { flex-shrink:0; }
+.sm-chip-info  { flex-shrink:0; min-width:80px; }
+.sm-chip-city  { font-weight:700; font-size:13px; }
+.sm-chip-country { font-size:11px; opacity:.5; }
+.sm-chip-data  { flex:1; min-width:0; }
+.sm-chip-sun   { font-size:12px; font-weight:600; opacity:.8; white-space:nowrap; }
+.sm-chip-moon  { font-size:11px; opacity:.55; margin-top:2px; }
+.sm-chip-spin  { font-size:12px; opacity:.4; }
+.wx-chip-rm {
+  position:absolute; top:5px; right:5px; width:18px; height:18px;
+  border-radius:50%; border:none; background:rgba(128,128,128,0.12);
+  color:inherit; cursor:pointer; font-size:10px; opacity:0;
+  display:flex; align-items:center; justify-content:center; transition:opacity .15s;
+}
+.sm-chip:hover .wx-chip-rm { opacity:1; }
+.wx-chip-rm:hover { background:rgba(220,50,50,0.2); color:#e24b4a; }
+
+/* ── City card ─────────────────────────────────────────────── */
+.sm-city-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,560px),1fr)); gap:16px; }
+
+.sm-city-card {
+  border-radius:14px; overflow:hidden;
+  border:1px solid rgba(128,128,128,0.13);
+  transition:border-color .15s;
+}
+[data-theme="dark"]  .sm-city-card { background:rgba(255,255,255,0.03); }
+[data-theme="light"] .sm-city-card { background:#ffffff; box-shadow:0 1px 8px rgba(0,0,0,0.07); }
+.sm-city-card.sm-card-active { border-color:var(--clr-brand); box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
+
+.sm-card-hdr {
+  display:flex; align-items:center; gap:10px; padding:14px 16px 12px;
+  border-bottom:1px solid rgba(128,128,128,0.09);
+}
+.sm-city-name    { font-weight:700; font-size:16px; }
+.sm-country-name { font-size:12px; opacity:.5; margin-top:1px; }
+.sm-rm {
+  margin-left:auto; width:28px; height:28px; border-radius:8px; border:none;
+  background:rgba(128,128,128,0.1); color:inherit; cursor:pointer; font-size:12px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.sm-rm:hover { background:rgba(220,50,50,0.15); color:#e24b4a; }
+
+/* ── Sections inside card ──────────────────────────────────── */
+.sm-section      { padding:14px 16px; }
+.sm-section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; opacity:.45; margin-bottom:10px; }
+.sm-divider      { height:1px; background:rgba(128,128,128,0.09); margin:0; }
+
+.sm-row {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px;
+}
+.sm-item         { text-align:center; }
+.sm-item-ico     { font-size:20px; margin-bottom:3px; }
+.sm-item-val     { font-size:13px; font-weight:700; }
+.sm-item-lbl     { font-size:10px; opacity:.5; margin-top:1px; text-transform:uppercase; letter-spacing:.03em; }
+
+/* ── Arc visuals ───────────────────────────────────────────── */
+.sm-arc-wrap     { margin:4px 0 2px; }
+.sm-tl-labels {
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:11px; opacity:.6; padding:0 2px; margin-bottom:4px;
+}
+.sm-next-moon    { font-size:11px; opacity:.55; text-align:center; padding-top:4px; }
+
+/* ── Empty state ───────────────────────────────────────────── */
+.sm-empty { display:flex; flex-direction:column; align-items:center; gap:12px; padding:48px 20px; text-align:center; opacity:.45; }
+.sm-empty p { font-size:14px; margin:0; }
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media(max-width:600px) {
+  #my-strip { flex-wrap:nowrap; overflow-x:auto; padding-bottom:6px; scrollbar-width:thin; }
+  .sm-chip  { flex-shrink:0; }
+  .sm-row   { grid-template-columns:repeat(2,1fr); }
+  .sm-city-list { grid-template-columns:1fr; }
+}
+</style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
@@ -59,28 +149,29 @@
 <section class="my-section" aria-label="My Cities">
   <div class="wrap">
     <div class="my-head">
-      <h2 class="my-title"><i class="ti ti-map-pin"></i> My Cities</h2>
+      <h2 class="my-title"><i class="ti ti-sun"></i> Sun &amp; Moon by City</h2>
+      <div class="search-wrap">
+        <div class="search-pill" onclick="document.getElementById('sm-srch').focus()">
+          <i class="ti ti-search search-ico" aria-hidden="true"></i>
+          <input type="search" id="sm-srch" placeholder="Add a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search for a city">
+        </div>
+        <div id="sm-dd" class="search-dd" hidden></div>
+      </div>
     </div>
-    <div id="my-strip" role="list"></div>
+    <!-- Compact sun/moon chips — populated by renderStrip() in sunmoon.js -->
+    <div id="my-strip" role="list" aria-label="Selected cities sun and moon data"></div>
   </div>
 </section>
 
-<main class="wrap" style="padding-top:20px;padding-bottom:48px">
+<main class="wrap" style="padding-top:16px;padding-bottom:48px">
 
-  <!-- Search + location -->
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">
-    <div class="search-wrap">
-      <div class="search-pill" onclick="document.getElementById('sm-srch').focus()" style="width:300px">
-        <i class="ti ti-search search-ico"></i>
-        <input type="search" id="sm-srch" placeholder="Search city to add…" autocomplete="off" autocorrect="off">
-      </div>
-      <div id="sm-dd" class="search-dd" hidden></div>
-    </div>
-    <button class="tbtn secondary" style="padding:8px 16px;font-size:13px;border:1.5px solid var(--clr-brand);border-radius:30px;background:none;color:var(--clr-brand);cursor:pointer" onclick="autoLocateSM()">
-      <i class="ti ti-current-location"></i> Use My Location
+  <!-- Controls row -->
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px">
+    <button class="tbtn secondary" style="padding:7px 14px;font-size:13px;border:1.5px solid var(--clr-brand);border-radius:30px;background:none;color:var(--clr-brand);cursor:pointer" onclick="autoLocateSM()">
+      <i class="ti ti-current-location"></i> My Location
     </button>
+    <p style="font-size:12px;color:var(--clr-text3);margin:0">Times shown in each city's local timezone · Data for today</p>
   </div>
-  <p style="font-size:12px;color:var(--clr-text3);margin-bottom:16px">Showing data for today. Cities loaded from your World Clock selections.</p>
 
   <!-- City cards -->
   <div id="sm-list" class="sm-city-list"></div>

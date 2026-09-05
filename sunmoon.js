@@ -312,81 +312,134 @@ function nextMoonEvent(phase) {
 function renderCard(city, i) {
   if (typeof SunCalc === 'undefined') return '<div class="sm-empty">Loading suncalc…</div>';
 
-  var now = new Date();
-  var c = getCoords(city);
+  var now   = new Date();
+  var c     = getCoords(city);
   var times = SunCalc.getTimes(now, c.lat, c.lon);
-  var moon = SunCalc.getMoonIllumination(now);
-  var moonTimes = SunCalc.getMoonTimes(now, c.lat, c.lon);
-  var sr = times.sunrise, ss = times.sunset, sn = times.solarNoon;
-  var dayLen = (sr&&ss&&!isNaN(sr)&&!isNaN(ss)) ? minsBetween(sr, ss) : null;
-  var remaining = (ss&&!isNaN(ss)&&now<ss) ? minsBetween(now, ss) : null;
-  var ph = moonPhase(moon.phase);
-  var nxt = nextMoonEvent(moon.phase);
+  var moon  = SunCalc.getMoonIllumination(now);
+  var mT    = SunCalc.getMoonTimes(now, c.lat, c.lon);
+  var sr    = times.sunrise, ss = times.sunset, sn = times.solarNoon;
+  var dayLen = (sr&&ss&&!isNaN(sr)&&!isNaN(ss)) ? minsToHM(minsBetween(sr,ss)) : 'N/A';
+  var ph    = moonPhase(moon.phase);
+  var nxt   = nextMoonEvent(moon.phase);
 
-  // Debug info (coords used)
-  var coordStr = c.lat.toFixed(3)+', '+c.lon.toFixed(3);
-
-  return '<div class="sm-city-card">'
+  return '<div class="sm-city-card" id="sm-card-'+i+'">'
+    // Header
     + '<div class="sm-card-hdr">'
-    + flag(city.cc, 22)
-    + '<div><div class="city-name">'+city.name+'</div>'
-    + '<div class="country-name">'+city.country+' <span style="font-size:10px;color:var(--clr-text3)">· '+coordStr+'</span></div></div>'
-    + '<button class="sm-rm" onclick="removeSmCity('+i+')" title="Remove">&#10005;</button>'
+    +   flag(city.cc, 20)
+    +   '<div><div class="sm-city-name">'+city.name+'</div>'
+    +   '<div class="sm-country-name">'+city.country+'</div></div>'
+    +   '<button class="sm-rm" onclick="removeSmCity('+i+')" title="Remove">&#10005;</button>'
     + '</div>'
-    // Sun
-    + '<div class="sun-section">'
-    + '<h3><span style="font-size:16px">☀️</span> Sun Journey</h3>'
-    + '<div class="sun-arc-wrap">' + sunArcSVG(sr, ss, now) + '</div>'
-    + '<div class="tl-labels"><span>'+fmtT(sr,city.tz)+'<br>Sunrise</span><span style="text-align:center">'+fmtT(sn,city.tz)+'<br>Solar noon</span><span style="text-align:right">'+fmtT(ss,city.tz)+'<br>Sunset</span></div>'
-    + '<div class="sun-facts">'
-    + '<div class="fact"><div class="fact-icon">🌅</div><div class="fact-val">'+fmtT(sr,city.tz)+'</div><div class="fact-lbl">Sunrise</div></div>'
-    + '<div class="fact"><div class="fact-icon">🌇</div><div class="fact-val">'+fmtT(ss,city.tz)+'</div><div class="fact-lbl">Sunset</div></div>'
-    + '<div class="fact"><div class="fact-icon">☀️</div><div class="fact-val">'+fmtT(sn,city.tz)+'</div><div class="fact-lbl">Solar Noon</div></div>'
-    + '<div class="fact"><div class="fact-icon">🌄</div><div class="fact-val">'+fmtT(times.dawn,city.tz)+'</div><div class="fact-lbl">Dawn</div></div>'
-    + '<div class="fact"><div class="fact-icon">🌆</div><div class="fact-val">'+fmtT(times.dusk,city.tz)+'</div><div class="fact-lbl">Dusk</div></div>'
-    + '<div class="fact"><div class="fact-icon">⏱️</div><div class="fact-val">'+(dayLen?minsToHM(dayLen):'N/A')+'</div><div class="fact-lbl">Day Length</div></div>'
-    + (remaining!=null ? '<div class="fact"><div class="fact-icon">🕐</div><div class="fact-val">'+minsToHM(remaining)+'</div><div class="fact-lbl">Until Sunset</div></div>' : '')
-    + '</div></div>'
+
+    // ── Sun section ───────────────────────────────────────────────
+    + '<div class="sm-section">'
+    +   '<div class="sm-section-label">☀️ Sun</div>'
+    +   '<div class="sm-row">'
+    +     '<div class="sm-item"><div class="sm-item-ico">🌅</div><div class="sm-item-val">'+fmtT(sr,city.tz)+'</div><div class="sm-item-lbl">Sunrise</div></div>'
+    +     '<div class="sm-item"><div class="sm-item-ico">🌇</div><div class="sm-item-val">'+fmtT(ss,city.tz)+'</div><div class="sm-item-lbl">Sunset</div></div>'
+    +     '<div class="sm-item"><div class="sm-item-ico">⏱</div><div class="sm-item-val">'+dayLen+'</div><div class="sm-item-lbl">Day Length</div></div>'
+    +     '<div class="sm-item"><div class="sm-item-ico">🕛</div><div class="sm-item-val">'+fmtT(sn,city.tz)+'</div><div class="sm-item-lbl">Solar Noon</div></div>'
+    +   '</div>'
+    // Sun arc visual timeline
+    +   '<div class="sm-arc-wrap sun-arc-wrap">'+sunArcSVG(sr,ss,now)+'</div>'
+    +   '<div class="sm-tl-labels">'
+    +     '<span>🌅 '+fmtT(sr,city.tz)+'</span>'
+    +     '<span>☀️ Day</span>'
+    +     '<span>🌇 '+fmtT(ss,city.tz)+'</span>'
+    +   '</div>'
+    + '</div>'
+
     + '<div class="sm-divider"></div>'
-    // Moon
-    + '<div class="moon-section">'
-    + '<h3><span style="font-size:16px">🌙</span> Moon Journey</h3>'
-    + '<div class="moon-arc-wrap">' + moonArcSVG(moonTimes.rise, moonTimes.set, now) + '</div>'
-    + (moonTimes.rise&&moonTimes.set ? '<div class="tl-labels"><span>'+fmtT(moonTimes.rise,city.tz)+'<br>Moonrise</span><span style="text-align:right">'+fmtT(moonTimes.set,city.tz)+'<br>Moonset</span></div>' : '')
-    + '<div class="moon-facts">'
-    + '<div class="fact"><div class="fact-icon">'+ph.icon+'</div><div class="fact-val" style="font-size:12px">'+ph.name+'</div><div class="fact-lbl">Phase</div></div>'
-    + '<div class="fact"><div class="fact-icon">💫</div><div class="fact-val">'+Math.round(moon.fraction*100)+'%</div><div class="fact-lbl">Illumination</div></div>'
-    + '<div class="fact"><div class="fact-icon">🌑</div><div class="fact-val">'+fmtT(moonTimes.rise,city.tz)+'</div><div class="fact-lbl">Moonrise</div></div>'
-    + '<div class="fact"><div class="fact-icon">🌒</div><div class="fact-val">'+fmtT(moonTimes.set,city.tz)+'</div><div class="fact-lbl">Moonset</div></div>'
-    + (nxt ? '<div class="fact"><div class="fact-icon">'+nxt.icon+'</div><div class="fact-val" style="font-size:11px">'+nxt.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div><div class="fact-lbl">Next '+nxt.type+'</div></div>' : '')
-    + '</div></div></div>';
+
+    // ── Moon section ──────────────────────────────────────────────
+    + '<div class="sm-section">'
+    +   '<div class="sm-section-label">🌙 Moon</div>'
+    +   '<div class="sm-row">'
+    +     '<div class="sm-item"><div class="sm-item-ico">🌛</div><div class="sm-item-val">'+fmtT(mT.rise,city.tz)+'</div><div class="sm-item-lbl">Moonrise</div></div>'
+    +     '<div class="sm-item"><div class="sm-item-ico">🌜</div><div class="sm-item-val">'+fmtT(mT.set,city.tz)+'</div><div class="sm-item-lbl">Moonset</div></div>'
+    +     '<div class="sm-item"><div class="sm-item-ico">'+ph.icon+'</div><div class="sm-item-val" style="font-size:12px">'+ph.name+'</div><div class="sm-item-lbl">Phase</div></div>'
+    +     '<div class="sm-item"><div class="sm-item-ico">💫</div><div class="sm-item-val">'+Math.round(moon.fraction*100)+'%</div><div class="sm-item-lbl">Illumination</div></div>'
+    +   '</div>'
+    // Moon arc visual
+    +   '<div class="sm-arc-wrap moon-arc-wrap">'+moonArcSVG(mT.rise,mT.set,now)+'</div>'
+    +   '<div class="sm-tl-labels">'
+    +     '<span>🌙 '+fmtT(mT.rise,city.tz)+'</span>'
+    +     '<span>'+ph.icon+' '+ph.name+'</span>'
+    +     '<span>🌘 '+fmtT(mT.set,city.tz)+'</span>'
+    +   '</div>'
+    +   (nxt ? '<div class="sm-next-moon">Next: '+nxt.icon+' '+nxt.type+' · '
+    +     nxt.date.toLocaleDateString('en-US',{month:'short',day:'numeric'})+'</div>' : '')
+    + '</div>'
+    + '</div>';
 }
 
 function renderAll() {
   var el = document.getElementById('sm-list');
+  if (!el) return;
   if (typeof SunCalc === 'undefined') {
-    el.innerHTML = '<div class="sm-empty"><p>Loading suncalc library…</p></div>';
+    el.innerHTML = '<div class="sm-empty"><p>Loading suncalc…</p></div>';
     setTimeout(renderAll, 300); return;
   }
-  if (!SM.cities.length) {
-    el.innerHTML = '<div class="sm-empty"><i class="ti ti-sun"></i><p>Search above to add cities.</p></div>';
+  if (!WC.pinned.length) {
+    el.innerHTML = '<div class="sm-empty"><i class="ti ti-sun" style="font-size:36px;opacity:.3"></i><p>Search above to add cities and see their sun &amp; moon data.</p></div>';
     return;
   }
-  el.innerHTML = SM.cities.map(renderCard).join('');
+  el.innerHTML = WC.pinned.map(renderCard).join('');
 }
 
-function addSmCity(city) {
-  if (SM.cities.some(function(c){ return c.tz===city.tz && c.name===city.name; })) {
-    toast(city.name+' already added'); return;
+// ── Compact chip strip — shows sunrise/moonphase instead of time ──────────
+function renderStrip() {
+  var el = document.getElementById('my-strip');
+  if (!el) return;
+  if (!WC.pinned.length) {
+    el.innerHTML = '<span class="strip-empty">Search above to add cities</span>';
+    return;
   }
-  SM.cities.push(city);
-  document.getElementById('sm-srch').value = '';
-  document.getElementById('sm-dd').hidden = true;
-  renderAll();
-  toast(flag(city.cc,14)+' '+city.name+' added');
+  if (typeof SunCalc === 'undefined') {
+    el.innerHTML = WC.pinned.map(function(c,i){
+      return '<div class="sm-chip" id="sm-chip-'+i+'" onclick="scrollToCard('+i+')">'
+        + '<div class="sm-chip-flag">'+flag(c.cc,20)+'</div>'
+        + '<div class="sm-chip-info"><div class="sm-chip-city">'+c.name+'</div>'
+        + '<div class="sm-chip-country">'+c.country+'</div></div>'
+        + '<div class="sm-chip-data"><span class="sm-chip-spin">…</span></div>'
+        + '<button class="wx-chip-rm" onclick="event.stopPropagation();removeSmCity('+i+')" title="Remove">✕</button>'
+        + '</div>';
+    }).join('');
+    return;
+  }
+  el.innerHTML = WC.pinned.map(function(c, i) {
+    var now   = new Date();
+    var coord = getCoords(c);
+    var times = SunCalc.getTimes(now, coord.lat, coord.lon);
+    var moon  = SunCalc.getMoonIllumination(now);
+    var ph    = moonPhase(moon.phase);
+    return '<div class="sm-chip" id="sm-chip-'+i+'" onclick="scrollToCard('+i+')" role="button" tabindex="0">'
+      + '<div class="sm-chip-flag">'+flag(c.cc,20)+'</div>'
+      + '<div class="sm-chip-info">'
+      +   '<div class="sm-chip-city">'+c.name+'</div>'
+      +   '<div class="sm-chip-country">'+c.country+'</div>'
+      + '</div>'
+      + '<div class="sm-chip-data">'
+      +   '<div class="sm-chip-sun">🌅 '+fmtT(times.sunrise,c.tz)+' · 🌇 '+fmtT(times.sunset,c.tz)+'</div>'
+      +   '<div class="sm-chip-moon">'+ph.icon+' '+ph.name+' · '+Math.round(moon.fraction*100)+'%</div>'
+      + '</div>'
+      + '<button class="wx-chip-rm" onclick="event.stopPropagation();removeSmCity('+i+')" title="Remove '+c.name+'">✕</button>'
+      + '</div>';
+  }).join('');
 }
 
-function removeSmCity(i) { SM.cities.splice(i,1); renderAll(); }
+function scrollToCard(i) {
+  document.querySelectorAll('.sm-city-card').forEach(function(el){ el.classList.remove('sm-card-active'); });
+  document.querySelectorAll('.sm-chip').forEach(function(el){ el.classList.remove('active'); });
+  var card = document.getElementById('sm-card-'+i);
+  var chip = document.getElementById('sm-chip-'+i);
+  if (card) { card.classList.add('sm-card-active'); card.scrollIntoView({behavior:'smooth',block:'start'}); }
+  if (chip) chip.classList.add('active');
+}
+
+function removeSmCity(i) {
+  removePin(i);
+}
 
 function autoLocateSM() {
   if (!navigator.geolocation) { toast('Geolocation not supported'); return; }
@@ -397,33 +450,24 @@ function autoLocateSM() {
       .then(function(d) {
         var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
         CITY_COORDS[(d.city||'My Location')+'|'+tz] = {lat:lat, lon:lon};
-        addSmCity({name:d.city||d.locality||'My Location', country:d.countryName||'', cc:(d.countryCode||'un').toLowerCase(), tz:tz, _lat:lat, _lon:lon});
+        addPin({name:d.city||d.locality||'My Location', country:d.countryName||'', cc:(d.countryCode||'un').toLowerCase(), tz:tz, _lat:lat, _lon:lon});
       }).catch(function() {
         var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        addSmCity({name:'My Location', country:'', cc:'un', tz:tz, _lat:lat, _lon:lon});
+        addPin({name:'My Location', country:'', cc:'un', tz:tz, _lat:lat, _lon:lon});
       });
   }, function(){ toast('Location access denied'); });
 }
 
-// Callbacks
-function onPinsChanged() { renderStrip(); }
+// Callbacks from util.js
+function onPinsChanged() { renderStrip(); renderAll(); }
 function onFmtChange()   { renderStrip(); renderAll(); }
 
 // Boot
-boot(); loadPins(); renderStrip();
-
-// Pre-load with pinned cities (deduplicated)
-var _seen = {};
-SM.cities = WC.pinned.filter(function(c) {
-  var k = c.name+'|'+c.tz;
-  if (_seen[k]) return false; _seen[k]=true; return true;
-}).slice(0, 6);
-
-renderAll();
+boot(); loadPins(); renderStrip(); renderAll();
 setInterval(renderAll, 60000);
 
 initSearch('sm-srch', 'sm-dd', function(city) {
-  addSmCity(city);
+  addPin(city);
   document.getElementById('sm-srch').value = '';
   document.getElementById('sm-dd').hidden = true;
 }, {showPinned:false});
