@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Current Local Time in Dubai, United Arab Emirates — TimeZoneBuddy</title>
+<style>
+:root{
+  --brand:#1d4ed8; --brand-2:#3b82f6; --ink:#0f172a; --muted:#64748b;
+  --line:#e6eaf0; --bg:#f5f7fa; --card:#fff; --radius:14px;
+  --shadow:0 1px 2px rgba(16,24,40,.04),0 6px 16px rgba(16,24,40,.06);
+  --sun:#f59e0b; --warn:#f59e0b;
+  --maxw:1120px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  color:var(--ink);background:var(--bg);line-height:1.5;font-size:15px}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 16px}
+
+/* ---------- HEADER ---------- */
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50}
+.nav{display:flex;align-items:center;gap:22px;height:60px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700;font-size:18px;white-space:nowrap}
+.logo .b{color:var(--brand)}
+.logo .globe{width:26px;height:26px;border-radius:50%;background:var(--brand);display:grid;place-items:center;color:#fff;font-size:15px}
+.menu{display:flex;gap:18px;font-weight:500;color:#334155;font-size:14px}
+.menu a:hover{color:var(--brand)}
+.search{margin-left:auto;display:flex;align-items:center;background:#f1f5f9;border:1px solid var(--line);
+  border-radius:8px;padding:0 6px 0 12px;height:38px;min-width:250px}
+.search input{border:0;background:transparent;outline:0;flex:1;font-size:14px}
+.search button{border:0;background:var(--brand);color:#fff;width:30px;height:30px;border-radius:6px;cursor:pointer}
+.burger,.msearch{display:none;background:none;border:0;font-size:22px;cursor:pointer;color:#334155}
+
+/* ---------- SHARED ---------- */
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.section{margin:22px 0}
+.stitle{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:700;margin:0 0 12px}
+.stitle .i{color:var(--brand)}
+.muted{color:var(--muted)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;border-radius:18px;overflow:hidden;margin-top:18px;color:#fff;
+  min-height:300px;display:flex;align-items:flex-end;
+  background:linear-gradient(120deg,#0b3a82 0%,#1e5bbf 35%,#f0a75a 78%,#f6c66b 100%)}
+.hero::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(6,20,45,.15),rgba(6,20,45,.55));z-index:1}
+.hero-in{position:relative;z-index:2;padding:22px 26px;width:100%;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.crumbs{font-size:13px;opacity:.9;margin-bottom:10px}
+.crumbs a:hover{text-decoration:underline}
+.flag{width:34px;height:24px;border-radius:4px;object-fit:cover;box-shadow:0 0 0 1px rgba(255,255,255,.3);vertical-align:middle}
+.eyebrow{font-size:15px;opacity:.9;margin:8px 0 2px}
+.city{font-size:32px;font-weight:800;margin:0;line-height:1.1}
+.clock{font-size:48px;font-weight:800;let-spacing:.5px;margin:8px 0 2px}
+.clock .sec{font-size:26px;font-weight:600;opacity:.85}
+.clock .ampm{font-size:22px;font-weight:600}
+.date{font-size:15px;opacity:.95}
+.tzline{font-size:13px;opacity:.9;margin-top:2px}
+.hero-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;border:1px solid transparent}
+.btn-primary{background:#fff;color:var(--brand)}
+.btn-ghost{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.4)}
+.hero-weather{background:rgba(255,255,255,.16);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);
+  border-radius:12px;padding:14px 18px;text-align:right;align-self:flex-start;min-width:180px}
+.hw-temp{font-size:34px;font-weight:800;line-height:1}
+.hw-row{display:flex;align-items:center;justify-content:flex-end;gap:8px}
+.hw-ico{font-size:30px}
+
+/* ---------- COUNTRY INFO ---------- */
+.info-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.info-cell{padding:14px 16px;text-align:center}
+.info-cell .k{font-size:12px;letter-spacing:.3px;color:var(--muted);margin-bottom:6px}
+.info-cell .v{font-weight:700;font-size:15px;display:flex;align-items:center;justify-content:center;gap:6px}
+.info-cell .flag{width:22px;height:16px}
+
+/* ---------- QUICK CARDS ---------- */
+.quad{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.qcard{padding:16px;display:flex;align-items:center;gap:12px}
+.qcard .ic{font-size:26px}
+.qcard .k{font-size:12px;color:var(--muted)}
+.qcard .v{font-weight:700;font-size:16px}
+.qcard .s{font-size:12px;color:var(--muted)}
+.moon-thumb{width:38px;height:38px;border-radius:50%;
+  background:radial-gradient(circle at 65% 40%,#f8fafc 0 45%,#94a3b8 46% 100%);flex:none}
+
+/* ---------- FORECAST ---------- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hours{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.hour{flex:1;min-width:64px;text-align:center;padding:10px 6px;border-radius:10px}
+.hour:hover{background:#f8fafc}
+.hour .h{font-size:12px;font-weight:600;color:#334155}
+.hour .ic{font-size:24px;margin:6px 0}
+.hour .t{font-weight:700}
+.hour .p{font-size:11px;color:#2563eb}
+.days7{display:flex;gap:6px;overflow-x:auto}
+.d7{flex:1;min-width:70px;text-align:center;padding:12px 6px;border-radius:10px}
+.d7:hover{background:#f8fafc}
+.d7 .dow{font-size:12px;font-weight:700}
+.d7 .dt{font-size:11px;color:var(--muted)}
+.d7 .ic{font-size:22px;margin:6px 0}
+.d7 .hi{font-weight:700}
+.d7 .lo{color:var(--muted);font-size:13px}
+.d7 .p{font-size:11px;color:#2563eb;margin-top:2px}
+
+/* ---------- SUN / MOON / TZ ---------- */
+.trio{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.kv{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.kv:last-child{border-bottom:0}
+.kv .k{color:var(--muted)}
+.kv .v{font-weight:600}
+.card-pad{padding:16px 18px}
+.moon-big{width:64px;height:64px;border-radius:50%;margin:0 auto 8px;
+  background:radial-gradient(circle at 65% 40%,#f8fafc 0 46%,#94a3b8 47% 100%)}
+.sunbar{height:8px;border-radius:6px;margin:14px 0 4px;
+  background:linear-gradient(90deg,#c7d2fe,#fcd34d,#f59e0b,#fcd34d,#c7d2fe);position:relative}
+.sunbar .dot{position:absolute;top:-4px;left:55%;width:16px;height:16px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 3px #fff7e6}
+
+/* ---------- CITIES TABLE ---------- */
+.tbl{width:100%;border-collapse:collapse}
+.tbl td{padding:10px 6px;border-bottom:1px solid var(--line);font-size:14px}
+.tbl tr:last-child td{border-bottom:0}
+.tbl .c1{font-weight:600}
+.tbl .c2{text-align:right;color:#334155}
+.tbl .diff{text-align:right;font-weight:600;color:var(--brand);white-space:nowrap}
+
+/* ---------- NEARBY ---------- */
+.nearby{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+.ncard{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.ncard .img{height:74px;background-size:cover;background-position:center;
+  background-image:linear-gradient(135deg,#93c5fd,#c7d2fe)}
+.ncard .body{padding:10px}
+.ncard .nm{font-weight:700;font-size:14px}
+.ncard .tm{font-size:13px;color:#334155}
+.ncard .wx{font-size:13px;display:flex;align-items:center;gap:4px;margin-top:2px}
+
+/* ---------- HOLIDAYS + CHIPS ---------- */
+.hol{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.hol:last-child{border-bottom:0}
+.hol .ic{font-size:20px;width:26px;text-align:center}
+.hol .nm{font-weight:600;flex:1}
+.hol .dt{color:var(--muted);font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;border:1px solid var(--line);
+  border-radius:999px;background:#fff;font-weight:600;font-size:14px}
+.chip:hover{border-color:var(--brand-2);color:var(--brand)}
+.chip .flag{width:20px;height:14px}
+
+/* ---------- SEARCH CTA ---------- */
+.cta{background:linear-gradient(135deg,#eef4ff,#e0ecff);border:1px solid #dbe6ff;border-radius:16px;
+  text-align:center;padding:26px 18px}
+.cta h3{margin:0 0 4px;font-size:19px}
+.cta p{margin:0 0 14px;color:var(--muted)}
+.cta .search{margin:0 auto;max-width:520px;height:44px}
+
+/* ---------- FOOTER ---------- */
+footer{background:#0b1220;color:#cbd5e1;margin-top:30px}
+.foot{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;flex-wrap:wrap}
+.foot .logo{color:#fff}
+.foot .logo .globe{background:#1e293b}
+.flinks{display:flex;gap:18px;font-size:14px}
+.flinks a:hover{color:#fff}
+.social{display:flex;gap:14px;font-size:16px}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){
+  .info-grid{grid-template-columns:repeat(3,1fr)}
+  .nearby{grid-template-columns:repeat(3,1fr)}
+  .trio{grid-template-columns:1fr}
+  .two{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .menu,.search{display:none}
+  .burger,.msearch{display:block}
+  .nav{gap:12px}
+  .msearch{margin-left:auto}
+  .hero{min-height:auto}
+  .hero-in{flex-direction:column;padding:18px}
+  .hero-weather{text-align:left;align-self:stretch;order:-1;display:flex;justify-content:space-between;align-items:center}
+  .hw-row{justify-content:flex-start}
+  .city{font-size:24px}
+  .clock{font-size:38px}
+  .clock .sec{font-size:20px}
+  .info-grid{grid-template-columns:repeat(2,1fr)}
+  .quad{grid-template-columns:repeat(2,1fr)}
+  .nearby{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:60%;overflow-x:auto;padding-bottom:6px}
+  .days7{gap:8px}
+  .d7{min-width:78px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+ <div class="wrap nav">
+  <button class="burger" aria-label="Menu">☰</button>
+  <a class="logo" href="/"><span class="globe">🌐</span>TimeZone<span class="b">Buddy</span></a>
+  <nav class="menu">
+   <a href="/world-clock">World Clock</a><a href="/time-zones">Time Zones</a>
+   <a href="/weather">Weather</a><a href="/calendar">Calendar</a>
+   <a href="/moon">Moon</a><a href="/holidays">Holidays</a><a href="/more">More ▾</a>
+  </nav>
+  <form class="search" role="search">
+   <input placeholder="Search for a city, country or time zone...">
+   <button type="submit" aria-label="Search">🔍</button>
+  </form>
+  <button class="msearch" aria-label="Search">🔍</button>
+ </div>
+</header>
+
+<div class="wrap">
+
+ <!-- HERO -->
+ <section class="hero" id="hero">
+  <div class="hero-in">
+   <div>
+    <div class="crumbs"><a href="/">Home</a> › <a href="/locations">Locations</a> › <a href="#">United Arab Emirates</a> › Dubai</div>
+    <img class="flag" src="https://flagcdn.com/w40/ae.png" alt="UAE flag">
+    <div class="eyebrow">Current Local Time in</div>
+    <h1 class="city">Dubai, United Arab Emirates</h1>
+    <div class="clock"><span id="t-hm">10:24</span><span class="sec" id="t-s">:36</span> <span class="ampm" id="t-ap">AM</span></div>
+    <div class="date" id="t-date">Friday, September 5, 2026</div>
+    <div class="tzline">GMT +4 | Gulf Standard Time (GST) | No Daylight Saving Time</div>
+    <div class="hero-actions">
+     <button class="btn btn-primary">➕ Add to World Clock</button>
+     <button class="btn btn-ghost">🔗 Share</button>
+    </div>
+   </div>
+   <div class="hero-weather">
+    <div class="hw-row"><span class="hw-ico">☀️</span><span class="hw-temp">34°C</span></div>
+    <div>Sunny</div><div class="muted" style="opacity:.9">Feels like 38°C</div>
+   </div>
+  </div>
+ </section>
+
+ <!-- COUNTRY INFO -->
+ <section class="section">
+  <div class="card info-grid">
+   <div class="info-cell"><div class="k">COUNTRY</div><div class="v"><img class="flag" src="https://flagcdn.com/w40/ae.png" alt="">United Arab Emirates</div></div>
+   <div class="info-cell"><div class="k">UTC OFFSET</div><div class="v">UTC+04:00</div></div>
+   <div class="info-cell"><div class="k">CURRENCY</div><div class="v">د.إ AED</div></div>
+   <div class="info-cell"><div class="k">CURRENCY NAME</div><div class="v">UAE Dirham</div></div>
+   <div class="info-cell"><div class="k">LANGUAGE</div><div class="v">Arabic</div></div>
+   <div class="info-cell"><div class="k">DIAL CODE</div><div class="v">+971</div></div>
+  </div>
+ </section>
+
+ <!-- QUICK SUN/MOON -->
+ <section class="section quad">
+  <div class="card qcard"><span class="ic">🌅</span><div><div class="k">Sunrise</div><div class="v">6:02 AM</div></div></div>
+  <div class="card qcard"><span class="ic">🌇</span><div><div class="k">Sunset</div><div class="v">6:32 PM</div></div></div>
+  <div class="card qcard"><span class="ic">☀️</span><div><div class="k">Day Length</div><div class="v">12h 30m</div></div></div>
+  <div class="card qcard"><span class="moon-thumb"></span><div><div class="k">Moon Phase</div><div class="v">Waxing Gibbous</div><div class="s">72% illuminated</div></div></div>
+ </section>
+
+ <!-- FORECASTS -->
+ <section class="section two">
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">🌤️</span>Hourly Weather Forecast</h2>
+   <div class="hours">
+    <div class="hour"><div class="h">Now</div><div class="ic">☀️</div><div class="t">34°</div><div class="p">💧0%</div></div>
+    <div class="hour"><div class="h">11 AM</div><div class="ic">☀️</div><div class="t">35°</div><div class="p">💧0%</div></div>
+    <div class="hour"><div class="h">12 PM</div><div class="ic">☀️</div><div class="t">36°</div><div class="p">💧0%</div></div>
+    <div class="hour"><div class="h">1 PM</div><div class="ic">🌤️</div><div class="t">36°</div><div class="p">💧0%</div></div>
+    <div class="hour"><div class="h">2 PM</div><div class="ic">☀️</div><div class="t">35°</div><div class="p">💧0%</div></div>
+    <div class="hour"><div class="h">3 PM</div><div class="ic">🌙</div><div class="t">33°</div><div class="p">💧0%</div></div>
+   </div>
+  </div>
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">🕐</span>7-Day Weather Forecast</h2>
+   <div class="days7">
+    <div class="d7"><div class="dow">Fri</div><div class="dt">Sep 5</div><div class="ic">☀️</div><span class="hi">36°</span> <span class="lo">28°</span><div class="p">💧0%</div></div>
+    <div class="d7"><div class="dow">Sat</div><div class="dt">Sep 6</div><div class="ic">☀️</div><span class="hi">37°</span> <span class="lo">29°</span><div class="p">💧5%</div></div>
+    <div class="d7"><div class="dow">Sun</div><div class="dt">Sep 7</div><div class="ic">🌤️</div><span class="hi">35°</span> <span class="lo">27°</span><div class="p">💧5%</div></div>
+    <div class="d7"><div class="dow">Mon</div><div class="dt">Sep 8</div><div class="ic">☀️</div><span class="hi">36°</span> <span class="lo">28°</span><div class="p">💧0%</div></div>
+    <div class="d7"><div class="dow">Tue</div><div class="dt">Sep 9</div><div class="ic">🌤️</div><span class="hi">34°</span> <span class="lo">26°</span><div class="p">💧10%</div></div>
+    <div class="d7"><div class="dow">Wed</div><div class="dt">Sep 10</div><div class="ic">☀️</div><span class="hi">35°</span> <span class="lo">27°</span><div class="p">💧0%</div></div>
+    <div class="d7"><div class="dow">Thu</div><div class="dt">Sep 11</div><div class="ic">☀️</div><span class="hi">36°</span> <span class="lo">28°</span><div class="p">💧0%</div></div>
+   </div>
+  </div>
+ </section>
+
+ <!-- SUN / MOON / TZ -->
+ <section class="section trio">
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">☀️</span>Sun in Dubai</h2>
+   <div class="kv"><span class="k">Sunrise</span><span class="v">6:02 AM</span></div>
+   <div class="kv"><span class="k">Solar Noon</span><span class="v">12:17 PM</span></div>
+   <div class="kv"><span class="k">Sunset</span><span class="v">6:32 PM</span></div>
+   <div class="kv"><span class="k">Day Length</span><span class="v">12h 30m</span></div>
+   <div class="kv"><span class="k">Daylight Change</span><span class="v">+1m 12s</span></div>
+   <div class="sunbar"><span class="dot"></span></div>
+   <div class="muted" style="font-size:12px;display:flex;justify-content:space-between"><span>6:02 AM</span><span>6:32 PM</span></div>
+  </div>
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">🌙</span>Moon in Dubai</h2>
+   <div class="moon-big"></div>
+   <div style="text-align:center;font-weight:700;margin-bottom:8px">Waxing Gibbous · 72%</div>
+   <div class="kv"><span class="k">Moonrise</span><span class="v">4:21 PM</span></div>
+   <div class="kv"><span class="k">Moonset</span><span class="v">3:12 AM</span></div>
+   <div class="kv"><span class="k">Moon Age</span><span class="v">12.4 days</span></div>
+   <div class="kv"><span class="k">Next Full Moon</span><span class="v">Sep 17, 2026</span></div>
+   <div class="kv"><span class="k">Next New Moon</span><span class="v">Oct 2, 2026</span></div>
+  </div>
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">🕐</span>Time Zone Information</h2>
+   <div class="kv"><span class="k">Time Zone</span><span class="v">Gulf Standard Time (GST)</span></div>
+   <div class="kv"><span class="k">UTC Offset</span><span class="v">UTC +4</span></div>
+   <div class="kv"><span class="k">Daylight Saving</span><span class="v">Not observed</span></div>
+   <p class="muted" style="font-size:13px;margin:12px 0 0">Dubai stays on GST year-round, so the offset from other cities never shifts.</p>
+  </div>
+ </section>
+
+ <!-- TIME DIFF + NEARBY -->
+ <section class="section two">
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">🌐</span>Dubai Time vs Other Major Cities</h2>
+   <table class="tbl">
+    <tr><td class="c1">London</td><td class="c2">6:24 AM</td><td class="diff">−4h</td></tr>
+    <tr><td class="c1">New York</td><td class="c2">2:24 AM</td><td class="diff">−8h</td></tr>
+    <tr><td class="c1">Mumbai</td><td class="c2">11:54 AM</td><td class="diff">+1h 30m</td></tr>
+    <tr><td class="c1">Singapore</td><td class="c2">2:24 PM</td><td class="diff">+4h</td></tr>
+    <tr><td class="c1">Sydney</td><td class="c2">6:24 PM</td><td class="diff">+8h</td></tr>
+    <tr><td class="c1">Tokyo</td><td class="c2">3:24 PM</td><td class="diff">+5h</td></tr>
+   </table>
+  </div>
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">📍</span>Nearby Cities</h2>
+   <div class="nearby">
+    <div class="ncard"><div class="img"></div><div class="body"><div class="nm">Abu Dhabi</div><div class="tm">10:24 AM</div><div class="wx">☀️ 34°</div></div></div>
+    <div class="ncard"><div class="img"></div><div class="body"><div class="nm">Sharjah</div><div class="tm">10:24 AM</div><div class="wx">☀️ 33°</div></div></div>
+    <div class="ncard"><div class="img"></div><div class="body"><div class="nm">Ajman</div><div class="tm">10:24 AM</div><div class="wx">☀️ 34°</div></div></div>
+    <div class="ncard"><div class="img"></div><div class="body"><div class="nm">Al Ain</div><div class="tm">10:24 AM</div><div class="wx">☀️ 34°</div></div></div>
+    <div class="ncard"><div class="img"></div><div class="body"><div class="nm">Ras Al Khaimah</div><div class="tm">10:24 AM</div><div class="wx">☀️ 32°</div></div></div>
+    <div class="ncard"><div class="img"></div><div class="body"><div class="nm">Fujairah</div><div class="tm">10:24 AM</div><div class="wx">🌤️ 31°</div></div></div>
+   </div>
+  </div>
+ </section>
+
+ <!-- HOLIDAYS + COUNTRIES -->
+ <section class="section two">
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">📅</span>Upcoming Holidays in United Arab Emirates</h2>
+   <div class="hol"><span class="ic">🇦🇪</span><span class="nm">UAE National Day</span><span class="dt">December 2, 2026</span></div>
+   <div class="hol"><span class="ic">🎉</span><span class="nm">New Year's Day</span><span class="dt">January 1, 2027</span></div>
+   <div class="hol"><span class="ic">🕌</span><span class="nm">Ramadan Begins</span><span class="dt">Expected February 18, 2027</span></div>
+  </div>
+  <div class="card card-pad">
+   <h2 class="stitle"><span class="i">🌏</span>More Countries in Asia</h2>
+   <div class="chips">
+    <a class="chip"><img class="flag" src="https://flagcdn.com/w20/in.png" alt="">India</a>
+    <a class="chip"><img class="flag" src="https://flagcdn.com/w20/cn.png" alt="">China</a>
+    <a class="chip"><img class="flag" src="https://flagcdn.com/w20/jp.png" alt="">Japan</a>
+    <a class="chip"><img class="flag" src="https://flagcdn.com/w20/sg.png" alt="">Singapore</a>
+    <a class="chip"><img class="flag" src="https://flagcdn.com/w20/sa.png" alt="">Saudi Arabia</a>
+   </div>
+  </div>
+ </section>
+
+ <!-- SEARCH CTA -->
+ <section class="section">
+  <div class="cta">
+   <h3>🌐 Explore More Locations Worldwide</h3>
+   <p>Find current time, weather, and more for any city around the world.</p>
+   <form class="search" role="search">
+    <input placeholder="Search for a city, country or time zone...">
+    <button type="submit" aria-label="Search">🔍</button>
+   </form>
+  </div>
+ </section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+ <div class="wrap foot">
+  <a class="logo" href="/"><span class="globe">🌐</span>TimeZone<span class="b">Buddy</span></a>
+  <nav class="flinks"><a href="/about">About</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/contact">Contact</a></nav>
+  <div class="social">📘 ✖️ 📷 ▶️</div>
+ </div>
+</footer>
+
+<script>
+// Live clock — replace "Asia/Dubai" with the city's IANA zone from build.py
+(function(){
+  var TZ="Asia/Dubai";
+  function tick(){
+    var now=new Date();
+    var t=new Intl.DateTimeFormat("en-US",{timeZone:TZ,hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:true}).formatToParts(now);
+    var o={};t.forEach(function(p){o[p.type]=p.value});
+    document.getElementById("t-hm").textContent=o.hour+":"+o.minute;
+    document.getElementById("t-s").textContent=":"+o.second;
+    document.getElementById("t-ap").textContent=o.dayPeriod;
+    document.getElementById("t-date").textContent=new Intl.DateTimeFormat("en-US",{timeZone:TZ,weekday:"long",year:"numeric",month:"long",day:"numeric"}).format(now);
+  }
+  tick();setInterval(tick,1000);
+})();
+</script>
+</body>
+</html>
