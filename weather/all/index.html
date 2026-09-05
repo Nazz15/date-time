@@ -2,78 +2,239 @@
 <html lang="en">
 <head>
 <script>
-(function() {
-  var saved = localStorage.getItem('wc_theme');
-  var isDark = saved === 'dark' ||
-    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-})();
+(function(){var s=localStorage.getItem('wc_theme');var d=s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');})();
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="description" content="Free world clock showing live local times for 130+ cities worldwide. Switch between table, compact, digital and analog views.">
-<meta name="keywords" content="world clock,current time,time zones,live clock,city time,international time">
-<title>World Clock — Live Times for Every City | WorldClock</title>
-<link rel="canonical" href="https://timezonebudy.com/">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weather in Cities Around the World | TimezoneBudy</title>
+<meta name="description" content="Find current weather, temperature and local time for cities worldwide. Search for any city to see live weather conditions, hourly forecast and 7-day forecast.">
+<link rel="canonical" href="https://timezonebudy.com/weather/all">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css?v=2">
-<link rel="stylesheet" href="/location.css?v=2">
-<link rel="stylesheet" href="/footer.css?v=2">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/footer.css">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0d2240">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css?v=2">
 <style>
-/* View More button */
-.view-more-btn {
-  display:inline-flex; align-items:center; gap:6px;
-  padding:9px 22px; border-radius:20px; font-size:13px; font-weight:600;
-  border:1.5px solid rgba(128,128,128,0.25); background:transparent;
-  color:inherit; cursor:pointer; transition:background .15s,border-color .15s;
-  margin:4px 0;
+/* ── CSS variables matching preview ─────────────────────── */
+:root{
+  --wa-blue:#2563b8;--wa-navy:#17243a;--wa-muted:#68758a;
+  --wa-line:#d9e2ed;--wa-bg:#f7f9fc;
 }
-.view-more-btn:hover { background:rgba(88,166,255,0.08); border-color:var(--accent,#58a6ff); color:var(--accent,#58a6ff); }
-.cg-viewmore { grid-column:1/-1; text-align:center; padding:10px 0 4px; }
-
-/* Compact grid responsive fix */
-.compact-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));
-  gap:6px;
+[data-theme="dark"]{
+  --wa-blue:#58a6ff;--wa-navy:#e6edf3;--wa-muted:rgba(255,255,255,0.5);
+  --wa-line:rgba(255,255,255,0.1);--wa-bg:#0d1117;
 }
-.cg-cell { min-width:0; }
-.cg-name { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.cg-time { white-space:nowrap; }
+body{ background:var(--wa-bg); }
 
-/* FAQ styles */
-.faq-item { margin-bottom:20px; }
-.faq-item h3 { font-size:16px; font-weight:700; margin:0 0 6px; }
-.faq-item p  { font-size:15px; line-height:1.75; opacity:.85; margin:0; }
+/* ── Hero ─────────────────────────────────────────────── */
+.wa-hero{
+  background:linear-gradient(135deg,#edf6ff,#dceafa);
+  padding:20px 0 38px; border-bottom:1px solid #ccd9e9;
+}
+[data-theme="dark"] .wa-hero{
+  background:linear-gradient(135deg,#0d2240,#0e2f54);
+  border-bottom-color:rgba(255,255,255,0.08);
+}
+.wa-wrap{ max-width:1180px; margin:0 auto; padding:0 24px; }
+.wa-breadcrumb{ color:var(--wa-muted); font-size:13px; margin:0 0 22px; }
+.wa-breadcrumb a{ color:var(--wa-blue); }
+.wa-breadcrumb a:hover{ text-decoration:underline; }
+.wa-hero h1{ font-size:clamp(28px,4.5vw,40px); font-weight:800; margin:0 0 8px; color:var(--wa-navy); }
+.wa-hero p{ margin:0 0 22px; color:#59677a; font-size:16px; }
+[data-theme="dark"] .wa-hero p{ color:rgba(255,255,255,0.65); }
+.wa-search{
+  max-width:720px; background:#fff; border:1px solid #adc7e4;
+  border-radius:11px; padding:5px; display:flex;
+  box-shadow:0 6px 20px rgba(69,103,137,0.08);
+}
+[data-theme="dark"] .wa-search{ background:#1a2132; border-color:rgba(88,166,255,0.3); }
+.wa-search input{
+  flex:1; border:0; outline:0; padding:14px 18px; font-size:15px;
+  background:transparent; color:var(--wa-navy); font-family:inherit;
+}
+[data-theme="dark"] .wa-search input{ color:#e6edf3; }
+.wa-search button{
+  border:0; border-radius:8px; background:var(--wa-blue); color:#fff;
+  padding:0 28px; font-weight:700; font-size:14px; cursor:pointer; white-space:nowrap;
+}
+.wa-search button:hover{ opacity:.9; }
+/* Search dropdown */
+.wa-search-wrap{ position:relative; flex:1; }
+.wa-dd{
+  position:absolute; top:calc(100% + 6px); left:0; right:0;
+  background:#fff; border:1px solid var(--wa-line); border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); z-index:100; overflow:hidden;
+}
+[data-theme="dark"] .wa-dd{ background:#1a2132; }
+.wa-dd-item{
+  padding:11px 16px; cursor:pointer; font-size:13px; border-bottom:1px solid var(--wa-line);
+  display:flex; align-items:center; gap:10px;
+}
+.wa-dd-item:last-child{ border-bottom:none; }
+.wa-dd-item:hover{ background:rgba(37,99,184,0.07); }
+.wa-dd-name{ font-weight:600; color:var(--wa-navy); }
+.wa-dd-country{ color:var(--wa-muted); font-size:12px; }
+
+/* ── Main layout ──────────────────────────────────────── */
+main{ padding:30px 0 52px; }
+.wa-section-card{
+  background:#fff; border:1px solid var(--wa-line);
+  border-radius:14px; padding:24px 22px; margin-bottom:26px;
+}
+[data-theme="dark"] .wa-section-card{ background:#161b22; }
+.wa-section-head{
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:20px; margin-bottom:18px; flex-wrap:wrap;
+}
+.wa-section-head h2{ font-size:clamp(20px,2.5vw,26px); font-weight:800; margin:0 0 4px; }
+.wa-section-head p{ margin:0; color:var(--wa-muted); font-size:14px; }
+.wa-text-link{ color:var(--wa-blue); font-weight:700; font-size:14px; white-space:nowrap; }
+.wa-text-link:hover{ text-decoration:underline; }
+
+/* ── City cards grid ──────────────────────────────────── */
+.wa-city-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.wa-city-card{
+  border:1px solid var(--wa-line); border-radius:10px; padding:17px 18px;
+  min-height:160px; background:#fff; display:block;
+  transition:border-color .18s, box-shadow .18s, transform .18s;
+  text-decoration:none; color:inherit;
+}
+[data-theme="dark"] .wa-city-card{ background:#1a2132; }
+.wa-city-card:hover{
+  border-color:#83a9d8; box-shadow:0 5px 16px rgba(31,71,123,0.1);
+  transform:translateY(-2px); text-decoration:none;
+}
+.wa-city-top{ display:flex; align-items:center; gap:12px; }
+.wa-flag{ font-size:36px; line-height:1; flex-shrink:0; }
+.wa-city-name{ font-size:18px; font-weight:800; }
+.wa-country{ color:var(--wa-muted); font-size:13px; margin-top:2px; }
+.wa-local-time{ font-size:13px; color:#607087; margin:14px 0 8px; }
+[data-theme="dark"] .wa-local-time{ color:rgba(255,255,255,0.45); }
+.wa-weather-row{ display:flex; align-items:flex-end; justify-content:space-between; gap:10px; }
+.wa-temp{ font-size:30px; font-weight:800; line-height:1; color:var(--wa-navy); }
+[data-theme="dark"] .wa-temp{ color:#e6edf3; }
+.wa-condition{ font-size:13px; color:#657287; margin-top:6px; }
+[data-theme="dark"] .wa-condition{ color:rgba(255,255,255,0.5); }
+.wa-icon{ font-size:40px; line-height:1; }
+.wa-card-loading{ opacity:.45; font-size:13px; margin-top:20px; }
+
+/* View More */
+.wa-more-grid{ display:none; margin-top:14px; padding-top:14px; border-top:1px solid var(--wa-line); }
+.wa-more-grid.show{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.wa-viewmore-wrap{ text-align:center; margin-top:18px; }
+.wa-viewmore-btn{
+  border:1px solid #9bb9dd; background:#fff; color:var(--wa-blue);
+  font-weight:700; border-radius:8px; padding:11px 25px; cursor:pointer; font-size:14px;
+}
+[data-theme="dark"] .wa-viewmore-btn{ background:#1a2132; border-color:rgba(88,166,255,0.3); }
+.wa-viewmore-btn:hover{ background:#f0f6fd; }
+[data-theme="dark"] .wa-viewmore-btn:hover{ background:rgba(88,166,255,0.08); }
+
+/* ── Rankings ─────────────────────────────────────────── */
+.wa-ranking-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:26px; }
+.wa-ranking{
+  background:#fff; border:1px solid var(--wa-line);
+  border-radius:13px; padding:22px;
+}
+[data-theme="dark"] .wa-ranking{ background:#161b22; }
+.wa-ranking h2{ font-size:21px; font-weight:800; margin:0 0 4px; }
+.wa-ranking p{ margin:0 0 14px; color:var(--wa-muted); font-size:13px; }
+.wa-rank-row{
+  display:grid; grid-template-columns:28px 1fr 1fr 30px 50px;
+  gap:6px; align-items:center; padding:8px 2px;
+  border-top:1px solid #edf0f4; font-size:13px;
+}
+[data-theme="dark"] .wa-rank-row{ border-top-color:rgba(255,255,255,0.06); }
+.wa-rank-num{ color:var(--wa-muted); font-size:12px; }
+.wa-rank-city{ font-weight:600; color:var(--wa-navy); }
+[data-theme="dark"] .wa-rank-city{ color:#e6edf3; }
+.wa-rank-city:hover{ color:var(--wa-blue); }
+.wa-rank-country{ color:var(--wa-muted); font-size:12px; }
+.wa-rank-icon{ text-align:center; font-size:17px; }
+.wa-rank-temp{ text-align:right; font-weight:700; font-size:14px; }
+.wa-rank-foot{ text-align:right; margin-top:14px; }
+.wa-rank-foot a{ font-size:13px; font-weight:700; color:var(--wa-blue); }
+
+/* ── Info section ─────────────────────────────────────── */
+.wa-info{
+  background:#fff; border:1px solid var(--wa-line);
+  border-radius:13px; padding:26px;
+}
+[data-theme="dark"] .wa-info{ background:#161b22; }
+.wa-info h2{ margin:0 0 10px; font-size:clamp(18px,2.5vw,24px); font-weight:800; }
+.wa-info p{ margin:8px 0; color:#59677a; font-size:14px; line-height:1.75; }
+[data-theme="dark"] .wa-info p{ color:rgba(255,255,255,0.55); }
+
+/* ── Footer ───────────────────────────────────────────── */
+.wa-footer{
+  background:#fff; border-top:1px solid var(--wa-line);
+  padding:28px 0; color:var(--wa-muted); font-size:14px;
+}
+[data-theme="dark"] .wa-footer{ background:#0d1117; border-color:rgba(255,255,255,0.08); }
+.wa-foot{ display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+.wa-foot-logo{ font-size:19px; font-weight:800; color:var(--wa-navy); }
+[data-theme="dark"] .wa-foot-logo{ color:#e6edf3; }
+.wa-foot-logo span{ color:var(--wa-blue); }
+.wa-foot-tagline{ font-size:12px; margin-top:3px; opacity:.6; }
+.wa-footlinks{ display:flex; gap:22px; flex-wrap:wrap; }
+.wa-footlinks a{ color:inherit; }
+.wa-footlinks a:hover{ color:var(--wa-blue); }
+.wa-foot-copy{ font-size:13px; opacity:.6; }
+
+/* ── Responsive ───────────────────────────────────────── */
+@media(max-width:850px){
+  .wa-city-grid,.wa-more-grid.show{ grid-template-columns:repeat(2,1fr); }
+  .wa-ranking-grid{ grid-template-columns:1fr; }
+  .wa-rank-country{ display:none; }
+}
+@media(max-width:560px){
+  .wa-wrap{ padding:0 16px; }
+  .wa-hero{ padding-bottom:26px; }
+  .wa-search{ flex-direction:column; padding:8px; }
+  .wa-search button{ padding:14px; border-radius:8px; }
+  .wa-city-grid,.wa-more-grid.show{ grid-template-columns:1fr; }
+  .wa-section-head{ flex-direction:column; gap:7px; }
+  .wa-foot{ flex-direction:column; align-items:flex-start; }
+  .wa-footlinks{ flex-wrap:wrap; }
+}
 </style>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 </head>
 <body>
 
+<!-- ── NAV ── -->
 <nav class="topnav" aria-label="Main navigation">
   <div class="topnav-inner">
-    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <a class="logo" href="/">
+      <svg width="28" height="28" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <defs><linearGradient id="walg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient><clipPath id="walc"><circle cx="32" cy="32" r="26"/></clipPath></defs>
+        <circle cx="32" cy="32" r="26" fill="url(#walg)"/>
+        <g clip-path="url(#walc)" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"><ellipse cx="32" cy="32" rx="10" ry="26"/><line x1="6" y1="32" x2="58" y2="32"/></g>
+        <path d="M32 6 A26 26 0 0 1 32 58 A17 26 0 0 0 32 6" fill="rgba(0,8,32,0.38)"/>
+        <circle cx="32" cy="32" r="30" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
+        <path d="M32 2 A30 30 0 0 1 62 32" fill="none" stroke="#f59e0b" stroke-width="3.8" stroke-linecap="round"/>
+        <line x1="32" y1="32" x2="32" y2="17" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="32" y1="32" x2="43" y2="39" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="32" cy="32" r="2.4" fill="white"/>
+      </svg>
+      <span class="logo-name">Timezone<em>Budy</em></span>
+    </a>
     <div class="nav-tabs" role="tablist">
-      <a class="nav-tab active" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
       <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
       <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
-      <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab active" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
       <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
       <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
       <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+      <a class="nav-tab" href="/world-time-map"><i class="ti ti-map"></i> <span>World Map</span></a>
     </div>
-    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--</span></div>
     <div class="nav-btns">
       <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
       <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
@@ -81,249 +242,470 @@
   </div>
 </nav>
 
-<!-- My Cities -->
-<section class="my-section" aria-label="My Cities">
-  <div class="wrap">
-    <div class="my-head">
-      <h2 class="my-title"><i class="ti ti-map-pin" aria-hidden="true"></i> My Cities</h2>
-      <div class="search-wrap">
-        <div class="search-pill" onclick="document.getElementById('srch').focus()">
-          <i class="ti ti-search search-ico" aria-hidden="true"></i>
-          <input type="search" id="srch" placeholder="Add a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search for a city">
-        </div>
-        <div id="srch-dd" class="search-dd" hidden></div>
-      </div>
+<!-- ── HERO ── -->
+<section class="wa-hero">
+  <div class="wa-wrap">
+    <div class="wa-breadcrumb">
+      <a href="/">Home</a> › <a href="/weather">Weather</a> › All Weather Locations
     </div>
-    <div id="my-strip" role="list" aria-label="Pinned cities"></div>
+    <h1>Weather in Cities Around the World</h1>
+    <p>Find current weather, temperature and local time for cities worldwide.</p>
+    <div class="wa-search" id="wa-search-form">
+      <div class="wa-search-wrap">
+        <input type="search" id="wa-srch" placeholder="🔍  Search for a city, country or location..." autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search city">
+        <div id="wa-dd" class="wa-dd" style="display:none"></div>
+      </div>
+      <button onclick="waDoSearch()">Search</button>
+    </div>
   </div>
 </section>
 
-<!-- Section bar -->
-<div class="sec-bar" role="banner">
-  <h1 class="sec-bar-title">Current Local Times Around the World</h1>
-  <div class="bar-ctrls">
-    <div class="bar-grp">
-      <label class="bar-lbl" for="cities-filter">Region:</label>
-      <select id="cities-filter" class="bar-sel" onchange="filterRegion(this.value)">
-        <option value="all">All Cities</option>
-        <option value="asia">Asia</option>
-        <option value="europe">Europe</option>
-        <option value="americas">Americas</option>
-        <option value="africa">Africa</option>
-        <option value="oceania">Oceania</option>
-      </select>
-    </div>
-    <div class="bar-grp">
-      <label class="bar-lbl" for="sort-sel">Sort:</label>
-      <select id="sort-sel" class="bar-sel" onchange="setSort(this.value)">
-        <option value="city">By City</option>
-        <option value="country">By Country</option>
-        <option value="time">By Time</option>
-      </select>
-    </div>
-  </div>
-</div>
+<main>
+<div class="wa-wrap">
 
-<!-- View tabs -->
-<div class="view-tabs" role="tablist" aria-label="Clock view">
-  <button class="view-tab" data-v="table"   onclick="setView('table')"  role="tab"><i class="ti ti-list" aria-hidden="true"></i> <span>Table</span></button>
-  <button class="view-tab" data-v="compact" onclick="setView('compact')" role="tab"><i class="ti ti-layout-grid" aria-hidden="true"></i> <span>Compact</span></button>
-  <button class="view-tab" data-v="analog"  onclick="setView('analog')"  role="tab"><i class="ti ti-clock" aria-hidden="true"></i> <span>Analog</span></button>
-</div>
-
-<main class="wrap" style="padding-top:20px;padding-bottom:48px">
-
-  <!-- TABLE -->
-  <div id="v-table">
-    <div class="tbl-wrap">
-      <table class="city-tbl" aria-label="World clock times">
-        <thead><tr>
-          <th onclick="setSort('city')">City</th>
-          <th class="col-country" onclick="setSort('country')">Country</th>
-          <th onclick="setSort('time')">Local Time</th>
-          <th class="col-date">Date</th>
-          <th class="col-offset">UTC</th>
-          <th style="width:40px;text-align:center">Add</th>
-        </tr></thead>
-        <tbody id="tbl-body"></tbody>
-      </table>
-    </div>
-    <p class="footnote">* Daylight Saving Time active</p>
-  </div>
-
-  <!-- COMPACT -->
-  <div id="v-compact" style="display:none">
-    <div class="compact-grid" id="cg" aria-label="Compact world clock"></div>
-    <p class="footnote">* Daylight Saving Time active</p>
-  </div>
-
-  <!-- ANALOG -->
-  <div id="v-analog" style="display:none">
-    <div class="al-grid" id="ag"></div>
-    <p class="footnote" style="margin-top:12px">Analog view shows your pinned cities. Use the search above to add cities.</p>
-  </div>
-
-  <!-- SEO content -->
-  <section class="seo-sec" aria-label="About World Clock">
-    <h2>World Clock — Track the Current Time in Every City</h2>
-    <p>A world clock is an essential tool for anyone living, working, or communicating across international time zones. TimezoneBudy's free world clock displays the current local time for 130+ cities and countries simultaneously, updating every second so you always have accurate, live information at a glance.</p>
-
-    <p>Whether you're a remote worker coordinating a team spread across New York, London, and Singapore, a traveller planning an international itinerary, or a business scheduling a call with partners in Tokyo and Dubai, knowing the current time by city is critical. Getting it wrong can mean missed meetings, delayed decisions, and unnecessary confusion.</p>
-
-    <h3>How Does a World Clock Work?</h3>
-    <p>Every location on Earth is assigned a time zone — an offset measured in hours (and sometimes half-hours) from <strong>Coordinated Universal Time (UTC)</strong>, the world's universal time standard. TimezoneBudy calculates each city's local time by applying its UTC offset to your device's real-time clock. Times automatically adjust for <strong>Daylight Saving Time (DST)</strong> wherever it applies, so you never have to manually account for seasonal clock changes.</p>
-
-    <p>The global time zone system divides the Earth into 24 primary zones, each roughly 15 degrees of longitude wide. In practice, political and geographic decisions mean real boundaries are far more varied — some countries like India (UTC+5:30) and Nepal (UTC+5:45) use non-standard half-hour offsets, while China spans five geographic time zones but uses a single national time.</p>
-
-    <h3>UTC vs GMT — What's the Difference?</h3>
-    <p><strong>GMT (Greenwich Mean Time)</strong> is the mean solar time at the Royal Observatory in Greenwich, England. <strong>UTC</strong> replaced it in 1972 as the world's primary time reference, using precise atomic clocks instead of astronomical observation. The two are numerically equivalent for everyday use — both sit at UTC/GMT+0 — but UTC is the modern scientific standard that your phone, computer, and every server on the internet synchronise to.</p>
-
-    <h3>Why TimezoneBudy?</h3>
-    <p>Unlike basic world clock apps, TimezoneBudy combines a live world clock with a full suite of international time tools in one place. Pin your most-used cities for instant comparison, switch between Table and Compact views to match your workflow, and jump seamlessly to the <a href="/converter.html">Time Zone Converter</a> to schedule meetings, the <a href="/time-difference-calculator">Time Difference Calculator</a> to find the gap between any two cities, <a href="/sunmoon.html">Sun &amp; Moon times</a> for your location, or the <a href="/world-time-map">World Time Map</a> to visualise day and night across the globe in real time. All tools are free, require no sign-up, and work on any device.</p>
-
-    <div class="seo-grid">
-      <article class="seo-card">
-        <h3>Pin Your Cities</h3>
-        <p>Search and save your most-used cities to "My Cities." Your selections persist between visits — no account needed.</p>
-      </article>
-      <article class="seo-card">
-        <h3><a href="/converter.html">Time Zone Converter</a></h3>
-        <p>Convert time between any two cities, plan international meetings, and find the best overlap window for distributed teams.</p>
-      </article>
-      <article class="seo-card">
-        <h3><a href="/world-time-map">World Time Map</a></h3>
-        <p>See the live day/night boundary across the globe and click any city for its current local time and UTC offset.</p>
-      </article>
+  <!-- ── POPULAR WEATHER LOCATIONS ── -->
+  <section class="wa-section-card">
+    <div class="wa-section-head">
+      <div>
+        <h2>Popular Weather Locations</h2>
+        <p>Current weather and local time in some of the world's most popular cities.</p>
+      </div>
     </div>
 
-    <!-- FAQ -->
-    <section aria-label="Frequently Asked Questions" style="margin-top:36px" itemscope itemtype="https://schema.org/FAQPage">
-      <h2>Frequently Asked Questions</h2>
+    <!-- Primary 6 city grid -->
+    <div class="wa-city-grid" id="wa-popular-grid">
+      <!-- Rendered by JS -->
+    </div>
 
-      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
-        <h3 itemprop="name">What is a World Clock?</h3>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">A world clock is a tool that displays the current local time for multiple cities or countries simultaneously. Rather than converting manually, a world clock does the calculation automatically, accounting for each location's UTC offset and any active Daylight Saving Time adjustment. TimezoneBudy's world clock shows live times for 130+ cities updated every second.</p>
-        </div>
-      </div>
+    <!-- View More hidden grid -->
+    <div class="wa-more-grid wa-city-grid" id="wa-more-grid">
+      <!-- Rendered by JS -->
+    </div>
 
-      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
-        <h3 itemprop="name">How does a World Clock work?</h3>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">A world clock works by taking a single reference time — Coordinated Universal Time (UTC) — and adding or subtracting each city's fixed UTC offset to calculate its local time. For example, London in winter is UTC+0, New York is UTC−5, and Mumbai is UTC+5:30. The clock updates in real time using your device's system clock, which is itself synchronised to global UTC servers. Daylight Saving Time adjustments are applied automatically based on each timezone's rules.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
-        <h3 itemprop="name">What is the difference between UTC and GMT?</h3>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">GMT (Greenwich Mean Time) is a time zone based on the solar time at the Prime Meridian in Greenwich, England. UTC (Coordinated Universal Time) is a modern atomic-clock-based time standard that replaced GMT in 1972 as the world's official reference point. For practical everyday purposes the two are the same — both are at offset zero — but UTC is the precise scientific standard used by computers, servers, and international systems worldwide. TimezoneBudy uses UTC as its underlying reference for all time calculations.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
-        <h3 itemprop="name">Why do different countries have different time zones?</h3>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">Time zones exist because the Earth rotates 360 degrees every 24 hours, meaning the Sun's position — and therefore local noon — differs by roughly one hour for every 15 degrees of longitude. Without time zones, clocks in cities east and west of each other would show wildly different times for midday. The system of 24 primary time zones, each one hour apart, was standardised in the late 19th century to enable coordinated railway schedules, global communication, and international trade. Today, the exact boundaries are set by governments and often reflect political borders rather than strict geography.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
-        <h3 itemprop="name">How can I compare the time between two cities?</h3>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">The easiest way is to use TimezoneBudy's <a href="/time-difference-calculator">Time Difference Calculator</a>, which shows the exact number of hours between any two cities and highlights the business-hours overlap. You can also use the <a href="/converter.html">Time Zone Converter</a> to pick a specific time in one city and instantly see what it translates to in another — useful for scheduling international meetings or calls.</p>
-        </div>
-      </div>
-
-      <div class="faq-item" itemscope itemtype="https://schema.org/Question">
-        <h3 itemprop="name">How accurate is the TimezoneBudy World Clock?</h3>
-        <div itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
-          <p itemprop="text">TimezoneBudy's world clock is as accurate as your device's system clock, which modern operating systems keep synchronised to within milliseconds of UTC via NTP (Network Time Protocol) servers. Time zone and Daylight Saving Time rules are maintained using the IANA Time Zone Database — the same authoritative source used by Google, Apple, and every major operating system — ensuring DST transitions are applied correctly for every country.</p>
-        </div>
-      </div>
-    </section>
+    <div class="wa-viewmore-wrap">
+      <button class="wa-viewmore-btn" id="wa-viewmore-btn" onclick="waToggleMore()">View More Cities ↓</button>
+    </div>
   </section>
 
+  <!-- ── RANKINGS ── -->
+  <section class="wa-ranking-grid">
+    <div class="wa-ranking" id="wa-hot-ranking">
+      <h2><span>🔥</span> Hottest Cities</h2>
+      <p>Cities with the highest current temperatures worldwide.</p>
+      <div style="opacity:.4;font-size:13px">Loading live rankings…</div>
+    </div>
+    <div class="wa-ranking" id="wa-cold-ranking">
+      <h2><span>❄️</span> Coolest Cities</h2>
+      <p>Cities with the lowest current temperatures worldwide.</p>
+      <div style="opacity:.4;font-size:13px">Loading live rankings…</div>
+    </div>
+  </section>
+
+  <!-- ── INFO ── -->
+  <section class="wa-info" id="all-cities">
+    <h2>Weather Forecasts for Cities Worldwide</h2>
+    <p>Search for any city to check its current weather, local time, temperature and forecast. Powered by <a href="https://open-meteo.com" target="_blank" rel="noopener" style="color:var(--wa-blue)">Open-Meteo</a> — free, no API key required. Recently searched and popular locations appear in the Popular Weather Locations section for faster access.</p>
+  </section>
+
+</div>
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-
-      <div class="footer-col footer-brand">
-        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+<!-- ── FOOTER ── -->
+<footer class="wa-footer">
+  <div class="wa-wrap">
+    <div class="wa-foot">
+      <div>
+        <div class="wa-foot-logo">Timezone<span>Budy</span></div>
+        <div class="wa-foot-tagline">Time. Weather. Sun. Moon. Worldwide.</div>
       </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Tools</h4>
-        <a href="/">World Clock</a>
-        <a href="/converter.html">Timezone Converter</a>
-        <a href="/converter.html#meeting">Meeting Planner</a>
-        <a href="/sunmoon.html">Sun &amp; Moon</a>
-        <a href="/weather">Weather</a>
-        <a href="/tools.html">Time Tools</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Locations</h4>
-        <a href="/location/">Browse All Countries</a>
-        <a href="/location/india/">India</a>
-        <a href="/location/united-states/">United States</a>
-        <a href="/location/united-kingdom/">United Kingdom</a>
-        <a href="/location/china/">China</a>
-        <a href="/location/japan/">Japan</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Company</h4>
+      <div class="wa-footlinks">
         <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact Us</a>
-        <a href="/blog/">Blog</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Service</a>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
-      <div class="footer-bottom-links">
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
         <a href="/contact.html">Contact</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Use</a>
       </div>
+      <div class="wa-foot-copy">© <span id="wa-year"></span> TimezoneBudy</div>
     </div>
   </div>
 </footer>
 
-
-<div id="toast" role="status" aria-live="polite"></div>
-
-<script src="/cities.js"></script>
-<script src="/util.js?v=2"></script>
-<script src="/pwa-install.js" defer></script>
-<script src="/clock.js?v=2"></script>
+<script src="/cities.js?v=3"></script>
+<script src="/util.js?v=3"></script>
 <script>
-// Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
-document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
-  trigger.addEventListener('click', function(e) {
-    if (e.target.closest('.loc-mega-menu')) return; // clicking inside menu shouldn't toggle
-    trigger.classList.toggle('menu-open');
+// ── Config ────────────────────────────────────────────────────────────────
+var WX_UNIT = localStorage.getItem('wx_unit') || 'celsius';
+var WX_CACHE = {};
+
+var WX_ICONS = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'❄️',75:'❄️',77:'❄️',80:'🌦',81:'🌧',82:'⛈',95:'⛈',99:'⛈'};
+var WX_DESC  = {0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Light drizzle',53:'Drizzle',61:'Light rain',63:'Moderate rain',65:'Heavy rain',71:'Slight snow',73:'Moderate snow',75:'Heavy snow',80:'Showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm'};
+
+// City coords — name-keyed
+var CITY_COORDS = {
+  'New York':{lat:40.714,lon:-74.006,tz:'America/New_York',cc:'us',country:'United States'},
+  'London':{lat:51.507,lon:-0.128,tz:'Europe/London',cc:'gb',country:'United Kingdom'},
+  'Dubai':{lat:25.204,lon:55.270,tz:'Asia/Dubai',cc:'ae',country:'United Arab Emirates'},
+  'Mumbai':{lat:19.076,lon:72.877,tz:'Asia/Kolkata',cc:'in',country:'India'},
+  'Tokyo':{lat:35.689,lon:139.692,tz:'Asia/Tokyo',cc:'jp',country:'Japan'},
+  'Singapore':{lat:1.352,lon:103.820,tz:'Asia/Singapore',cc:'sg',country:'Singapore'},
+  'Los Angeles':{lat:34.052,lon:-118.244,tz:'America/Los_Angeles',cc:'us',country:'United States'},
+  'Toronto':{lat:43.651,lon:-79.383,tz:'America/Toronto',cc:'ca',country:'Canada'},
+  'Sydney':{lat:-33.869,lon:151.209,tz:'Australia/Sydney',cc:'au',country:'Australia'},
+  'Paris':{lat:48.857,lon:2.352,tz:'Europe/Paris',cc:'fr',country:'France'},
+  'Berlin':{lat:52.520,lon:13.405,tz:'Europe/Berlin',cc:'de',country:'Germany'},
+  'Bangkok':{lat:13.754,lon:100.502,tz:'Asia/Bangkok',cc:'th',country:'Thailand'},
+  // Rankings cities
+  'Kuwait City':{lat:29.375,lon:47.977,tz:'Asia/Kuwait',cc:'kw',country:'Kuwait'},
+  'Riyadh':{lat:24.686,lon:46.724,tz:'Asia/Riyadh',cc:'sa',country:'Saudi Arabia'},
+  'Muscat':{lat:23.614,lon:58.593,tz:'Asia/Muscat',cc:'om',country:'Oman'},
+  'Baghdad':{lat:33.341,lon:44.401,tz:'Asia/Baghdad',cc:'iq',country:'Iraq'},
+  'Doha':{lat:25.286,lon:51.533,tz:'Asia/Qatar',cc:'qa',country:'Qatar'},
+  'Karachi':{lat:24.861,lon:67.010,tz:'Asia/Karachi',cc:'pk',country:'Pakistan'},
+  'New Delhi':{lat:28.611,lon:77.209,tz:'Asia/Kolkata',cc:'in',country:'India'},
+  'Ulaanbaatar':{lat:47.921,lon:106.918,tz:'Asia/Ulaanbaatar',cc:'mn',country:'Mongolia'},
+  'Novosibirsk':{lat:54.990,lon:82.905,tz:'Asia/Novosibirsk',cc:'ru',country:'Russia'},
+  'Anchorage':{lat:61.218,lon:-149.900,tz:'America/Anchorage',cc:'us',country:'United States'},
+  'Edmonton':{lat:51.045,lon:-114.058,tz:'America/Edmonton',cc:'ca',country:'Canada'},
+  'Minneapolis':{lat:44.979,lon:-93.265,tz:'America/Chicago',cc:'us',country:'United States'},
+  'Reykjavik':{lat:64.135,lon:-21.895,tz:'Atlantic/Reykjavik',cc:'is',country:'Iceland'},
+};
+
+// Default popular cities (first 6 show, next 6 in "View More")
+var DEFAULT_PRIMARY = ['New York','London','Dubai','Mumbai','Tokyo','Singapore'];
+var DEFAULT_MORE    = ['Los Angeles','Toronto','Sydney','Paris','Berlin','Bangkok'];
+
+// ── URL builder: maps city name to existing location page ──────────────
+function cityUrl(name) {
+  var slug = name.toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\-]/g, '')
+    .replace(/-+/g, '-');
+  // Map to known location page slugs
+  var known = {
+    'new-york':'new-york','london':'london','dubai':'dubai',
+    'mumbai':'mumbai','tokyo':'tokyo','singapore':'singapore',
+    'los-angeles':'los-angeles','toronto':'toronto','sydney':'sydney',
+    'paris':'paris','berlin':'berlin','bangkok':'bangkok',
+    'new-delhi':'delhi','delhi':'delhi','riyadh':'riyadh',
+    'karachi':'karachi','doha':'doha','muscat':'muscat',
+    'bangkok':'bangkok','kuala-lumpur':'kuala-lumpur','jakarta':'jakarta',
+    'seoul':'seoul','osaka':'osaka','beijing':'beijing','shanghai':'shanghai',
+    'moscow':'moscow','istanbul':'istanbul','cairo':'cairo',
+    'lagos':'lagos','nairobi':'nairobi','johannesburg':'johannesburg',
+    'cape-town':'cape-town','casablanca':'casablanca',
+    'buenos-aires':'buenos-aires','sao-paulo':'sao-paulo',
+    'bogota':'bogota','lima':'lima','santiago':'santiago',
+    'mexico-city':'mexico-city','chicago':'chicago','houston':'houston',
+    'miami':'miami','seattle':'seattle','boston':'boston','denver':'denver',
+    'vancouver':'vancouver','montreal':'montreal','rome':'rome',
+    'madrid':'madrid','amsterdam':'amsterdam','athens':'athens',
+    'vienna':'vienna','stockholm':'stockholm','oslo':'oslo',
+    'copenhagen':'copenhagen','helsinki':'helsinki','zurich':'zurich',
+    'prague':'prague','warsaw':'warsaw','budapest':'budapest',
+    'lisbon':'lisbon','dublin':'dublin','kyiv':'kyiv',
+    'dubai':'dubai','abu-dhabi':'abu-dhabi',
+    'kolkata':'kolkata','bengaluru':'bengaluru','chennai':'chennai',
+    'hyderabad':'hyderabad','pune':'pune','ahmedabad':'ahmedabad',
+  };
+  var mapped = known[slug] || slug;
+  // Find matching country from CITIES array for correct path
+  if (typeof CITIES !== 'undefined') {
+    var match = CITIES.find(function(c){ return c.name.toLowerCase() === name.toLowerCase(); });
+    if (match) {
+      var cc = match.cc;
+      var countrySlug = match.country.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');
+      return '/location/' + countrySlug + '/' + mapped + '/';
+    }
+  }
+  return '/location/' + mapped + '/';
+}
+
+// ── Local time formatter ───────────────────────────────────────────────
+function localTime(tz) {
+  var now = new Date();
+  return now.toLocaleDateString('en-US',{timeZone:tz,weekday:'short',month:'short',day:'numeric'})
+    + ' • ' + now.toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:true});
+}
+
+// ── Fetch weather for a city ───────────────────────────────────────────
+function fetchWx(coords, cb) {
+  var key = coords.lat+','+coords.lon+'_'+WX_UNIT;
+  if (WX_CACHE[key]) { cb(null, WX_CACHE[key]); return; }
+  fetch('https://api.open-meteo.com/v1/forecast'
+    + '?latitude='+coords.lat+'&longitude='+coords.lon
+    + '&current=temperature_2m,weather_code'
+    + '&temperature_unit='+WX_UNIT+'&timezone=auto&forecast_days=1')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d && d.current) { WX_CACHE[key] = d.current; cb(null, d.current); }
+      else cb(new Error('No data'), null);
+    })
+    .catch(function(e){ cb(e, null); });
+}
+
+// ── Build a city card HTML ─────────────────────────────────────────────
+function buildCard(name, coords, wxData) {
+  var U    = WX_UNIT === 'celsius' ? '°C' : '°F';
+  var temp = wxData ? Math.round(wxData.temperature_2m) + U : '—';
+  var code = wxData ? (wxData.weather_code || 0) : 0;
+  var icon = wxData ? (WX_ICONS[code] || '🌡') : '⏳';
+  var desc = wxData ? (WX_DESC[code] || '') : 'Loading…';
+  var time = coords.tz ? localTime(coords.tz) : '';
+  var url  = cityUrl(name);
+  var ccCode = coords.cc || 'un';
+
+  return '<a class="wa-city-card" href="'+url+'">'
+    + '<div class="wa-city-top">'
+    +   '<span class="wa-flag fi fi-'+ccCode+'"></span>'
+    +   '<div><div class="wa-city-name">'+name+'</div>'
+    +   '<div class="wa-country">'+(coords.country||'')+'</div></div>'
+    + '</div>'
+    + '<div class="wa-local-time">◷ '+time+'</div>'
+    + '<div class="wa-weather-row">'
+    +   '<div><div class="wa-temp">'+temp+'</div><div class="wa-condition">'+desc+'</div></div>'
+    +   '<div class="wa-icon">'+icon+'</div>'
+    + '</div>'
+    + '</a>';
+}
+
+// ── Render popular grid ────────────────────────────────────────────────
+function renderPopular(primary, more) {
+  var pGrid = document.getElementById('wa-popular-grid');
+  var mGrid = document.getElementById('wa-more-grid');
+  if (!pGrid) return;
+
+  // Skeleton
+  pGrid.innerHTML = primary.map(function(n){
+    return '<a class="wa-city-card wa-card-skeleton" id="wac-'+n.replace(/\s/g,'_')+'">'
+      + '<div class="wa-city-top"><span class="wa-flag">🌍</span>'
+      + '<div><div class="wa-city-name">'+n+'</div></div></div>'
+      + '<div class="wa-card-loading">Loading…</div></a>';
+  }).join('');
+
+  if (mGrid) {
+    mGrid.innerHTML = more.map(function(n){
+      return '<a class="wa-city-card" id="wac-'+n.replace(/\s/g,'_')+'">'
+        + '<div class="wa-city-top"><span class="wa-flag">🌍</span>'
+        + '<div><div class="wa-city-name">'+n+'</div></div></div>'
+        + '<div class="wa-card-loading">Loading…</div></a>';
+    }).join('');
+  }
+
+  // Fetch and update each card
+  primary.concat(more).forEach(function(name) {
+    var coords = CITY_COORDS[name];
+    if (!coords) return;
+    var el = document.getElementById('wac-'+name.replace(/\s/g,'_'));
+    if (!el) return;
+    fetchWx(coords, function(err, wx) {
+      if (el) el.outerHTML = buildCard(name, coords, err ? null : wx);
+    });
   });
+}
+
+// ── View More toggle ───────────────────────────────────────────────────
+var moreOpen = false;
+function waToggleMore() {
+  var grid = document.getElementById('wa-more-grid');
+  var btn  = document.getElementById('wa-viewmore-btn');
+  moreOpen = !moreOpen;
+  grid.classList.toggle('show', moreOpen);
+  btn.textContent = moreOpen ? 'Show Less Cities ↑' : 'View More Cities ↓';
+}
+
+// ── Search ─────────────────────────────────────────────────────────────
+function waDoSearch() {
+  var q = document.getElementById('wa-srch').value.trim();
+  if (!q) return;
+  // Find matching city from CITIES array
+  if (typeof CITIES !== 'undefined') {
+    var match = CITIES.find(function(c){ return c.name.toLowerCase() === q.toLowerCase() && c.pop > 0; });
+    if (!match) match = CITIES.find(function(c){ return c.name.toLowerCase().includes(q.toLowerCase()) && c.pop > 0; });
+    if (match) {
+      waAddSearchedCity(match);
+      document.getElementById('wa-srch').value = '';
+      document.getElementById('wa-dd').style.display = 'none';
+      return;
+    }
+  }
+  // Fallback: redirect to location search
+  window.location.href = '/location/?q=' + encodeURIComponent(q);
+}
+
+function waAddSearchedCity(city) {
+  // Build coords from CITY_COORDS or construct from city data
+  var coords = CITY_COORDS[city.name] || {
+    lat: 0, lon: 0, tz: city.tz, cc: city.cc,
+    country: city.country
+  };
+  // Try to get precise coords from weather js coord tables
+  if (!coords.lat) {
+    // Use timezone-based fallback
+    coords.tz = city.tz; coords.cc = city.cc; coords.country = city.country;
+  }
+
+  var pGrid = document.getElementById('wa-popular-grid');
+  if (!pGrid) return;
+
+  // Build placeholder card
+  var placeholder = document.createElement('a');
+  placeholder.className = 'wa-city-card';
+  placeholder.href = cityUrl(city.name);
+  placeholder.innerHTML = '<div class="wa-city-top">'
+    + '<span class="wa-flag fi fi-'+city.cc+'"></span>'
+    + '<div><div class="wa-city-name">'+city.name+'</div>'
+    + '<div class="wa-country">'+city.country+'</div></div></div>'
+    + '<div class="wa-local-time">◷ '+(coords.tz ? localTime(coords.tz) : 'Loading…')+'</div>'
+    + '<div class="wa-weather-row">'
+    + '<div><div class="wa-temp">—</div><div class="wa-condition">Loading weather…</div></div>'
+    + '<div class="wa-icon">⏳</div></div>';
+
+  pGrid.prepend(placeholder);
+
+  // Fetch real weather
+  if (coords.lat) {
+    fetchWx(coords, function(err, wx) {
+      placeholder.outerHTML = buildCard(city.name, coords, err ? null : wx);
+    });
+  }
+
+  // Save to localStorage
+  var recent = JSON.parse(localStorage.getItem('wa_recent') || '[]');
+  recent = recent.filter(function(r){ return r !== city.name; });
+  recent.unshift(city.name);
+  localStorage.setItem('wa_recent', JSON.stringify(recent.slice(0,10)));
+
+  toast(city.name + ' added');
+}
+
+// ── Search dropdown ────────────────────────────────────────────────────
+var waInput = document.getElementById('wa-srch');
+var waDd    = document.getElementById('wa-dd');
+
+waInput.addEventListener('input', function() {
+  var q = this.value.trim().toLowerCase();
+  if (q.length < 2) { waDd.style.display = 'none'; return; }
+  if (typeof CITIES === 'undefined') { waDd.style.display = 'none'; return; }
+  var hits = CITIES.filter(function(c){ return c.pop > 0 && c.name.toLowerCase().includes(q); }).slice(0,7);
+  if (!hits.length) { waDd.style.display = 'none'; return; }
+  waDd.innerHTML = hits.map(function(c){
+    return '<div class="wa-dd-item" data-name="'+c.name+'" data-cc="'+c.cc+'" data-country="'+c.country+'">'
+      + '<span class="fi fi-'+c.cc+'" style="font-size:18px"></span>'
+      + '<div><div class="wa-dd-name">'+c.name+'</div>'
+      + '<div class="wa-dd-country">'+c.country+'</div></div></div>';
+  }).join('');
+  waDd.style.display = 'block';
+  waDd.querySelectorAll('.wa-dd-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var name = this.dataset.name;
+      var city = CITIES.find(function(c){ return c.name === name; });
+      if (city) { waAddSearchedCity(city); waInput.value = ''; waDd.style.display = 'none'; }
+    });
+  });
+});
+
+waInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') waDoSearch();
+  if (e.key === 'Escape') { waDd.style.display = 'none'; waInput.blur(); }
 });
 document.addEventListener('click', function(e) {
-  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
-    if (!t.contains(e.target)) t.classList.remove('menu-open');
-  });
+  if (!e.target.closest('#wa-search-form')) waDd.style.display = 'none';
 });
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+
+// ── Rankings (fetch live top hot/cold from CITIES with Open-Meteo) ─────
+var RANKING_CITIES = [
+  {name:'Kuwait City',cc:'kw',country:'Kuwait',lat:29.375,lon:47.977},
+  {name:'Riyadh',cc:'sa',country:'Saudi Arabia',lat:24.686,lon:46.724},
+  {name:'Dubai',cc:'ae',country:'UAE',lat:25.204,lon:55.270},
+  {name:'Muscat',cc:'om',country:'Oman',lat:23.614,lon:58.593},
+  {name:'Baghdad',cc:'iq',country:'Iraq',lat:33.341,lon:44.401},
+  {name:'Doha',cc:'qa',country:'Qatar',lat:25.286,lon:51.533},
+  {name:'Karachi',cc:'pk',country:'Pakistan',lat:24.861,lon:67.010},
+  {name:'Mumbai',cc:'in',country:'India',lat:19.076,lon:72.877},
+  {name:'New Delhi',cc:'in',country:'India',lat:28.611,lon:77.209},
+  {name:'Bangkok',cc:'th',country:'Thailand',lat:13.754,lon:100.502},
+  {name:'Singapore',cc:'sg',country:'Singapore',lat:1.352,lon:103.820},
+  {name:'Tokyo',cc:'jp',country:'Japan',lat:35.689,lon:139.692},
+  {name:'London',cc:'gb',country:'UK',lat:51.507,lon:-0.128},
+  {name:'Moscow',cc:'ru',country:'Russia',lat:55.752,lon:37.616},
+  {name:'Anchorage',cc:'us',country:'USA',lat:61.218,lon:-149.900},
+  {name:'Reykjavik',cc:'is',country:'Iceland',lat:64.135,lon:-21.895},
+  {name:'Oslo',cc:'no',country:'Norway',lat:59.913,lon:10.752},
+  {name:'Stockholm',cc:'se',country:'Sweden',lat:59.332,lon:18.065},
+  {name:'Helsinki',cc:'fi',country:'Finland',lat:60.169,lon:24.935},
+  {name:'Ulaanbaatar',cc:'mn',country:'Mongolia',lat:47.921,lon:106.918},
+];
+
+function buildRankings(results) {
+  var U = WX_UNIT === 'celsius' ? '°C' : '°F';
+  var sorted = results.slice().sort(function(a,b){ return b.temp - a.temp; });
+  var hot  = sorted.slice(0,10);
+  var cold = sorted.slice().sort(function(a,b){ return a.temp - b.temp; }).slice(0,10);
+
+  function rankRows(list, ico) {
+    return list.map(function(r,i){
+      var url = cityUrl(r.name);
+      return '<div class="wa-rank-row">'
+        + '<span class="wa-rank-num">'+(i+1)+'</span>'
+        + '<a class="wa-rank-city" href="'+url+'">'+r.name+'</a>'
+        + '<span class="wa-rank-country">'+r.country+'</span>'
+        + '<span class="wa-rank-icon">'+ico+'</span>'
+        + '<span class="wa-rank-temp">'+r.temp+U+'</span>'
+        + '</div>';
+    }).join('');
+  }
+
+  document.getElementById('wa-hot-ranking').innerHTML =
+    '<h2><span>🔥</span> Hottest Cities</h2>'
+    + '<p>Cities with the highest current temperatures worldwide.</p>'
+    + rankRows(hot, '☀️');
+
+  document.getElementById('wa-cold-ranking').innerHTML =
+    '<h2><span>❄️</span> Coolest Cities</h2>'
+    + '<p>Cities with the lowest current temperatures worldwide.</p>'
+    + rankRows(cold, '❄️');
+}
+
+function loadRankings() {
+  var U = WX_UNIT === 'celsius' ? '°C' : '°F';
+  var results = []; var done = 0;
+  RANKING_CITIES.forEach(function(city) {
+    fetchWx({lat:city.lat, lon:city.lon}, function(err, wx) {
+      if (!err && wx) results.push({name:city.name, country:city.country, cc:city.cc, temp:Math.round(wx.temperature_2m)});
+      done++;
+      if (done === RANKING_CITIES.length) buildRankings(results);
+    });
+  });
+}
+
+// ── Nav UTC clock ──────────────────────────────────────────────────────
+setInterval(function(){
+  var el = document.getElementById('utc-val');
+  if (el) el.textContent = new Date().toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+}, 1000);
+
+// ── Footer year ────────────────────────────────────────────────────────
+document.getElementById('wa-year').textContent = new Date().getFullYear();
+
+// ── Boot ───────────────────────────────────────────────────────────────
+// Load recently searched cities from localStorage first
+var recent = JSON.parse(localStorage.getItem('wa_recent') || '[]');
+var primary = DEFAULT_PRIMARY.slice();
+var more    = DEFAULT_MORE.slice();
+// Prepend recent searches that aren't already in primary
+recent.forEach(function(name) {
+  if (primary.indexOf(name) === -1 && more.indexOf(name) === -1) {
+    primary.unshift(name);
+    if (primary.length > 6) { more.unshift(primary.pop()); }
+    if (!CITY_COORDS[name] && typeof CITIES !== 'undefined') {
+      var c = CITIES.find(function(x){ return x.name === name && x.pop > 0; });
+      if (c) CITY_COORDS[name] = {lat:0, lon:0, tz:c.tz, cc:c.cc, country:c.country};
+    }
   }
 });
+
+renderPopular(primary, more);
+loadRankings();
 </script>
-<!-- nav_inject_v2 -->
 <script src="/nav.js?v=3"></script>
 </body>
 </html>
