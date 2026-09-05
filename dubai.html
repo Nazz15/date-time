@@ -127,14 +127,14 @@ header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0
 .tbl .diff{text-align:right;font-weight:600;color:var(--brand);white-space:nowrap}
 
 /* ---------- NEARBY ---------- */
-.nearby{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-.ncard{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
-.ncard .img{height:74px;background-size:cover;background-position:center;
+.nearby{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ncard{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;display:flex}
+.ncard .img{width:52px;flex:none;background-size:cover;background-position:center;
   background-image:linear-gradient(135deg,#93c5fd,#c7d2fe)}
-.ncard .body{padding:10px}
-.ncard .nm{font-weight:700;font-size:14px}
-.ncard .tm{font-size:13px;color:#334155}
-.ncard .wx{font-size:13px;display:flex;align-items:center;gap:4px;margin-top:2px}
+.ncard .body{padding:9px 10px;min-width:0}
+.ncard .nm{font-weight:700;font-size:13.5px;line-height:1.2}
+.ncard .tm{font-size:12.5px;color:#334155;margin-top:2px}
+.ncard .wx{font-size:12.5px;display:flex;align-items:center;gap:4px;margin-top:2px}
 
 /* ---------- HOLIDAYS + CHIPS ---------- */
 .hol{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
@@ -167,7 +167,7 @@ footer{background:#0b1220;color:#cbd5e1;margin-top:30px}
 /* ---------- RESPONSIVE ---------- */
 @media(max-width:900px){
   .info-grid{grid-template-columns:repeat(3,1fr)}
-  .nearby{grid-template-columns:repeat(3,1fr)}
+  .nearby{grid-template-columns:repeat(2,1fr)}
   .trio{grid-template-columns:1fr}
   .two{grid-template-columns:1fr}
 }
@@ -186,7 +186,9 @@ footer{background:#0b1220;color:#cbd5e1;margin-top:30px}
   .clock .sec{font-size:20px}
   .info-grid{grid-template-columns:repeat(2,1fr)}
   .quad{grid-template-columns:repeat(2,1fr)}
-  .nearby{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:60%;overflow-x:auto;padding-bottom:6px}
+  .nearby{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity;margin-right:-4px;padding-right:8px}
+  .ncard{scroll-snap-align:start}
+  .ncard .img{width:70px}
   .hours,.days7{gap:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;margin-right:-4px;padding-right:8px}
   .hour{min-width:60px;scroll-snap-align:start}
   .d7{min-width:72px;scroll-snap-align:start}
