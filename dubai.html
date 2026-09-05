@@ -63,7 +63,8 @@ header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0
 .btn-primary{background:#fff;color:var(--brand)}
 .btn-ghost{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.4)}
 .hero-weather{background:rgba(255,255,255,.16);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.25);
-  border-radius:12px;padding:14px 18px;text-align:right;align-self:flex-start;min-width:180px}
+  border-radius:12px;padding:14px 18px;text-align:right;align-self:flex-start;min-width:180px;max-width:100%}
+.hero-weather .muted{white-space:nowrap}
 .hw-temp{font-size:34px;font-weight:800;line-height:1}
 .hw-row{display:flex;align-items:center;justify-content:flex-end;gap:8px}
 .hw-ico{font-size:30px}
@@ -177,16 +178,20 @@ footer{background:#0b1220;color:#cbd5e1;margin-top:30px}
   .msearch{margin-left:auto}
   .hero{min-height:auto}
   .hero-in{flex-direction:column;padding:18px}
-  .hero-weather{text-align:left;align-self:stretch;order:-1;display:flex;justify-content:space-between;align-items:center}
+  .hero-weather{text-align:left;align-self:stretch;order:-1;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px 10px}
   .hw-row{justify-content:flex-start}
+  .hw-temp{font-size:28px}
   .city{font-size:24px}
   .clock{font-size:38px}
   .clock .sec{font-size:20px}
   .info-grid{grid-template-columns:repeat(2,1fr)}
   .quad{grid-template-columns:repeat(2,1fr)}
   .nearby{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:60%;overflow-x:auto;padding-bottom:6px}
-  .days7{gap:8px}
-  .d7{min-width:78px}
+  .hours,.days7{gap:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;margin-right:-4px;padding-right:8px}
+  .hour{min-width:60px;scroll-snap-align:start}
+  .d7{min-width:72px;scroll-snap-align:start}
+  /* fade hint so users see there's more to scroll */
+  .card-pad{position:relative}
 }
 </style>
 </head>
