@@ -41,28 +41,74 @@ def haversine(a, b):
     d = math.sin((la2-la1)/2)**2 + math.cos(la1)*math.cos(la2)*math.sin((lo2-lo1)/2)**2
     return 6371 * 2 * math.asin(math.sqrt(d))
 
+def fmt_time(t):
+    """Windows-safe 'H:MM AM/PM' (no %-I, which crashes on Windows)."""
+    if t is None:
+        return "—"
+    s = t.strftime("%I:%M %p")
+    return s[1:] if s[0] == "0" else s   # drop leading zero: 06:24 -> 6:24
+
 MOON_NAMES = [
     (1.84,"New Moon"),(5.53,"Waxing Crescent"),(9.22,"First Quarter"),
     (12.91,"Waxing Gibbous"),(16.61,"Full Moon"),(20.30,"Waning Gibbous"),
     (23.99,"Last Quarter"),(27.68,"Waning Crescent"),(28,"New Moon")]
+
 def moon_info(d):
-    p = moon.phase(d)                       # 0..27.99
+    p = moon.phase(d)                       # 0..27.99 (~days since new moon)
     name = next(n for lim,n in MOON_NAMES if p <= lim)
-    illum = round((1 - abs(1 - p/14.0)) * 100)   # rough %
-    return name, max(0, min(100, illum))
+    illum = round((1 - abs(1 - p/14.0)) * 100)
+    return name, max(0, min(100, illum)), round(p, 1)
+
+def next_moon_events(d):
+    """Scan forward to find the next Full Moon and next New Moon dates."""
+    from datetime import timedelta
+    full = new = None
+    prev = moon.phase(d)
+    for i in range(1, 45):
+        day = d + timedelta(days=i)
+        cur = moon.phase(day)
+        # full moon ~ phase 14 (crossing upward through 14)
+        if full is None and prev < 14 <= cur:
+            full = day
+        # new moon ~ phase wraps 27.99 -> 0 (cur < prev)
+        if new is None and cur < prev:
+            new = day
+        prev = cur
+        if full and new:
+            break
+    f = lambda x: x.strftime("%b ") + str(x.day) + x.strftime(", %Y") if x else "—"
+    return f(full), f(new)
 
 def sun_info(lat, lng, tz):
+    """Returns sunrise, solar noon, sunset, day length — all Windows-safe."""
     try:
         z = ZoneInfo(tz)
-        s = sun(LocationInfo("", "", tz, lat, lng).observer,
-                date=datetime.now(z).date(), tzinfo=z)
+        obs = LocationInfo("", "", tz, lat, lng).observer
+        s = sun(obs, date=datetime.now(z).date(), tzinfo=z)
         rise, noon, set_ = s["sunrise"], s["noon"], s["sunset"]
         length = set_ - rise
         h, m = divmod(int(length.total_seconds()//60), 60)
-        f = lambda t: t.strftime("%-I:%M %p")
-        return f(rise), f(noon), f(set_), f"{h}h {m:02d}m"
+        return fmt_time(rise), fmt_time(noon), fmt_time(set_), f"{h}h {m:02d}m"
     except Exception:
         return "—", "—", "—", "—"
+
+def moon_times(lat, lng, tz):
+    """Moonrise / moonset for today, Windows-safe. Returns (rise, set)."""
+    try:
+        z = ZoneInfo(tz)
+        obs = LocationInfo("", "", tz, lat, lng).observer
+        today = datetime.now(z).date()
+        try:
+            mr = moon.moonrise(obs, today, tzinfo=z)
+        except Exception:
+            mr = None
+        try:
+            ms = moon.moonset(obs, today, tzinfo=z)
+        except Exception:
+            ms = None
+        return fmt_time(mr), fmt_time(ms)
+    except Exception:
+        return "—", "—"
 
 # ---------------------------------------------------------------- load data
 with open(os.path.join(DATA, "countries.csv"), encoding="utf-8") as f:
@@ -203,7 +249,9 @@ def build_city(city, country):
     canonical = f"https://timezonebudy.com/location/{cslug}/{slug}/"
 
     rise, noon, set_, length = sun_info(lat, lng, tz)
-    mname, illum = moon_info(datetime.now(ZoneInfo(tz)).date())
+    mname, illum, mage = moon_info(datetime.now(ZoneInfo(tz)).date())
+    mrise, mset = moon_times(lat, lng, tz)
+    next_full, next_new = next_moon_events(datetime.now(ZoneInfo(tz)).date())
 
     # nearby cities by distance (same-country first, then any)
     others = [c for c in CITIES if c["slug"] != slug]
@@ -315,8 +363,11 @@ def build_city(city, country):
       <h2 class="tzb-stitle"><span class="i">🌙</span>Moon in {esc(name)}</h2>
       <div class="moon-big"></div>
       <div style="text-align:center;font-weight:700;margin-bottom:8px">{esc(mname)} · {illum}%</div>
-      <div class="kv"><span class="k">Illumination</span><span class="v">{illum}%</span></div>
-      <div class="kv"><span class="k">Phase</span><span class="v">{esc(mname)}</span></div>
+      <div class="kv"><span class="k">Moonrise</span><span class="v">{esc(mrise)}</span></div>
+      <div class="kv"><span class="k">Moonset</span><span class="v">{esc(mset)}</span></div>
+      <div class="kv"><span class="k">Moon Age</span><span class="v">{mage} days</span></div>
+      <div class="kv"><span class="k">Next Full Moon</span><span class="v">{esc(next_full)}</span></div>
+      <div class="kv"><span class="k">Next New Moon</span><span class="v">{esc(next_new)}</span></div>
     </div>
     <div class="tzb-card card-pad">
       <h2 class="tzb-stitle"><span class="i">🕐</span>Time Zone Information</h2>
