@@ -510,10 +510,80 @@ def build_country(country):
 def offset_str_from_utc(s):
     return s or "UTC+00:00"
 
+# ---------------------------------------------------------------- hub page (/location/)
+def build_hub(limit=12):
+    """Country grid at /location/ — flag, name, top-5 cities with live time,
+    'View all cities' link. 'View More' reveals the rest (no pagination)."""
+    ordered = sorted(COUNTRIES.values(), key=lambda c: c["country"])
+    total_cities = len(CITIES)
+
+    def country_card(country):
+        cslug = g(country, "slug")
+        cc = g(country, "cca2", "un")
+        cities = sorted(CITIES_BY_COUNTRY.get(cslug, []),
+                        key=lambda c: -int(c.get("population") or 0))[:5]
+        rows = "".join(
+            f'<a class="hub-city" href="/location/{cslug}/{c["slug"]}/">'
+            f'<span class="nm">{esc(c["city"])}</span>'
+            f'<span class="tm" data-tz="{esc(c["timezone"])}">--:--</span></a>'
+            for c in cities)
+        return (
+            f'<div class="hub-card">'
+            f'<a class="hub-card-head" href="/location/{cslug}/">'
+            f'{flag(cc,26,18)}<span class="hc-name">{esc(g(country,"country"))}</span>'
+            f'<span class="hc-arrow">›</span></a>'
+            f'<div class="hub-cities">{rows}</div>'
+            f'<a class="hub-viewall" href="/location/{cslug}/">'
+            f'View all cities in {esc(g(country,"country"))} →</a>'
+            f'</div>')
+
+    first = "".join(country_card(c) for c in ordered[:limit])
+    rest  = "".join(country_card(c) for c in ordered[limit:])
+    more_btn = (f'<div class="hub-more-wrap"><button class="hub-more" onclick="'
+                f"var r=document.getElementById('hub-rest');r.hidden=false;this.parentNode.remove()"
+                f'">Load More Countries ▾</button></div>') if rest else ""
+
+    body = f"""
+<main class="wrap tzb-loc tzb-hub">
+  <section class="tzb-section">
+    <nav class="tzb-crumb tzb-crumb-dark"><a href="/">Home</a> › <span>Locations</span></nav>
+    <h1 class="hub-h1">World Time Zones – Countries &amp; Cities</h1>
+    <p class="hub-lead">Browse countries and major cities around the world. Find the current local time for each location.</p>
+    <div class="hub-metrics">
+      <span>🌐 <b>{len(COUNTRIES)}</b> Countries</span>
+      <span>🏙️ <b>{total_cities}</b> Cities</span>
+      <span>🕐 Live Local Time</span>
+    </div>
+  </section>
+
+  <section class="tzb-section">
+    <h2 class="tzb-stitle" style="font-size:20px">Browse Locations</h2>
+    <div class="hub-grid">{first}</div>
+    <div class="hub-grid" id="hub-rest" hidden>{rest}</div>
+    {more_btn}
+  </section>
+
+  <section class="tzb-section">
+    <div class="tzb-card card-pad seo-sec">
+      <h2 class="tzb-stitle"><span class="i">ℹ️</span>About Our World Locations Directory</h2>
+      <p>Explore time zones, countries and major cities around the world. Use our locations directory to find the current local time for any city, learn about different time zones, and plan your calls, meetings or travel with ease.</p>
+    </div>
+  </section>
+</main>
+"""
+    page = head("World Time Zones – Countries & Cities | TimezoneBudy",
+                f"Browse {len(COUNTRIES)} countries and {total_cities} major cities with live local time.",
+                "https://timezonebudy.com/location/") + body + FOOTER
+    path = os.path.join(OUT, "location", "index.html")
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(page)
+
 # ---------------------------------------------------------------- run
 def main():
     if os.path.exists(OUT):
         shutil.rmtree(OUT)
+    build_hub()
     n_country = n_city = 0
     for slug, country in COUNTRIES.items():
         build_country(country); n_country += 1
