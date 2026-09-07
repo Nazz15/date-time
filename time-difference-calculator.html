@@ -1,346 +1,436 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-(function() {
-  var saved = localStorage.getItem('wc_theme');
-  var isDark = saved === 'dark' ||
-    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-})();
-</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="description" content="Free time difference calculator. Instantly compare the time difference between any two cities worldwide, with live local times and ahead/behind indicators.">
-<meta name="keywords" content="time difference calculator,time zone difference,time gap between cities,UTC offset calculator">
-<title>Time Difference Calculator – Compare Time Between Cities | TimezoneBudy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Difference Calculator - Compare Time Zones | TimezoneBudy</title>
+<meta name="description" content="Calculate the exact time difference between any two cities, countries or time zones. Live, DST-aware results with local times, UTC offsets and popular comparisons.">
 <link rel="canonical" href="https://timezonebudy.com/time-difference-calculator">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css?v=2">
-<link rel="stylesheet" href="/location.css?v=2">
-<link rel="stylesheet" href="/footer.css?v=2">
-<link rel="stylesheet" href="/converter.css">
-<link rel="stylesheet" href="/time-difference.css">
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0d2240">
-<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css?v=2">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
 
-<!-- JSON-LD: FAQPage — must mirror visible FAQ section text exactly -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I calculate the time difference between two cities?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Select your source city and destination city above, and the calculator instantly shows the current local time in both locations along with the exact difference in hours and minutes, including whether the destination is ahead or behind."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Does the calculator account for Daylight Saving Time?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Every comparison uses each city's current UTC offset, which automatically reflects Daylight Saving Time where it applies. The displayed difference is always accurate for today's date."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Why does the destination show as a different day?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "When the time difference crosses midnight, the destination city may be on the following or previous calendar day even though only a few hours separate the two locations. The calculator labels this clearly as Today, Tomorrow, or Yesterday."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Can I compare a country instead of a specific city?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes. Selecting a country uses its capital or largest city as a representative time. Countries spanning multiple time zones, like the United States or Russia, will show this directly in the result."
-      }
-    }
-  ]
+<!-- Shared site assets (cache-busted). Keep in sync with your other pages. -->
+<link rel="stylesheet" href="main.css?v=3">
+<link rel="stylesheet" href="footer.css?v=3">
+
+<style>
+/* ===== Time Difference page (.tzb- prefixed) ===== */
+:root{
+  --tzb-blue:#3b6fe0; --tzb-blue-d:#2f5bc4; --tzb-ink:#1e2a44; --tzb-mut:#64748b;
+  --tzb-line:#e6ebf3; --tzb-card:#fff; --tzb-bg:#f4f7fc; --tzb-sky1:#dbe8fb; --tzb-sky2:#eef4fd;
+  --tzb-radius:16px; --tzb-shadow:0 6px 24px rgba(30,42,68,.07);
 }
-</script>
+.tzb-td *{box-sizing:border-box}
+.tzb-td{background:var(--tzb-bg);color:var(--tzb-ink);font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+.tzb-wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+.tzb-td h1,.tzb-td h2,.tzb-td h3{margin:0}
+
+/* Hero */
+.tzb-hero{position:relative;overflow:hidden;padding:52px 0 40px;text-align:center;
+  background:linear-gradient(180deg,var(--tzb-sky1),var(--tzb-sky2));
+  background-image:linear-gradient(180deg,rgba(219,232,251,.9),rgba(238,244,253,.95)),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='400'><g fill='%23bcd3f5' opacity='.5'><circle cx='120' cy='120' r='2'/><circle cx='300' cy='90' r='2'/><circle cx='520' cy='160' r='2'/><circle cx='760' cy='110' r='2'/><circle cx='980' cy='170' r='2'/></g></svg>");}
+.tzb-hero-inner{position:relative;display:flex;align-items:center;justify-content:center;gap:18px}
+.tzb-hero h1{font-size:clamp(28px,4vw,46px);font-weight:800;letter-spacing:-.5px}
+.tzb-hero p{margin:10px auto 0;max-width:640px;color:var(--tzb-mut);font-size:16px}
+.tzb-cel{font-size:30px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08))}
+.tzb-arc{position:absolute;top:34px;left:0;right:0;height:60px;pointer-events:none;opacity:.7}
+
+/* Calculator */
+.tzb-calc{background:var(--tzb-card);border:1px solid var(--tzb-line);border-radius:var(--tzb-radius);
+  box-shadow:var(--tzb-shadow);padding:26px;margin:-30px auto 0;max-width:1000px;position:relative;z-index:2}
+.tzb-fields{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:end}
+.tzb-field label{display:block;font-weight:600;font-size:14px;margin-bottom:8px}
+.tzb-search{position:relative}
+.tzb-search input{width:100%;padding:13px 40px 13px 40px;border:1px solid var(--tzb-line);border-radius:12px;
+  font-size:15px;background:#fbfcfe;outline:none;transition:.15s}
+.tzb-search input:focus{border-color:var(--tzb-blue);box-shadow:0 0 0 3px rgba(59,111,224,.12);background:#fff}
+.tzb-search .ic{position:absolute;top:50%;transform:translateY(-50%);color:#9aa7bd}
+.tzb-search .ic.l{left:13px}.tzb-search .ic.r{right:13px}
+.tzb-drop{position:absolute;z-index:20;top:100%;left:0;right:0;margin-top:6px;background:#fff;
+  border:1px solid var(--tzb-line);border-radius:12px;box-shadow:0 12px 30px rgba(30,42,68,.14);
+  max-height:260px;overflow:auto;display:none}
+.tzb-drop.open{display:block}
+.tzb-opt{padding:10px 14px;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:14px}
+.tzb-opt:hover,.tzb-opt.hl{background:#f1f5fd}
+.tzb-opt small{color:var(--tzb-mut);margin-left:auto}
+.tzb-swap{display:flex;align-items:center;justify-content:center;height:48px}
+.tzb-swap button{width:46px;height:46px;border-radius:50%;border:1px solid var(--tzb-line);background:#f4f8ff;
+  color:var(--tzb-blue);cursor:pointer;display:grid;place-items:center;transition:.15s}
+.tzb-swap button:hover{background:#e7f0ff;transform:rotate(180deg)}
+.tzb-calc-btn{margin:22px auto 0;display:block;background:var(--tzb-blue);color:#fff;border:none;
+  padding:14px 60px;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:.15s;
+  box-shadow:0 6px 16px rgba(59,111,224,.28)}
+.tzb-calc-btn:hover{background:var(--tzb-blue-d)}
+.tzb-hint{text-align:center;color:var(--tzb-mut);font-size:13px;margin-top:14px}
+
+/* Result */
+.tzb-result{background:var(--tzb-card);border:1px solid var(--tzb-line);border-radius:var(--tzb-radius);
+  box-shadow:var(--tzb-shadow);padding:26px;margin:22px auto 0;max-width:1000px}
+.tzb-res-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center}
+.tzb-loc{display:flex;gap:16px;align-items:center}
+.tzb-loc.right{flex-direction:row-reverse;text-align:right}
+.tzb-avatar{width:78px;height:78px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:linear-gradient(135deg,#cfe0fb,#a9c7f5);box-shadow:inset 0 0 0 3px #fff,0 4px 10px rgba(30,42,68,.12);overflow:hidden}
+.tzb-avatar .fi{font-size:34px;border-radius:4px}
+.tzb-loc h3{font-size:15px;display:flex;align-items:center;gap:8px}
+.tzb-loc.right h3{flex-direction:row-reverse}
+.tzb-loc .sub{color:var(--tzb-mut);font-size:13px;margin-top:2px}
+.tzb-loc .time{font-size:30px;font-weight:800;margin-top:6px;letter-spacing:-.5px}
+.tzb-loc .date{color:var(--tzb-mut);font-size:13px;margin-top:4px}
+.tzb-loc .utc{color:#8a97ad;font-size:12px;margin-top:2px}
+.tzb-diff{text-align:center;border-left:1px solid var(--tzb-line);border-right:1px solid var(--tzb-line);
+  padding:0 22px;min-width:190px}
+.tzb-diff .big{font-size:30px;font-weight:800;color:var(--tzb-blue);line-height:1.1}
+.tzb-diff .dir{display:inline-flex;gap:5px;align-items:center;color:var(--tzb-blue);font-weight:600;margin-top:4px}
+.tzb-diff .exp{color:var(--tzb-mut);font-size:12.5px;margin-top:10px}
+
+/* Comparison tables */
+.tzb-cols{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin:22px auto 0;max-width:1000px}
+.tzb-panel{background:var(--tzb-card);border:1px solid var(--tzb-line);border-radius:var(--tzb-radius);
+  box-shadow:var(--tzb-shadow);padding:22px}
+.tzb-panel h2{font-size:18px;margin-bottom:6px}
+.tzb-rowlist{margin-top:8px}
+.tzb-row{display:grid;grid-template-columns:1fr auto 1fr auto;gap:10px;align-items:center;
+  padding:11px 4px;border-top:1px solid var(--tzb-line);font-size:14px}
+.tzb-row:first-child{border-top:none}
+.tzb-city{display:flex;gap:8px;align-items:center;min-width:0}
+.tzb-city .fi{font-size:16px;flex:none}
+.tzb-city span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tzb-row .ar{color:#9aa7bd}
+.tzb-row .val{font-weight:600;color:var(--tzb-ink);text-align:right;white-space:nowrap}
+
+/* Features */
+.tzb-feats{background:#eef4fd;border:1px solid var(--tzb-line);border-radius:var(--tzb-radius);
+  display:grid;grid-template-columns:repeat(3,1fr);margin:22px auto 0;max-width:1000px}
+.tzb-feat{display:flex;gap:14px;padding:22px;align-items:flex-start}
+.tzb-feat+.tzb-feat{border-left:1px solid #dbe6f7}
+.tzb-feat .fic{width:42px;height:42px;flex:none;border-radius:12px;display:grid;place-items:center;
+  background:#fff;color:var(--tzb-blue);box-shadow:0 3px 8px rgba(30,42,68,.08)}
+.tzb-feat h3{font-size:15px}.tzb-feat p{color:var(--tzb-mut);font-size:13px;margin-top:4px}
+
+/* About */
+.tzb-about{background:var(--tzb-card);border:1px solid var(--tzb-line);border-radius:var(--tzb-radius);
+  box-shadow:var(--tzb-shadow);padding:26px;margin:22px auto 0;max-width:1000px;
+  display:grid;grid-template-columns:1.4fr 1fr;gap:26px;align-items:center}
+.tzb-about h2{font-size:20px;margin-bottom:12px}
+.tzb-about p{color:var(--tzb-mut);font-size:14.5px;line-height:1.7}
+.tzb-about a{color:var(--tzb-blue);font-weight:600;text-decoration:none;display:inline-block;margin-top:10px}
+.tzb-map svg{width:100%;height:auto;opacity:.85}
+
+/* FAQ */
+.tzb-faq{background:var(--tzb-card);border:1px solid var(--tzb-line);border-radius:var(--tzb-radius);
+  box-shadow:var(--tzb-shadow);padding:26px;margin:22px auto 40px;max-width:1000px}
+.tzb-faq h2{font-size:20px;margin-bottom:14px}
+.tzb-q{border:1px solid var(--tzb-line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.tzb-q>button{width:100%;text-align:left;background:#fff;border:none;padding:15px 18px;font-size:15px;
+  font-weight:600;color:var(--tzb-ink);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tzb-q>button .chev{transition:.2s;color:var(--tzb-mut)}
+.tzb-q.open>button .chev{transform:rotate(180deg)}
+.tzb-q .a{max-height:0;overflow:hidden;transition:max-height .25s ease}
+.tzb-q .a p{padding:0 18px 16px;color:var(--tzb-mut);font-size:14px;line-height:1.6;margin:0}
+
+/* Mobile */
+@media(max-width:820px){
+  .tzb-fields{grid-template-columns:1fr;gap:0}
+  .tzb-swap{margin:14px 0}
+  .tzb-calc-btn{width:100%;padding:14px}
+  .tzb-res-grid{grid-template-columns:1fr}
+  .tzb-loc,.tzb-loc.right{flex-direction:row;text-align:left}
+  .tzb-loc.right h3{flex-direction:row}
+  .tzb-diff{border:none;border-top:1px solid var(--tzb-line);border-bottom:1px solid var(--tzb-line);
+    padding:16px 0;background:#f5f9ff;border-radius:10px;margin:2px 0}
+  .tzb-cols{grid-template-columns:1fr}
+  .tzb-feats{grid-template-columns:1fr}
+  .tzb-feat+.tzb-feat{border-left:none;border-top:1px solid #dbe6f7}
+  .tzb-about{grid-template-columns:1fr}
+  .tzb-map{order:-1}
+  .tzb-hero h1{font-size:26px}
+}
+</style>
 </head>
+
 <body>
 
-<nav class="topnav" aria-label="Main navigation">
-  <div class="topnav-inner">
-    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-    <div class="nav-tabs" role="tablist">
-      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
-      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
-      <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
-      <a class="nav-tab active" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
-      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
-      <a class="nav-tab" href="/world-time-map"><i class="ti ti-map"></i> <span>World Map</span></a>
-    </div>
-    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
-    <div class="nav-btns">
-      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
-      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-    </div>
-  </div>
-</nav>
-
 <!-- ============================================================
-     HERO
-     ============================================================ -->
-<section class="loc-hero">
-  <div class="wrap">
-    <div class="loc-eyebrow">Free Tool</div>
-    <h1 class="loc-h1">Time Difference Calculator</h1>
-    <p class="loc-sub" style="max-width:640px;margin:8px auto 0">
-      Compare the time difference between any two cities worldwide. See live local
-      times, the exact gap in hours and minutes, and whether your destination is
-      ahead or behind — updated automatically for Daylight Saving Time.
-    </p>
+  NAV: replace this block with your canonical TimezoneBudy header
+  include if it differs. nav.js fixLogo() will normalise the logo.
+============================================================= -->
+<header class="site-header" id="tzb-nav">
+  <div class="nav-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 20px">
+    <a class="brand" href="/" style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:20px;text-decoration:none;color:#1e2a44">
+      <span>🌐</span> Timezone<span style="color:#3b6fe0">Budy</span>
+    </a>
+    <nav class="main-nav" style="display:flex;gap:22px;font-size:14px">
+      <a href="/world-clock">World Clock</a>
+      <a href="/time-converter">Time Converter</a>
+      <a href="/time-difference-calculator" class="active">Time Difference</a>
+      <a href="/sun-moon">Sun &amp; Moon</a>
+      <a href="/weather">Weather</a>
+      <a href="/locations">Locations</a>
+    </nav>
   </div>
-</section>
+</header>
 
-<main class="wrap loc-main">
+<main class="tzb-td">
 
-  <!-- ============================================================
-       CALCULATOR CARD
-       ============================================================ -->
-  <div class="conv-card tdc-card">
-    <div class="conv-hdr">
-      <h2><i class="ti ti-chart-bar" aria-hidden="true"></i> Compare Two Locations</h2>
-      <p>Search and select a source and destination city below.</p>
-    </div>
-    <div class="conv-body">
-
-      <div class="tdc-selectors">
-
-        <!-- SOURCE -->
-        <div class="tdc-selector-col">
-          <label class="tdc-label">Source City / Country</label>
-          <div class="search-wrap">
-            <div class="search-pill" onclick="document.getElementById('tdc-src-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
-              <i class="ti ti-search search-ico" aria-hidden="true"></i>
-              <input type="search" id="tdc-src-srch" placeholder="e.g. New York" autocomplete="off" autocorrect="off">
-            </div>
-            <div id="tdc-src-dd" class="search-dd" hidden></div>
-          </div>
-          <div id="tdc-src-selected" class="tdc-selected-chip" hidden></div>
+  <!-- 1. Hero -->
+  <section class="tzb-hero">
+    <div class="tzb-wrap">
+      <svg class="tzb-arc" viewBox="0 0 1000 60" preserveAspectRatio="none"><path d="M120,40 C400,-20 600,-20 880,40" fill="none" stroke="#8fb2ee" stroke-width="2" stroke-dasharray="4 6"/></svg>
+      <div class="tzb-hero-inner">
+        <span class="tzb-cel">☀️</span>
+        <div>
+          <h1>Time Difference Calculator</h1>
         </div>
-
-        <!-- SWAP -->
-        <button class="tdc-swap-btn" id="tdc-swap" onclick="TDC.swap()" aria-label="Swap source and destination" title="Swap source and destination">
-          <i class="ti ti-arrows-left-right" aria-hidden="true"></i>
-        </button>
-
-        <!-- DESTINATION -->
-        <div class="tdc-selector-col">
-          <label class="tdc-label">Destination City / Country</label>
-          <div class="search-wrap">
-            <div class="search-pill" onclick="document.getElementById('tdc-dst-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
-              <i class="ti ti-search search-ico" aria-hidden="true"></i>
-              <input type="search" id="tdc-dst-srch" placeholder="e.g. London" autocomplete="off" autocorrect="off">
-            </div>
-            <div id="tdc-dst-dd" class="search-dd" hidden></div>
-          </div>
-          <div id="tdc-dst-selected" class="tdc-selected-chip" hidden></div>
-        </div>
-
+        <span class="tzb-cel">🌙</span>
       </div>
-
-      <button class="tdc-calc-btn" id="tdc-calc" onclick="TDC.calculate()" disabled>
-        <i class="ti ti-calculator" aria-hidden="true"></i> Calculate Time Difference
-      </button>
-
-      <!-- RESULT CARD -->
-      <div id="tdc-result" class="tdc-result" hidden>
-
-        <div class="tdc-result-times">
-          <div class="tdc-result-loc">
-            <div class="tdc-result-loc-name" id="tdc-res-src-name">—</div>
-            <div class="tdc-result-loc-time" id="tdc-res-src-time">--:--</div>
-            <div class="tdc-result-loc-date" id="tdc-res-src-date">—</div>
-          </div>
-          <div class="tdc-result-arrow"><i class="ti ti-arrow-right" aria-hidden="true"></i></div>
-          <div class="tdc-result-loc">
-            <div class="tdc-result-loc-name" id="tdc-res-dst-name">—</div>
-            <div class="tdc-result-loc-time" id="tdc-res-dst-time">--:--</div>
-            <div class="tdc-result-loc-date" id="tdc-res-dst-date">—</div>
-          </div>
-        </div>
-
-        <div class="tdc-result-summary">
-          <div class="tdc-result-diff" id="tdc-res-diff">—</div>
-          <div class="tdc-result-day-badge" id="tdc-res-day-badge"></div>
-        </div>
-
-      </div>
-
+      <p>Compare the exact time difference between two cities, time zones or countries.</p>
     </div>
+  </section>
+
+  <div class="tzb-wrap">
+
+    <!-- 2. Calculator -->
+    <section class="tzb-calc">
+      <div class="tzb-fields">
+        <div class="tzb-field">
+          <label for="tzbFrom">From</label>
+          <div class="tzb-search" data-side="from">
+            <span class="ic l">🔍</span>
+            <input id="tzbFrom" type="text" autocomplete="off" placeholder="Search city, country or time zone">
+            <span class="ic r">📍</span>
+            <div class="tzb-drop"></div>
+          </div>
+        </div>
+        <div class="tzb-swap">
+          <button id="tzbSwap" title="Swap" aria-label="Swap locations">⇄</button>
+        </div>
+        <div class="tzb-field">
+          <label for="tzbTo">To</label>
+          <div class="tzb-search" data-side="to">
+            <span class="ic l">🔍</span>
+            <input id="tzbTo" type="text" autocomplete="off" placeholder="Search city, country or time zone">
+            <span class="ic r">📍</span>
+            <div class="tzb-drop"></div>
+          </div>
+        </div>
+      </div>
+      <button class="tzb-calc-btn" id="tzbCalc">Calculate Difference</button>
+      <p class="tzb-hint">Compare local times, time zone offsets and see which location is ahead or behind.</p>
+    </section>
+
+    <!-- 3. Result -->
+    <section class="tzb-result" id="tzbResult" style="display:none">
+      <div class="tzb-res-grid">
+        <div class="tzb-loc" id="tzbLocFrom"></div>
+        <div class="tzb-diff" id="tzbDiff"></div>
+        <div class="tzb-loc right" id="tzbLocTo"></div>
+      </div>
+    </section>
+
+    <!-- 4 & 5. Comparisons -->
+    <div class="tzb-cols">
+      <section class="tzb-panel">
+        <h2>Popular Comparisons</h2>
+        <div class="tzb-rowlist" id="tzbPopular"></div>
+      </section>
+      <section class="tzb-panel">
+        <h2>Country Comparisons</h2>
+        <div class="tzb-rowlist" id="tzbCountry"></div>
+      </section>
+    </div>
+
+    <!-- 6. Features -->
+    <section class="tzb-feats">
+      <div class="tzb-feat"><div class="fic">🕐</div><div><h3>Live &amp; Accurate</h3><p>Real-time local times for both locations.</p></div></div>
+      <div class="tzb-feat"><div class="fic">📅</div><div><h3>DST Aware</h3><p>Automatically accounts for Daylight Saving Time.</p></div></div>
+      <div class="tzb-feat"><div class="fic">⇄</div><div><h3>Easy to Use</h3><p>Quickly swap locations and compare time zones.</p></div></div>
+    </section>
+
+    <!-- 7. About -->
+    <section class="tzb-about">
+      <div>
+        <h2>What is a Time Difference Calculator?</h2>
+        <p>A time difference calculator helps you find the exact gap between two cities, countries or time zones. It shows the current local time, the UTC offset and which location is ahead or behind, taking Daylight Saving Time (DST) into account. It's useful for scheduling meetings, calls, travel plans and staying connected across different time zones.</p>
+        <a href="/locations">Learn more about time zones →</a>
+      </div>
+      <div class="tzb-map">
+        <svg viewBox="0 0 320 180" xmlns="http://www.w3.org/2000/svg">
+          <rect width="320" height="180" fill="#eef4fd"/>
+          <path d="M20,90 C90,40 230,40 300,90" fill="none" stroke="#8fb2ee" stroke-width="1.5" stroke-dasharray="3 5"/>
+          <circle cx="60" cy="80" r="6" fill="#3b6fe0"/><circle cx="60" cy="80" r="12" fill="#3b6fe0" opacity=".2"/>
+          <circle cx="250" cy="80" r="6" fill="#3b6fe0"/><circle cx="250" cy="80" r="12" fill="#3b6fe0" opacity=".2"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 8. FAQ -->
+    <section class="tzb-faq">
+      <h2>Frequently Asked Questions</h2>
+      <div class="tzb-q"><button>How do I calculate the time difference?<span class="chev">⌄</span></button><div class="a"><p>Type a city, country or time zone into the From and To fields, select each from the list, then press Calculate Difference. The result shows both local times and how many hours one location is ahead of or behind the other.</p></div></div>
+      <div class="tzb-q"><button>Does the calculator account for Daylight Saving Time?<span class="chev">⌄</span></button><div class="a"><p>Yes. Offsets are read live from each location's time zone, so any active Daylight Saving Time is applied automatically. The difference reflects the real gap at this moment.</p></div></div>
+      <div class="tzb-q"><button>Why is the destination on a different day?<span class="chev">⌄</span></button><div class="a"><p>When two locations are far apart, the local clock in one can roll past midnight while it's still the previous day in the other. The date shown under each time makes this clear.</p></div></div>
+      <div class="tzb-q"><button>Can I compare a country instead of a city?<span class="chev">⌄</span></button><div class="a"><p>Yes. You can search by country and we use a representative time zone for it. For countries that span several zones, pick a specific city for the most precise result.</p></div></div>
+    </section>
+
   </div>
-
-  <!-- ============================================================
-       POPULAR COMPARISONS (dynamically generated)
-       ============================================================ -->
-  <section class="seo-sec">
-    <h2 class="loc-h2">Popular Time Difference Comparisons</h2>
-    <div id="tdc-popular-grid" class="tdc-chip-grid"><!-- filled by JS --></div>
-  </section>
-
-  <!-- ============================================================
-       COUNTRY VS COUNTRY (dynamically generated)
-       ============================================================ -->
-  <section class="seo-sec">
-    <h2 class="loc-h2">Country vs Country Comparisons</h2>
-    <div id="tdc-country-grid" class="tdc-chip-grid"><!-- filled by JS --></div>
-  </section>
-
-  <!-- ============================================================
-       COUNTRY VS WORLD CITIES (dynamically generated)
-       ============================================================ -->
-  <section class="seo-sec">
-    <h2 class="loc-h2">Top Country vs World City Time Differences</h2>
-    <div id="tdc-world-tabs" class="tdc-world-tabs"><!-- filled by JS --></div>
-    <div id="tdc-world-table-wrap"><!-- filled by JS --></div>
-  </section>
-
-  <!-- ============================================================
-       SEO CONTENT
-       ============================================================ -->
-  <section class="seo-sec">
-    <h2>About the Time Difference Calculator</h2>
-    <p>
-      Use this free tool to instantly find the time difference between any two
-      cities or countries in the world. Just pick a source and a destination,
-      and see both current local times side by side, along with how many hours
-      and minutes apart they are. The calculator automatically accounts for
-      Daylight Saving Time, so the result is always accurate for today.
-    </p>
-    <div class="seo-grid">
-      <article class="seo-card"><h3>Live, DST-Aware</h3><p>Every comparison uses each location's current UTC offset, which already reflects Daylight Saving Time where applicable — no manual adjustment needed.</p></article>
-      <article class="seo-card"><h3>Day Difference Indicator</h3><p>When a time difference crosses midnight, the result clearly labels whether the destination is on Today, Tomorrow, or Yesterday relative to the source.</p></article>
-      <article class="seo-card"><h3>One-Click Swap</h3><p>Quickly flip your source and destination to see the comparison from the other direction without re-entering either city.</p></article>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       FAQ (visible HTML — MUST match JSON-LD above)
-       ============================================================ -->
-  <section class="seo-sec">
-    <h2 class="loc-h2">Frequently Asked Questions</h2>
-
-    <div class="tdc-faq-item">
-      <h3>How do I calculate the time difference between two cities?</h3>
-      <p>Select your source city and destination city above, and the calculator instantly shows the current local time in both locations along with the exact difference in hours and minutes, including whether the destination is ahead or behind.</p>
-    </div>
-
-    <div class="tdc-faq-item">
-      <h3>Does the calculator account for Daylight Saving Time?</h3>
-      <p>Yes. Every comparison uses each city's current UTC offset, which automatically reflects Daylight Saving Time where it applies. The displayed difference is always accurate for today's date.</p>
-    </div>
-
-    <div class="tdc-faq-item">
-      <h3>Why does the destination show as a different day?</h3>
-      <p>When the time difference crosses midnight, the destination city may be on the following or previous calendar day even though only a few hours separate the two locations. The calculator labels this clearly as Today, Tomorrow, or Yesterday.</p>
-    </div>
-
-    <div class="tdc-faq-item">
-      <h3>Can I compare a country instead of a specific city?</h3>
-      <p>Yes. Selecting a country uses its capital or largest city as a representative time. Countries spanning multiple time zones, like the United States or Russia, will show this directly in the result.</p>
-    </div>
-  </section>
-
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
+<!-- Shared site scripts -->
+<script src="util.js?v=3" defer></script>
+<script src="cities.js?v=3" defer></script>
+<script src="nav.js?v=3" defer></script>
 
-      <div class="footer-col footer-brand">
-        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Tools</h4>
-        <a href="/">World Clock</a>
-        <a href="/converter.html">Timezone Converter</a>
-        <a href="/converter.html#meeting">Meeting Planner</a>
-        <a href="/time-difference-calculator">Time Difference Calculator</a>
-        <a href="/sunmoon.html">Sun &amp; Moon</a>
-        <a href="/weather">Weather</a>
-        <a href="/tools.html">Time Tools</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Locations</h4>
-        <a href="/location/">Browse All Countries</a>
-        <a href="/location/india/">India</a>
-        <a href="/location/united-states/">United States</a>
-        <a href="/location/united-kingdom/">United Kingdom</a>
-        <a href="/location/china/">China</a>
-        <a href="/location/japan/">Japan</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Company</h4>
-        <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact Us</a>
-        <a href="/blog/">Blog</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Service</a>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <span>&copy; <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
-      <div class="footer-bottom-links">
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/contact.html">Contact</a>
-      </div>
-    </div>
-  </div>
-</footer>
-
-<script src="/cities.js"></script>
-<script src="/util.js?v=2"></script>
-<script src="/pwa-install.js" defer></script>
-<script src="/time-difference.js"></script>
-<script>boot();</script>
 <script>
-document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
-  trigger.addEventListener('click', function(e) {
-    if (e.target.closest('.loc-mega-menu')) return;
-    trigger.classList.toggle('menu-open');
-  });
-});
-document.addEventListener('click', function(e) {
-  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
-    if (!t.contains(e.target)) t.classList.remove('menu-open');
-  });
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
+(function(){
+  // Fallback dataset so the page works even if window.CITIES isn't loaded.
+  var FALLBACK=[
+    ["New York","United States","us","America/New_York"],["Los Angeles","United States","us","America/Los_Angeles"],
+    ["Chicago","United States","us","America/Chicago"],["Toronto","Canada","ca","America/Toronto"],
+    ["London","United Kingdom","gb","Europe/London"],["Paris","France","fr","Europe/Paris"],
+    ["Berlin","Germany","de","Europe/Berlin"],["Madrid","Spain","es","Europe/Madrid"],
+    ["Rome","Italy","it","Europe/Rome"],["Moscow","Russia","ru","Europe/Moscow"],
+    ["Mumbai","India","in","Asia/Kolkata"],["Delhi","India","in","Asia/Kolkata"],
+    ["Dubai","United Arab Emirates","ae","Asia/Dubai"],["Singapore","Singapore","sg","Asia/Singapore"],
+    ["Tokyo","Japan","jp","Asia/Tokyo"],["Hong Kong","Hong Kong","hk","Asia/Hong_Kong"],
+    ["Beijing","China","cn","Asia/Shanghai"],["Sydney","Australia","au","Australia/Sydney"],
+    ["Melbourne","Australia","au","Australia/Melbourne"],["Auckland","New Zealand","nz","Pacific/Auckland"],
+    ["São Paulo","Brazil","br","America/Sao_Paulo"],["Cairo","Egypt","eg","Africa/Cairo"],
+    ["Johannesburg","South Africa","za","Africa/Johannesburg"],["Istanbul","Turkey","tr","Europe/Istanbul"]
+  ].map(function(a){return{name:a[0],country:a[1],cc:a[2],tz:a[3]};});
+
+  function pool(){
+    if(window.CITIES && CITIES.length){
+      return CITIES.map(function(c){return{name:c.name,country:c.country,cc:(c.cc||'').toLowerCase(),tz:c.tz};});
+    }
+    return FALLBACK;
   }
-});
+
+  // ---- time helpers (DST-aware via Intl) ----
+  function offMin(tz,d){
+    try{
+      var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'longOffset'}).formatToParts(d);
+      var v=(p.find(function(x){return x.type==='timeZoneName';})||{}).value||'';
+      var m=v.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/);
+      if(!m)return 0;
+      return (m[1]==='-'?-1:1)*(parseInt(m[2],10)*60+parseInt(m[3]||'0',10));
+    }catch(e){return 0;}
+  }
+  function fTime(tz,d){return new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit',hour12:true}).format(d);}
+  function fDate(tz,d){return new Intl.DateTimeFormat('en-US',{timeZone:tz,weekday:'short',month:'short',day:'numeric',year:'numeric'}).format(d);}
+  function fUtc(min){var s=min<0?'−':'+',a=Math.abs(min);return 'UTC '+s+String(Math.floor(a/60)).padStart(2,'0')+':'+String(a%60).padStart(2,'0');}
+  function words(mins){var a=Math.abs(mins),h=Math.floor(a/60),m=a%60,p=[];if(h)p.push(h+' hour'+(h>1?'s':''));if(m)p.push(m+' min'+(m>1?'s':''));return p.length?p.join(' '):'0 hours';}
+  function shortWords(mins){var a=Math.abs(mins),h=Math.floor(a/60),m=a%60;return (h?h+' hour'+(h>1?'s':''):'')+(m?(h?' ':'')+m+' mins':'')||'0 hours';}
+
+  // ---- search dropdown ----
+  var state={from:null,to:null};
+  function setupSearch(box){
+    var side=box.dataset.side, input=box.querySelector('input'), drop=box.querySelector('.tzb-drop'), hi=-1, list=[];
+    function render(q){
+      var data=pool(),ql=q.toLowerCase().trim();
+      list=!ql?[]:data.filter(function(c){
+        return c.name.toLowerCase().indexOf(ql)>-1||c.country.toLowerCase().indexOf(ql)>-1||(c.tz||'').toLowerCase().indexOf(ql)>-1;
+      }).slice(0,8);
+      drop.innerHTML=list.map(function(c,i){
+        return '<div class="tzb-opt" data-i="'+i+'"><span class="fi fi-'+c.cc+'"></span><span>'+c.name+'</span><small>'+c.country+'</small></div>';
+      }).join('');
+      drop.classList.toggle('open',list.length>0);hi=-1;
+    }
+    function pick(c){state[side]=c;input.value=c.name+', '+c.country;drop.classList.remove('open');calc();}
+    input.addEventListener('input',function(){render(input.value);});
+    input.addEventListener('focus',function(){if(input.value)render(input.value);});
+    input.addEventListener('keydown',function(e){
+      if(!drop.classList.contains('open'))return;
+      if(e.key==='ArrowDown'){hi=Math.min(hi+1,list.length-1);}
+      else if(e.key==='ArrowUp'){hi=Math.max(hi-1,0);}
+      else if(e.key==='Enter'){if(list[hi])pick(list[hi]);e.preventDefault();return;}
+      else return;
+      [].forEach.call(drop.children,function(el,i){el.classList.toggle('hl',i===hi);});
+      e.preventDefault();
+    });
+    drop.addEventListener('mousedown',function(e){var o=e.target.closest('.tzb-opt');if(o)pick(list[+o.dataset.i]);});
+    document.addEventListener('click',function(e){if(!box.contains(e.target))drop.classList.remove('open');});
+  }
+  document.querySelectorAll('.tzb-search').forEach(setupSearch);
+
+  // ---- render result ----
+  function locHTML(c,now,side){
+    return '<div class="tzb-avatar"><span class="fi fi-'+c.cc+'"></span></div>'+
+      '<div><h3><span class="fi fi-'+c.cc+'"></span>'+c.name+'</h3>'+
+      '<div class="sub">'+c.name+', '+c.country+'</div>'+
+      '<div class="time">'+fTime(c.tz,now)+'</div>'+
+      '<div class="date">'+fDate(c.tz,now)+'</div>'+
+      '<div class="utc">'+fUtc(offMin(c.tz,now))+'</div></div>';
+  }
+  function calc(){
+    if(!state.from||!state.to)return;
+    var now=new Date();
+    document.getElementById('tzbLocFrom').innerHTML=locHTML(state.from,now,'from');
+    document.getElementById('tzbLocTo').innerHTML=locHTML(state.to,now,'to');
+    var d=offMin(state.to.tz,now)-offMin(state.from.tz,now);
+    var dir=d>0?'ahead':(d<0?'behind':'same time');
+    var exp=d===0?state.to.name+' is at the same time as '+state.from.name+'.'
+      :state.to.name+' is '+words(d)+' '+dir+' of '+state.from.name+'.';
+    document.getElementById('tzbDiff').innerHTML=
+      '<div class="big">'+words(d)+'</div>'+
+      (d===0?'':'<div class="dir">▲ '+dir+'</div>')+
+      '<div class="exp">'+exp+'</div>';
+    document.getElementById('tzbResult').style.display='block';
+  }
+  document.getElementById('tzbCalc').addEventListener('click',calc);
+  document.getElementById('tzbSwap').addEventListener('click',function(){
+    var f=state.from;state.from=state.to;state.to=f;
+    var fi=document.getElementById('tzbFrom'),ti=document.getElementById('tzbTo'),t=fi.value;fi.value=ti.value;ti.value=t;
+    calc();
+  });
+
+  // ---- comparison tables (computed live) ----
+  var C={
+    ny:{name:"New York",country:"USA",cc:"us",tz:"America/New_York"},
+    ld:{name:"London",country:"UK",cc:"gb",tz:"Europe/London"},
+    mb:{name:"Mumbai",country:"India",cc:"in",tz:"Asia/Kolkata"},
+    db:{name:"Dubai",country:"UAE",cc:"ae",tz:"Asia/Dubai"},
+    tk:{name:"Tokyo",country:"Japan",cc:"jp",tz:"Asia/Tokyo"},
+    sy:{name:"Sydney",country:"Australia",cc:"au",tz:"Australia/Sydney"},
+    in:{name:"India",cc:"in",tz:"Asia/Kolkata"},us:{name:"USA",cc:"us",tz:"America/New_York"},
+    uk:{name:"UK",cc:"gb",tz:"Europe/London"},ae:{name:"UAE",cc:"ae",tz:"Asia/Dubai"},
+    au:{name:"Australia",cc:"au",tz:"Australia/Sydney"}
+  };
+  function rowHTML(a,b,now){
+    var mins=offMin(b.tz,now)-offMin(a.tz,now);
+    return '<div class="tzb-row"><div class="tzb-city"><span class="fi fi-'+a.cc+'"></span><span>'+a.name+'</span></div>'+
+      '<span class="ar">↔</span><div class="tzb-city"><span class="fi fi-'+b.cc+'"></span><span>'+b.name+'</span></div>'+
+      '<span class="val">'+shortWords(mins)+'</span></div>';
+  }
+  function fillCompare(){
+    var now=new Date();
+    document.getElementById('tzbPopular').innerHTML=[
+      [C.ny,C.ld],[C.mb,C.ny],[C.db,C.ld],[C.tk,C.ny],[C.sy,C.ld]
+    ].map(function(p){return rowHTML(p[0],p[1],now);}).join('');
+    document.getElementById('tzbCountry').innerHTML=[
+      [C.in,C.us],[C.in,C.uk],[C.us,C.uk],[C.in,C.ae],[C.au,C.us]
+    ].map(function(p){return rowHTML(p[0],p[1],now);}).join('');
+  }
+
+  // ---- FAQ ----
+  document.querySelectorAll('.tzb-q>button').forEach(function(b){
+    b.addEventListener('click',function(){
+      var q=b.parentElement,a=q.querySelector('.a'),open=q.classList.toggle('open');
+      a.style.maxHeight=open?a.scrollHeight+'px':0;
+    });
+  });
+
+  // ---- init: default NY -> London, live tick ----
+  function boot(){
+    var p=pool();
+    function find(n){return p.find(function(c){return c.name===n;});}
+    state.from=find("New York")||C.ny; state.to=find("London")||C.ld;
+    document.getElementById('tzbFrom').value=state.from.name+', '+state.from.country;
+    document.getElementById('tzbTo').value=state.to.name+', '+state.to.country;
+    calc(); fillCompare();
+    setInterval(function(){calc();fillCompare();},60000);
+  }
+  if(window.CITIES){boot();}else{window.addEventListener('load',boot);}
+})();
 </script>
-<!-- nav_inject_v2 -->
-<script src="/nav.js?v=3"></script>
 </body>
 </html>
