@@ -128,22 +128,49 @@
 .tzb-q .a{max-height:0;overflow:hidden;transition:max-height .25s ease}
 .tzb-q .a p{padding:0 18px 16px;color:var(--tzb-mut);font-size:14px;line-height:1.6;margin:0}
 
-/* Mobile */
+/* Mobile — compact so calculator + result fit the first screen */
 @media(max-width:820px){
+  .tzb-wrap{padding:0 14px}
+  /* hero */
+  .tzb-hero{padding:22px 0 16px}
+  .tzb-hero h1{font-size:22px}
+  .tzb-hero p{font-size:13px;margin-top:6px}
+  .tzb-cel{font-size:22px}
+  .tzb-arc{top:22px;height:36px}
+  /* calculator */
+  .tzb-calc{padding:14px;margin-top:-14px}
   .tzb-fields{grid-template-columns:1fr;gap:0}
-  .tzb-swap{margin:14px 0}
-  .tzb-calc-btn{width:100%;padding:14px}
-  .tzb-res-grid{grid-template-columns:1fr}
-  .tzb-loc,.tzb-loc.right{flex-direction:row;text-align:left}
+  .tzb-field label{margin-bottom:5px;font-size:13px}
+  .tzb-search input{padding:11px 38px}
+  .tzb-swap{height:auto;margin:8px 0}
+  .tzb-swap button{width:38px;height:38px}
+  .tzb-calc-btn{width:100%;padding:12px;margin-top:14px;font-size:15px}
+  .tzb-hint{margin-top:10px;font-size:12px}
+  /* result — single compact card, difference front & centre */
+  .tzb-result{padding:14px;margin-top:14px}
+  .tzb-res-grid{grid-template-columns:1fr;gap:0}
+  .tzb-diff{order:2;border:none;border-radius:10px;background:#eef4fd;padding:12px 0;margin:10px 0}
+  .tzb-diff .big{font-size:26px}
+  .tzb-diff .exp{margin-top:4px}
+  .tzb-loc{order:1;flex-direction:row;text-align:left;gap:12px}
+  .tzb-loc.right{order:3;flex-direction:row;text-align:left}
   .tzb-loc.right h3{flex-direction:row}
-  .tzb-diff{border:none;border-top:1px solid var(--tzb-line);border-bottom:1px solid var(--tzb-line);
-    padding:16px 0;background:#f5f9ff;border-radius:10px;margin:2px 0}
-  .tzb-cols{grid-template-columns:1fr}
+  .tzb-avatar{width:48px;height:48px}
+  .tzb-avatar .fi{font-size:22px}
+  .tzb-loc .time{font-size:22px;margin-top:2px}
+  .tzb-loc h3{font-size:14px}
+  .tzb-loc .sub,.tzb-loc .date,.tzb-loc .utc{font-size:12px;margin-top:1px}
+  /* below-fold sections */
+  .tzb-cols,.tzb-feats,.tzb-about,.tzb-faq,.tzb-panel{margin-top:14px}
+  .tzb-cols{grid-template-columns:1fr;gap:14px}
+  .tzb-panel{padding:16px}
   .tzb-feats{grid-template-columns:1fr}
+  .tzb-feat{padding:16px}
   .tzb-feat+.tzb-feat{border-left:none;border-top:1px solid #dbe6f7}
-  .tzb-about{grid-template-columns:1fr}
+  .tzb-about{grid-template-columns:1fr;padding:18px}
   .tzb-map{order:-1}
-  .tzb-hero h1{font-size:26px}
+  .tzb-faq{padding:18px;margin-bottom:28px}
+  .tzb-row{grid-template-columns:1fr auto 1fr auto;font-size:13px;padding:9px 2px}
 }
 </style>
 </head>
@@ -282,28 +309,84 @@
 
 <script>
 (function(){
-  // Fallback dataset so the page works even if window.CITIES isn't loaded.
-  var FALLBACK=[
-    ["New York","United States","us","America/New_York"],["Los Angeles","United States","us","America/Los_Angeles"],
-    ["Chicago","United States","us","America/Chicago"],["Toronto","Canada","ca","America/Toronto"],
-    ["London","United Kingdom","gb","Europe/London"],["Paris","France","fr","Europe/Paris"],
-    ["Berlin","Germany","de","Europe/Berlin"],["Madrid","Spain","es","Europe/Madrid"],
-    ["Rome","Italy","it","Europe/Rome"],["Moscow","Russia","ru","Europe/Moscow"],
-    ["Mumbai","India","in","Asia/Kolkata"],["Delhi","India","in","Asia/Kolkata"],
-    ["Dubai","United Arab Emirates","ae","Asia/Dubai"],["Singapore","Singapore","sg","Asia/Singapore"],
-    ["Tokyo","Japan","jp","Asia/Tokyo"],["Hong Kong","Hong Kong","hk","Asia/Hong_Kong"],
-    ["Beijing","China","cn","Asia/Shanghai"],["Sydney","Australia","au","Australia/Sydney"],
-    ["Melbourne","Australia","au","Australia/Melbourne"],["Auckland","New Zealand","nz","Pacific/Auckland"],
-    ["São Paulo","Brazil","br","America/Sao_Paulo"],["Cairo","Egypt","eg","Africa/Cairo"],
-    ["Johannesburg","South Africa","za","Africa/Johannesburg"],["Istanbul","Turkey","tr","Europe/Istanbul"]
-  ].map(function(a){return{name:a[0],country:a[1],cc:a[2],tz:a[3]};});
+  function flag(cc){return cc?'<span class="fi fi-'+cc+'"></span>':'🌍';}
 
-  function pool(){
-    if(window.CITIES && CITIES.length){
-      return CITIES.map(function(c){return{name:c.name,country:c.country,cc:(c.cc||'').toLowerCase(),tz:c.tz};});
-    }
-    return FALLBACK;
+  // Country search: name -> [cc, representative tz]
+  var COUNTRIES={
+"United States":["us","America/New_York"],"Canada":["ca","America/Toronto"],"Mexico":["mx","America/Mexico_City"],
+"Brazil":["br","America/Sao_Paulo"],"Argentina":["ar","America/Argentina/Buenos_Aires"],"Chile":["cl","America/Santiago"],
+"Colombia":["co","America/Bogota"],"Peru":["pe","America/Lima"],"Venezuela":["ve","America/Caracas"],
+"United Kingdom":["gb","Europe/London"],"Ireland":["ie","Europe/Dublin"],"France":["fr","Europe/Paris"],
+"Germany":["de","Europe/Berlin"],"Spain":["es","Europe/Madrid"],"Portugal":["pt","Europe/Lisbon"],
+"Italy":["it","Europe/Rome"],"Netherlands":["nl","Europe/Amsterdam"],"Belgium":["be","Europe/Brussels"],
+"Switzerland":["ch","Europe/Zurich"],"Austria":["at","Europe/Vienna"],"Sweden":["se","Europe/Stockholm"],
+"Norway":["no","Europe/Oslo"],"Denmark":["dk","Europe/Copenhagen"],"Finland":["fi","Europe/Helsinki"],
+"Poland":["pl","Europe/Warsaw"],"Czechia":["cz","Europe/Prague"],"Greece":["gr","Europe/Athens"],
+"Hungary":["hu","Europe/Budapest"],"Romania":["ro","Europe/Bucharest"],"Ukraine":["ua","Europe/Kyiv"],
+"Russia":["ru","Europe/Moscow"],"Turkey":["tr","Europe/Istanbul"],
+"India":["in","Asia/Kolkata"],"Pakistan":["pk","Asia/Karachi"],"Bangladesh":["bd","Asia/Dhaka"],
+"Sri Lanka":["lk","Asia/Colombo"],"Nepal":["np","Asia/Kathmandu"],
+"China":["cn","Asia/Shanghai"],"Japan":["jp","Asia/Tokyo"],"South Korea":["kr","Asia/Seoul"],
+"North Korea":["kp","Asia/Pyongyang"],"Taiwan":["tw","Asia/Taipei"],"Hong Kong":["hk","Asia/Hong_Kong"],
+"Singapore":["sg","Asia/Singapore"],"Malaysia":["my","Asia/Kuala_Lumpur"],"Indonesia":["id","Asia/Jakarta"],
+"Thailand":["th","Asia/Bangkok"],"Vietnam":["vn","Asia/Ho_Chi_Minh"],"Philippines":["ph","Asia/Manila"],
+"Myanmar":["mm","Asia/Yangon"],"Cambodia":["kh","Asia/Phnom_Penh"],
+"United Arab Emirates":["ae","Asia/Dubai"],"Saudi Arabia":["sa","Asia/Riyadh"],"Qatar":["qa","Asia/Qatar"],
+"Kuwait":["kw","Asia/Kuwait"],"Israel":["il","Asia/Jerusalem"],"Iran":["ir","Asia/Tehran"],
+"Iraq":["iq","Asia/Baghdad"],"Jordan":["jo","Asia/Amman"],"Lebanon":["lb","Asia/Beirut"],
+"Egypt":["eg","Africa/Cairo"],"South Africa":["za","Africa/Johannesburg"],"Nigeria":["ng","Africa/Lagos"],
+"Kenya":["ke","Africa/Nairobi"],"Ethiopia":["et","Africa/Addis_Ababa"],"Ghana":["gh","Africa/Accra"],
+"Morocco":["ma","Africa/Casablanca"],"Tanzania":["tz","Africa/Dar_es_Salaam"],"Algeria":["dz","Africa/Algiers"],
+"Australia":["au","Australia/Sydney"],"New Zealand":["nz","Pacific/Auckland"],"Fiji":["fj","Pacific/Fiji"]
+  };
+  // Popular zone -> country code (flags/labels when cities.js isn't loaded)
+  var ZONE_CC={
+"America/New_York":"us","America/Chicago":"us","America/Denver":"us","America/Los_Angeles":"us","America/Phoenix":"us","America/Anchorage":"us","Pacific/Honolulu":"us",
+"America/Toronto":"ca","America/Vancouver":"ca","America/Edmonton":"ca","America/Winnipeg":"ca","America/Halifax":"ca",
+"America/Mexico_City":"mx","America/Sao_Paulo":"br","America/Argentina/Buenos_Aires":"ar","America/Santiago":"cl","America/Bogota":"co","America/Lima":"pe","America/Caracas":"ve",
+"Europe/London":"gb","Europe/Dublin":"ie","Europe/Paris":"fr","Europe/Berlin":"de","Europe/Madrid":"es","Europe/Lisbon":"pt","Europe/Rome":"it","Europe/Amsterdam":"nl","Europe/Brussels":"be","Europe/Zurich":"ch","Europe/Vienna":"at","Europe/Stockholm":"se","Europe/Oslo":"no","Europe/Copenhagen":"dk","Europe/Helsinki":"fi","Europe/Warsaw":"pl","Europe/Prague":"cz","Europe/Athens":"gr","Europe/Budapest":"hu","Europe/Bucharest":"ro","Europe/Kyiv":"ua","Europe/Moscow":"ru","Europe/Istanbul":"tr",
+"Asia/Kolkata":"in","Asia/Karachi":"pk","Asia/Dhaka":"bd","Asia/Colombo":"lk","Asia/Kathmandu":"np",
+"Asia/Shanghai":"cn","Asia/Tokyo":"jp","Asia/Seoul":"kr","Asia/Pyongyang":"kp","Asia/Taipei":"tw","Asia/Hong_Kong":"hk","Asia/Singapore":"sg","Asia/Kuala_Lumpur":"my","Asia/Jakarta":"id","Asia/Bangkok":"th","Asia/Ho_Chi_Minh":"vn","Asia/Manila":"ph","Asia/Yangon":"mm","Asia/Phnom_Penh":"kh",
+"Asia/Dubai":"ae","Asia/Riyadh":"sa","Asia/Qatar":"qa","Asia/Kuwait":"kw","Asia/Jerusalem":"il","Asia/Tehran":"ir","Asia/Baghdad":"iq","Asia/Amman":"jo","Asia/Beirut":"lb",
+"Africa/Cairo":"eg","Africa/Johannesburg":"za","Africa/Lagos":"ng","Africa/Nairobi":"ke","Africa/Addis_Ababa":"et","Africa/Accra":"gh","Africa/Casablanca":"ma","Africa/Algiers":"dz",
+"Australia/Sydney":"au","Australia/Melbourne":"au","Australia/Brisbane":"au","Australia/Perth":"au","Australia/Adelaide":"au","Pacific/Auckland":"nz","Pacific/Fiji":"fj"
+  };
+  // Common alternate spellings / short forms
+  var ALIASES={
+"usa":{name:"United States",country:"",cc:"us",tz:"America/New_York"},
+"america":{name:"United States",country:"",cc:"us",tz:"America/New_York"},
+"uk":{name:"United Kingdom",country:"",cc:"gb",tz:"Europe/London"},
+"britain":{name:"United Kingdom",country:"",cc:"gb",tz:"Europe/London"},
+"england":{name:"London",country:"United Kingdom",cc:"gb",tz:"Europe/London"},
+"uae":{name:"United Arab Emirates",country:"",cc:"ae",tz:"Asia/Dubai"},
+"nyc":{name:"New York",country:"United States",cc:"us",tz:"America/New_York"},
+"bombay":{name:"Mumbai",country:"India",cc:"in",tz:"Asia/Kolkata"},
+"calcutta":{name:"Kolkata",country:"India",cc:"in",tz:"Asia/Kolkata"},
+"bangalore":{name:"Bengaluru",country:"India",cc:"in",tz:"Asia/Kolkata"},
+"saigon":{name:"Ho Chi Minh City",country:"Vietnam",cc:"vn",tz:"Asia/Ho_Chi_Minh"},
+"peking":{name:"Beijing",country:"China",cc:"cn",tz:"Asia/Shanghai"}
+  };
+
+  var _idx=null,_cn=null;
+  function ccName(){if(_cn)return _cn;_cn={};Object.keys(COUNTRIES).forEach(function(n){_cn[COUNTRIES[n][0]]=n;});return _cn;}
+  function derive(z){var cc=ZONE_CC[z]||'';return{name:z.split('/').pop().replace(/_/g,' '),country:cc?(ccName()[cc]||''):'',cc:cc,tz:z};}
+  function buildIndex(){
+    if(_idx)return _idx;
+    var map={};
+    function add(e){var k=(e.name+'|'+e.tz).toLowerCase();
+      if(map[k]){if(e.alias)map[k].q+=' '+e.alias.toLowerCase();return;}
+      e.q=(e.name+' '+(e.country||'')+' '+e.tz+' '+(e.alias||'')).toLowerCase();map[k]=e;}
+    // 1) Full city DB from the site (name/country/flag), when available
+    if(typeof window!=='undefined'&&window.CITIES&&window.CITIES.length)window.CITIES.forEach(function(c){add({name:c.name,country:c.country,cc:(c.cc||'').toLowerCase(),tz:c.tz});});
+    // 2) Every IANA time zone -> guarantees global coverage (Seoul, etc.) even standalone
+    try{var zs=Intl.supportedValuesOf?Intl.supportedValuesOf('timeZone'):[];zs.forEach(function(t){if(t.indexOf('/')>-1)add(derive(t));});}catch(e){}
+    // 3) Countries  4) Aliases
+    Object.keys(COUNTRIES).forEach(function(n){var v=COUNTRIES[n];add({name:n,country:'',cc:v[0],tz:v[1]});});
+    Object.keys(ALIASES).forEach(function(a){var e=ALIASES[a];add({name:e.name,country:e.country,cc:e.cc,tz:e.tz,alias:a});});
+    _idx=[];for(var k in map)_idx.push(map[k]);
+    return _idx;
   }
+  function pool(){return buildIndex();}
 
   // ---- time helpers (DST-aware via Intl) ----
   function offMin(tz,d){
@@ -327,11 +410,14 @@
     var side=box.dataset.side, input=box.querySelector('input'), drop=box.querySelector('.tzb-drop'), hi=-1, list=[];
     function render(q){
       var data=pool(),ql=q.toLowerCase().trim();
-      list=!ql?[]:data.filter(function(c){
-        return c.name.toLowerCase().indexOf(ql)>-1||c.country.toLowerCase().indexOf(ql)>-1||(c.tz||'').toLowerCase().indexOf(ql)>-1;
-      }).slice(0,8);
+      list=!ql?[]:data.filter(function(c){return c.q.indexOf(ql)>-1;}).sort(function(a,b){
+        var an=a.name.toLowerCase().indexOf(ql),bn=b.name.toLowerCase().indexOf(ql);
+        if((an===0)!==(bn===0))return an===0?-1:1;
+        if((an>-1)!==(bn>-1))return an>-1?-1:1;
+        return a.name.length-b.name.length;
+      }).slice(0,10);
       drop.innerHTML=list.map(function(c,i){
-        return '<div class="tzb-opt" data-i="'+i+'"><span class="fi fi-'+c.cc+'"></span><span>'+c.name+'</span><small>'+c.country+'</small></div>';
+        return '<div class="tzb-opt" data-i="'+i+'">'+flag(c.cc)+'<span>'+c.name+'</span><small>'+(c.country||'')+'</small></div>';
       }).join('');
       drop.classList.toggle('open',list.length>0);hi=-1;
     }
@@ -354,9 +440,9 @@
 
   // ---- render result ----
   function locHTML(c,now,side){
-    return '<div class="tzb-avatar"><span class="fi fi-'+c.cc+'"></span></div>'+
-      '<div><h3><span class="fi fi-'+c.cc+'"></span>'+c.name+'</h3>'+
-      '<div class="sub">'+c.name+', '+c.country+'</div>'+
+    return '<div class="tzb-avatar">'+flag(c.cc)+'</div>'+
+      '<div><h3>'+flag(c.cc)+c.name+'</h3>'+
+      '<div class="sub">'+(c.country?c.name+', '+c.country:c.name)+'</div>'+
       '<div class="time">'+fTime(c.tz,now)+'</div>'+
       '<div class="date">'+fDate(c.tz,now)+'</div>'+
       '<div class="utc">'+fUtc(offMin(c.tz,now))+'</div></div>';
