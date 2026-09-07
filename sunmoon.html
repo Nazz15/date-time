@@ -2,164 +2,107 @@
 <html lang="en">
 <head>
 <script>
-(function() {
-  var saved = localStorage.getItem('wc_theme');
-  var isDark = saved === 'dark' ||
-    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-})();
+(function(){var s=localStorage.getItem('wc_theme');var d=s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');})();
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="description" content="Free sun and moon times for any city worldwide. Sunrise, sunset, solar noon, moonrise, moonset, moon phase and illumination — compare multiple cities side by side.">
-<meta name="keywords" content="sunrise sunset,moon phase,moonrise moonset,sun moon times,solar noon,day length">
-<title>Sun &amp; Moon Times by City — Sunrise, Sunset, Moon Phase | WorldClock</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sun &amp; Moon Times by City — Sunrise, Sunset, Moon Phase | TimezoneBudy</title>
+<meta name="description" content="Sunrise, sunset, solar noon, moonrise, moonset, moon phase and illumination for any city and any date. Free, no sign-up — powered by astronomical calculations.">
+<meta name="keywords" content="sunrise sunset,moon phase,moonrise moonset,sun moon times,solar noon,day length,moon calendar">
 <link rel="canonical" href="https://timezonebudy.com/sunmoon.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css?v=2">
-<link rel="stylesheet" href="/location.css?v=2">
-<link rel="stylesheet" href="/footer.css?v=2">
-<link rel="stylesheet" href="/sunmoon.css">
-<style>
-/* ── Top Cities shared styles ───────────────────────────────── */
-.tc-section { background:var(--clr-bg2); border-bottom:1px solid var(--clr-border); }
-.tc-inner   { max-width:1320px; margin:0 auto; padding:16px 20px; }
-.tc-bar     { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
-.tc-title   { font-size:15px; font-weight:700; margin:0; flex:1; }
-.tc-sel     { padding:5px 10px; border-radius:6px; font-size:12px; border:1px solid var(--clr-border); background:var(--clr-bg); color:var(--clr-text); }
-.tc-view-btns { display:flex; gap:4px; }
-.tc-vbtn    { padding:5px 12px; border-radius:6px; font-size:12px; border:1px solid var(--clr-border); background:transparent; color:var(--clr-text2); cursor:pointer; }
-.tc-vbtn.active { background:var(--clr-brand); color:#fff; border-color:var(--clr-brand); }
-.tc-table-wrap { overflow-x:auto; }
-.tc-table   { width:100%; border-collapse:collapse; font-size:13px; }
-.tc-table th { text-align:left; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--clr-text3); padding:6px 10px; border-bottom:1px solid var(--clr-border); }
-.tc-table td { padding:9px 10px; border-bottom:1px solid var(--clr-border); vertical-align:middle; }
-.tc-table tr:last-child td { border-bottom:none; }
-.tc-table tr:hover td { background:rgba(128,128,128,0.04); }
-.tc-city-cell { display:flex; align-items:center; gap:8px; }
-.tc-city-name { font-weight:600; color:var(--clr-text); }
-.tc-country   { color:var(--clr-text3); font-size:12px; }
-.tc-temp      { font-weight:700; font-size:14px; color:var(--clr-brand); white-space:nowrap; }
-.tc-cond      { font-size:12px; color:var(--clr-text2); white-space:nowrap; }
-.tc-loading   { opacity:.4; font-size:12px; padding:12px 0; }
-.tc-compact { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:8px; }
-.tc-chip    { display:flex; align-items:center; gap:8px; padding:9px 12px; border-radius:10px; border:1px solid var(--clr-border); }
-[data-theme="dark"]  .tc-chip { background:rgba(255,255,255,0.03); }
-[data-theme="light"] .tc-chip { background:#fff; }
-.tc-chip-right { min-width:0; flex:1; }
-.tc-chip-city  { font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.tc-chip-meta  { font-size:11px; color:var(--clr-text3); margin-top:1px; white-space:nowrap; }
-@media(max-width:640px) {
-  .tc-compact { grid-template-columns:repeat(2,1fr); }
-  .tc-table td.tc-hide-mob, .tc-table th.tc-hide-mob { display:none; }
-}
-/* ── Sun/Moon chips (my-strip) ─────────────────────────────── */
-#my-strip { display:flex; flex-wrap:wrap; gap:10px; padding-top:10px; }
-
-.sm-chip {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 14px; border-radius:12px; cursor:pointer;
-  border:1.5px solid rgba(128,128,128,0.15);
-  transition:border-color .15s, box-shadow .15s; position:relative;
-}
-[data-theme="dark"]  .sm-chip { background:rgba(255,255,255,0.04); }
-[data-theme="light"] .sm-chip { background:#ffffff; box-shadow:0 1px 4px rgba(0,0,0,0.07); }
-.sm-chip:hover, .sm-chip.active {
-  border-color:var(--clr-brand); box-shadow:0 0 0 3px rgba(88,166,255,0.12);
-}
-.sm-chip-flag  { flex-shrink:0; }
-.sm-chip-info  { flex-shrink:0; min-width:80px; }
-.sm-chip-city  { font-weight:700; font-size:13px; }
-.sm-chip-country { font-size:11px; opacity:.5; }
-.sm-chip-data  { flex:1; min-width:0; }
-.sm-chip-sun   { font-size:12px; font-weight:600; opacity:.8; white-space:nowrap; }
-.sm-chip-moon  { font-size:11px; opacity:.55; margin-top:2px; }
-.sm-chip-spin  { font-size:12px; opacity:.4; }
-.wx-chip-rm {
-  position:absolute; top:5px; right:5px; width:18px; height:18px;
-  border-radius:50%; border:none; background:rgba(128,128,128,0.12);
-  color:inherit; cursor:pointer; font-size:10px; opacity:0;
-  display:flex; align-items:center; justify-content:center; transition:opacity .15s;
-}
-.sm-chip:hover .wx-chip-rm { opacity:1; }
-.wx-chip-rm:hover { background:rgba(220,50,50,0.2); color:#e24b4a; }
-
-/* ── City card ─────────────────────────────────────────────── */
-.sm-city-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,560px),1fr)); gap:16px; }
-
-.sm-city-card {
-  border-radius:14px; overflow:hidden;
-  border:1px solid rgba(128,128,128,0.13);
-  transition:border-color .15s;
-}
-[data-theme="dark"]  .sm-city-card { background:rgba(255,255,255,0.03); }
-[data-theme="light"] .sm-city-card { background:#ffffff; box-shadow:0 1px 8px rgba(0,0,0,0.07); }
-.sm-city-card.sm-card-active { border-color:var(--clr-brand); box-shadow:0 0 0 3px rgba(88,166,255,0.12); }
-
-.sm-card-hdr {
-  display:flex; align-items:center; gap:10px; padding:14px 16px 12px;
-  border-bottom:1px solid rgba(128,128,128,0.09);
-}
-.sm-city-name    { font-weight:700; font-size:16px; }
-.sm-country-name { font-size:12px; opacity:.5; margin-top:1px; }
-.sm-rm {
-  margin-left:auto; width:28px; height:28px; border-radius:8px; border:none;
-  background:rgba(128,128,128,0.1); color:inherit; cursor:pointer; font-size:12px;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0;
-}
-.sm-rm:hover { background:rgba(220,50,50,0.15); color:#e24b4a; }
-
-/* ── Sections inside card ──────────────────────────────────── */
-.sm-section      { padding:14px 16px; }
-.sm-section-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; opacity:.45; margin-bottom:10px; }
-.sm-divider      { height:1px; background:rgba(128,128,128,0.09); margin:0; }
-
-.sm-row {
-  display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px;
-}
-.sm-item         { text-align:center; }
-.sm-item-ico     { font-size:20px; margin-bottom:3px; }
-.sm-item-val     { font-size:13px; font-weight:700; }
-.sm-item-lbl     { font-size:10px; opacity:.5; margin-top:1px; text-transform:uppercase; letter-spacing:.03em; }
-
-/* ── Arc visuals ───────────────────────────────────────────── */
-.sm-arc-wrap     { margin:4px 0 2px; }
-.sm-tl-labels {
-  display:flex; justify-content:space-between; align-items:center;
-  font-size:11px; opacity:.6; padding:0 2px; margin-bottom:4px;
-}
-.sm-next-moon    { font-size:11px; opacity:.55; text-align:center; padding-top:4px; }
-
-/* ── Empty state ───────────────────────────────────────────── */
-.sm-empty { display:flex; flex-direction:column; align-items:center; gap:12px; padding:48px 20px; text-align:center; opacity:.45; }
-.sm-empty p { font-size:14px; margin:0; }
-
-/* ── Responsive ────────────────────────────────────────────── */
-@media(max-width:600px) {
-  #my-strip { flex-wrap:nowrap; overflow-x:auto; padding-bottom:6px; scrollbar-width:thin; }
-  .sm-chip  { flex-shrink:0; }
-  .sm-row   { grid-template-columns:repeat(2,1fr); }
-  .sm-city-list { grid-template-columns:1fr; }
-}
-</style>
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/footer.css">
+<link rel="stylesheet" href="/sunmoon.css?v=1">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css?v=2">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+
+<style>
+/* ── Page variables (same as Weather V1) ─────────────────────── */
+:root { --wx-blue:#2463b5; --wx-dark:#172235; --wx-muted:#647186; --wx-border:#d9e1ec; }
+[data-theme="dark"] { --wx-blue:#58a6ff; --wx-muted:rgba(255,255,255,0.5); --wx-border:rgba(255,255,255,0.1); }
+
+.nav-drawer { transform:translateX(100%) !important; }
+.nav-drawer.open { transform:translateX(0) !important; }
+.nav-drawer-overlay { opacity:0; pointer-events:none; }
+.nav-drawer-overlay.open { opacity:1; pointer-events:auto; }
+
+/* ── Hero ─────────────────────────────────────────────────────── */
+.wx-hero {
+  padding:56px 0 46px; text-align:center; position:relative; overflow:hidden;
+  background:linear-gradient(160deg,rgba(217,235,251,0.92) 0%,rgba(169,205,234,0.88) 55%,rgba(231,242,251,0.92) 100%),
+    url('/Global_Landmarks_Across_the_Water.png') center/cover no-repeat;
+}
+[data-theme="dark"] .wx-hero {
+  background:linear-gradient(160deg,rgba(13,34,64,0.92) 0%,rgba(14,47,84,0.9) 55%,rgba(10,30,56,0.92) 100%),
+    url('/Global_Landmarks_Across_the_Water.png') center/cover no-repeat;
+}
+.wx-hero h1 { font-size:clamp(28px,5vw,44px); font-weight:800; margin:0 0 14px; color:#172235; }
+[data-theme="dark"] .wx-hero h1 { color:#e6edf3; }
+.wx-hero p { font-size:16px; max-width:680px; margin:0 auto; color:#4e5d70; line-height:1.65; }
+[data-theme="dark"] .wx-hero p { color:rgba(255,255,255,0.7); }
+
+/* ── Shared section layout (same as Weather V1) ────────────────── */
+.wx-sec { padding:40px 0; }
+.wx-sec-alt { background:var(--clr-bg2,#f6f8fc); }
+[data-theme="dark"] .wx-sec-alt { background:rgba(255,255,255,0.02); }
+.wx-container { max-width:1200px; margin:0 auto; padding:0 24px; }
+.wx-sec-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:18px; flex-wrap:wrap; gap:8px; }
+.wx-sec-head h2 { font-size:clamp(22px,3vw,28px); font-weight:800; margin:0 0 4px; }
+.wx-sec-head p { color:var(--wx-muted); margin:0; font-size:14px; }
+
+/* ── Content / SEO (same as Weather V1) ────────────────────────── */
+.wx-content { padding:40px 0; }
+.wx-content-inner { max-width:840px; }
+.wx-content h2 { font-size:clamp(22px,3vw,28px); font-weight:800; margin:0 0 16px; }
+.wx-content p { color:var(--wx-muted); line-height:1.8; margin-bottom:14px; font-size:15px; }
+
+/* ── Footer (same as Weather V1) ───────────────────────────────── */
+.wx-footer { background:#fff; border-top:1px solid var(--wx-border); padding:30px 0; color:#5d6b7e; font-size:14px; }
+[data-theme="dark"] .wx-footer { background:#0d1117; border-color:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); }
+.wx-footer-top { display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+.wx-footer-logo { font-size:20px; font-weight:800; color:var(--wx-dark); }
+[data-theme="dark"] .wx-footer-logo { color:#e6edf3; }
+.wx-footer-logo span { color:var(--wx-blue); }
+.wx-footer-tagline { font-size:12px; opacity:.6; margin-top:4px; }
+.wx-footer-links { display:flex; gap:22px; flex-wrap:wrap; }
+.wx-footer-links a { color:inherit; text-decoration:none; }
+.wx-footer-links a:hover { color:var(--wx-blue); }
+.wx-footer-bottom { margin-top:22px; padding-top:18px; border-top:1px solid var(--wx-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:13px; opacity:.65; }
+
+@media(max-width:640px) {
+  .wx-hero { padding:40px 0 40px; }
+  .wx-sec-head { flex-direction:column; align-items:flex-start; }
+  .wx-footer-top { flex-direction:column; align-items:flex-start; }
+}
+</style>
 </head>
 <body>
 
+<!-- ── NAV (same as all other pages, nav.js will fixLogo) ── -->
 <nav class="topnav" aria-label="Main navigation">
   <div class="topnav-inner">
-    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <a class="logo" href="/">
+      <svg width="28" height="28" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <defs><linearGradient id="wlg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient><clipPath id="wlc"><circle cx="32" cy="32" r="26"/></clipPath></defs>
+        <circle cx="32" cy="32" r="26" fill="url(#wlg)"/>
+        <g clip-path="url(#wlc)" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"><ellipse cx="32" cy="32" rx="10" ry="26"/><line x1="6" y1="32" x2="58" y2="32"/></g>
+        <path d="M32 6 A26 26 0 0 1 32 58 A17 26 0 0 0 32 6" fill="rgba(0,8,32,0.38)"/>
+        <circle cx="32" cy="32" r="30" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
+        <path d="M32 2 A30 30 0 0 1 62 32" fill="none" stroke="#f59e0b" stroke-width="3.8" stroke-linecap="round"/>
+        <line x1="32" y1="32" x2="32" y2="17" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="32" y1="32" x2="43" y2="39" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="32" cy="32" r="2.4" fill="white"/>
+      </svg>
+      <span class="logo-name">Timezone<em>Budy</em></span>
+    </a>
     <div class="nav-tabs" role="tablist">
       <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
       <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
@@ -170,7 +113,7 @@
       <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
       <a class="nav-tab" href="/world-time-map"><i class="ti ti-map"></i> <span>World Map</span></a>
     </div>
-    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--</span></div>
     <div class="nav-btns">
       <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
       <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
@@ -178,12 +121,57 @@
   </div>
 </nav>
 
-<!-- ══ TOP CITIES: SUN & MOON ══ -->
-<section class="tc-section" id="tc-sm-section">
-  <div class="tc-inner">
-    <div class="tc-bar">
-      <h2 class="tc-title"><i class="ti ti-sun" style="margin-right:6px"></i>Sun &amp; Moon Around the World</h2>
-      <select class="tc-sel" id="tc-sm-region" onchange="tcSmFilter()">
+<main>
+
+<!-- ── HERO ── -->
+<section class="wx-hero">
+  <div class="wx-container">
+    <h1>Sun &amp; Moon</h1>
+    <p>Sunrise, sunset and moon information for cities around the world. Get accurate solar and lunar times, moon phases and daylight details for any location and date.</p>
+  </div>
+</section>
+
+<!-- ── LOCATION + DATE ── -->
+<div class="sm-controls">
+  <div class="sm-ctrl sm-ctrl-loc">
+    <i class="ti ti-map-pin" aria-hidden="true"></i>
+    <div style="flex:1;min-width:0">
+      <input type="search" id="sm-loc-input" placeholder="Search a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Select location">
+      <div class="sm-loc-label" id="sm-loc-label">Mumbai, India</div>
+    </div>
+    <div id="sm-loc-dd" class="search-dd" hidden></div>
+  </div>
+  <div class="sm-ctrl sm-ctrl-date">
+    <i class="ti ti-calendar" aria-hidden="true"></i>
+    <input type="date" id="sm-date" aria-label="Select date">
+  </div>
+  <button class="sm-mybtn" onclick="smUseMyLocation()"><i class="ti ti-current-location"></i> Use my location</button>
+</div>
+
+<!-- ── LIVE LOCATION (Sun Journey + Moon Today) ── -->
+<section class="wx-sec">
+  <div class="wx-container">
+    <div class="wx-sec-head">
+      <div>
+        <h2>Live Location</h2>
+        <p>Real-time sun and moon information for the selected location and date.</p>
+      </div>
+    </div>
+    <div class="sm-live" id="sm-live"><div class="sm-empty">Loading…</div></div>
+  </div>
+</section>
+
+<!-- ── POPULAR CITIES ── -->
+<section class="wx-sec wx-sec-alt">
+  <div class="wx-container">
+    <div class="wx-sec-head">
+      <div>
+        <h2>Sun &amp; Moon Times for Popular Cities</h2>
+        <p>Compare sunrise, sunset, day length and moon times for major cities around the world.</p>
+      </div>
+    </div>
+    <div class="sm-pop-controls">
+      <select class="sm-sel" id="sm-pop-region" onchange="smPopFilter()">
         <option value="all">All Regions</option>
         <option value="asia">Asia</option>
         <option value="europe">Europe</option>
@@ -191,140 +179,113 @@
         <option value="africa">Africa</option>
         <option value="oceania">Oceania</option>
       </select>
-      <select class="tc-sel" id="tc-sm-sort" onchange="tcSmFilter()">
+      <select class="sm-sel" id="sm-pop-sort" onchange="smPopFilter()">
         <option value="city">Sort by City</option>
         <option value="sunrise">Sort by Sunrise</option>
       </select>
-      <div class="tc-view-btns">
-        <button class="tc-vbtn active" id="tc-sm-table-btn" onclick="tcSmView('table')"><i class="ti ti-list"></i> Table</button>
-        <button class="tc-vbtn"       id="tc-sm-compact-btn" onclick="tcSmView('compact')"><i class="ti ti-layout-grid"></i> Compact</button>
-      </div>
     </div>
-    <div id="tc-sm-body"><div class="tc-loading">Calculating…</div></div>
+    <div id="sm-pop-body"><div class="sm-loading">Calculating…</div></div>
+    <div class="sm-more-wrap">
+      <button class="sm-more-btn" id="sm-pop-more" onclick="smPopMore()">View More ↓</button>
+    </div>
   </div>
 </section>
 
-<section class="my-section" aria-label="My Cities">
-  <div class="wrap">
-    <div class="my-head">
-      <h2 class="my-title"><i class="ti ti-sun"></i> Sun &amp; Moon by City</h2>
-      <div class="search-wrap">
-        <div class="search-pill" onclick="document.getElementById('sm-srch').focus()">
-          <i class="ti ti-search search-ico" aria-hidden="true"></i>
-          <input type="search" id="sm-srch" placeholder="Add a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Search for a city">
-        </div>
-        <div id="sm-dd" class="search-dd" hidden></div>
+<!-- ── MOON PHASES ── -->
+<section class="wx-sec">
+  <div class="wx-container">
+    <div class="wx-sec-head">
+      <div>
+        <h2>Moon Phases</h2>
+        <p>Upcoming moon phases and their dates.</p>
       </div>
+      <button class="sm-more-btn" id="sm-phase-more" onclick="smPhaseMore()" style="padding:8px 18px">View full calendar →</button>
     </div>
-    <!-- Compact sun/moon chips — populated by renderStrip() in sunmoon.js -->
-    <div id="my-strip" role="list" aria-label="Selected cities sun and moon data"></div>
+    <div class="sm-phase-grid" id="sm-phases"></div>
   </div>
 </section>
 
-<main class="wrap" style="padding-top:16px;padding-bottom:48px">
-
-  <!-- Controls row -->
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-    <button class="tbtn secondary" style="padding:7px 14px;font-size:13px;border:1.5px solid var(--clr-brand);border-radius:30px;background:none;color:var(--clr-brand);cursor:pointer" onclick="autoLocateSM()">
-      <i class="ti ti-current-location"></i> My Location
-    </button>
-    <p style="font-size:12px;color:var(--clr-text3);margin:0">Times shown in each city's local timezone · Data for today</p>
-  </div>
-
-  <!-- City cards -->
-  <div id="sm-list" class="sm-city-list"></div>
-
-  <!-- SEO -->
-  <section class="seo-sec" style="margin-top:40px">
-    <h2>Sunrise, Sunset and Moon Phase by City</h2>
-    <p>Compare sun and moon data for multiple cities simultaneously. All times use each city's local timezone and automatically update every minute. Sunrise, sunset, solar noon, dawn, dusk, moonrise, moonset, moon phase, and illumination are calculated using astronomical formulas — no API needed.</p>
-    <div class="seo-grid">
-      <article class="seo-card"><h3>Sun Journey</h3><p>The sun arc visualization shows the sun's current position between sunrise and sunset, with a marker for the current time. Day length and remaining daylight are calculated in real time.</p></article>
-      <article class="seo-card"><h3>Moon Phase</h3><p>Moon phase, illumination percentage, moonrise and moonset times, and the date of the next full moon and new moon — all calculated for your selected cities.</p></article>
-      <article class="seo-card"><h3>Multiple Cities</h3><p>Add up to 6 cities and compare their solar and lunar data side by side. Perfect for photographers, farmers, travelers, and anyone planning around natural light.</p></article>
+<!-- ── EXPLORE MORE ── -->
+<section class="wx-sec wx-sec-alt">
+  <div class="wx-container">
+    <div class="wx-sec-head">
+      <div>
+        <h2>Explore More</h2>
+        <p>Useful tools and resources to plan your day and explore the world.</p>
+      </div>
     </div>
-  </section>
+    <div class="sm-explore-grid">
+      <a class="sm-explore" href="/">
+        <div class="sm-explore-ico">🕐</div>
+        <div><div class="sm-explore-t">World Clock</div><div class="sm-explore-d">Current time across the world</div></div>
+      </a>
+      <a class="sm-explore" href="/weather">
+        <div class="sm-explore-ico">🌤️</div>
+        <div><div class="sm-explore-t">Weather</div><div class="sm-explore-d">Current weather and forecasts</div></div>
+      </a>
+      <a class="sm-explore" href="/location/">
+        <div class="sm-explore-ico">📍</div>
+        <div><div class="sm-explore-t">Locations</div><div class="sm-explore-d">Browse cities and countries</div></div>
+      </a>
+      <a class="sm-explore" href="/converter.html">
+        <div class="sm-explore-ico">🔄</div>
+        <div><div class="sm-explore-t">Time Converter</div><div class="sm-explore-d">Convert time between locations</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── SEO CONTENT ── -->
+<section class="wx-sec wx-content">
+  <div class="wx-container">
+    <div class="wx-content-inner">
+      <h2>Accurate Sun &amp; Moon Information</h2>
+      <p>TimezoneBudy gives you reliable sunrise, sunset and moon data for any city in the world, on any date. Plan your day, track moon phases and explore daylight hours — all calculated with astronomical formulas, so there's no API key or sign-up required.</p>
+      <p>For each location you can see the full sun journey — dawn, sunrise, solar noon, sunset and dusk — along with day length and remaining daylight. The moon section shows the current phase, illumination percentage, moonrise and moonset, and the dates of the next full moon and new moon. Change the date to see how these values shift throughout the month.</p>
+      <p>Compare sunrise, sunset and moon phases across major cities, and browse the upcoming moon phase calendar to plan around natural light — useful for photographers, travelers, gardeners and anyone who follows the sky.</p>
+    </div>
+  </div>
+</section>
 
 </main>
 
-<footer class="site-footer">
-  <div class="wrap">
-    <div class="footer-grid">
-
-      <div class="footer-col footer-brand">
-        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+<!-- ── FOOTER ── -->
+<footer class="wx-footer">
+  <div class="wx-container">
+    <div class="wx-footer-top">
+      <div>
+        <div class="wx-footer-logo">Timezone<span>Budy</span></div>
+        <div class="wx-footer-tagline">Time. Weather. Sun. Moon. Worldwide.</div>
       </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Tools</h4>
-        <a href="/">World Clock</a>
-        <a href="/converter.html">Timezone Converter</a>
-        <a href="/converter.html#meeting">Meeting Planner</a>
-        <a href="/sunmoon.html">Sun &amp; Moon</a>
-        <a href="/weather">Weather</a>
-        <a href="/tools.html">Time Tools</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Locations</h4>
-        <a href="/location/">Browse All Countries</a>
-        <a href="/location/india/">India</a>
-        <a href="/location/united-states/">United States</a>
-        <a href="/location/united-kingdom/">United Kingdom</a>
-        <a href="/location/china/">China</a>
-        <a href="/location/japan/">Japan</a>
-      </div>
-
-      <div class="footer-col">
-        <h4 class="footer-heading">Company</h4>
+      <div class="wx-footer-links">
         <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact Us</a>
-        <a href="/blog/">Blog</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Service</a>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
-      <div class="footer-bottom-links">
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
         <a href="/contact.html">Contact</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Use</a>
       </div>
+    </div>
+    <div class="wx-footer-bottom">
+      <span>© <span id="wx-year"></span> TimezoneBudy. All rights reserved.</span>
+      <span>Accurate information for a more connected world.</span>
     </div>
   </div>
 </footer>
 
-
 <div id="toast" role="status" aria-live="polite"></div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
 <script src="/cities.js"></script>
-<script src="/util.js?v=2"></script>
-<script src="/pwa-install.js" defer></script>
-<script src="/sunmoon.js"></script>
+<script src="/util.js?v=3"></script>
 <script>
-// Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
-document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
-  trigger.addEventListener('click', function(e) {
-    if (e.target.closest('.loc-mega-menu')) return; // clicking inside menu shouldn't toggle
-    trigger.classList.toggle('menu-open');
-  });
-});
-document.addEventListener('click', function(e) {
-  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
-    if (!t.contains(e.target)) t.classList.remove('menu-open');
-  });
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
-  }
-});
+// Footer year
+document.getElementById('wx-year').textContent = new Date().getFullYear();
+// UTC nav clock (same as Weather V1)
+setInterval(function(){
+  var el = document.getElementById('utc-val');
+  if (el) el.textContent = new Date().toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',hour12:false});
+}, 1000);
 </script>
-<!-- nav_inject_v2 -->
+<script src="/sunmoon.js?v=2"></script>
 <script src="/nav.js?v=3"></script>
 </body>
 </html>
