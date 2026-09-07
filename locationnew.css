@@ -147,3 +147,33 @@
   .tzb-days7 .ic{margin:0;width:26px;font-size:20px;flex:none;text-align:center}
   .tzb-days7 .hi{margin-left:auto}.tzb-days7 .lo{width:34px}.tzb-days7 .p{width:54px;text-align:right;margin-top:0}
 }
+
+/* ---------- Location hub page (/location/) ---------- */
+.tzb-crumb-dark{color:var(--tzb-muted)}
+.tzb-crumb-dark a{color:var(--tzb-brand)}
+.hub-h1{font-size:32px;font-weight:800;margin:6px 0 8px}
+.hub-lead{color:var(--tzb-muted);max-width:640px;margin:0 0 16px;line-height:1.6}
+.hub-metrics{display:flex;flex-wrap:wrap;gap:22px;font-size:14px;color:var(--tzb-ink)}
+.hub-metrics b{color:var(--tzb-brand)}
+.hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
+.hub-card{background:var(--tzb-card);border:1px solid var(--tzb-line);border-radius:var(--tzb-r);box-shadow:var(--tzb-shadow);padding:14px 16px}
+.hub-card-head{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;color:inherit;text-decoration:none;padding-bottom:10px;border-bottom:1px solid var(--tzb-line)}
+.hub-card-head:hover .hc-name{color:var(--tzb-brand)}
+.hc-name{flex:1}
+.hc-arrow{color:var(--tzb-muted);font-size:20px}
+.hub-cities{padding:8px 0 4px}
+.hub-city{display:flex;justify-content:space-between;align-items:center;padding:7px 2px;font-size:14px;color:inherit;text-decoration:none;border-radius:6px}
+.hub-city:hover{background:rgba(59,130,246,.06)}
+.hub-city .nm{color:var(--tzb-ink)}
+.hub-city .tm{color:var(--tzb-muted);font-variant-numeric:tabular-nums}
+.hub-viewall{display:inline-block;margin-top:6px;font-size:13px;font-weight:600;color:var(--tzb-brand);text-decoration:none}
+.hub-viewall:hover{text-decoration:underline}
+.hub-more-wrap{text-align:center;margin:4px 0 8px}
+.hub-more{background:var(--tzb-card);border:1px solid var(--tzb-brand);color:var(--tzb-brand);font-weight:600;font-size:14px;padding:10px 22px;border-radius:8px;cursor:pointer}
+.hub-more:hover{background:rgba(59,130,246,.08)}
+@media(max-width:900px){.hub-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){
+  .hub-grid{grid-template-columns:1fr}
+  .hub-h1{font-size:24px}
+  .hub-metrics{gap:14px}
+}
