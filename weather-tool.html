@@ -26,6 +26,12 @@
 <link rel="stylesheet" href="/weather.css">
 <style>
 /* ── Weather chips in My Cities strip ───────────────────────────────── */
+/* Off-canvas mobile drawer must be fixed so it can't widen the page (desktop overflow fix) */
+.nav-drawer { position:fixed; top:0; right:0; height:100%; transform:translateX(100%); z-index:1000; }
+.nav-drawer.open { transform:translateX(0); }
+.nav-drawer-overlay { position:fixed; inset:0; opacity:0; pointer-events:none; }
+.nav-drawer-overlay.open { opacity:1; pointer-events:auto; }
+
 #my-strip { display:flex; flex-wrap:wrap; gap:10px; padding-top:10px; }
 
 .wx-chip {

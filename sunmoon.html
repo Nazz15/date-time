@@ -29,9 +29,9 @@
 :root { --wx-blue:#2463b5; --wx-dark:#172235; --wx-muted:#647186; --wx-border:#d9e1ec; }
 [data-theme="dark"] { --wx-blue:#58a6ff; --wx-muted:rgba(255,255,255,0.5); --wx-border:rgba(255,255,255,0.1); }
 
-.nav-drawer { transform:translateX(100%) !important; }
+.nav-drawer { position:fixed; top:0; right:0; height:100%; transform:translateX(100%) !important; z-index:1000; }
 .nav-drawer.open { transform:translateX(0) !important; }
-.nav-drawer-overlay { opacity:0; pointer-events:none; }
+.nav-drawer-overlay { position:fixed; inset:0; opacity:0; pointer-events:none; }
 .nav-drawer-overlay.open { opacity:1; pointer-events:auto; }
 
 /* ── Hero ─────────────────────────────────────────────────────── */
