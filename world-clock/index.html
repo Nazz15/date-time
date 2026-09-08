@@ -1,277 +1,324 @@
 <!DOCTYPE html>
-<html lang="en" data-page="world-clock">
+<html lang="en">
 <head>
+<script>
+(function(){var s=localStorage.getItem('wc_theme');var d=s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');})();
+</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>World Clock — Current Time in Cities Around the World | TimezoneBuddy</title>
-<meta name="description" content="Check the current local time, date and UTC offset in cities around the world. Add your own cities, compare time differences and see popular world clocks live.">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>World Clock — Current Time in Cities Around the World | TimezoneBudy</title>
+<meta name="description" content="Check the current local time, date and UTC offset in cities around the world. Add your own cities, compare time differences and view popular world clocks live.">
+<meta name="keywords" content="world clock,current time,time zones,live clock,city time,international time,time difference">
 <link rel="canonical" href="https://timezonebudy.com/world-clock/">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/footer.css">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d2240">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
 <style>
-  :root{
-    --blue:#2563eb;--blue-d:#1d4ed8;--navy:#1e3a5f;--navy-2:#173154;
-    --ink:#1f2d3d;--muted:#64748b;--line:#e6edf5;--bg:#f7fafc;--card:#fff;
-    --hero:#eaf2ff;--chip:#eef4ff;--radius:14px;--shadow:0 1px 3px rgba(16,42,80,.06),0 8px 24px rgba(16,42,80,.05);
-  }
-  @media (prefers-color-scheme:dark){
-    :root{--ink:#e6eef8;--muted:#93a4bd;--line:#22344c;--bg:#0d1726;--card:#132238;
-      --hero:#132a4a;--chip:#1b2f4d;--navy:#dbe7fb;--navy-2:#c7d8f5;--shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25);}
-  }
-  *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
-  a{color:var(--blue);text-decoration:none}
-  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
-  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* ── Page vars (same idiom as Weather / Sun & Moon) ── */
+:root { --wx-blue:#2463b5; --wx-dark:#172235; --wx-muted:#647186; --wx-border:#d9e1ec; }
+[data-theme="dark"] { --wx-blue:#58a6ff; --wx-muted:rgba(255,255,255,0.5); --wx-border:rgba(255,255,255,0.1); }
 
-  /* ---------- HEADER ---------- */
-  .hdr{position:sticky;top:0;z-index:40;background:var(--card);border-bottom:1px solid var(--line)}
-  .hdr-in{display:flex;align-items:center;gap:24px;height:64px}
-  .logo{font-size:22px;font-weight:800;color:var(--navy);letter-spacing:-.5px}
-  .logo b{color:var(--blue)}
-  .nav{display:flex;align-items:center;gap:22px;margin-left:8px}
-  .nav a{color:#334867;font-weight:600;font-size:15px;padding:6px 0;position:relative}
-  .nav a.active{color:var(--blue)}
-  .nav a.active:after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;background:var(--blue);border-radius:2px}
-  .burger{display:none;margin-left:auto;background:none;border:0;cursor:pointer;padding:8px}
-  .burger span{display:block;width:22px;height:2px;background:var(--navy);margin:5px 0;border-radius:2px}
-  @media(max-width:900px){
-    .nav{position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:flex-start;gap:0;
-      background:var(--card);border-bottom:1px solid var(--line);padding:8px 20px 16px;
-      transform:translateY(-140%);transition:.25s;box-shadow:var(--shadow)}
-    .nav.open{transform:none}
-    .nav a{width:100%;padding:12px 0;border-bottom:1px solid var(--line);font-size:16px}
-    .nav a.active:after{display:none}
-    .burger{display:block}
-  }
+.nav-drawer { position:fixed; top:0; right:0; height:100%; transform:translateX(100%) !important; z-index:1000; }
+.nav-drawer.open { transform:translateX(0) !important; }
+.nav-drawer-overlay { position:fixed; inset:0; opacity:0; pointer-events:none; }
+.nav-drawer-overlay.open { opacity:1; pointer-events:auto; }
 
-  /* ---------- HERO ---------- */
-  .hero{background:linear-gradient(180deg,var(--hero),transparent);border:1px solid var(--line);
-    border-radius:18px;margin:20px auto;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-items:center}
-  .hero-txt{padding:38px 8px 38px 34px}
-  .eyebrow{font-size:12px;font-weight:800;letter-spacing:2px;color:#5b7bb0;text-transform:uppercase}
-  .hero-txt h1{margin:8px 0 12px;font-size:clamp(34px,5vw,52px);line-height:1.05;color:var(--navy);letter-spacing:-1px}
-  .hero-txt p{margin:0;font-size:18px;color:#4a6187;max-width:360px}
-  .hero-art{min-height:230px;background:url("world-clock-hero.png") no-repeat right center;background-size:cover}
-  @media(max-width:760px){
-    .hero{grid-template-columns:1fr}
-    .hero-txt{padding:24px 20px 8px;text-align:left}
-    .hero-txt p{font-size:16px}
-    .hero-art{min-height:0;aspect-ratio:16/9;background-position:center;background-size:cover}
-  }
+/* ── Shared section layout (same as Weather / Sun & Moon) ── */
+.wx-sec { padding:40px 0; }
+.wx-sec-alt { background:var(--clr-bg2,#f6f8fc); }
+[data-theme="dark"] .wx-sec-alt { background:rgba(255,255,255,0.02); }
+.wx-container { max-width:1200px; margin:0 auto; padding:0 24px; }
+.wx-sec-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:18px; flex-wrap:wrap; gap:12px; }
+.wx-sec-head h2 { font-size:clamp(22px,3vw,28px); font-weight:800; margin:0 0 4px; }
+.wx-sec-head p { color:var(--wx-muted); margin:0; font-size:14px; }
 
-  /* ---------- SECTIONS ---------- */
-  .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-    box-shadow:var(--shadow);padding:22px;margin:18px 0}
-  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-  .sec-head h2{margin:0;font-size:22px;color:var(--navy)}
-  .sec-head .sub{color:var(--muted);font-size:14px;margin-top:2px}
-  .head-actions{display:flex;align-items:center;gap:14px}
-  .btn{border:0;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;padding:10px 16px}
-  .btn-primary{background:var(--blue);color:#fff}
-  .btn-primary:hover{background:var(--blue-d)}
-  .btn-ghost{background:none;color:var(--blue);padding:8px 4px}
-  .count{color:var(--muted);font-size:14px;font-weight:600}
-  .flag{width:26px;height:20px;border-radius:3px;flex:0 0 auto;box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);background-size:cover}
+/* ── Hero (World Clock banner illustration) ── */
+.wc-hero { line-height:0; background:var(--clr-bg2); border-bottom:1px solid var(--clr-border); }
+.wc-hero img { width:100%; height:auto; display:block; max-height:360px; object-fit:cover; object-position:center; }
+.sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 
-  /* ---------- CITY ROWS (Your Cities) ---------- */
-  .rows{margin-top:14px;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .row{display:grid;grid-template-columns:1fr auto auto 34px;align-items:center;gap:14px;
-    padding:14px 16px;border-bottom:1px solid var(--line)}
-  .row:last-child{border-bottom:0}
-  .row .who{display:flex;align-items:center;gap:12px;min-width:0}
-  .who .name{font-weight:700;color:var(--ink)}
-  .who .name span{font-weight:500;color:var(--muted)}
-  .who .zone{font-size:13px;color:var(--muted)}
-  .wx{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:14px;white-space:nowrap}
-  .wx .icn{width:22px;height:22px;flex:0 0 auto}
-  .wx b{color:var(--ink);font-weight:700}
-  .tcell{text-align:right}
-  .tcell .t-time{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.5px}
-  .tcell .t-date{font-size:13px;color:var(--muted)}
-  .kebab{border:0;background:none;cursor:pointer;color:var(--muted);font-size:20px;line-height:1;
-    width:32px;height:32px;border-radius:8px;position:relative}
-  .kebab:hover{background:var(--chip)}
-  .menu{position:absolute;right:0;top:36px;background:var(--card);border:1px solid var(--line);
-    border-radius:10px;box-shadow:var(--shadow);padding:6px;display:none;z-index:5}
-  .menu.open{display:block}
-  .menu button{border:0;background:none;color:#e0384a;font-weight:600;font-size:14px;
-    padding:8px 14px;cursor:pointer;white-space:nowrap;border-radius:6px;width:100%;text-align:left}
-  .menu button:hover{background:rgba(224,56,74,.08)}
-  .icn.sun{color:#f6a821}.icn.moon{color:#5b7bb0}
+/* ── Buttons ── */
+.wc-btn { height:38px; padding:0 16px; border:0; border-radius:var(--r); font-family:var(--sans); font-weight:600; font-size:14px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+.wc-btn-primary { background:var(--clr-brand); color:#fff; }
+.wc-btn-primary:hover { background:var(--clr-brand2); }
+.wc-btn-ghost { background:none; color:var(--clr-brand); padding:0 4px; height:auto; font-weight:600; }
+.wc-btn-ghost:hover { text-decoration:underline; }
+.wc-head-actions { display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+.wc-count { color:var(--wx-muted); font-size:14px; font-weight:600; }
 
-  /* ---------- TIME DIFFERENCE ---------- */
-  .diff-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px;margin-top:14px}
-  select{width:100%;appearance:none;background:var(--card);border:1px solid var(--line);border-radius:10px;
-    padding:12px 38px 12px 14px;font-size:15px;color:var(--ink);font-weight:600;cursor:pointer;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:right 12px center}
-  .swap{border:1px solid var(--line);background:var(--card);color:var(--blue);width:42px;height:42px;
-    border-radius:50%;cursor:pointer;flex:0 0 auto;display:grid;place-items:center}
-  .swap:hover{background:var(--chip)}
-  .diff-out{margin-top:16px;background:var(--chip);border-radius:12px;padding:18px;text-align:center}
-  .diff-out .lead{font-weight:800;color:var(--navy);font-size:16px}
-  .diff-out .det{color:var(--muted);font-size:14px;margin-top:6px}
-  @media(max-width:640px){
-    .diff-grid{grid-template-columns:1fr;gap:8px}
-    .swap{justify-self:center;transform:rotate(90deg)}
-  }
+/* ── Your Cities rows ── */
+.wc-rows { background:var(--clr-tile); border:1px solid var(--clr-border); border-radius:var(--rlg); box-shadow:var(--sh); overflow:hidden; }
+.wc-row { display:grid; grid-template-columns:1fr auto auto 36px; gap:16px; align-items:center; padding:14px 18px; border-bottom:1px solid var(--clr-border); }
+.wc-row:last-child { border-bottom:0; }
+.wc-who { display:flex; align-items:center; gap:12px; min-width:0; }
+.wc-who .nm { font-weight:700; color:var(--clr-text); }
+.wc-who .nm span { font-weight:500; color:var(--wx-muted); }
+.wc-who .zn { font-size:12px; color:var(--wx-muted); margin-top:2px; }
+.wc-wx { display:flex; align-items:center; gap:8px; color:var(--wx-muted); font-size:14px; white-space:nowrap; }
+.wc-wx b { color:var(--clr-text); font-weight:700; }
+.wc-t { text-align:right; }
+.wc-t .tm { font-size:20px; font-weight:800; color:var(--clr-text); font-variant-numeric:tabular-nums; }
+.wc-t .dt { font-size:12px; color:var(--wx-muted); }
+.wc-ico { font-size:20px; line-height:1; }
+.wc-ico.day { color:var(--clr-acc); }
+.wc-ico.night { color:var(--clr-text3); }
+.wc-kebab { position:relative; width:34px; height:34px; border:0; background:none; border-radius:var(--r); cursor:pointer; color:var(--wx-muted); font-size:20px; }
+.wc-kebab:hover { background:var(--clr-row2); }
+.wc-menu { position:absolute; right:0; top:38px; background:var(--clr-bg2); border:1px solid var(--clr-border); border-radius:var(--r); box-shadow:var(--sh2); padding:6px; display:none; z-index:5; }
+.wc-menu.open { display:block; }
+.wc-menu button { border:0; background:none; color:var(--clr-dst); font-weight:600; font-size:14px; padding:8px 14px; border-radius:4px; cursor:pointer; white-space:nowrap; width:100%; text-align:left; }
+.wc-menu button:hover { background:rgba(198,40,40,.1); }
+.wc-empty { padding:26px; text-align:center; color:var(--wx-muted); font-size:14px; }
 
-  /* ---------- POPULAR ---------- */
-  .filters{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px}
-  .filters button{border:1px solid var(--line);background:var(--card);color:#3a5074;font-weight:600;
-    font-size:14px;padding:8px 16px;border-radius:20px;cursor:pointer}
-  .filters button.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-  .pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-  .pcard{border:1px solid var(--line);border-radius:12px;padding:16px}
-  .pcard .top{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-  .pcard .top .cn{font-weight:700;color:var(--ink);line-height:1.2}
-  .pcard .top .cn small{display:block;color:var(--muted);font-weight:500;font-size:12px}
-  .pcard .bot{display:flex;align-items:center;justify-content:space-between}
-  .pcard .t-time{font-size:22px;font-weight:800;color:var(--ink);letter-spacing:-.5px}
-  .pcard .t-zone{font-size:12px;color:var(--muted);margin-top:2px}
-  .pcard .icn{width:26px;height:26px}
-  .more{text-align:center;margin-top:18px}
-  @media(max-width:900px){.pgrid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:600px){
-    .pgrid{grid-template-columns:1fr;gap:10px}
-    .pcard{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:12px;padding:12px 14px}
-    .pcard .top{margin:0}
-    .pcard .top .cn small{display:inline;margin-left:0}
-    .pcard .bot{display:contents}
-    .pcard .t-time{font-size:18px}
-    .pcard .tz-wrap{text-align:right}
-  }
+/* ── Time Difference ── */
+.wc-diff { display:grid; grid-template-columns:1fr auto 1fr; gap:14px; align-items:center; }
+.wc-select { width:100%; appearance:none; font-family:var(--sans); font-size:15px; font-weight:600; color:var(--clr-text);
+  background:var(--clr-bg2); border:1px solid var(--clr-border2); border-radius:var(--r); padding:12px 38px 12px 14px; cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23647186' stroke-width='2'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; }
+.wc-swap { width:42px; height:42px; border-radius:50%; border:1px solid var(--clr-border2); background:var(--clr-bg2); color:var(--clr-brand); cursor:pointer; display:grid; place-items:center; flex:0 0 auto; }
+.wc-swap:hover { background:var(--clr-row2); }
+.wc-diff-out { margin-top:16px; background:var(--clr-row2); border:1px solid var(--clr-border); border-radius:var(--rlg); padding:18px; text-align:center; }
+.wc-diff-out .lead { font-weight:800; font-size:16px; color:var(--clr-text); }
+.wc-diff-out .det { color:var(--wx-muted); font-size:14px; margin-top:6px; line-height:1.7; }
+@media(max-width:600px){ .wc-diff{grid-template-columns:1fr;} .wc-swap{justify-self:center;transform:rotate(90deg);} }
 
-  /* ---------- ABOUT ---------- */
-  .about{display:flex;gap:14px;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:18px}
-  .about .i{width:34px;height:34px;flex:0 0 auto;color:var(--blue)}
-  .about h3{margin:0 0 4px;color:var(--navy);font-size:16px}
-  .about p{margin:0;color:#4a6187;font-size:14px}
+/* ── Region filters ── */
+.wc-filters { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px; }
+.wc-filters button { border:1px solid var(--clr-border2); background:var(--clr-bg2); color:var(--clr-text2); font-family:var(--sans);
+  font-weight:600; font-size:13px; padding:8px 16px; border-radius:var(--rxl); cursor:pointer; }
+.wc-filters button.active { background:var(--clr-brand); color:#fff; border-color:var(--clr-brand); }
 
-  /* ---------- FOOTER ---------- */
-  footer{border-top:1px solid var(--line);margin-top:26px;padding:22px 0;color:var(--muted);font-size:14px}
-  .foot-in{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-  .foot-in .logo{font-size:18px}
-  .foot-in nav{display:flex;gap:16px;flex-wrap:wrap}
-  .foot-in nav a{color:#4a6187;font-weight:500}
-  .foot-in .cc{margin-left:auto}
+/* ── Popular grid ── */
+.wc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.wc-pcard { background:var(--clr-tile); border:1px solid var(--clr-border); border-radius:var(--rlg); box-shadow:var(--sh); padding:16px; }
+.wc-pcard .top { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.wc-pcard .cn { font-weight:700; color:var(--clr-text); line-height:1.2; }
+.wc-pcard .cn small { display:block; color:var(--wx-muted); font-weight:500; font-size:12px; }
+.wc-pcard .bot { display:flex; align-items:center; justify-content:space-between; }
+.wc-pcard .tm { font-size:22px; font-weight:800; color:var(--clr-text); font-variant-numeric:tabular-nums; }
+.wc-pcard .zn { font-size:12px; color:var(--wx-muted); margin-top:2px; }
+.wc-more { text-align:center; margin-top:18px; }
+@media(max-width:900px){ .wc-grid{grid-template-columns:repeat(2,1fr);} }
+@media(max-width:560px){
+  .wc-grid{grid-template-columns:1fr; gap:10px;}
+  .wc-pcard{display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:12px; padding:12px 14px;}
+  .wc-pcard .top{margin:0;}
+  .wc-pcard .cn small{display:inline; margin-left:4px;}
+  .wc-pcard .bot{display:contents;}
+  .wc-pcard .tm{font-size:18px;}
+  .wc-pcard .znw{text-align:right;}
+}
 
-  /* ---------- MODAL ---------- */
-  .ov{position:fixed;inset:0;background:rgba(16,32,58,.45);display:none;place-items:center;z-index:60;padding:20px}
-  .ov.open{display:grid}
-  .modal{background:var(--card);border-radius:16px;box-shadow:var(--shadow);width:100%;max-width:420px;padding:22px}
-  .modal h3{margin:0 0 4px;color:var(--navy)}
-  .modal p{margin:0 0 16px;color:var(--muted);font-size:14px}
-  .modal .actions{display:flex;gap:10px;margin-top:16px}
-  .modal .actions .btn{flex:1}
-  .btn-line{background:none;border:1px solid var(--line);color:var(--ink)}
+/* ── About card ── */
+.wc-about { display:flex; gap:14px; background:var(--clr-tile); border:1px solid var(--clr-border); border-radius:var(--rlg); box-shadow:var(--sh); padding:20px; }
+.wc-about .ai { font-size:28px; color:var(--clr-brand); line-height:1; }
+.wc-about h2 { margin:0 0 6px; font-size:18px; font-weight:800; color:var(--clr-text); }
+.wc-about p { margin:0; color:var(--wx-muted); font-size:14px; line-height:1.7; }
+
+/* ── Footer (same as Weather / Sun & Moon) ── */
+.wx-footer { background:#fff; border-top:1px solid var(--wx-border); padding:30px 0; color:#5d6b7e; font-size:14px; }
+[data-theme="dark"] .wx-footer { background:#0d1117; border-color:rgba(255,255,255,0.08); color:rgba(255,255,255,0.5); }
+.wx-footer-top { display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+.wx-footer-logo { font-size:20px; font-weight:800; color:var(--wx-dark); }
+[data-theme="dark"] .wx-footer-logo { color:#e6edf3; }
+.wx-footer-logo span { color:var(--wx-blue); }
+.wx-footer-tagline { font-size:12px; opacity:.6; margin-top:4px; }
+.wx-footer-links { display:flex; gap:22px; flex-wrap:wrap; }
+.wx-footer-links a { color:inherit; text-decoration:none; }
+.wx-footer-links a:hover { color:var(--wx-blue); }
+.wx-footer-bottom { margin-top:22px; padding-top:18px; border-top:1px solid var(--wx-border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; font-size:13px; opacity:.65; }
+
+@media(max-width:640px){
+  .wx-sec-head { flex-direction:column; align-items:flex-start; }
+  .wx-footer-top { flex-direction:column; align-items:flex-start; }
+}
+
+/* ── Add City modal ── */
+.wc-ov { position:fixed; inset:0; background:rgba(13,34,64,.5); display:none; place-items:center; z-index:1100; padding:20px; }
+.wc-ov.open { display:grid; }
+.wc-modal { background:var(--clr-bg2); border:1px solid var(--clr-border); border-radius:var(--rlg); box-shadow:var(--sh2); width:100%; max-width:420px; padding:22px; }
+.wc-modal h3 { margin:0 0 4px; color:var(--clr-text); }
+.wc-modal p { margin:0 0 16px; color:var(--wx-muted); font-size:14px; }
+.wc-modal .row { display:flex; gap:10px; margin-top:16px; }
+.wc-modal .row .wc-btn { flex:1; justify-content:center; }
+.wc-btn-line { background:none; border:1px solid var(--clr-border2); color:var(--clr-text); }
 </style>
 </head>
 <body>
 
-<!-- HEADER (kept consistent with the rest of TimezoneBuddy) -->
-<header class="hdr">
-  <div class="wrap hdr-in">
-    <a class="logo" href="/">Timezone<b>Buddy</b></a>
-    <nav class="nav" id="nav">
-      <a class="active" href="/world-clock/">World Clock</a>
-      <a href="/time-zone-converter/">Time Zone Converter</a>
-      <a href="/meeting-planner/">Meeting Planner</a>
-      <a href="/sun-and-moon/">Sun &amp; Moon</a>
-      <a href="/location/">Locations</a>
-      <a href="/countries/">Countries</a>
-    </nav>
-    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
-  </div>
-</header>
-
-<main class="wrap">
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-txt">
-      <div class="eyebrow">World Clock</div>
-      <h1>World Clock</h1>
-      <p>Check the current time in cities around the world.</p>
+<!-- ── NAV (same as all other pages, nav.js will fixLogo) ── -->
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/">
+      <svg width="28" height="28" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <defs><linearGradient id="wlg" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#1e3a8a"/></linearGradient><clipPath id="wlc"><circle cx="32" cy="32" r="26"/></clipPath></defs>
+        <circle cx="32" cy="32" r="26" fill="url(#wlg)"/>
+        <g clip-path="url(#wlc)" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="1"><ellipse cx="32" cy="32" rx="10" ry="26"/><line x1="6" y1="32" x2="58" y2="32"/></g>
+        <path d="M32 6 A26 26 0 0 1 32 58 A17 26 0 0 0 32 6" fill="rgba(0,8,32,0.38)"/>
+        <circle cx="32" cy="32" r="30" fill="none" stroke="#1d4ed8" stroke-width="2.8"/>
+        <path d="M32 2 A30 30 0 0 1 62 32" fill="none" stroke="#f59e0b" stroke-width="3.8" stroke-linecap="round"/>
+        <line x1="32" y1="32" x2="32" y2="17" stroke="white" stroke-width="2.4" stroke-linecap="round"/>
+        <line x1="32" y1="32" x2="43" y2="39" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="32" cy="32" r="2.4" fill="white"/>
+      </svg>
+      <span class="logo-name">Timezone<em>Budy</em></span>
+    </a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab active" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+      <a class="nav-tab" href="/world-time-map"><i class="ti ti-map"></i> <span>World Map</span></a>
     </div>
-    <div class="hero-art" role="img" aria-label="World clock illustration showing a globe with city times"></div>
-  </section>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
 
-  <!-- YOUR CITIES -->
-  <section class="panel">
-    <div class="sec-head">
+<main>
+
+<!-- ── HERO ── -->
+<section class="wc-hero">
+  <h1 class="sr">World Clock — Check the current time in cities around the world</h1>
+  <img src="/world-clock-hero.png" alt="World Clock — check the current time in cities around the world, showing New York, London, Tokyo and Sydney on a globe">
+</section>
+
+<!-- ── YOUR CITIES ── -->
+<section class="wx-sec">
+  <div class="wx-container">
+    <div class="wx-sec-head">
       <div>
         <h2>Your Cities</h2>
-        <div class="sub">Add and manage your cities to see the current time around the world.</div>
+        <p>Add and manage your cities to see the current time around the world.</p>
       </div>
-      <div class="head-actions">
-        <span class="count"><span id="ycCount">0</span> cities</span>
-        <button class="btn btn-primary" id="addBtn">+ Add City</button>
-        <button class="btn-ghost" id="clearBtn">Clear All</button>
+      <div class="wc-head-actions">
+        <span class="wc-count"><span id="ycCount">0</span> cities</span>
+        <button class="wc-btn wc-btn-primary" id="addBtn"><i class="ti ti-plus"></i> Add City</button>
+        <button class="wc-btn wc-btn-ghost" id="clearBtn">Clear All</button>
       </div>
     </div>
-    <div class="rows" id="yourCities"></div>
-  </section>
+    <div class="wc-rows" id="yourCities"></div>
+  </div>
+</section>
 
-  <!-- TIME DIFFERENCE -->
-  <section class="panel">
-    <h2>Time Difference</h2>
-    <div class="sub">See the time difference between any two cities.</div>
-    <div class="diff-grid">
-      <select id="diffA" aria-label="First city"></select>
-      <button class="swap" id="swapBtn" aria-label="Swap cities">
+<!-- ── TIME DIFFERENCE ── -->
+<section class="wx-sec wx-sec-alt">
+  <div class="wx-container">
+    <div class="wx-sec-head">
+      <div>
+        <h2>Time Difference</h2>
+        <p>See the time difference between any two cities.</p>
+      </div>
+    </div>
+    <div class="wc-diff">
+      <select class="wc-select" id="diffA" aria-label="First city"></select>
+      <button class="wc-swap" id="swapBtn" aria-label="Swap cities">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v13M7 4L4 7M7 4l3 3M17 20V7M17 20l3-3M17 20l-3-3"/></svg>
       </button>
-      <select id="diffB" aria-label="Second city"></select>
+      <select class="wc-select" id="diffB" aria-label="Second city"></select>
     </div>
-    <div class="diff-out" id="diffOut"></div>
-  </section>
+    <div class="wc-diff-out" id="diffOut"></div>
+  </div>
+</section>
 
-  <!-- POPULAR -->
-  <section class="panel">
-    <h2>Popular World Cities</h2>
-    <div class="sub">Quickly view the current time in the most popular cities around the world.</div>
-    <div class="filters" id="filters"></div>
-    <div class="pgrid" id="popular"></div>
-    <div class="more"><button class="btn-ghost" id="moreBtn">View more cities →</button></div>
-  </section>
-
-  <!-- ABOUT -->
-  <section class="panel" style="padding:0;border:0;box-shadow:none;background:none">
-    <div class="about">
-      <svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+<!-- ── POPULAR ── -->
+<section class="wx-sec">
+  <div class="wx-container">
+    <div class="wx-sec-head">
       <div>
-        <h3>About World Clock</h3>
-        <p>Our World Clock shows the current time, date and time zone information for cities around the world. Add multiple cities, compare times and plan your day easily. All times update live and automatically handle daylight-saving changes and UTC offsets.</p>
+        <h2>Popular World Cities</h2>
+        <p>Quickly view the current time in the most popular cities around the world.</p>
       </div>
     </div>
-  </section>
+    <div class="wc-filters" id="filters"></div>
+    <div class="wc-grid" id="popular"></div>
+    <div class="wc-more"><button class="wc-btn wc-btn-ghost" id="moreBtn">View more cities →</button></div>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section class="wx-sec wx-sec-alt">
+  <div class="wx-container">
+    <div class="wc-about">
+      <div class="ai"><i class="ti ti-info-circle"></i></div>
+      <div>
+        <h2>About World Clock</h2>
+        <p>Our World Clock shows the current time, date and time zone information for cities around the world. Add multiple cities, compare times and plan your day easily. All times update live and automatically handle Daylight Saving Time and UTC offsets using the IANA time zone database.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
-<footer>
-  <div class="wrap foot-in">
-    <a class="logo" href="/">Timezone<b>Buddy</b></a>
-    <nav><a href="/about/">About</a><a href="/blog/">Blog</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></nav>
-    <span class="cc">© 2025 TimezoneBuddy. All rights reserved.</span>
+<!-- ── FOOTER ── -->
+<footer class="wx-footer">
+  <div class="wx-container">
+    <div class="wx-footer-top">
+      <div>
+        <div class="wx-footer-logo">Timezone<span>Budy</span></div>
+        <div class="wx-footer-tagline">Time. Weather. Sun. Moon. Worldwide.</div>
+      </div>
+      <div class="wx-footer-links">
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Use</a>
+      </div>
+    </div>
+    <div class="wx-footer-bottom">
+      <span>© <span id="wx-year"></span> TimezoneBudy. All rights reserved.</span>
+      <span>Accurate information for a more connected world.</span>
+    </div>
   </div>
 </footer>
 
-<!-- ADD CITY MODAL (dropdown-based, no search bar) -->
-<div class="ov" id="ov">
-  <div class="modal">
+<!-- ── ADD CITY MODAL (dropdown-based, no search bar) ── -->
+<div class="wc-ov" id="ov">
+  <div class="wc-modal">
     <h3>Add a city</h3>
     <p>Choose a city to add to Your Cities.</p>
-    <select id="addSelect" aria-label="Select a city"></select>
-    <div class="actions">
-      <button class="btn btn-line" id="cancelAdd">Cancel</button>
-      <button class="btn btn-primary" id="confirmAdd">Add City</button>
+    <select class="wc-select" id="addSelect" aria-label="Select a city"></select>
+    <div class="row">
+      <button class="wc-btn wc-btn-line" id="cancelAdd">Cancel</button>
+      <button class="wc-btn wc-btn-primary" id="confirmAdd">Add City</button>
     </div>
   </div>
 </div>
 
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="/cities.js"></script>
+<script src="/util.js?v=3"></script>
 <script>
-/* ---------- CITY DATABASE: [name, country, iso2, IANA tz, region, lat, lon] ---------- */
+// Footer year + UTC nav clock (same as other pages)
+document.getElementById('wx-year').textContent=new Date().getFullYear();
+setInterval(function(){var el=document.getElementById('utc-val');
+  if(el)el.textContent=new Date().toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',hour12:false});},1000);
+// Sync AM/PM button label with saved format (same behaviour as other pages)
+(function(){var b=document.getElementById('fmt-btn');if(b&&window.WC)b.textContent=WC.is24h?'24h':'AM/PM';})();
+</script>
+
+<script>
+/* ===== World Clock page — uses shared util.js helpers: fmt(), flag(), utcOff(), offMin(), period() ===== */
+
+/* City DB: [name, country, iso2, IANA tz, region, lat, lon] */
 var C=[
 ["New York","United States","us","America/New_York","na",40.71,-74.01],
 ["Los Angeles","United States","us","America/Los_Angeles","na",34.05,-118.24],
@@ -282,11 +329,11 @@ var C=[
 ["Toronto","Canada","ca","America/Toronto","na",43.65,-79.38],
 ["Vancouver","Canada","ca","America/Vancouver","na",49.28,-123.12],
 ["Mexico City","Mexico","mx","America/Mexico_City","na",19.43,-99.13],
-["São Paulo","Brazil","br","America/Sao_Paulo","sa",-23.55,-46.63],
+["Sao Paulo","Brazil","br","America/Sao_Paulo","sa",-23.55,-46.63],
 ["Rio de Janeiro","Brazil","br","America/Sao_Paulo","sa",-22.91,-43.17],
 ["Buenos Aires","Argentina","ar","America/Argentina/Buenos_Aires","sa",-34.6,-58.38],
 ["Lima","Peru","pe","America/Lima","sa",-12.05,-77.04],
-["Bogotá","Colombia","co","America/Bogota","sa",4.71,-74.07],
+["Bogota","Colombia","co","America/Bogota","sa",4.71,-74.07],
 ["Santiago","Chile","cl","America/Santiago","sa",-33.45,-70.66],
 ["London","United Kingdom","gb","Europe/London","europe",51.51,-0.13],
 ["Dublin","Ireland","ie","Europe/Dublin","europe",53.35,-6.26],
@@ -302,7 +349,7 @@ var C=[
 ["Vienna","Austria","at","Europe/Vienna","europe",48.21,16.37],
 ["Warsaw","Poland","pl","Europe/Warsaw","europe",52.23,21.01],
 ["Moscow","Russia","ru","Europe/Moscow","europe",55.76,37.62],
-["Istanbul","Türkiye","tr","Europe/Istanbul","europe",41.01,28.98],
+["Istanbul","Turkiye","tr","Europe/Istanbul","europe",41.01,28.98],
 ["Dubai","United Arab Emirates","ae","Asia/Dubai","asia",25.2,55.27],
 ["Riyadh","Saudi Arabia","sa","Asia/Riyadh","asia",24.71,46.68],
 ["Tel Aviv","Israel","il","Asia/Jerusalem","asia",32.09,34.78],
@@ -331,141 +378,95 @@ var C=[
 ["Perth","Australia","au","Australia/Perth","oceania",-31.95,115.86],
 ["Auckland","New Zealand","nz","Pacific/Auckland","oceania",-36.85,174.76]
 ];
-function city(name){for(var i=0;i<C.length;i++)if(C[i][0]===name)return C[i];return null;}
-
-var REGIONS=[["all","All"],["asia","Asia"],["europe","Europe"],["na","North America"],
-  ["sa","South America"],["africa","Africa"],["oceania","Australia"]];
+function city(n){for(var i=0;i<C.length;i++)if(C[i][0]===n)return C[i];return null;}
+var REGIONS=[["all","All"],["asia","Asia"],["europe","Europe"],["na","North America"],["sa","South America"],["africa","Africa"],["oceania","Australia"]];
 var POPULAR=["New York","London","Tokyo","Paris","Dubai","Singapore","Sydney","Toronto"];
 
-var SUN='<svg class="icn sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
-var MOON='<svg class="icn moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>';
+/* Timezone abbreviation (IST/EDT…) to complement utcOff() from util.js */
+function tzAbbr(tz){try{var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'short'}).formatToParts(new Date()).find(function(x){return x.type==='timeZoneName';}).value;return /GMT|UTC/.test(p)?'':p;}catch(e){return'';}}
+function zoneText(tz){var a=tzAbbr(tz);return (a?a+' · ':'')+utcOff(tz);}
+function dayIcon(tz){return period(tz)==='night'?'<i class="ti ti-moon-stars wc-ico night"></i>':'<i class="ti ti-sun wc-ico day"></i>';}
 
-/* ---------- TIME HELPERS (real IANA data, auto DST/offset) ---------- */
-function part(tz,opts){return new Intl.DateTimeFormat('en-US',Object.assign({timeZone:tz},opts)).formatToParts(new Date());}
-function fmt(tz,opts){return new Intl.DateTimeFormat('en-US',Object.assign({timeZone:tz},opts)).format(new Date());}
-function offsetStr(tz){
-  var p=part(tz,{timeZoneName:'shortOffset'}).find(function(x){return x.type==='timeZoneName';});
-  var v=(p?p.value:'GMT').replace('GMT','UTC');
-  return v==='UTC'?'UTC+0':v;
-}
-function abbrStr(tz){
-  var p=part(tz,{timeZoneName:'short'}).find(function(x){return x.type==='timeZoneName';});
-  var v=p?p.value:'';
-  return /GMT|UTC/.test(v)?'':v;
-}
-function offsetMin(tz){
-  var m=offsetStr(tz).match(/UTC([+-])(\d{1,2})(?::(\d{2}))?/);
-  if(!m)return 0;return (m[1]==='-'?-1:1)*(parseInt(m[2],10)*60+(m[3]?parseInt(m[3],10):0));
-}
-function cityTime(tz){
-  return {
-    time:fmt(tz,{hour:'numeric',minute:'2-digit',hour12:true}),
-    date:fmt(tz,{weekday:'short',month:'short',day:'numeric'}),
-    zone:(function(){var a=abbrStr(tz);return (a?a+' · ':'')+offsetStr(tz);})(),
-    day:(function(){var h=parseInt(fmt(tz,{hour:'2-digit',hour12:false,hourCycle:'h23'}),10);return h>=6&&h<18;})()
-  };
-}
-
-/* ---------- STATE ---------- */
-var LS='tzb_cities';
-function load(){try{return JSON.parse(localStorage.getItem(LS))||null;}catch(e){return null;}}
-function save(a){try{localStorage.setItem(LS,JSON.stringify(a));}catch(e){}}
-var myCities=load()||["Mumbai","New York","London","Tokyo"];
+/* State */
+var LS='wc_mycities';
+function loadS(){try{return JSON.parse(localStorage.getItem(LS))||null;}catch(e){return null;}}
+function saveS(a){try{localStorage.setItem(LS,JSON.stringify(a));}catch(e){}}
+var mine=loadS()||["Mumbai","New York","London","Tokyo"];
 var wxCache={};
 
-/* ---------- WEATHER (Open-Meteo, keyless; keyed by city name) ---------- */
-var WMO={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Cloudy',45:'Fog',48:'Fog',51:'Drizzle',
-53:'Drizzle',55:'Drizzle',61:'Rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',
-71:'Snow',73:'Snow',75:'Heavy snow',77:'Snow',80:'Showers',81:'Showers',82:'Showers',85:'Snow',86:'Snow',
-95:'Storm',96:'Storm',99:'Storm'};
+/* Weather (Open-Meteo, keyless; keyed by city NAME to avoid shared-tz collisions) */
+var WMO={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Cloudy',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',61:'Rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Snow',73:'Snow',75:'Heavy snow',77:'Snow',80:'Showers',81:'Showers',82:'Showers',85:'Snow',86:'Snow',95:'Storm',96:'Storm',99:'Storm'};
 function fetchWx(name){
   if(wxCache[name])return Promise.resolve(wxCache[name]);
   var c=city(name);if(!c)return Promise.resolve(null);
   return fetch('https://api.open-meteo.com/v1/forecast?latitude='+c[5]+'&longitude='+c[6]+'&current=temperature_2m,weather_code')
     .then(function(r){return r.json();})
-    .then(function(d){
-      var t=Math.round(d.current.temperature_2m),w=WMO[d.current.weather_code]||'';
-      wxCache[name]={t:t,w:w};return wxCache[name];
-    }).catch(function(){return null;});
+    .then(function(d){wxCache[name]={t:Math.round(d.current.temperature_2m),w:WMO[d.current.weather_code]||''};return wxCache[name];})
+    .catch(function(){return null;});
 }
 
-/* ---------- RENDER: YOUR CITIES ---------- */
-function el(html){var d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+function elc(html){var d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+
+/* Your Cities */
 function renderMine(){
   var host=document.getElementById('yourCities');host.innerHTML='';
-  document.getElementById('ycCount').textContent=myCities.length;
-  myCities.forEach(function(name,idx){
+  document.getElementById('ycCount').textContent=mine.length;
+  if(!mine.length){host.appendChild(elc('<div class="wc-empty">No cities yet. Tap <b>+ Add City</b> to get started.</div>'));return;}
+  mine.forEach(function(name,idx){
     var c=city(name);if(!c)return;
-    var row=el(
-      '<div class="row" data-tz="'+c[3]+'">'
-      +'<div class="who"><span class="flag fi fi-'+c[2]+'"></span>'
-      +'<div><div class="name">'+c[0]+', <span>'+c[1]+'</span></div>'
-      +'<div class="zone t-zone"></div></div></div>'
-      +'<div class="wx"><span class="t-icon"></span><div class="wx-t"><b class="wx-temp">—</b> <span class="wx-cond"></span></div></div>'
-      +'<div class="tcell"><div class="t-time"></div><div class="t-date"></div></div>'
-      +'<button class="kebab" aria-label="Manage">⋮<span class="menu"><button>Remove city</button></span></button>'
+    var row=elc('<div class="wc-row" data-tz="'+c[3]+'">'
+      +'<div class="wc-who">'+flag(c[2],28)
+      +'<div><div class="nm">'+c[0]+', <span>'+c[1]+'</span></div><div class="zn t-zone"></div></div></div>'
+      +'<div class="wc-wx"><span class="t-icon"></span><span><b class="wx-t">—</b> <span class="wx-c"></span></span></div>'
+      +'<div class="wc-t"><div class="tm t-time"></div><div class="dt t-date"></div></div>'
+      +'<button class="wc-kebab" aria-label="Manage">⋮<span class="wc-menu"><button>Remove city</button></span></button>'
       +'</div>');
-    var kb=row.querySelector('.kebab'),menu=row.querySelector('.menu');
+    var kb=row.querySelector('.wc-kebab'),mn=row.querySelector('.wc-menu');
     kb.addEventListener('click',function(e){e.stopPropagation();
-      document.querySelectorAll('.menu.open').forEach(function(m){if(m!==menu)m.classList.remove('open');});
-      menu.classList.toggle('open');});
-    menu.querySelector('button').addEventListener('click',function(e){e.stopPropagation();
-      myCities.splice(idx,1);save(myCities);renderMine();});
+      document.querySelectorAll('.wc-menu.open').forEach(function(m){if(m!==mn)m.classList.remove('open');});mn.classList.toggle('open');});
+    mn.querySelector('button').addEventListener('click',function(e){e.stopPropagation();mine.splice(idx,1);saveS(mine);renderMine();});
     host.appendChild(row);
-    fetchWx(name).then(function(w){if(!w)return;
-      row.querySelector('.wx-temp').textContent=w.t+'°C';
-      row.querySelector('.wx-cond').textContent=w.w;});
+    fetchWx(name).then(function(w){if(!w)return;row.querySelector('.wx-t').textContent=w.t+'°C';row.querySelector('.wx-c').textContent=w.w;});
   });
   tick();
 }
-document.addEventListener('click',function(){document.querySelectorAll('.menu.open').forEach(function(m){m.classList.remove('open');});});
+document.addEventListener('click',function(){document.querySelectorAll('.wc-menu.open').forEach(function(m){m.classList.remove('open');});});
 
-/* ---------- RENDER: DROPDOWNS ---------- */
+/* Dropdowns */
 function fillSelect(sel,selected){
-  sel.innerHTML='';
-  var byR={};C.forEach(function(c){(byR[c[4]]=byR[c[4]]||[]).push(c);});
+  sel.innerHTML='';var byR={};C.forEach(function(c){(byR[c[4]]=byR[c[4]]||[]).push(c);});
   REGIONS.slice(1).forEach(function(r){
     var g=document.createElement('optgroup');g.label=r[1];
     (byR[r[0]]||[]).sort(function(a,b){return a[0]<b[0]?-1:1;}).forEach(function(c){
-      var o=document.createElement('option');o.value=c[0];
-      o.textContent=c[0]+' ('+(abbrStr(c[3])||offsetStr(c[3]))+')';
-      if(c[0]===selected)o.selected=true;g.appendChild(o);
-    });sel.appendChild(g);
-  });
+      var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' ('+(tzAbbr(c[3])||utcOff(c[3]))+')';
+      if(c[0]===selected)o.selected=true;g.appendChild(o);});
+    sel.appendChild(g);});
 }
 
-/* ---------- RENDER: TIME DIFFERENCE ---------- */
-function fmtDur(mins){
-  var s=mins<0?-1:1;mins=Math.abs(mins);var h=Math.floor(mins/60),m=mins%60;
-  var out=h+' hour'+(h===1?'':'s');if(m)out+=' '+m+' minutes';return out;
-}
+/* Time difference */
+function fmtDur(m){var h=Math.floor(m/60),mm=m%60;var o=h+' hour'+(h===1?'':'s');if(mm)o+=' '+mm+' minutes';return o;}
 function updateDiff(){
   var a=document.getElementById('diffA').value,b=document.getElementById('diffB').value;
   var ca=city(a),cb=city(b);if(!ca||!cb)return;
-  var d=offsetMin(ca[3])-offsetMin(cb[3]);
-  var out=document.getElementById('diffOut');
-  var lead;
-  if(d===0)lead=b+' is at the same time as '+a;
-  else if(d>0)lead=b+' is '+fmtDur(d)+' behind '+a;
-  else lead=b+' is '+fmtDur(-d)+' ahead of '+a;
-  out.innerHTML='<div class="lead">'+lead+'</div><div class="det">'
-    +a+': '+fmt(ca[3],{weekday:'short',month:'short',day:'numeric'})+', '+fmt(ca[3],{hour:'numeric',minute:'2-digit',hour12:true})+' ('+(abbrStr(ca[3])||offsetStr(ca[3]))+')<br>'
-    +b+': '+fmt(cb[3],{weekday:'short',month:'short',day:'numeric'})+', '+fmt(cb[3],{hour:'numeric',minute:'2-digit',hour12:true})+' ('+(abbrStr(cb[3])||offsetStr(cb[3]))+')</div>';
+  var now=new Date();var d=offMin(now,ca[3])-offMin(now,cb[3]);
+  var lead=d===0?(b+' is at the same time as '+a):d>0?(b+' is '+fmtDur(d)+' behind '+a):(b+' is '+fmtDur(-d)+' ahead of '+a);
+  document.getElementById('diffOut').innerHTML='<div class="lead">'+lead+'</div><div class="det">'
+    +a+': '+fmtDate(ca[3])+', '+fmt(ca[3])+' ('+(tzAbbr(ca[3])||utcOff(ca[3]))+')<br>'
+    +b+': '+fmtDate(cb[3])+', '+fmt(cb[3])+' ('+(tzAbbr(cb[3])||utcOff(cb[3]))+')</div>';
 }
 
-/* ---------- RENDER: POPULAR ---------- */
+/* Popular */
 var curRegion='all',showAll=false;
 function renderPopular(){
   var host=document.getElementById('popular');host.innerHTML='';
-  var list=C.filter(function(c){return curRegion==='all'?POPULAR.indexOf(c[0])>-1||showAll:c[4]===curRegion;});
-  if(curRegion==='all'&&!showAll)list=POPULAR.map(city).filter(Boolean);
+  var list;
+  if(curRegion==='all')list=showAll?C.slice():POPULAR.map(city).filter(Boolean);
+  else list=C.filter(function(c){return c[4]===curRegion;});
   list.forEach(function(c){
-    host.appendChild(el(
-      '<div class="pcard" data-tz="'+c[3]+'">'
-      +'<div class="top"><span class="flag fi fi-'+c[2]+'"></span>'
-      +'<span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div>'
-      +'<div class="bot"><div><div class="t-time"></div><div class="tz-wrap"><span class="t-zone t-zone2"></span></div></div>'
-      +'<span class="t-icon"></span></div></div>'));
+    host.appendChild(elc('<div class="wc-pcard" data-tz="'+c[3]+'">'
+      +'<div class="top">'+flag(c[2],26)+'<span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div>'
+      +'<div class="bot"><div><div class="tm t-time"></div><div class="znw"><span class="zn t-zone"></span></div></div><span class="t-icon"></span></div>'
+      +'</div>'));
   });
   document.getElementById('moreBtn').style.display=(curRegion==='all'&&!showAll)?'':'none';
   tick();
@@ -473,53 +474,42 @@ function renderPopular(){
 function renderFilters(){
   var host=document.getElementById('filters');host.innerHTML='';
   REGIONS.forEach(function(r){
-    var b=document.createElement('button');b.textContent=r[1];
-    if(r[0]===curRegion)b.className='active';
+    var b=document.createElement('button');b.textContent=r[1];if(r[0]===curRegion)b.className='active';
     b.addEventListener('click',function(){curRegion=r[0];showAll=(r[0]!=='all');renderFilters();renderPopular();});
-    host.appendChild(b);
-  });
+    host.appendChild(b);});
 }
 
-/* ---------- TICK: update every live element ---------- */
+/* Tick — respects AM/PM toggle via util.fmt(); updates every second */
 function tick(){
-  document.querySelectorAll('[data-tz]').forEach(function(node){
-    var d=cityTime(node.dataset.tz);
-    var t=node.querySelector('.t-time');if(t)t.textContent=d.time;
-    var dt=node.querySelector('.t-date');if(dt)dt.textContent=d.date;
-    node.querySelectorAll('.t-zone').forEach(function(z){z.textContent=d.zone;});
-    var ic=node.querySelector('.t-icon');if(ic)ic.innerHTML=d.day?SUN:MOON;
+  document.querySelectorAll('[data-tz]').forEach(function(n){
+    var tz=n.dataset.tz;
+    var t=n.querySelector('.t-time');if(t)t.textContent=fmt(tz);
+    var d=n.querySelector('.t-date');if(d)d.textContent=fmtDate(tz);
+    var z=n.querySelector('.t-zone');if(z)z.textContent=zoneText(tz);
+    var ic=n.querySelector('.t-icon');if(ic)ic.innerHTML=dayIcon(tz);
   });
   updateDiff();
 }
 
-/* ---------- WIRE UP ---------- */
-document.getElementById('burger').addEventListener('click',function(){document.getElementById('nav').classList.toggle('open');});
-document.getElementById('clearBtn').addEventListener('click',function(){myCities=[];save(myCities);renderMine();});
+/* Wire up */
+document.getElementById('clearBtn').addEventListener('click',function(){mine=[];saveS(mine);renderMine();});
 document.getElementById('moreBtn').addEventListener('click',function(){showAll=true;renderPopular();});
-document.getElementById('swapBtn').addEventListener('click',function(){
-  var A=document.getElementById('diffA'),B=document.getElementById('diffB');
-  var t=A.value;A.value=B.value;B.value=t;updateDiff();
-});
+document.getElementById('swapBtn').addEventListener('click',function(){var A=document.getElementById('diffA'),B=document.getElementById('diffB');var t=A.value;A.value=B.value;B.value=t;updateDiff();});
 document.getElementById('diffA').addEventListener('change',updateDiff);
 document.getElementById('diffB').addEventListener('change',updateDiff);
-
-// Add City modal
 var ov=document.getElementById('ov');
-document.getElementById('addBtn').addEventListener('click',function(){
-  fillSelect(document.getElementById('addSelect'),null);ov.classList.add('open');});
+document.getElementById('addBtn').addEventListener('click',function(){fillSelect(document.getElementById('addSelect'),null);ov.classList.add('open');});
 document.getElementById('cancelAdd').addEventListener('click',function(){ov.classList.remove('open');});
 ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.remove('open');});
-document.getElementById('confirmAdd').addEventListener('click',function(){
-  var v=document.getElementById('addSelect').value;
-  if(v&&myCities.indexOf(v)===-1){myCities.push(v);save(myCities);renderMine();}
-  ov.classList.remove('open');
-});
+document.getElementById('confirmAdd').addEventListener('click',function(){var v=document.getElementById('addSelect').value;if(v&&mine.indexOf(v)===-1){mine.push(v);saveS(mine);renderMine();}ov.classList.remove('open');});
 
-/* ---------- INIT ---------- */
+/* Init */
 fillSelect(document.getElementById('diffA'),'Mumbai');
 fillSelect(document.getElementById('diffB'),'New York');
 renderMine();renderFilters();renderPopular();
 setInterval(tick,1000);
 </script>
+
+<script src="/nav.js?v=3"></script>
 </body>
 </html>
