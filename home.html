@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>
+(function() {
+  var saved = localStorage.getItem('wc_theme');
+  var isDark = saved === 'dark' ||
+    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<meta name="description" content="TimezoneBudy — check the current time anywhere, convert time zones, plan meetings, and explore sun, moon, weather and locations around the world.">
+<meta name="keywords" content="world clock,time zone converter,meeting planner,sun and moon,current time,time zones">
+<title>TimezoneBudy — Current Time, Time Zones & World Tools</title>
+<link rel="canonical" href="https://timezonebudy.com/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/main.css?v=2">
+<link rel="stylesheet" href="/location.css?v=2">
+<link rel="stylesheet" href="/footer.css?v=2">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0d2240">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
+<link rel="stylesheet" href="/pwa.css?v=2">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+
+<style>
+/* ===== Homepage (Main Hub) — scoped hp- ===== */
+.hp-wrap{max-width:1120px;margin:0 auto;padding:0 20px;}
+.hp-section{margin:38px auto;}
+.hp-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 16px;flex-wrap:wrap;}
+.hp-head h2{font-size:22px;font-weight:700;margin:0;color:var(--clr-text);}
+.hp-head h2 .hp-sub{font-size:15px;font-weight:500;color:var(--clr-text2);margin-left:6px;}
+.hp-link{font-size:14px;font-weight:600;color:var(--clr-brand);text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.hp-link:hover{text-decoration:underline;}
+
+/* Hero */
+.hp-hero{position:relative;overflow:hidden;border-radius:var(--rxl);background:linear-gradient(135deg,#eaf2ff 0%,#f4f9ff 55%,#eef5ff 100%);margin-top:20px;box-shadow:var(--sh);}
+[data-theme=dark] .hp-hero{background:linear-gradient(135deg,#131c30 0%,#0f1524 60%,#131b2c 100%);}
+.hp-hero-inner{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:20px;padding:44px 44px;}
+.hp-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-brand);margin:0 0 14px;}
+.hp-hero h1{font-size:clamp(30px,4.4vw,50px);line-height:1.06;font-weight:700;margin:0 0 16px;color:var(--clr-text);letter-spacing:-.02em;}
+.hp-hero p{font-size:16px;line-height:1.6;color:var(--clr-text2);max-width:440px;margin:0;}
+.hp-hero-art{width:100%;height:auto;display:block;}
+
+/* Quick World Clock */
+.hp-wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.hp-wc-card{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:16px 16px 14px;box-shadow:var(--sh);}
+.hp-wc-city{display:flex;align-items:center;gap:9px;margin:0 0 12px;}
+.hp-wc-city .fi{width:22px;height:16px;border-radius:3px;flex:none;box-shadow:0 0 0 1px var(--clr-border);}
+.hp-wc-city b{font-size:15px;font-weight:700;color:var(--clr-text);display:block;line-height:1.15;}
+.hp-wc-city span{font-size:12.5px;color:var(--clr-text2);}
+.hp-wc-time{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--clr-text);letter-spacing:-.01em;line-height:1;margin:0 0 10px;}
+.hp-wc-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;}
+.hp-wc-meta{font-size:12px;color:var(--clr-text2);line-height:1.5;}
+.hp-wc-meta .hp-wc-off{color:var(--clr-text3);}
+.hp-wc-ico{font-size:22px;line-height:1;}
+.hp-wc-ico.day{color:var(--clr-acc);}
+.hp-wc-ico.night{color:var(--clr-brand2);}
+
+/* Tools */
+.hp-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.hp-tool{display:block;text-decoration:none;border:1px solid var(--clr-border);border-radius:var(--rlg);padding:22px 22px 18px;box-shadow:var(--sh);transition:transform .12s,box-shadow .12s;background:var(--clr-tile);}
+.hp-tool:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
+.hp-tool .ti{font-size:30px;line-height:1;color:var(--clr-brand);}
+.hp-tool h3{font-size:17px;font-weight:700;margin:14px 0 6px;color:var(--clr-text);}
+.hp-tool p{font-size:14px;line-height:1.5;color:var(--clr-text2);margin:0 0 14px;}
+.hp-tool .hp-explore{font-size:14px;font-weight:600;color:var(--clr-brand);display:inline-flex;align-items:center;gap:5px;}
+.hp-tool.t-blue{background:#eef4ff;} .hp-tool.t-sun{background:#fff7e6;} .hp-tool.t-loc{background:#e9f7ef;} .hp-tool.t-flag{background:#fdeef2;}
+[data-theme=dark] .hp-tool.t-blue,[data-theme=dark] .hp-tool.t-sun,[data-theme=dark] .hp-tool.t-loc,[data-theme=dark] .hp-tool.t-flag{background:var(--clr-tile);}
+.hp-tool.t-sun .ti{color:var(--clr-acc);} .hp-tool.t-loc .ti{color:#2e9e6b;} .hp-tool.t-flag .ti{color:#d24d78;}
+
+/* Pills */
+.hp-pills{display:flex;flex-wrap:wrap;gap:10px;}
+.hp-pill{text-decoration:none;font-size:14px;font-weight:600;color:var(--clr-text);background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rxl);padding:9px 18px;transition:background .12s,border-color .12s,color .12s;}
+.hp-pill:hover{background:var(--clr-brand);border-color:var(--clr-brand);color:#fff;}
+
+/* Countries */
+.hp-countries{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
+.hp-country{display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:14px 14px;color:var(--clr-text);font-size:14px;font-weight:600;transition:border-color .12s,box-shadow .12s;}
+.hp-country:hover{border-color:var(--clr-brand);box-shadow:var(--sh);}
+.hp-country .fi{width:26px;height:18px;border-radius:3px;flex:none;box-shadow:0 0 0 1px var(--clr-border);}
+
+/* Promo */
+.hp-promo{position:relative;overflow:hidden;border-radius:var(--rxl);background:linear-gradient(135deg,#e7f0ff 0%,#f3f8ff 100%);padding:40px 44px;box-shadow:var(--sh);}
+[data-theme=dark] .hp-promo{background:linear-gradient(135deg,#131c30 0%,#0f1524 100%);}
+.hp-promo h2{font-size:clamp(24px,3.2vw,34px);font-weight:700;margin:0 0 8px;color:var(--clr-text);letter-spacing:-.01em;}
+.hp-promo p{font-size:16px;color:var(--clr-text2);margin:0;}
+.hp-promo-art{position:absolute;right:0;bottom:0;width:min(52%,520px);opacity:.9;pointer-events:none;}
+
+@media(max-width:900px){
+  .hp-hero-inner{grid-template-columns:1fr;gap:6px;padding:30px 24px;}
+  .hp-hero-art{max-width:340px;margin:8px auto 0;}
+  .hp-hero p{max-width:none;}
+  .hp-tools{grid-template-columns:repeat(2,1fr);}
+  .hp-countries{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:620px){
+  .hp-section{margin:28px auto;}
+  .hp-wc-grid{grid-template-columns:1fr;gap:0;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh);}
+  .hp-wc-card{border:0;border-bottom:1px solid var(--clr-border);border-radius:0;box-shadow:none;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 12px;padding:14px 16px;}
+  .hp-wc-card:last-child{border-bottom:0;}
+  .hp-wc-city{margin:0;grid-row:1/3;align-self:center;}
+  .hp-wc-time{margin:0;font-size:22px;text-align:right;grid-column:2;grid-row:1;}
+  .hp-wc-foot{grid-column:2;grid-row:2;}
+  .hp-wc-ico{grid-column:3;grid-row:1/3;font-size:20px;}
+  .hp-tool{padding:18px;}
+  .hp-promo,.hp-hero-inner{padding:26px 22px;}
+  .hp-promo-art{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== LIVE TOP NAV — do not modify (mirrors live site; nav.js handles logo + mobile) ===== -->
+<nav class="topnav" aria-label="Main navigation">
+  <div class="topnav-inner">
+    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+    <div class="nav-tabs" role="tablist">
+      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
+      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
+      <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
+      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
+    </div>
+    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
+    <div class="nav-btns">
+      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
+      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
+    </div>
+  </div>
+</nav>
+
+<main>
+<div class="hp-wrap">
+
+  <!-- ===== HERO ===== -->
+  <section class="hp-hero" aria-label="Welcome">
+    <div class="hp-hero-inner">
+      <div>
+        <p class="hp-eyebrow">Explore a more connected world</p>
+        <h1>Time connects<br>a brighter world</h1>
+        <p>Check the current time anywhere, explore time zones, plan meetings and discover more with TimezoneBudy.</p>
+      </div>
+      <svg class="hp-hero-art" viewBox="0 0 520 380" role="img" aria-label="Illustration of a globe with location pins, sun and moon">
+        <defs>
+          <radialGradient id="hpGlobe" cx="42%" cy="38%" r="70%">
+            <stop offset="0%" stop-color="#dcebff"/><stop offset="60%" stop-color="#bcd7fb"/><stop offset="100%" stop-color="#9cc2f5"/>
+          </radialGradient>
+          <linearGradient id="hpSun" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffd76b"/><stop offset="100%" stop-color="#f5a623"/></linearGradient>
+        </defs>
+        <!-- clouds -->
+        <g fill="#ffffff" opacity=".85">
+          <ellipse cx="120" cy="70" rx="34" ry="14"/><ellipse cx="150" cy="66" rx="26" ry="12"/>
+          <ellipse cx="430" cy="250" rx="30" ry="12"/><ellipse cx="405" cy="255" rx="22" ry="10"/>
+        </g>
+        <!-- sun -->
+        <g transform="translate(430,70)">
+          <g stroke="#f5a623" stroke-width="4" stroke-linecap="round">
+            <line x1="0" y1="-34" x2="0" y2="-24"/><line x1="0" y1="24" x2="0" y2="34"/>
+            <line x1="-34" y1="0" x2="-24" y2="0"/><line x1="24" y1="0" x2="34" y2="0"/>
+            <line x1="-24" y1="-24" x2="-17" y2="-17"/><line x1="17" y1="17" x2="24" y2="24"/>
+            <line x1="24" y1="-24" x2="17" y2="-17"/><line x1="-17" y1="17" x2="-24" y2="24"/>
+          </g>
+          <circle r="18" fill="url(#hpSun)"/>
+        </g>
+        <!-- moon -->
+        <path d="M470 300 a26 26 0 1 1 -20 -42 a20 20 0 0 0 20 42 z" fill="#cfe0f7"/>
+        <!-- globe -->
+        <g transform="translate(300,200)">
+          <circle r="120" fill="url(#hpGlobe)"/>
+          <g fill="none" stroke="#8fb6ee" stroke-width="1.4" opacity=".8">
+            <ellipse rx="120" ry="46"/><ellipse rx="120" ry="86"/>
+            <ellipse rx="46" ry="120"/><ellipse rx="86" ry="120"/>
+            <line x1="-120" y1="0" x2="120" y2="0"/>
+          </g>
+          <!-- soft landmasses -->
+          <g fill="#a9cbf3" opacity=".9">
+            <path d="M-60 -50 q20 -14 44 -6 q16 6 8 24 q-10 20 -34 16 q-28 -4 -18 -34 z"/>
+            <path d="M14 6 q26 -6 40 12 q10 16 -8 30 q-24 16 -40 -6 q-12 -22 8 -36 z"/>
+            <path d="M-38 40 q18 -6 26 10 q6 16 -12 24 q-22 8 -26 -12 q-2 -18 12 -22 z"/>
+          </g>
+          <!-- orbit dashed line -->
+          <ellipse rx="150" ry="58" fill="none" stroke="#7ea9e8" stroke-width="1.6" stroke-dasharray="4 6" transform="rotate(-16)" opacity=".7"/>
+        </g>
+        <!-- pins -->
+        <g>
+          <g transform="translate(250,150)"><path d="M0 0 C-11 -14 -11 -26 0 -30 C11 -26 11 -14 0 0 z" fill="#1e6bff"/><circle cx="0" cy="-22" r="4.5" fill="#fff"/></g>
+          <g transform="translate(322,196)"><path d="M0 0 C-11 -14 -11 -26 0 -30 C11 -26 11 -14 0 0 z" fill="#e5484d"/><circle cx="0" cy="-22" r="4.5" fill="#fff"/></g>
+          <g transform="translate(230,205)"><path d="M0 0 C-10 -12 -10 -23 0 -27 C10 -23 10 -12 0 0 z" fill="#1e6bff"/><circle cx="0" cy="-20" r="4" fill="#fff"/></g>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ===== YOUR WORLD CLOCK (Quick View) ===== -->
+  <section class="hp-section" aria-label="Your World Clock">
+    <div class="hp-head">
+      <h2>Your World Clock <span class="hp-sub">(Quick View)</span></h2>
+      <a class="hp-link" href="/">View World Clock <i class="ti ti-arrow-right"></i></a>
+    </div>
+    <div class="hp-wc-grid" id="hp-wc"></div>
+  </section>
+
+  <!-- ===== EXPLORE OUR TOOLS ===== -->
+  <section class="hp-section" aria-label="Explore our tools">
+    <div class="hp-head"><h2>Explore Our Tools</h2></div>
+    <div class="hp-tools">
+      <a class="hp-tool t-blue" href="/"><i class="ti ti-world"></i><h3>World Clock</h3><p>See the current time around the world.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
+      <a class="hp-tool t-blue" href="/converter.html"><i class="ti ti-arrows-exchange"></i><h3>Time Zone Converter</h3><p>Convert time between any time zones.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
+      <a class="hp-tool t-blue" href="/converter.html#meeting"><i class="ti ti-calendar-event"></i><h3>Meeting Planner</h3><p>Find the best time for everyone.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
+      <a class="hp-tool t-sun" href="/sunmoon.html"><i class="ti ti-sun"></i><h3>Sun &amp; Moon</h3><p>Check sunrise, sunset, moon phases and more.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
+      <a class="hp-tool t-loc" href="/location/"><i class="ti ti-map-pin"></i><h3>Locations</h3><p>Explore time, weather and more for any location.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
+      <a class="hp-tool t-flag" href="/location/"><i class="ti ti-flag"></i><h3>Countries</h3><p>Browse time zones by country.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
+    </div>
+  </section>
+
+  <!-- ===== POPULAR LOCATIONS ===== -->
+  <section class="hp-section" aria-label="Popular locations">
+    <div class="hp-head">
+      <h2>Popular Locations</h2>
+      <a class="hp-link" href="/location/">View all locations <i class="ti ti-arrow-right"></i></a>
+    </div>
+    <div class="hp-pills">
+      <a class="hp-pill" href="/location/united-states/new-york/">New York</a>
+      <a class="hp-pill" href="/location/united-kingdom/london/">London</a>
+      <a class="hp-pill" href="/location/japan/tokyo/">Tokyo</a>
+      <a class="hp-pill" href="/location/united-arab-emirates/dubai/">Dubai</a>
+      <a class="hp-pill" href="/location/singapore/singapore/">Singapore</a>
+      <a class="hp-pill" href="/location/australia/sydney/">Sydney</a>
+      <a class="hp-pill" href="/location/france/paris/">Paris</a>
+      <a class="hp-pill" href="/location/canada/toronto/">Toronto</a>
+    </div>
+  </section>
+
+  <!-- ===== POPULAR COUNTRIES ===== -->
+  <section class="hp-section" aria-label="Popular countries">
+    <div class="hp-head">
+      <h2>Popular Countries</h2>
+      <a class="hp-link" href="/location/">View all countries <i class="ti ti-arrow-right"></i></a>
+    </div>
+    <div class="hp-countries">
+      <a class="hp-country" href="/location/india/"><span class="fi fi-in"></span> India</a>
+      <a class="hp-country" href="/location/united-states/"><span class="fi fi-us"></span> United States</a>
+      <a class="hp-country" href="/location/united-kingdom/"><span class="fi fi-gb"></span> United Kingdom</a>
+      <a class="hp-country" href="/location/australia/"><span class="fi fi-au"></span> Australia</a>
+      <a class="hp-country" href="/location/canada/"><span class="fi fi-ca"></span> Canada</a>
+      <a class="hp-country" href="/location/germany/"><span class="fi fi-de"></span> Germany</a>
+    </div>
+  </section>
+
+  <!-- ===== PROMO ===== -->
+  <section class="hp-section hp-promo" aria-label="TimezoneBudy">
+    <h2>Explore time. Connect the world.</h2>
+    <p>Accurate. Simple. Useful. Everywhere you go.</p>
+    <svg class="hp-promo-art" viewBox="0 0 520 150" aria-hidden="true">
+      <g fill="none" stroke="#9bc0f2" stroke-width="1.6" opacity=".8">
+        <rect x="40" y="70" width="16" height="60"/><path d="M48 70 l0 -22"/>
+        <path d="M96 130 l0 -54 l14 -14 l14 14 l0 54"/><path d="M110 62 l0 -14"/>
+        <circle cx="180" cy="96" r="20"/><path d="M180 76 l0 54"/>
+        <path d="M236 130 l0 -60 q18 -20 36 0 l0 60"/>
+        <path d="M300 130 l0 -70 l30 -22 l30 22 l0 70"/>
+        <path d="M392 130 l0 -40 q22 -26 44 0 l0 40"/>
+        <path d="M4 130 l512 0"/>
+      </g>
+    </svg>
+  </section>
+
+</div>
+</main>
+
+<!-- ===== LIVE FOOTER — mirrors live site ===== -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/">World Clock</a>
+        <a href="/converter.html">Timezone Converter</a>
+        <a href="/converter.html#meeting">Meeting Planner</a>
+        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/weather">Weather</a>
+        <a href="/tools.html">Time Tools</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about.html">About Us</a>
+        <a href="/contact.html">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy.html">Privacy Policy</a>
+        <a href="/terms.html">Terms of Service</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy.html">Privacy</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/contact.html">Contact</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<!-- Shared assets (same as live) -->
+<script src="/cities.js"></script>
+<script src="/util.js?v=2"></script>
+<script src="/pwa-install.js" defer></script>
+<script src="/clock.js?v=2"></script>
+
+<!-- Homepage quick World Clock -->
+<script>
+(function(){
+  var CITIES=[
+    {n:'Mumbai',c:'India',cc:'in',tz:'Asia/Kolkata'},
+    {n:'New York',c:'United States',cc:'us',tz:'America/New_York'},
+    {n:'London',c:'United Kingdom',cc:'gb',tz:'Europe/London'},
+    {n:'Tokyo',c:'Japan',cc:'jp',tz:'Asia/Tokyo'}
+  ];
+  var el=document.getElementById('hp-wc');
+  if(!el) return;
+  el.innerHTML=CITIES.map(function(x){
+    return '<div class="hp-wc-card" data-tz="'+x.tz+'">'
+      +'<div class="hp-wc-city"><span class="fi fi-'+x.cc+'"></span><div><b>'+x.n+'</b><span>'+x.c+'</span></div></div>'
+      +'<div class="hp-wc-time">--:--</div>'
+      +'<div class="hp-wc-foot"><div class="hp-wc-meta"><span class="hp-wc-date"></span><br><span class="hp-wc-off"></span></div>'
+      +'<i class="ti hp-wc-ico"></i></div></div>';
+  }).join('');
+
+  function is24h(){return localStorage.getItem('wc_24h')==='1';}
+  function parts(tz){
+    var d=new Date();
+    var t=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:!is24h()}).format(d);
+    var dt=new Intl.DateTimeFormat('en-US',{timeZone:tz,weekday:'short',day:'numeric',month:'short'}).format(d);
+    var hr=parseInt(new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',hour12:false}).format(d),10);
+    var off='',abbr='';
+    try{off=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'shortOffset'}).formatToParts(d).find(function(p){return p.type==='timeZoneName';}).value.replace('GMT','UTC');}catch(e){}
+    try{var a=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'short'}).formatToParts(d).find(function(p){return p.type==='timeZoneName';}).value;if(!/GMT|UTC/.test(a))abbr=a;}catch(e){}
+    return {t:t,dt:dt.replace(',',''),lbl:(abbr?abbr+' · ':'')+off,day:hr>=6&&hr<18};
+  }
+  function tick(){
+    el.querySelectorAll('.hp-wc-card').forEach(function(card){
+      var p=parts(card.dataset.tz);
+      card.querySelector('.hp-wc-time').textContent=p.t;
+      card.querySelector('.hp-wc-date').textContent=p.dt;
+      card.querySelector('.hp-wc-off').textContent=p.lbl;
+      var ic=card.querySelector('.hp-wc-ico');
+      ic.className='ti hp-wc-ico '+(p.day?'day ti-sun':'night ti-moon');
+    });
+  }
+  tick();setInterval(tick,1000*30);
+  window.onFmtChange=(function(o){return function(){if(o)o();tick();};})(window.onFmtChange);
+})();
+</script>
+
+<!-- nav_inject_v2 -->
+<script src="/nav.js?v=3"></script>
+</body>
+</html>
