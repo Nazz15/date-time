@@ -43,8 +43,7 @@
 .wx-sec-head p { color:var(--wx-muted); margin:0; font-size:14px; }
 
 /* ── Hero (World Clock banner illustration) ── */
-.wc-hero { line-height:0; background:var(--clr-bg2); border-bottom:1px solid var(--clr-border); }
-.wc-hero img { width:100%; height:auto; display:block; max-height:360px; object-fit:cover; object-position:center; }
+.wc-hero { height:clamp(200px,26vw,340px); background:#eaf2ff url('world-clock-hero.png') center/cover no-repeat; border-bottom:1px solid var(--clr-border); }
 .sr { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
 
 /* ── Buttons ── */
@@ -194,9 +193,8 @@
 <main>
 
 <!-- ── HERO ── -->
-<section class="wc-hero">
+<section class="wc-hero" role="img" aria-label="World Clock — check the current time in cities around the world">
   <h1 class="sr">World Clock — Check the current time in cities around the world</h1>
-  <img src="/world-clock-hero.png" alt="World Clock — check the current time in cities around the world, showing New York, London, Tokyo and Sydney on a globe">
 </section>
 
 <!-- ── YOUR CITIES ── -->
