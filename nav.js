@@ -43,6 +43,7 @@
         '<div class="tzb-more'+(moreOn?" on":"")+'"><button class="tzb-mbtn" aria-expanded="false">More <svg viewBox="0 0 24 24" width="14" height="14"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>' +
           '<div class="tzb-drop">' + MORE.map(link).join("") + '</div></div>' +
       '</nav>' +
+      '<div class="tzb-ctl"></div>' +
     '</div></header>';
 
   var drawer =
@@ -73,6 +74,13 @@
   '.tzb-drop a{padding:10px 14px;border-radius:7px;font-size:14px;color:#3a465c}' +
   '.tzb-drop a:hover{background:#f4f7fb;color:var(--tzb-blue)}.tzb-drop a.on{color:var(--tzb-blue);font-weight:600}' +
   '.tzb-burger{display:none;background:none;border:0;cursor:pointer;padding:4px}' +
+  /* relocated controls (UTC / 24h / theme) */
+  '.tzb-ctl{display:flex;align-items:center;gap:10px;margin-left:22px}.tzb-ctl:empty{display:none}' +
+  '.tzb-ctl .nav-utc{display:flex;align-items:center;gap:6px;font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace;color:#5b6b85;white-space:nowrap}' +
+  '.tzb-ctl .nav-utc .utc-l{color:#9aa6ba}' +
+  '.tzb-ctl .nav-btns{display:flex;gap:8px}' +
+  '.tzb-ctl .nav-btn{border:1px solid #dbe2ec;background:#f6f8fb;color:#2b3752;font:600 13px/1 inherit;padding:8px 11px;border-radius:8px;cursor:pointer}' +
+  '.tzb-ctl .nav-btn:hover{background:#eef2f8;border-color:#c7d2e0}' +
   /* drawer */
   '.tzb-scrim{position:fixed;inset:0;background:rgba(15,23,42,.4);opacity:0;visibility:hidden;transition:.2s;z-index:1100}' +
   '.tzb-scrim.show{opacity:1;visibility:visible}' +
@@ -87,13 +95,24 @@
   '.tzb-sub{display:none;flex-direction:column;background:#f7f9fc}.tzb-acc.open + .tzb-sub{display:flex}' +
   '.tzb-sub a{font-size:15px;color:#3a465c;text-decoration:none;padding:13px 20px 13px 34px;border-bottom:1px solid #eef2f7}.tzb-sub a.on{color:var(--tzb-blue);font-weight:600}' +
   'body.tzb-lock{overflow:hidden}' +
-  '@media(max-width:900px){.tzb-links{display:none}.tzb-burger{display:block}.tzb-logo{margin:0 auto;transform:translateX(-14px)}.tzb-in{gap:0}}';
+  '@media(max-width:900px){.tzb-links{display:none}.tzb-burger{display:block}.tzb-logo{margin:0 auto}.tzb-in{gap:0}.tzb-ctl{margin-left:8px}}' +
+  '@media(max-width:520px){.tzb-ctl .nav-utc{display:none}}';
 
   var s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
   var mount = document.getElementById("tzb-nav-mount") || document.querySelector("header#tzb-nav");
   var wrap = document.createElement("div"); wrap.innerHTML = header + drawer;
   if (mount) mount.replaceWith.apply(mount, [].slice.call(wrap.childNodes));
   else while (wrap.firstChild) document.body.insertBefore(wrap.firstChild, document.body.firstChild);
+
+  /* absorb old page bar's controls (keeps their wiring), then remove the duplicate bar */
+  var oldbar = document.querySelector("nav.topnav, .topnav");
+  if (oldbar) {
+    var ctl = document.querySelector(".tzb-ctl");
+    var utc = oldbar.querySelector(".nav-utc"), btns = oldbar.querySelector(".nav-btns");
+    if (utc) ctl.appendChild(utc);
+    if (btns) ctl.appendChild(btns);
+    oldbar.remove();
+  }
 
   /* interactions */
   var drw = document.querySelector(".tzb-drawer"), scr = document.querySelector(".tzb-scrim");
