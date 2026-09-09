@@ -119,15 +119,42 @@
   if (mount) mount.replaceWith.apply(mount, [].slice.call(wrap.childNodes));
   else while (wrap.firstChild) document.body.insertBefore(wrap.firstChild, document.body.firstChild);
 
-  /* absorb old page bar's controls (keeps their wiring), then remove the duplicate bar */
+  /* remove any legacy top bar, then build the standard right-side controls */
   var oldbar = document.querySelector("nav.topnav, .topnav");
-  if (oldbar) {
-    var ctl = document.querySelector(".tzb-ctl");
-    var utc = oldbar.querySelector(".nav-utc"), btns = oldbar.querySelector(".nav-btns");
-    if (utc) ctl.appendChild(utc);
-    if (btns) ctl.appendChild(btns);
-    oldbar.remove();
-  }
+  if (oldbar) oldbar.remove();
+
+  document.querySelector(".tzb-ctl").innerHTML =
+    '<div class="nav-utc"><span id="utc-val">--:--:-- UTC</span></div>' +
+    '<div class="nav-btns">' +
+      '<button class="nav-btn" id="fmt-btn" onclick="toggle24h()"></button>' +
+      '<button class="nav-btn nav-ico" id="theme-btn" onclick="toggleTheme()">🌙</button>' +
+    '</div>';
+
+  /* control engine — reuses site keys (wc_theme / wc_24h); defers to util.js if it's loaded */
+  (function(){
+    var g = localStorage,
+        is24 = g.getItem("wc_24h") === "true",
+        dark = g.getItem("wc_theme") === "dark" || (!g.getItem("wc_theme") && matchMedia("(prefers-color-scheme:dark)").matches),
+        fb = document.getElementById("fmt-btn"),
+        tb = document.getElementById("theme-btn");
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    fb.textContent = is24 ? "AM/PM" : "24h";
+    tb.textContent = dark ? "☀️" : "🌙";
+    if (typeof window.toggleTheme !== "function") window.toggleTheme = function(){
+      var d = document.documentElement.getAttribute("data-theme") !== "dark";
+      document.documentElement.setAttribute("data-theme", d ? "dark" : "light");
+      g.setItem("wc_theme", d ? "dark" : "light"); tb.textContent = d ? "☀️" : "🌙";
+    };
+    if (typeof window.toggle24h !== "function") window.toggle24h = function(){
+      var v = g.getItem("wc_24h") !== "true"; g.setItem("wc_24h", v);
+      fb.textContent = v ? "AM/PM" : "24h"; if (typeof onFmtChange === "function") onFmtChange();
+    };
+    var tick = function(){
+      var e = document.getElementById("utc-val");
+      if (e) e.textContent = new Intl.DateTimeFormat("en-US",{timeZone:"UTC",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).format(new Date()) + " UTC";
+    };
+    tick(); if (typeof window.tickUTC !== "function") setInterval(tick, 1000);
+  })();
 
   /* interactions */
   var drw = document.querySelector(".tzb-drawer"), scr = document.querySelector(".tzb-scrim");
