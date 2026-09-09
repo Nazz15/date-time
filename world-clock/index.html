@@ -468,7 +468,7 @@ function updateDiff(){
   var a=document.getElementById('diffA').value,b=document.getElementById('diffB').value;
   var ca=city(a),cb=city(b);if(!ca||!cb)return;
   var now=new Date();var d=offMin(now,ca[3])-offMin(now,cb[3]);
-  var lead=d===0?(b+' is at the same time as '+a):d>0?(b+' is '+fmtDur(d)+' behind '+a):(b+' is '+fmtDur(-d)+' ahead of '+a);
+  var lead=d===0?(a+' is at the same time as '+b):d>0?(a+' is '+fmtDur(d)+' ahead of '+b):(a+' is '+fmtDur(-d)+' behind '+b);
   document.getElementById('diffOut').innerHTML='<div class="lead">'+lead+'</div><div class="det">'
     +a+': '+fmtDate(ca[3])+', '+fmt(ca[3])+' ('+(tzAbbr(ca[3])||utcOff(ca[3]))+')<br>'
     +b+': '+fmtDate(cb[3])+', '+fmt(cb[3])+' ('+(tzAbbr(cb[3])||utcOff(cb[3]))+')</div>';
