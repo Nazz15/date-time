@@ -110,10 +110,12 @@
 @media(max-width:900px){ .wc-grid{grid-template-columns:repeat(2,1fr);} }
 @media(max-width:560px){
   .wc-grid{grid-template-columns:1fr; gap:10px;}
-  .wc-pcard{display:grid; grid-template-columns:auto 1fr auto auto; align-items:center; gap:12px; padding:12px 14px;}
-  .wc-pcard .top{margin:0;}
+  .wc-pcard{display:grid; grid-template-columns:auto minmax(0,1fr) auto auto; align-items:center; column-gap:12px; padding:12px 14px;}
+  .wc-pcard .top{display:contents;}
+  .wc-pcard .cn{min-width:0; line-height:1.25; overflow-wrap:break-word;}
   .wc-pcard .cn small{display:inline; margin-left:4px;}
   .wc-pcard .bot{display:contents;}
+  .wc-pcard .bot>div{text-align:right;}
   .wc-pcard .tm{font-size:18px;}
   .wc-pcard .znw{text-align:right;}
 }
