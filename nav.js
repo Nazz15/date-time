@@ -5,8 +5,8 @@
   /* ==== EDIT LINKS HERE — confirm paths marked (?) ==== */
   var MAIN = [
     ["World Clock", "/world-clock/"],
-    ["Time Zone",   "/time-zone/"],   // (?)
-    ["World Map",   "/map/"],         // (?)
+    ["Time Difference Calculator", "https://timezonebudy.com/time-difference-calculator"],
+    ["World Map",   "https://timezonebudy.com/world-time-map"],
     ["Sun & Moon",  "/sunmoon/"],
     ["Weather",     "/weather/"],
     ["Locations",   "/location/"]
@@ -31,7 +31,7 @@
   function link(l){ return '<a href="'+l[1]+'"'+(active(l[1])?' class="on"':'')+'>'+l[0]+'</a>'; }
 
   var moreOn = MORE.some(function(l){ return active(l[1]); });
-  var brand = '<a class="tzb-logo" href="/">'+GLOBE+
+  var brand = '<a class="tzb-logo" href="https://timezonebudy.com/">'+GLOBE+
     '<span class="tzb-name"><span>Timezone<b>Buddy</b></span><small>Time Around the World</small></span></a>';
 
   var header =
