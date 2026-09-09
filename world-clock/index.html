@@ -140,7 +140,26 @@
 @media(max-width:640px){
   .wx-sec-head { flex-direction:column; align-items:flex-start; }
   .wx-footer-top { flex-direction:column; align-items:flex-start; }
+  .wx-sec { padding:26px 0; }
+  .wx-container { padding:0 16px; }
+  /* Hero: show the whole banner, nothing clipped left/right */
+  .wc-hero { height:auto; aspect-ratio:5/2; background-size:contain; }
 }
+/* Your Cities rows — mobile layout (no overlap, time prominent) */
+@media(max-width:560px){
+  .wc-row {
+    grid-template-columns:1fr auto;
+    grid-template-areas:"who time" "wx menu";
+    gap:4px 12px; padding:13px 14px; align-items:center;
+  }
+  .wc-who { grid-area:who; flex-wrap:wrap; }
+  .wc-who .nm { font-size:15px; }
+  .wc-t { grid-area:time; text-align:right; }
+  .wc-t .tm { font-size:19px; }
+  .wc-wx { grid-area:wx; font-size:12px; white-space:normal; }
+  .wc-kebab { grid-area:menu; justify-self:end; width:28px; height:28px; font-size:18px; }
+}
+.wc-t .tm, .wc-pcard .tm { white-space:nowrap; }
 
 /* ── Add City modal ── */
 .wc-ov { position:fixed; inset:0; background:rgba(13,34,64,.5); display:none; place-items:center; z-index:1100; padding:20px; }
