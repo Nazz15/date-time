@@ -992,3 +992,5 @@ const CITIES=[
   {name:"Nuku\u2018alofa",country:"Tonga",cc:"to",tz:"Pacific/Tongatapu",region:"oceania",pop:0},
   {name:"Kiritimati",country:"Kiribati",cc:"ki",tz:"Pacific/Kiritimati",region:"oceania",pop:0},
 ];
+window.CITIES = CITIES; 
+window.CITIES_POPULAR = CITIES.filter(function(c){return c.pop>=1;});

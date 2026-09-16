@@ -2,7 +2,7 @@
 // Strategy: cache-first for static assets (CSS/JS/icons), network-first for
 // HTML pages (so live clocks/weather/content stay fresh), with an offline fallback.
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const STATIC_CACHE = 'tzbuddy-static-' + CACHE_VERSION;
 const PAGES_CACHE = 'tzbuddy-pages-' + CACHE_VERSION;
 
