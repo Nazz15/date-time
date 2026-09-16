@@ -304,7 +304,8 @@
 
 <!-- Shared site scripts -->
 <script src="util.js?v=3" defer></script>
-<script src="cities.js?v=3" defer></script>
+<script src="/cities.js?v=4" defer></script>
+<script src="/cities-full.js?v=4" defer></script>
 <script src="nav.js?v=3" defer></script>
 
 <script>
@@ -368,15 +369,18 @@
   };
 
   var _idx=null,_cn=null;
+  function fold(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
   function ccName(){if(_cn)return _cn;_cn={};Object.keys(COUNTRIES).forEach(function(n){_cn[COUNTRIES[n][0]]=n;});return _cn;}
   function derive(z){var cc=ZONE_CC[z]||'';return{name:z.split('/').pop().replace(/_/g,' '),country:cc?(ccName()[cc]||''):'',cc:cc,tz:z};}
   function buildIndex(){
     if(_idx)return _idx;
     var map={};
     function add(e){var k=(e.name+'|'+e.tz).toLowerCase();
-      if(map[k]){if(e.alias)map[k].q+=' '+e.alias.toLowerCase();return;}
-      e.q=(e.name+' '+(e.country||'')+' '+e.tz+' '+(e.alias||'')).toLowerCase();map[k]=e;}
-    // 1) Full city DB from the site (name/country/flag), when available
+      if(map[k]){if(e.alias)map[k].q+=' '+fold(e.alias);return;}
+      e.q=fold(e.name+' '+(e.country||'')+' '+(e.alias||''));map[k]=e;}
+    // 1) Full 33k-city gazetteer (name/country/flag/pop) when available
+    if(typeof window!=='undefined'&&window.CITIES_FULL&&window.CITIES_FULL.length)window.CITIES_FULL.forEach(function(c){add({name:c.name,country:c.country,cc:(c.cc||'').toLowerCase(),tz:c.tz,pop:c.pop});});
+    // 1b) Original site city DB as an extra fallback layer
     if(typeof window!=='undefined'&&window.CITIES&&window.CITIES.length)window.CITIES.forEach(function(c){add({name:c.name,country:c.country,cc:(c.cc||'').toLowerCase(),tz:c.tz});});
     // 2) Every IANA time zone -> guarantees global coverage (Seoul, etc.) even standalone
     try{var zs=Intl.supportedValuesOf?Intl.supportedValuesOf('timeZone'):[];zs.forEach(function(t){if(t.indexOf('/')>-1)add(derive(t));});}catch(e){}
@@ -409,11 +413,12 @@
   function setupSearch(box){
     var side=box.dataset.side, input=box.querySelector('input'), drop=box.querySelector('.tzb-drop'), hi=-1, list=[];
     function render(q){
-      var data=pool(),ql=q.toLowerCase().trim();
+      var data=pool(),ql=fold(q).trim();
       list=!ql?[]:data.filter(function(c){return c.q.indexOf(ql)>-1;}).sort(function(a,b){
-        var an=a.name.toLowerCase().indexOf(ql),bn=b.name.toLowerCase().indexOf(ql);
+        var an=fold(a.name).indexOf(ql),bn=fold(b.name).indexOf(ql);
         if((an===0)!==(bn===0))return an===0?-1:1;
         if((an>-1)!==(bn>-1))return an>-1?-1:1;
+        var ap=a.pop||0,bp=b.pop||0; if(ap!==bp)return bp-ap;
         return a.name.length-b.name.length;
       }).slice(0,10);
       drop.innerHTML=list.map(function(c,i){
