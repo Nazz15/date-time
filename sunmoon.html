@@ -76,6 +76,53 @@
   .wx-sec-head { flex-direction:column; align-items:flex-start; }
   .wx-footer-top { flex-direction:column; align-items:flex-start; }
 }
+
+
+/* ── Popular Sun & Moon city cards — matches World Clock card system ── */
+.sm-popular-section { background:var(--clr-bg2,#f6f8fc); }
+.sm-pop-filters { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:26px; }
+.sm-pop-filter {
+  border:1px solid var(--clr-border2,#d9e1ec); background:var(--clr-bg2,#fff);
+  color:var(--clr-text2,#43546a); font:600 14px var(--sans,Inter,sans-serif);
+  padding:9px 18px; border-radius:999px; cursor:pointer; transition:.15s ease;
+}
+.sm-pop-filter:hover { border-color:var(--clr-brand,#2463b5); color:var(--clr-brand,#2463b5); }
+.sm-pop-filter.active { background:var(--clr-brand,#2463b5); color:#fff; border-color:var(--clr-brand,#2463b5); }
+.sm-pop-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
+.sm-pop-card {
+  background:var(--clr-tile,#fff); border:1px solid var(--clr-border,#d9e1ec);
+  border-radius:var(--rlg,14px); box-shadow:var(--sh,0 4px 14px rgba(20,40,70,.08));
+  padding:18px; min-width:0;
+}
+.sm-pop-card-head { display:flex; align-items:center; gap:10px; margin-bottom:16px; }
+.sm-pop-flag { font-size:24px; flex:0 0 auto; }
+.sm-pop-city { min-width:0; }
+.sm-pop-city strong { display:block; color:var(--clr-text,#172235); font-size:18px; font-weight:800; line-height:1.2; }
+.sm-pop-city span { display:block; color:var(--wx-muted); font-size:13px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sm-pop-times { display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; }
+.sm-pop-stat { min-width:0; }
+.sm-pop-label { color:var(--wx-muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px; }
+.sm-pop-value { color:var(--clr-text,#172235); font-size:16px; font-weight:800; white-space:nowrap; }
+.sm-pop-value.sunrise,.sm-pop-value.sunset { color:var(--clr-brand,#2463b5); }
+.sm-pop-bottom { margin-top:14px; padding-top:12px; border-top:1px solid var(--clr-border,#d9e1ec); display:flex; justify-content:space-between; align-items:flex-end; gap:10px; }
+.sm-pop-day { color:var(--clr-text,#172235); font-size:13px; font-weight:700; }
+.sm-pop-phase { color:var(--wx-muted); font-size:12px; text-align:right; white-space:nowrap; }
+.sm-pop-more-wrap { text-align:center; margin-top:24px; }
+.sm-pop-more-btn {
+  border:1px solid var(--clr-brand,#2463b5); background:transparent; color:var(--clr-brand,#2463b5);
+  border-radius:999px; padding:9px 22px; font:700 14px var(--sans,Inter,sans-serif); cursor:pointer;
+}
+.sm-pop-more-btn:hover { background:var(--clr-brand,#2463b5); color:#fff; }
+.sm-pop-empty { grid-column:1/-1; padding:30px; text-align:center; color:var(--wx-muted); }
+[data-theme="dark"] .sm-pop-card { background:var(--clr-tile,#161b22); }
+@media(max-width:1000px){ .sm-pop-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+@media(max-width:600px){
+  .sm-pop-grid{grid-template-columns:1fr; gap:12px;}
+  .sm-pop-card{padding:16px;}
+  .sm-pop-filters{gap:8px;}
+  .sm-pop-filter{font-size:13px;padding:8px 15px;}
+}
+
 </style>
 </head>
 <body>
@@ -156,7 +203,7 @@
 </section>
 
 <!-- ── POPULAR CITIES ── -->
-<section class="wx-sec wx-sec-alt">
+<section class="wx-sec wx-sec-alt sm-popular-section">
   <div class="wx-container">
     <div class="wx-sec-head">
       <div>
@@ -164,23 +211,12 @@
         <p>Compare sunrise, sunset, day length and moon times for major cities around the world.</p>
       </div>
     </div>
-    <div class="sm-pop-controls">
-      <select class="sm-sel" id="sm-pop-region" onchange="smPopFilter()">
-        <option value="all">All Regions</option>
-        <option value="asia">Asia</option>
-        <option value="europe">Europe</option>
-        <option value="americas">Americas</option>
-        <option value="africa">Africa</option>
-        <option value="oceania">Oceania</option>
-      </select>
-      <select class="sm-sel" id="sm-pop-sort" onchange="smPopFilter()">
-        <option value="city">Sort by City</option>
-        <option value="sunrise">Sort by Sunrise</option>
-      </select>
+    <div class="sm-pop-filters" id="sm-pop-filters" aria-label="Filter cities by region"></div>
+    <div class="sm-pop-grid" id="sm-pop-body">
+      <div class="sm-loading">Calculating…</div>
     </div>
-    <div id="sm-pop-body"><div class="sm-loading">Calculating…</div></div>
-    <div class="sm-more-wrap">
-      <button class="sm-more-btn" id="sm-pop-more" onclick="smPopMore()">View More ↓</button>
+    <div class="sm-pop-more-wrap">
+      <button class="sm-pop-more-btn" id="sm-pop-more" onclick="smPopMore()">View more cities →</button>
     </div>
   </div>
 </section>
@@ -280,6 +316,137 @@ setInterval(function(){
 }, 1000);
 </script>
 <script src="/sunmoon.js?v=2"></script>
+
+<script>
+/* ===== Popular Sun & Moon cards =====
+   Keeps the existing SunCalc calculations but presents the cities
+   in the same card/filter pattern used by World Clock. */
+(function(){
+  var SM_CITIES = [
+    ["New York","United States","us","America/New_York","na",40.71,-74.01],
+    ["London","United Kingdom","gb","Europe/London","europe",51.51,-0.13],
+    ["Tokyo","Japan","jp","Asia/Tokyo","asia",35.68,139.69],
+    ["Paris","France","fr","Europe/Paris","europe",48.85,2.35],
+    ["Dubai","United Arab Emirates","ae","Asia/Dubai","asia",25.20,55.27],
+    ["Singapore","Singapore","sg","Asia/Singapore","asia",1.35,103.82],
+    ["Sydney","Australia","au","Australia/Sydney","oceania",-33.87,151.21],
+    ["Toronto","Canada","ca","America/Toronto","na",43.65,-79.38],
+    ["Mumbai","India","in","Asia/Kolkata","asia",19.08,72.88],
+    ["Delhi","India","in","Asia/Kolkata","asia",28.61,77.21],
+    ["Los Angeles","United States","us","America/Los_Angeles","na",34.05,-118.24],
+    ["Chicago","United States","us","America/Chicago","na",41.88,-87.63],
+    ["Mexico City","Mexico","mx","America/Mexico_City","na",19.43,-99.13],
+    ["Sao Paulo","Brazil","br","America/Sao_Paulo","sa",-23.55,-46.63],
+    ["Buenos Aires","Argentina","ar","America/Argentina/Buenos_Aires","sa",-34.60,-58.38],
+    ["Berlin","Germany","de","Europe/Berlin","europe",52.52,13.41],
+    ["Madrid","Spain","es","Europe/Madrid","europe",40.42,-3.70],
+    ["Rome","Italy","it","Europe/Rome","europe",41.90,12.50],
+    ["Bangkok","Thailand","th","Asia/Bangkok","asia",13.76,100.50],
+    ["Hong Kong","Hong Kong","hk","Asia/Hong_Kong","asia",22.32,114.17],
+    ["Seoul","South Korea","kr","Asia/Seoul","asia",37.57,126.98],
+    ["Cairo","Egypt","eg","Africa/Cairo","africa",30.04,31.24],
+    ["Nairobi","Kenya","ke","Africa/Nairobi","africa",-1.29,36.82],
+    ["Auckland","New Zealand","nz","Pacific/Auckland","oceania",-36.85,174.76]
+  ];
+
+  var labels = {all:"All",asia:"Asia",europe:"Europe",americas:"Americas",africa:"Africa",oceania:"Australia"};
+  var regionMap = {na:"americas",sa:"americas"};
+  var activeRegion = "all", showAll = false;
+
+  function localNoon(dateStr,tz){
+    var base = new Date(dateStr+"T12:00:00Z");
+    var parts = new Intl.DateTimeFormat("en-US",{timeZone:tz,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"}).formatToParts(base);
+    var get=function(t){return Number(parts.find(function(p){return p.type===t;}).value);};
+    var asUtc=Date.UTC(get("year"),get("month")-1,get("day"),get("hour"),get("minute"),get("second"));
+    return new Date(base.getTime()+(Date.UTC(get("year"),get("month")-1,get("day"),12)-asUtc));
+  }
+
+  function fmtTime(d,tz){
+    if(!d || isNaN(d.getTime())) return "—";
+    return new Intl.DateTimeFormat("en-US",{timeZone:tz,hour:"2-digit",minute:"2-digit",hour12:true}).format(d);
+  }
+  function fmtDay(ms){ if(!isFinite(ms)||ms<=0)return "—"; var m=Math.round(ms/60000),h=Math.floor(m/60),mm=m%60; return h+"h "+String(mm).padStart(2,"0")+"m"; }
+  function phaseName(p){
+    if(p<0.03||p>0.97)return "New Moon";
+    if(p<0.22)return "Waxing Crescent";
+    if(p<0.28)return "First Quarter";
+    if(p<0.47)return "Waxing Gibbous";
+    if(p<0.53)return "Full Moon";
+    if(p<0.72)return "Waning Gibbous";
+    if(p<0.78)return "Last Quarter";
+    return "Waning Crescent";
+  }
+  function cityData(c){
+    var dateEl=document.getElementById("sm-date");
+    var dateStr=(dateEl&&dateEl.value)||new Date().toISOString().slice(0,10);
+    var d=localNoon(dateStr,c[3]);
+    var sun=SunCalc.getTimes(d,c[5],c[6]);
+    var moon=SunCalc.getMoonTimes(d,c[5],c[6],false);
+    var illum=SunCalc.getMoonIllumination(d);
+    return {
+      sunrise:sun.sunrise,sunset:sun.sunset,moonrise:moon.rise,moonset:moon.set,
+      day:(sun.sunset&&sun.sunrise)?sun.sunset-sun.sunrise:0,
+      phase:phaseName(illum.phase),illum:Math.round(illum.fraction*100)
+    };
+  }
+  function esc(v){return String(v).replace(/[&<>"']/g,function(ch){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch];});}
+
+  function renderFilters(){
+    var host=document.getElementById("sm-pop-filters"); if(!host)return;
+    host.innerHTML="";
+    Object.keys(labels).forEach(function(key){
+      var b=document.createElement("button");
+      b.type="button"; b.className="sm-pop-filter"+(key===activeRegion?" active":"");
+      b.textContent=labels[key];
+      b.onclick=function(){activeRegion=key;showAll=false;renderFilters();renderCards();};
+      host.appendChild(b);
+    });
+  }
+
+  function renderCards(){
+    var host=document.getElementById("sm-pop-body"), more=document.getElementById("sm-pop-more");
+    if(!host)return;
+    var list=SM_CITIES.filter(function(c){return activeRegion==="all" || (regionMap[c[4]]||c[4])===activeRegion;});
+    if(activeRegion==="all" && !showAll) list=list.slice(0,8);
+    host.innerHTML="";
+    if(!list.length){host.innerHTML='<div class="sm-pop-empty">No cities found for this region.</div>';return;}
+    list.forEach(function(c){
+      var d=cityData(c);
+      var card=document.createElement("article");
+      card.className="sm-pop-card";
+      card.innerHTML=
+        '<div class="sm-pop-card-head">'+
+          '<span class="sm-pop-flag fi fi-'+esc(c[2])+'" aria-hidden="true"></span>'+
+          '<div class="sm-pop-city"><strong>'+esc(c[0])+'</strong><span>'+esc(c[1])+'</span></div>'+
+        '</div>'+
+        '<div class="sm-pop-times">'+
+          '<div class="sm-pop-stat"><div class="sm-pop-label">Sunrise</div><div class="sm-pop-value sunrise">'+fmtTime(d.sunrise,c[3])+'</div></div>'+
+          '<div class="sm-pop-stat"><div class="sm-pop-label">Sunset</div><div class="sm-pop-value sunset">'+fmtTime(d.sunset,c[3])+'</div></div>'+
+          '<div class="sm-pop-stat"><div class="sm-pop-label">Moonrise</div><div class="sm-pop-value">'+fmtTime(d.moonrise,c[3])+'</div></div>'+
+          '<div class="sm-pop-stat"><div class="sm-pop-label">Moonset</div><div class="sm-pop-value">'+fmtTime(d.moonset,c[3])+'</div></div>'+
+        '</div>'+
+        '<div class="sm-pop-bottom"><span class="sm-pop-day">Day length '+fmtDay(d.day)+'</span><span class="sm-pop-phase">'+esc(d.phase)+' · '+d.illum+'%</span></div>';
+      host.appendChild(card);
+    });
+    if(more) more.style.display=(activeRegion==="all"&&!showAll)?"inline-flex":"none";
+  }
+
+  window.smPopFilter=function(){ 
+    var r=document.getElementById("sm-pop-region");
+    if(r){activeRegion=r.value;showAll=false;}
+    renderFilters();renderCards();
+  };
+  window.smPopMore=function(){showAll=true;renderCards();};
+
+  function refresh(){renderFilters();renderCards();}
+  document.addEventListener("DOMContentLoaded",function(){
+    var date=document.getElementById("sm-date");
+    if(date)date.addEventListener("change",refresh);
+    setTimeout(refresh,0);
+  });
+})();
+</script>
+
 <script src="/nav.js?v=3"></script>
 </body>
 </html>
