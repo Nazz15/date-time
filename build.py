@@ -239,10 +239,10 @@ def flag(cc, w=18, h=14):
             f'border-radius:2px;display:inline-block;background-size:cover;'
             f'flex-shrink:0" aria-hidden="true"></span>')
 
-# City landmark photos. Verified Unsplash CDN URLs (same source as /weather/) for
-# the six top cities; every other city gets a correct-by-keyword city photo so no
-# card ever shows a wrong image. <img> onerror falls back to the CSS gradient.
-import urllib.parse
+# City landmark photos.
+# Use direct Unsplash CDN images only. The previous LoremFlickr fallback was
+# removed because third-party keyword image generation can be blocked or fail
+# to return an image. These URLs are fixed Unsplash image sources.
 CITY_IMG = {
   "new-york":"https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?w=600&q=80&auto=format&fit=crop",
   "london":"https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80&auto=format&fit=crop",
@@ -251,18 +251,27 @@ CITY_IMG = {
   "tokyo":"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80&auto=format&fit=crop",
   "singapore":"https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80&auto=format&fit=crop",
   "rio-de-janeiro":"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&q=80&auto=format&fit=crop",
+
+  # Nearby-city images used on the Rio de Janeiro location page.
+  "sao-paulo":"https://images.unsplash.com/photo-1718286365290-654b3bce87c1?w=600&q=80&auto=format&fit=crop",
+  "brasilia":"https://images.unsplash.com/photo-1720988174501-c838a76854ae?w=600&q=80&auto=format&fit=crop",
+  "salvador":"https://images.unsplash.com/photo-1558358083-a704d7dafa5d?w=600&q=80&auto=format&fit=crop",
+  "cape-town":"https://images.unsplash.com/photo-1770988966553-d1239584151c?w=600&q=80&auto=format&fit=crop",
+  "miami":"https://images.unsplash.com/photo-1741023705613-ead9e38cd658?w=600&q=80&auto=format&fit=crop",
+  "cancun":"https://images.unsplash.com/photo-1680198617389-fab58f8d4f96?w=600&q=80&auto=format&fit=crop",
 }
+
+# Reliable fallback for cities that do not yet have a dedicated image mapping.
+# It is intentionally a neutral cityscape rather than a keyword-generated image.
+CITY_IMG_FALLBACK = "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=600&q=80&auto=format&fit=crop"
+
 def city_img_url(slug, city):
-    if slug in CITY_IMG:
-        return CITY_IMG[slug]
-    q = urllib.parse.quote(city + ",cityscape")
-    return f"https://loremflickr.com/640/360/{q}"
+    return CITY_IMG.get(slug, CITY_IMG_FALLBACK)
 
 def city_img_tag(slug, city, cls="tzb-cimg"):
     url = city_img_url(slug, city)
     return (f'<img class="{cls}" src="{esc(url)}" alt="{esc(city)} cityscape" '
-            f'loading="lazy" referrerpolicy="no-referrer" '
-            f'onerror="this.style.display=\'none\'">')
+            f'loading="lazy" referrerpolicy="no-referrer">')
 
 # ---------------------------------------------------------------- city page
 def build_city(city, country):
