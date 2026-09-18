@@ -110,8 +110,8 @@
   '.tzb-sub{display:none;flex-direction:column;background:#f7f9fc}.tzb-acc.open + .tzb-sub{display:flex}' +
   '.tzb-sub a{font-size:15px;color:#3a465c;text-decoration:none;padding:13px 20px 13px 24px;border-bottom:1px solid #eef2f7;display:flex;align-items:center;gap:12px}.tzb-sub a.on{color:var(--tzb-blue);font-weight:600}' +
   'body.tzb-lock{overflow:hidden}' +
-  '@media(max-width:1140px){.tzb-links{display:none}.tzb-burger{display:block}.tzb-logo{margin:0 auto}.tzb-in{gap:0}.tzb-ctl{margin-left:8px;padding-left:8px}}' +
-  '@media(max-width:380px){.tzb-ctl .nav-utc{display:none}}';
+    '@media(max-width:1140px){.tzb-links{display:none}.tzb-burger{display:block}.tzb-logo{margin:0 auto;flex:0 1 auto;min-width:0}.tzb-name{min-width:0}.tzb-name span,.tzb-name small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tzb-in{gap:0}.tzb-ctl{margin-left:8px;padding-left:8px}}' +
+  '@media(max-width:768px){.tzb-ctl .nav-utc{display:none}}';
 
   var s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
   var mount = document.getElementById("tzb-nav-mount") || document.querySelector("header#tzb-nav");
