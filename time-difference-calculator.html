@@ -478,6 +478,8 @@
     });
 
     input.addEventListener('focus',function(){
+      // Select the pre-filled city so typing replaces it instead of appending to it.
+      if(input.value) input.select();
       render(input.value);
     });
 
