@@ -427,6 +427,90 @@ var CITY_COORDS = {
   'Reykjavik':{lat:64.135,lon:-21.895,tz:'Atlantic/Reykjavik',cc:'is',country:'Iceland'},
 };
 
+// ── URL builder: maps city name to existing location page ──────────────
+function cityUrl(name) {
+  var slug = name.toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9\-]/g, '')
+    .replace(/-+/g, '-');
+  var known = {
+    'new-york':'new-york','london':'london','dubai':'dubai','mumbai':'mumbai',
+    'tokyo':'tokyo','singapore':'singapore','los-angeles':'los-angeles',
+    'toronto':'toronto','sydney':'sydney','paris':'paris','berlin':'berlin',
+    'bangkok':'bangkok','new-delhi':'delhi','delhi':'delhi','riyadh':'riyadh',
+    'karachi':'karachi','doha':'doha','muscat':'muscat','kuala-lumpur':'kuala-lumpur',
+    'jakarta':'jakarta','seoul':'seoul','osaka':'osaka','beijing':'beijing',
+    'shanghai':'shanghai','moscow':'moscow','istanbul':'istanbul','cairo':'cairo',
+    'lagos':'lagos','nairobi':'nairobi','johannesburg':'johannesburg',
+    'cape-town':'cape-town','casablanca':'casablanca','buenos-aires':'buenos-aires',
+    'sao-paulo':'sao-paulo','bogota':'bogota','lima':'lima','santiago':'santiago',
+    'mexico-city':'mexico-city','chicago':'chicago','houston':'houston','miami':'miami',
+    'seattle':'seattle','boston':'boston','denver':'denver','vancouver':'vancouver',
+    'montreal':'montreal','rome':'rome','madrid':'madrid','amsterdam':'amsterdam',
+    'athens':'athens','vienna':'vienna','stockholm':'stockholm','oslo':'oslo',
+    'copenhagen':'copenhagen','helsinki':'helsinki','zurich':'zurich','prague':'prague',
+    'warsaw':'warsaw','budapest':'budapest','lisbon':'lisbon','dublin':'dublin',
+    'kyiv':'kyiv','abu-dhabi':'abu-dhabi','kolkata':'kolkata','bengaluru':'bengaluru',
+    'chennai':'chennai','hyderabad':'hyderabad','pune':'pune','ahmedabad':'ahmedabad'
+  };
+  var mapped = known[slug] || slug;
+  if (typeof CITIES !== 'undefined') {
+    var match = CITIES.find(function(c){ return c.name.toLowerCase() === name.toLowerCase(); });
+    if (match) {
+      var countrySlug = (match.country || '').toLowerCase()
+        .replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');
+      if (countrySlug) return '/location/' + countrySlug + '/' + mapped + '/';
+    }
+  }
+  return '/location/' + mapped + '/';
+}
+
+// ── Local time formatter ───────────────────────────────────────────────
+function localTime(tz) {
+  var now = new Date();
+  return now.toLocaleDateString('en-US',{timeZone:tz,weekday:'short',month:'short',day:'numeric'})
+    + ' • ' + now.toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:true});
+}
+
+// ── Fetch weather for a city ───────────────────────────────────────────
+function fetchWx(coords, cb) {
+  var key = coords.lat+','+coords.lon+'_'+WX_UNIT;
+  if (WX_CACHE[key]) { cb(null, WX_CACHE[key]); return; }
+  fetch('https://api.open-meteo.com/v1/forecast'
+    + '?latitude='+coords.lat+'&longitude='+coords.lon
+    + '&current=temperature_2m,weather_code'
+    + '&temperature_unit='+WX_UNIT+'&timezone=auto&forecast_days=1')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d && d.current) { WX_CACHE[key] = d.current; cb(null, d.current); }
+      else cb(new Error('No data'), null);
+    })
+    .catch(function(e){ cb(e, null); });
+}
+
+// ── Build a city card HTML ─────────────────────────────────────────────
+function buildCard(name, coords, wxData) {
+  var U = WX_UNIT === 'celsius' ? '°C' : '°F';
+  var temp = wxData ? Math.round(wxData.temperature_2m) + U : '—';
+  var code = wxData ? (wxData.weather_code || 0) : 0;
+  var icon = wxData ? (WX_ICONS[code] || '🌡') : '⏳';
+  var desc = wxData ? (WX_DESC[code] || '') : 'Loading…';
+  var time = coords.tz ? localTime(coords.tz) : '';
+  var url = cityUrl(name);
+  var ccCode = coords.cc || 'un';
+  return '<a class="wa-city-card" href="'+url+'">'
+    + '<div class="wa-city-top">'
+    + '<span class="wa-flag fi fi-'+ccCode+'"></span>'
+    + '<div><div class="wa-city-name">'+name+'</div><div class="wa-country">'+(coords.country||'')+'</div></div>'
+    + '</div>'
+    + '<div class="wa-local-time">◷ '+time+'</div>'
+    + '<div class="wa-weather-row">'
+    + '<div><div class="wa-temp">'+temp+'</div><div class="wa-condition">'+desc+'</div></div>'
+    + '<div class="wa-icon">'+icon+'</div>'
+    + '</div>'
+    + '</a>';
+}
+
 // ── Popular city pool — same top-50-per-continent logic as World Clock ──
 var SA_CC={ar:1,bo:1,br:1,cl:1,co:1,ec:1,gy:1,py:1,pe:1,sr:1,uy:1,ve:1,gf:1,fk:1};
 function waPopRegion(c){return c.region==='americas'?(SA_CC[c.cc]?'sa':'na'):c.region;}
