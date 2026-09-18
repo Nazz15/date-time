@@ -172,6 +172,20 @@
 .wc-modal .row { display:flex; gap:10px; margin-top:16px; }
 .wc-modal .row .wc-btn { flex:1; justify-content:center; }
 .wc-btn-line { background:none; border:1px solid var(--clr-border2); color:var(--clr-text); }
+.wc-modal.wc-pick { max-width:440px; max-height:86vh; display:flex; flex-direction:column; }
+.wc-search { width:100%; box-sizing:border-box; font-family:var(--sans); font-size:15px; color:var(--clr-text); background:var(--clr-tile); border:1px solid var(--clr-border2); border-radius:12px; padding:11px 14px; margin-bottom:12px; }
+.wc-search:focus { outline:none; border-color:var(--clr-brand); }
+.wc-results { flex:1; min-height:0; max-height:46vh; overflow-y:auto; border:1px solid var(--clr-border); border-radius:12px; }
+.wc-opt { display:flex; align-items:center; gap:12px; padding:10px 12px; cursor:pointer; border-bottom:1px solid var(--clr-border); }
+.wc-opt:last-child { border-bottom:0; }
+.wc-opt:hover { background:var(--clr-bg2); }
+.wc-opt.sel { background:var(--clr-brand); }
+.wc-opt .oc { flex:1; min-width:0; overflow:hidden; }
+.wc-opt .oc b { display:block; font-weight:600; font-size:14.5px; color:var(--clr-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.wc-opt .oc small { color:var(--wx-muted); font-size:12.5px; }
+.wc-opt .off { flex:none; font:600 12.5px ui-monospace,Menlo,monospace; color:var(--wx-muted); white-space:nowrap; }
+.wc-opt.sel b, .wc-opt.sel small, .wc-opt.sel .off { color:#fff; }
+.wc-none { padding:22px; text-align:center; color:var(--wx-muted); font-size:14px; } 
 </style>
 </head>
 <body>
@@ -310,10 +324,11 @@
 
 <!-- ── ADD CITY MODAL (dropdown-based, no search bar) ── -->
 <div class="wc-ov" id="ov">
-  <div class="wc-modal">
+  <div class="wc-modal wc-pick">
     <h3>Add a city</h3>
-    <p>Choose a city to add to Your Cities.</p>
-    <select class="wc-select" id="addSelect" aria-label="Select a city"></select>
+    <p>Search and pick a city to add to Your Cities.</p>
+    <input type="text" class="wc-search" id="citySearch" placeholder="Search city or country..." aria-label="Search cities" autocomplete="off">
+    <div class="wc-results" id="cityResults" role="listbox"></div>
     <div class="row">
       <button class="wc-btn wc-btn-line" id="cancelAdd">Cancel</button>
       <button class="wc-btn wc-btn-primary" id="confirmAdd">Add City</button>
@@ -517,10 +532,36 @@ document.getElementById('swapBtn').addEventListener('click',function(){var A=doc
 document.getElementById('diffA').addEventListener('change',updateDiff);
 document.getElementById('diffB').addEventListener('change',updateDiff);
 var ov=document.getElementById('ov');
-document.getElementById('addBtn').addEventListener('click',function(){fillSelect(document.getElementById('addSelect'),null);ov.classList.add('open');});
+/* Add City — searchable picker (reuses C, flag, utcOff, tzAbbr) */
+var pickSel=null,searchEl=document.getElementById('citySearch'),resultsEl=document.getElementById('cityResults');
+function renderPicker(){
+  var q=searchEl.value.trim().toLowerCase();resultsEl.innerHTML='';pickSel=null;
+  var list=C.filter(function(c){return mine.indexOf(c[0])===-1;});
+  if(q)list=list.filter(function(c){
+    var off=utcOff(c[3]).toLowerCase(),ab=(tzAbbr(c[3])||'').toLowerCase();
+    return c[0].toLowerCase().indexOf(q)>-1||c[1].toLowerCase().indexOf(q)>-1||off.indexOf(q)>-1||ab.indexOf(q)>-1;
+  });
+  list.sort(function(a,b){return a[0]<b[0]?-1:1;});
+  if(!list.length){resultsEl.innerHTML='<div class="wc-none">No matching cities found.</div>';return;}
+  list.forEach(function(c){
+    var row=elc('<div class="wc-opt" role="option">'+flag(c[2],22)
+      +'<span class="oc"><b>'+c[0]+'</b><small>'+c[1]+'</small></span>'
+      +'<span class="off">'+utcOff(c[3])+'</span></div>');
+    row.addEventListener('click',function(){
+      resultsEl.querySelectorAll('.wc-opt.sel').forEach(function(o){o.classList.remove('sel');});
+      row.classList.add('sel');pickSel=c[0];
+    });
+    resultsEl.appendChild(row);
+  });
+}
+document.getElementById('addBtn').addEventListener('click',function(){searchEl.value='';renderPicker();ov.classList.add('open');setTimeout(function(){searchEl.focus();},50);});
 document.getElementById('cancelAdd').addEventListener('click',function(){ov.classList.remove('open');});
 ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.remove('open');});
-document.getElementById('confirmAdd').addEventListener('click',function(){var v=document.getElementById('addSelect').value;if(v&&mine.indexOf(v)===-1){mine.push(v);saveS(mine);renderMine();}ov.classList.remove('open');});
+searchEl.addEventListener('input',renderPicker);
+document.getElementById('confirmAdd').addEventListener('click',function(){
+  if(pickSel&&mine.indexOf(pickSel)===-1){mine.push(pickSel);saveS(mine);renderMine();}
+  ov.classList.remove('open');
+});
 
 /* Init */
 fillSelect(document.getElementById('diffA'),'Mumbai');
