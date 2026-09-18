@@ -513,16 +513,38 @@ function buildCard(name, coords, wxData) {
 
 // ── Popular city pool — same top-50-per-continent logic as World Clock ──
 var SA_CC={ar:1,bo:1,br:1,cl:1,co:1,ec:1,gy:1,py:1,pe:1,sr:1,uy:1,ve:1,gf:1,fk:1};
-function waPopRegion(c){return c.region==='americas'?(SA_CC[c.cc]?'sa':'na'):c.region;}
+function waPopRegion(c){
+  var r=(c.region||'').toLowerCase();
+  if(r==='americas') return SA_CC[(c.cc||'').toLowerCase()]?'sa':'na';
+  if(r==='oceania'||r==='australia') return 'oceania';
+  if(r==='north-america'||r==='na') return 'na';
+  if(r==='south-america'||r==='sa') return 'sa';
+  if(r==='africa'||r==='europe'||r==='asia') return r;
+  var tz=c.tz||'';
+  if(tz.indexOf('America/')===0) return SA_CC[(c.cc||'').toLowerCase()]?'sa':'na';
+  if(tz.indexOf('Europe/')===0) return 'europe';
+  if(tz.indexOf('Asia/')===0) return 'asia';
+  if(tz.indexOf('Africa/')===0) return 'africa';
+  if(tz.indexOf('Australia/')===0||tz.indexOf('Pacific/')===0) return 'oceania';
+  return '';
+}
 var WA_POP={asia:[],europe:[],na:[],sa:[],africa:[],oceania:[]},WA_POP_ALL=[];
 (function(){
-  var src=(typeof CITIES!=='undefined'?CITIES:[]).filter(function(c){return c.cc&&c.tz&&WA_POP[waPopRegion(c)];});
+  var src=(typeof CITIES!=='undefined'?CITIES:[]).filter(function(c){var r=waPopRegion(c);return c.cc&&c.tz&&r&&WA_POP[r];});
   src.sort(function(a,b){return (b.pop||0)-(a.pop||0);});
   var seen={};
   src.forEach(function(c){var r=waPopRegion(c),k=c.name+'|'+c.country;if(seen[k])return;seen[k]=1;var row=[c.name,c.country,c.cc,c.tz,r,c.lat||c.latitude||0,c.lng||c.lon||c.longitude||0,c.pop||0];if(WA_POP[r].length<50)WA_POP[r].push(row);if(WA_POP_ALL.length<50)WA_POP_ALL.push(row);});
 })();
 var waActiveRegion='all',waShowAll=false,waSortMode='time',WA_INIT=12;
-function waOffNum(tz){var m=/([+-])(\d{2}):(\d{2})/.exec(utcOff(tz));return m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;}
+function waOffNum(tz){
+  try{
+    var parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'longOffset'}).formatToParts(new Date());
+    var v=(parts.find(function(x){return x.type==='timeZoneName';})||{}).value||'';
+    var m=/GMT([+-])(\d{1,2})(?::(\d{2}))?/.exec(v);
+    if(!m)return 0;
+    return (m[1]==='-'?-1:1)*(parseInt(m[2],10)*60+parseInt(m[3]||'0',10));
+  }catch(e){return 0;}
+}
 function waSortList(l){return l.slice().sort(waSortMode==='az'?function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0;}:function(a,b){return waOffNum(a[3])-waOffNum(b[3])||(a[0]<b[0]?-1:1);});}
 function waCoords(c){var x=CITY_COORDS[c[0]]||{};return {lat:+(c[5]||x.lat||0),lon:+(c[6]||x.lon||0),tz:c[3],cc:c[2],country:c[1]};}
 
