@@ -250,6 +250,7 @@ CITY_IMG = {
   "mumbai":"https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=600&q=80&auto=format&fit=crop",
   "tokyo":"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80&auto=format&fit=crop",
   "singapore":"https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80&auto=format&fit=crop",
+  "rio-de-janeiro":"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&q=80&auto=format&fit=crop",
 }
 def city_img_url(slug, city):
     if slug in CITY_IMG:
@@ -260,7 +261,8 @@ def city_img_url(slug, city):
 def city_img_tag(slug, city, cls="tzb-cimg"):
     url = city_img_url(slug, city)
     return (f'<img class="{cls}" src="{esc(url)}" alt="{esc(city)} cityscape" '
-            f'loading="lazy" onerror="this.style.display=\'none\'">')
+            f'loading="lazy" referrerpolicy="no-referrer" '
+            f'onerror="this.style.display=\'none\'">')
 
 # ---------------------------------------------------------------- city page
 def build_city(city, country):
@@ -333,7 +335,7 @@ def build_city(city, country):
 <main class="wrap tzb-loc">
 
   <section class="tzb-hero" data-wx-lat="{lat}" data-wx-lng="{lng}">
-    <img class="tzb-hero-bg" src="{esc(city_img_url(slug, name))}" alt="{esc(name)}, {esc(cname)} skyline" loading="eager" onerror="this.style.display='none'">
+    <img class="tzb-hero-bg" src="{esc(city_img_url(slug, name))}" alt="{esc(name)}, {esc(cname)} skyline" loading="eager" referrerpolicy="no-referrer" onerror="this.style.display='none'">
     <div class="tzb-hero-in">
       <div class="tzb-hero-main">
         <nav class="tzb-crumb"><a href="/location/">Locations</a> › <a href="/location/{cslug}/">{esc(cname)}</a> › <span>{esc(name)}</span></nav>
@@ -480,7 +482,7 @@ def build_country(country):
     body = f"""
 <main class="wrap tzb-loc">
   <section class="tzb-hero tzb-hero-country">
-    <img class="tzb-hero-bg" src="{esc(city_img_url(g(country,'slug'), g(country,'capital_city') or cname))}" alt="{esc(cname)} skyline" loading="eager" onerror="this.style.display='none'">
+    <img class="tzb-hero-bg" src="{esc(city_img_url(g(country,'slug'), g(country,'capital_city') or cname))}" alt="{esc(cname)} skyline" loading="eager" referrerpolicy="no-referrer" onerror="this.style.display='none'">
     <div class="tzb-hero-in">
       <div class="tzb-hero-main">
         <nav class="tzb-crumb"><a href="/location/">Locations</a> › <span>{esc(cname)}</span></nav>
