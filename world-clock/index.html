@@ -96,6 +96,11 @@
 .wc-filters button { border:1px solid var(--clr-border2); background:var(--clr-bg2); color:var(--clr-text2); font-family:var(--sans);
   font-weight:600; font-size:13px; padding:8px 16px; border-radius:var(--rxl); cursor:pointer; }
 .wc-filters button.active { background:var(--clr-brand); color:#fff; border-color:var(--clr-brand); }
+.wc-filtersbar { display:flex; flex-wrap:wrap; gap:12px 16px; align-items:center; justify-content:space-between; margin-bottom:18px; }
+.wc-filtersbar .wc-filters { margin-bottom:0; }
+.wc-sort { display:flex; flex-wrap:wrap; gap:8px; }
+.wc-sort button { border:1px solid var(--clr-border2); background:var(--clr-bg2); color:var(--clr-text2); font-family:var(--sans); font-weight:600; font-size:13px; padding:8px 16px; border-radius:var(--rxl); cursor:pointer; }
+.wc-sort button.active { background:var(--clr-brand); color:#fff; border-color:var(--clr-brand); }
 
 /* ── Popular grid ── */
 .wc-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
@@ -279,7 +284,10 @@
         <p>Quickly view the current time in the most popular cities around the world.</p>
       </div>
     </div>
-    <div class="wc-filters" id="filters"></div>
+    <div class="wc-filtersbar">
+      <div class="wc-filters" id="filters"></div>
+      <div class="wc-sort" id="sortCtl"></div>
+    </div>
     <div class="wc-grid" id="popular"></div>
     <div class="wc-more"><button class="wc-btn wc-btn-ghost" id="moreBtn">View more cities →</button></div>
   </div>
@@ -489,27 +497,51 @@ function updateDiff(){
     +b+': '+fmtDate(cb[3])+', '+fmt(cb[3])+' ('+(tzAbbr(cb[3])||utcOff(cb[3]))+')</div>';
 }
 
-/* Popular */
-var curRegion='all',showAll=false;
+/* Popular — built from full CITIES dataset, up to 50 per continent */
+var SA_CC={ar:1,bo:1,br:1,cl:1,co:1,ec:1,gy:1,py:1,pe:1,sr:1,uy:1,ve:1,gf:1,fk:1};
+function popRegion(c){return c.region==='americas'?(SA_CC[c.cc]?'sa':'na'):c.region;}
+var POP={asia:[],europe:[],na:[],sa:[],africa:[],oceania:[]},POP_ALL=[];
+(function(){
+  var src=(typeof CITIES!=='undefined'?CITIES:[]).filter(function(c){return c.cc&&c.tz&&POP[popRegion(c)];});
+  src.sort(function(a,b){return (b.pop||0)-(a.pop||0);});
+  var seen={};
+  src.forEach(function(c){
+    var r=popRegion(c),k=c.name+'|'+c.country;if(seen[k])return;seen[k]=1;
+    var row=[c.name,c.country,c.cc,c.tz,r];
+    if(POP[r].length<50)POP[r].push(row);
+    if(POP_ALL.length<30)POP_ALL.push(row);
+  });
+})();
+var curRegion='all',showAll=false,sortMode='time',INIT=12;
+function offNum(tz){var m=/([+-])(\d{2}):(\d{2})/.exec(utcOff(tz));return m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;}
+function sortList(l){return l.slice().sort(sortMode==='az'
+  ?function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0;}
+  :function(a,b){return offNum(a[3])-offNum(b[3])||(a[0]<b[0]?-1:1);});}
 function renderPopular(){
   var host=document.getElementById('popular');host.innerHTML='';
-  var list;
-  if(curRegion==='all')list=showAll?C.slice():POPULAR.map(city).filter(Boolean);
-  else list=C.filter(function(c){return c[4]===curRegion;});
+  var full=sortList(curRegion==='all'?POP_ALL:(POP[curRegion]||[]));
+  var list=showAll?full:full.slice(0,INIT);
   list.forEach(function(c){
     host.appendChild(elc('<div class="wc-pcard" data-tz="'+c[3]+'">'
       +'<div class="top">'+flag(c[2],26)+'<span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div>'
       +'<div class="bot"><div><div class="tm t-time"></div><div class="znw"><span class="zn t-zone"></span></div></div><span class="t-icon"></span></div>'
       +'</div>'));
   });
-  document.getElementById('moreBtn').style.display=(curRegion==='all'&&!showAll)?'':'none';
+  document.getElementById('moreBtn').style.display=(!showAll&&full.length>INIT)?'':'none';
   tick();
 }
 function renderFilters(){
   var host=document.getElementById('filters');host.innerHTML='';
   REGIONS.forEach(function(r){
     var b=document.createElement('button');b.textContent=r[1];if(r[0]===curRegion)b.className='active';
-    b.addEventListener('click',function(){curRegion=r[0];showAll=(r[0]!=='all');renderFilters();renderPopular();});
+    b.addEventListener('click',function(){curRegion=r[0];showAll=false;renderFilters();renderPopular();});
+    host.appendChild(b);});
+}
+function renderSort(){
+  var host=document.getElementById('sortCtl');if(!host)return;host.innerHTML='';
+  [['time','Sort by Time'],['az','Sort A\u2013Z']].forEach(function(s){
+    var b=document.createElement('button');b.textContent=s[1];if(s[0]===sortMode)b.className='active';
+    b.addEventListener('click',function(){sortMode=s[0];renderSort();renderPopular();});
     host.appendChild(b);});
 }
 
@@ -566,7 +598,7 @@ document.getElementById('confirmAdd').addEventListener('click',function(){
 /* Init */
 fillSelect(document.getElementById('diffA'),'Mumbai');
 fillSelect(document.getElementById('diffB'),'New York');
-renderMine();renderFilters();renderPopular();
+renderMine();renderFilters();renderSort();renderPopular();
 setInterval(tick,1000);
 </script>
 
