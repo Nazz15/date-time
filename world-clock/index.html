@@ -86,24 +86,6 @@
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%23647186' stroke-width='2'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; }
 .wc-swap { width:42px; height:42px; border-radius:50%; border:1px solid var(--clr-border2); background:var(--clr-bg2); color:var(--clr-brand); cursor:pointer; display:grid; place-items:center; flex:0 0 auto; }
 .wc-swap:hover { background:var(--clr-row2); }
-
-/* ── Searchable Time Difference city controls ── */
-.wc-diff-search{position:relative;width:100%}
-.wc-diff-input{width:100%;appearance:none;font-family:var(--sans);font-size:15px;font-weight:600;color:var(--clr-text);
-  background:var(--clr-bg2);border:1px solid var(--clr-border2);border-radius:var(--r);padding:12px 38px 12px 14px;cursor:text;box-sizing:border-box;}
-.wc-diff-input:focus{outline:none;border-color:var(--clr-brand);}
-.wc-diff-input::placeholder{color:var(--wx-muted);font-weight:500;}
-.wc-diff-drop{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--clr-bg2);border:1px solid var(--clr-border);
-  border-radius:12px;box-shadow:var(--sh2);max-height:320px;overflow-y:auto;display:none;z-index:20;}
-.wc-diff-drop.open{display:block;}
-.wc-diff-opt{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--clr-border);}
-.wc-diff-opt:last-child{border-bottom:0;}
-.wc-diff-opt:hover,.wc-diff-opt.hl{background:var(--clr-row2);}
-.wc-diff-opt .oc{flex:1;min-width:0;}
-.wc-diff-opt .oc b{display:block;font-weight:600;font-size:14px;color:var(--clr-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wc-diff-opt .oc small{display:block;color:var(--wx-muted);font-size:12px;margin-top:2px;}
-.wc-diff-opt .off{flex:none;font:600 12px ui-monospace,Menlo,monospace;color:var(--wx-muted);white-space:nowrap;}
-.wc-diff-none{padding:18px;text-align:center;color:var(--wx-muted);font-size:14px;}
 .wc-diff-out { margin-top:16px; background:var(--clr-row2); border:1px solid var(--clr-border); border-radius:var(--rlg); padding:18px; text-align:center; }
 .wc-diff-out .lead { font-weight:800; font-size:16px; color:var(--clr-text); }
 .wc-diff-out .det { color:var(--wx-muted); font-size:14px; margin-top:6px; line-height:1.7; }
@@ -283,17 +265,11 @@
       </div>
     </div>
     <div class="wc-diff">
-      <div class="wc-diff-search" data-side="a">
-        <input class="wc-diff-input" id="diffA" type="text" autocomplete="off" placeholder="Search city, country or time zone" aria-label="First city">
-        <div class="wc-diff-drop" id="diffADrop" role="listbox"></div>
-      </div>
+      <select class="wc-select" id="diffA" aria-label="First city"></select>
       <button class="wc-swap" id="swapBtn" aria-label="Swap cities">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v13M7 4L4 7M7 4l3 3M17 20V7M17 20l3-3M17 20l-3-3"/></svg>
       </button>
-      <div class="wc-diff-search" data-side="b">
-        <input class="wc-diff-input" id="diffB" type="text" autocomplete="off" placeholder="Search city, country or time zone" aria-label="Second city">
-        <div class="wc-diff-drop" id="diffBDrop" role="listbox"></div>
-      </div>
+      <select class="wc-select" id="diffB" aria-label="Second city"></select>
     </div>
     <div class="wc-diff-out" id="diffOut"></div>
   </div>
@@ -445,16 +421,7 @@ var C=[
 ["Perth","Australia","au","Australia/Perth","oceania",-31.95,115.86],
 ["Auckland","New Zealand","nz","Pacific/Auckland","oceania",-36.85,174.76]
 ];
-function city(n){
-  for(var i=0;i<C.length;i++)if(C[i][0]===n)return C[i];
-  if(typeof CITIES_FULL!=='undefined'&&CITIES_FULL){
-    for(var j=0;j<CITIES_FULL.length;j++){
-      var x=CITIES_FULL[j];
-      if(x&&x.name===n)return [x.name,x.country||'',(x.cc||'').toLowerCase(),x.tz||'',x.region||'',x.lat||0,x.lon||0];
-    }
-  }
-  return null;
-}
+function city(n){for(var i=0;i<C.length;i++)if(C[i][0]===n)return C[i];return null;}
 var REGIONS=[["all","All"],["asia","Asia"],["europe","Europe"],["na","North America"],["sa","South America"],["africa","Africa"],["oceania","Australia"]];
 var POPULAR=["New York","London","Tokyo","Paris","Dubai","Singapore","Sydney","Toronto"];
 
@@ -508,102 +475,28 @@ function renderMine(){
 }
 document.addEventListener('click',function(){document.querySelectorAll('.wc-menu.open').forEach(function(m){m.classList.remove('open');});});
 
-/* Searchable city index — uses the same full city dataset as Time Difference Calculator */
-var DIFF_CITIES=(typeof CITIES_FULL!=='undefined'&&CITIES_FULL&&CITIES_FULL.length)
-  ? CITIES_FULL.slice()
-  : (typeof CITIES!=='undefined'&&CITIES&&CITIES.length ? CITIES.map(function(c){
-      return {name:c.name,country:c.country,cc:c.cc,tz:c.tz,pop:c.pop};
-    }) : []);
-
-var DIFF_ALIASES={
-  usa:"United States",america:"United States",uk:"United Kingdom",britain:"United Kingdom",
-  england:"London",uae:"United Arab Emirates",nyc:"New York",bombay:"Mumbai",
-  calcutta:"Kolkata",bangalore:"Bengaluru",saigon:"Ho Chi Minh City",peking:"Beijing"
-};
-function foldWC(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
-function searchScoreWC(c,q){
-  var n=foldWC(c.name),co=foldWC(c.country),tz=foldWC(c.tz),al=foldWC(c.alias||'');
-  if(n===q)return 0;if(n.indexOf(q)===0)return 1;if(al.indexOf(q)===0)return 2;
-  if(co.indexOf(q)===0)return 3;if(tz.indexOf(q)>-1)return 4;if(n.indexOf(q)>-1)return 5;
-  if(co.indexOf(q)>-1)return 6;if(al.indexOf(q)>-1)return 7;return 99;
-}
-function buildDiffPoolWC(){
-  var map={},out=[];
-  function add(c,alias){
-    if(!c||!c.name||!c.tz)return;
-    var key=foldWC(c.name)+'|'+c.tz;
-    if(map[key]){if(alias)map[key].alias=(map[key].alias||'')+' '+alias;return;}
-    var x={name:c.name,country:c.country||'',cc:(c.cc||'').toLowerCase(),tz:c.tz,pop:c.pop||0,alias:alias||''};
-    map[key]=x;out.push(x);
-  }
-  DIFF_CITIES.forEach(function(c){add(c);});
-  Object.keys(DIFF_ALIASES).forEach(function(a){
-    var name=DIFF_ALIASES[a];
-    for(var i=0;i<out.length;i++)if(foldWC(out[i].name)===foldWC(name)){
-      out[i].alias=(out[i].alias||'')+' '+a;return;
-    }
-  });
-  return out;
-}
-var DIFF_POOL=buildDiffPoolWC();
-
-function renderDiffSearch(box){
-  var input=box.querySelector('.wc-diff-input'),drop=box.querySelector('.wc-diff-drop'),hi=-1,list=[];
-  function render(q){
-    var ql=foldWC(q).trim();
-    if(!ql) list=DIFF_POOL.slice().sort(function(a,b){return (b.pop||0)-(a.pop||0);}).slice(0,10);
-    else list=DIFF_POOL.filter(function(c){
-      return foldWC(c.name).indexOf(ql)>-1||foldWC(c.country).indexOf(ql)>-1||
-             foldWC(c.tz).indexOf(ql)>-1||foldWC(c.alias).indexOf(ql)>-1;
-    }).sort(function(a,b){
-      var sa=searchScoreWC(a,ql),sb=searchScoreWC(b,ql);
-      if(sa!==sb)return sa-sb;
-      if((b.pop||0)!==(a.pop||0))return (b.pop||0)-(a.pop||0);
-      return a.name.length-b.name.length;
-    }).slice(0,10);
-    drop.innerHTML=list.length?list.map(function(c,i){
-      return '<div class="wc-diff-opt" data-i="'+i+'" role="option">'+flag(c.cc,22)+
-        '<span class="oc"><b>'+c.name+'</b><small>'+c.country+'</small></span>'+
-        '<span class="off">'+(tzAbbr(c.tz)||utcOff(c.tz))+'</span></div>';
-    }).join(''):'<div class="wc-diff-none">No matching cities found.</div>';
-    drop.classList.toggle('open',list.length>0);hi=-1;
-  }
-  function pick(c){
-    if(!c)return;
-    input.value=c.name+(c.country?', '+c.country:'');
-    input.dataset.city=c.name;drop.classList.remove('open');updateDiff();
-  }
-  input.addEventListener('input',function(){input.dataset.city='';render(input.value);});
-  input.addEventListener('focus',function(){input.select();render(input.value);});
-  input.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){drop.classList.remove('open');return;}
-    if(!drop.classList.contains('open'))return;
-    if(e.key==='ArrowDown')hi=Math.min(hi+1,list.length-1);
-    else if(e.key==='ArrowUp')hi=Math.max(hi-1,0);
-    else if(e.key==='Enter'){if(list[hi]||list[0])pick(list[hi]||list[0]);e.preventDefault();return;}
-    else return;
-    [].forEach.call(drop.children,function(el,i){el.classList.toggle('hl',i===hi);});e.preventDefault();
-  });
-  drop.addEventListener('mousedown',function(e){
-    var o=e.target.closest('.wc-diff-opt');if(o){e.preventDefault();pick(list[+o.dataset.i]);}
-  });
-  document.addEventListener('click',function(e){if(!box.contains(e.target))drop.classList.remove('open');});
+/* Dropdowns */
+function fillSelect(sel,selected){
+  sel.innerHTML='';var byR={};C.forEach(function(c){(byR[c[4]]=byR[c[4]]||[]).push(c);});
+  REGIONS.slice(1).forEach(function(r){
+    var g=document.createElement('optgroup');g.label=r[1];
+    (byR[r[0]]||[]).sort(function(a,b){return a[0]<b[0]?-1:1;}).forEach(function(c){
+      var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' ('+(tzAbbr(c[3])||utcOff(c[3]))+')';
+      if(c[0]===selected)o.selected=true;g.appendChild(o);});
+    sel.appendChild(g);});
 }
 
-function diffCityValue(id){
-  var el=document.getElementById(id);return el&&el.dataset.city||'';
-}
+/* Time difference */
+function fmtDur(m){var h=Math.floor(m/60),mm=m%60;var o=h+' hour'+(h===1?'':'s');if(mm)o+=' '+mm+' minutes';return o;}
 function updateDiff(){
-  var a=diffCityValue('diffA'),b=diffCityValue('diffB'),ca=city(a),cb=city(b);
-  if(!ca||!cb)return;
-  var now=new Date(),d=offMin(now,ca[3])-offMin(now,cb[3]);
+  var a=document.getElementById('diffA').value,b=document.getElementById('diffB').value;
+  var ca=city(a),cb=city(b);if(!ca||!cb)return;
+  var now=new Date();var d=offMin(now,ca[3])-offMin(now,cb[3]);
   var lead=d===0?(a+' is at the same time as '+b):d>0?(a+' is '+fmtDur(d)+' ahead of '+b):(a+' is '+fmtDur(-d)+' behind '+b);
-  document.getElementById('diffOut').innerHTML='<div class="lead">'+lead+'</div><div class="det">'+
-    a+': '+fmtDate(ca[3])+', '+fmt(ca[3])+' ('+(tzAbbr(ca[3])||utcOff(ca[3]))+')<br>'+
-    b+': '+fmtDate(cb[3])+', '+fmt(cb[3])+' ('+(tzAbbr(cb[3])||utcOff(cb[3]))+')</div>';
+  document.getElementById('diffOut').innerHTML='<div class="lead">'+lead+'</div><div class="det">'
+    +a+': '+fmtDate(ca[3])+', '+fmt(ca[3])+' ('+(tzAbbr(ca[3])||utcOff(ca[3]))+')<br>'
+    +b+': '+fmtDate(cb[3])+', '+fmt(cb[3])+' ('+(tzAbbr(cb[3])||utcOff(cb[3]))+')</div>';
 }
-renderDiffSearch(document.querySelector('.wc-diff-search[data-side="a"]'));
-renderDiffSearch(document.querySelector('.wc-diff-search[data-side="b"]'));
 
 /* Popular — built from full CITIES dataset, up to 50 per continent */
 var SA_CC={ar:1,bo:1,br:1,cl:1,co:1,ec:1,gy:1,py:1,pe:1,sr:1,uy:1,ve:1,gf:1,fk:1};
@@ -630,21 +523,27 @@ function renderPopular(){
   var full=sortList(curRegion==='all'?POP_ALL:(POP[curRegion]||[]));
   var list=showAll?full:full.slice(0,INIT);
   list.forEach(function(c){
-    host.appendChild(elc('<div class="wc-pcard" data-tz="'+c[3]+'">'+
-      '<div class="top">'+flag(c[2],26)+'<span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div>'+
-      '<div class="bot"><div><div class="tm t-time"></div><div class="znw"><span class="zn t-zone"></span></div></div><span class="t-icon"></span></div></div>'));
+    host.appendChild(elc('<div class="wc-pcard" data-tz="'+c[3]+'">'
+      +'<div class="top">'+flag(c[2],26)+'<span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div>'
+      +'<div class="bot"><div><div class="tm t-time"></div><div class="znw"><span class="zn t-zone"></span></div></div><span class="t-icon"></span></div>'
+      +'</div>'));
   });
-  document.getElementById('moreBtn').style.display=(!showAll&&full.length>INIT)?'':'none';tick();
+  document.getElementById('moreBtn').style.display=(!showAll&&full.length>INIT)?'':'none';
+  tick();
 }
 function renderFilters(){
   var host=document.getElementById('filters');host.innerHTML='';
-  REGIONS.forEach(function(r){var b=document.createElement('button');b.textContent=r[1];if(r[0]===curRegion)b.className='active';
-    b.addEventListener('click',function(){curRegion=r[0];showAll=false;renderFilters();renderPopular();});host.appendChild(b);});
+  REGIONS.forEach(function(r){
+    var b=document.createElement('button');b.textContent=r[1];if(r[0]===curRegion)b.className='active';
+    b.addEventListener('click',function(){curRegion=r[0];showAll=false;renderFilters();renderPopular();});
+    host.appendChild(b);});
 }
 function renderSort(){
   var host=document.getElementById('sortCtl');if(!host)return;host.innerHTML='';
-  [['time','Sort by Time'],['az','Sort A–Z']].forEach(function(s){var b=document.createElement('button');b.textContent=s[1];if(s[0]===sortMode)b.className='active';
-    b.addEventListener('click',function(){sortMode=s[0];renderSort();renderPopular();});host.appendChild(b);});
+  [['time','Sort by Time'],['az','Sort A\u2013Z']].forEach(function(s){
+    var b=document.createElement('button');b.textContent=s[1];if(s[0]===sortMode)b.className='active';
+    b.addEventListener('click',function(){sortMode=s[0];renderSort();renderPopular();});
+    host.appendChild(b);});
 }
 
 /* Tick — respects AM/PM toggle via util.fmt(); updates every second */
@@ -662,36 +561,62 @@ function tick(){
 /* Wire up */
 document.getElementById('clearBtn').addEventListener('click',function(){mine=[];saveS(mine);renderMine();});
 document.getElementById('moreBtn').addEventListener('click',function(){showAll=true;renderPopular();});
-document.getElementById('swapBtn').addEventListener('click',function(){
-  var A=document.getElementById('diffA'),B=document.getElementById('diffB');
-  var av=A.value,ac=A.dataset.city,bv=B.value,bc=B.dataset.city;
-  A.value=bv;A.dataset.city=bc;B.value=av;B.dataset.city=ac;updateDiff();
-});
+document.getElementById('swapBtn').addEventListener('click',function(){var A=document.getElementById('diffA'),B=document.getElementById('diffB');var t=A.value;A.value=B.value;B.value=t;updateDiff();});
+document.getElementById('diffA').addEventListener('change',updateDiff);
+document.getElementById('diffB').addEventListener('change',updateDiff);
 var ov=document.getElementById('ov');
-/* Add City — searchable picker (reuses C, flag, utcOff, tzAbbr) */
+/* Add City — searchable picker (same expanded search behaviour as Time Difference Calculator) */
 var pickSel=null,searchEl=document.getElementById('citySearch'),resultsEl=document.getElementById('cityResults');
-function renderPicker(){
-  var q=foldWC(searchEl.value.trim());resultsEl.innerHTML='';pickSel=null;
-  var list=DIFF_POOL.filter(function(c){return mine.indexOf(c.name)===-1;});
-  if(q)list=list.filter(function(c){
-    return foldWC(c.name).indexOf(q)>-1||foldWC(c.country).indexOf(q)>-1||
-           foldWC(c.tz).indexOf(q)>-1||foldWC(c.alias).indexOf(q)>-1;
-  }).sort(function(a,b){
-    var sa=searchScoreWC(a,q),sb=searchScoreWC(b,q);
-    if(sa!==sb)return sa-sb;
-    if((b.pop||0)!==(a.pop||0))return (b.pop||0)-(a.pop||0);
-    return a.name.length-b.name.length;
+var SEARCH_ALIASES={usa:'United States',america:'United States',uk:'United Kingdom',britain:'United Kingdom',england:'London',uae:'United Arab Emirates',nyc:'New York',bombay:'Mumbai',calcutta:'Kolkata',bangalore:'Bengaluru',saigon:'Ho Chi Minh City',peking:'Beijing'};
+function searchFold(s){return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
+function searchScore(c,q){
+  var n=searchFold(c.name),co=searchFold(c.country),tz=searchFold(c.tz),al=searchFold(c.alias||'');
+  if(n===q)return 0;
+  if(n.indexOf(q)===0)return 1;
+  if(al.indexOf(q)===0)return 2;
+  if(co.indexOf(q)===0)return 3;
+  if(tz.indexOf(q)>-1)return 4;
+  if(n.indexOf(q)>-1)return 5;
+  if(co.indexOf(q)>-1)return 6;
+  if(al.indexOf(q)>-1)return 7;
+  return 99;
+}
+function buildSearchPool(){
+  var map={},out=[];
+  function add(c){
+    if(!c||!c.name||!c.tz)return;
+    var k=searchFold(c.name)+'|'+c.tz;
+    if(map[k])return;
+    map[k]=1;out.push({name:c.name,country:c.country||'',cc:(c.cc||'').toLowerCase(),tz:c.tz,pop:c.pop||0,alias:c.alias||''});
+  }
+  C.forEach(function(c){add({name:c[0],country:c[1],cc:c[2],tz:c[3]});});
+  if(window.CITIES_FULL&&window.CITIES_FULL.length)window.CITIES_FULL.forEach(function(c){add(c);});
+  Object.keys(SEARCH_ALIASES).forEach(function(a){
+    var name=SEARCH_ALIASES[a],base=out.find(function(c){return searchFold(c.name)===searchFold(name);});
+    if(base)add({name:base.name,country:base.country,cc:base.cc,tz:base.tz,pop:base.pop,alias:a});
   });
-  else list.sort(function(a,b){return (b.pop||0)-(a.pop||0);});
-  list=list.slice(0,50);
+  return out;
+}
+var searchPool=buildSearchPool();
+function ensureCity(c){
+  if(city(c.name))return;
+  C.push([c.name,c.country,c.cc,c.tz,'',0,0]);
+}
+function renderPicker(){
+  var q=searchFold(searchEl.value).trim();resultsEl.innerHTML='';pickSel=null;
+  var list=searchPool.filter(function(c){return mine.indexOf(c.name)===-1;});
+  if(q)list=list.filter(function(c){return searchFold(c.name+' '+(c.country||'')+' '+(c.alias||'')).indexOf(q)>-1||searchFold(c.tz).indexOf(q)>-1;});
+  else list=list.slice().sort(function(a,b){return (b.pop||0)-(a.pop||0)||a.name.length-b.name.length;});
+  if(q)list.sort(function(a,b){var sa=searchScore(a,q),sb=searchScore(b,q);return sa-sb||(b.pop||0)-(a.pop||0)||a.name.length-b.name.length;});
+  list=list.slice(0,10);
   if(!list.length){resultsEl.innerHTML='<div class="wc-none">No matching cities found.</div>';return;}
   list.forEach(function(c){
     var row=elc('<div class="wc-opt" role="option">'+flag(c.cc,22)
       +'<span class="oc"><b>'+c.name+'</b><small>'+c.country+'</small></span>'
-      +'<span class="off">'+(tzAbbr(c.tz)||utcOff(c.tz))+'</span></div>');
+      +'<span class="off">'+utcOff(c.tz)+'</span></div>');
     row.addEventListener('click',function(){
       resultsEl.querySelectorAll('.wc-opt.sel').forEach(function(o){o.classList.remove('sel');});
-      row.classList.add('sel');pickSel=c.name;
+      row.classList.add('sel');pickSel=c;
     });
     resultsEl.appendChild(row);
   });
@@ -701,15 +626,13 @@ document.getElementById('cancelAdd').addEventListener('click',function(){ov.clas
 ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.remove('open');});
 searchEl.addEventListener('input',renderPicker);
 document.getElementById('confirmAdd').addEventListener('click',function(){
-  if(pickSel&&mine.indexOf(pickSel)===-1){mine.push(pickSel);saveS(mine);renderMine();}
+  if(pickSel&&mine.indexOf(pickSel.name)===-1){ensureCity(pickSel);mine.push(pickSel.name);saveS(mine);renderMine();}
   ov.classList.remove('open');
 });
 
 /* Init */
-document.getElementById('diffA').value='Mumbai, India';
-document.getElementById('diffA').dataset.city='Mumbai';
-document.getElementById('diffB').value='New York, United States';
-document.getElementById('diffB').dataset.city='New York';
+fillSelect(document.getElementById('diffA'),'Mumbai');
+fillSelect(document.getElementById('diffB'),'New York');
 renderMine();renderFilters();renderSort();renderPopular();
 setInterval(tick,1000);
 </script>
