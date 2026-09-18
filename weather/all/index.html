@@ -160,6 +160,12 @@ main{ padding:30px 0 52px; }
 }
 [data-theme="dark"] .wa-viewmore-btn{ background:#1a2132; border-color:rgba(88,166,255,0.3); }
 .wa-viewmore-btn:hover{ background:#f0f6fd; }
+.wa-pop-filtersbar{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:18px;}
+.wa-pop-filters,.wa-pop-sort{display:flex;flex-wrap:wrap;gap:8px;}
+.wa-pop-filters button,.wa-pop-sort button{border:1px solid var(--wa-line,#d9e1ec);background:#fff;color:var(--wa-blue,#2463b5);font-weight:700;font-size:13px;padding:8px 16px;border-radius:999px;cursor:pointer;}
+[data-theme="dark"] .wa-pop-filters button,[data-theme="dark"] .wa-pop-sort button{background:#1a2132;color:#58a6ff;border-color:rgba(88,166,255,.25);}
+.wa-pop-filters button.active,.wa-pop-sort button.active{background:var(--wa-blue,#2463b5);color:#fff;border-color:var(--wa-blue,#2463b5);}
+@media(max-width:640px){.wa-pop-filtersbar{flex-direction:column;align-items:stretch;}.wa-pop-filters,.wa-pop-sort{width:100%;}}
 [data-theme="dark"] .wa-viewmore-btn:hover{ background:rgba(88,166,255,0.08); }
 
 /* ── Rankings ─────────────────────────────────────────── */
@@ -229,31 +235,6 @@ main{ padding:30px 0 52px; }
   .wa-foot{ flex-direction:column; align-items:flex-start; }
   .wa-footlinks{ flex-wrap:wrap; }
 }
-
-/* ── Shared Popular City component: mirrors /world-clock/ ── */
-.wc-filtersbar.shared-city-filtersbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap;}
-.wc-filters.shared-city-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0;}
-.wc-filters.shared-city-filters button,.wc-sort.shared-city-sort button{border:1px solid var(--clr-border2);background:var(--clr-bg2);color:var(--clr-text2);font-family:var(--sans);font-weight:600;font-size:13px;padding:8px 16px;border-radius:var(--rxl);cursor:pointer;}
-.wc-filters.shared-city-filters button.active,.wc-sort.shared-city-sort button.active{background:var(--clr-brand);color:#fff;border-color:var(--clr-brand);}
-.wc-sort.shared-city-sort{display:flex;gap:8px;flex-wrap:wrap;}
-.shared-city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.shared-city-card{background:var(--clr-tile,#fff);border:1px solid var(--clr-border);border-radius:var(--rlg);box-shadow:var(--sh);padding:16px;min-width:0;text-decoration:none;color:inherit;}
-.shared-city-card:hover{border-color:#83a9d8;box-shadow:0 5px 16px rgba(31,71,123,.1);transform:translateY(-2px);}
-.shared-city-card .top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.shared-city-card .cn{font-weight:700;color:var(--clr-text);line-height:1.2;}
-.shared-city-card .cn small{display:block;color:var(--wx-muted);font-weight:500;font-size:12px;}
-.shared-city-card .local{font-size:22px;font-weight:800;color:var(--clr-text);font-variant-numeric:tabular-nums;}
-.shared-city-card .zone{font-size:12px;color:var(--wx-muted);margin-top:2px;}
-.shared-city-card .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--clr-border);}
-.shared-city-card .info-label{color:var(--wx-muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;}
-.shared-city-card .info-value{color:var(--clr-text);font-size:13px;font-weight:700;white-space:nowrap;}
-.shared-city-card .weather-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--clr-border);}
-.shared-city-card .temp{font-size:22px;font-weight:800;color:var(--clr-text);}
-.shared-city-card .condition{font-size:12px;color:var(--wx-muted);margin-top:2px;}
-.shared-city-card .weather-icon{font-size:30px;line-height:1;}
-.shared-city-more{text-align:center;margin-top:18px;}
-@media(max-width:900px){.shared-city-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:560px){.wc-filtersbar.shared-city-filtersbar{display:block}.wc-sort.shared-city-sort{margin-top:10px}.shared-city-grid{grid-template-columns:1fr;gap:10px}.shared-city-card{display:block;padding:14px}.shared-city-card .local{font-size:18px;}}
 </style>
 </head>
 <body>
@@ -345,22 +326,25 @@ main{ padding:30px 0 52px; }
 <div class="wa-wrap">
 
   <!-- ── POPULAR WEATHER LOCATIONS ── -->
-<section class="wa-section-card">
-  <div class="wa-section-head">
-    <div>
-      <h2>Popular Weather Locations</h2>
-      <p>Current weather and local time in some of the world's most popular cities.</p>
+  <section class="wa-section-card">
+    <div class="wa-section-head">
+      <div>
+        <h2>Popular Weather Locations</h2>
+        <p>Current weather and local time in some of the world's most popular cities.</p>
+      </div>
     </div>
-  </div>
-  <div class="wc-filtersbar shared-city-filtersbar">
-    <div class="wc-filters shared-city-filters" id="wa-shared-filters"></div>
-    <div class="wc-sort shared-city-sort" id="wa-shared-sort"></div>
-  </div>
-  <div class="shared-city-grid" id="wa-popular-grid"></div>
-  <div class="shared-city-more"><button class="wa-viewmore-btn" id="wa-viewmore-btn" onclick="waSharedMore()">View More Cities ↓</button></div>
-</section>
 
-<!-- ── RANKINGS ── -->
+    <div class="wa-pop-filtersbar">
+      <div class="wa-pop-filters" id="wa-pop-filters" aria-label="Filter cities by region"></div>
+      <div class="wa-pop-sort" id="wa-pop-sort" aria-label="Sort cities"></div>
+    </div>
+    <div class="wa-city-grid" id="wa-popular-grid"><!-- Rendered by JS --></div>
+    <div class="wa-viewmore-wrap">
+      <button class="wa-viewmore-btn" id="wa-viewmore-btn" onclick="waToggleMore()">View More Cities ↓</button>
+    </div>
+  </section>
+
+  <!-- ── RANKINGS ── -->
   <section class="wa-ranking-grid">
     <div class="wa-ranking" id="wa-hot-ranking">
       <h2><span>🔥</span> Hottest Cities</h2>
@@ -403,6 +387,7 @@ main{ padding:30px 0 52px; }
 </footer>
 
 <script src="/cities.js?v=3"></script>
+<script src="/cities-full.js?v=4"></script>
 <script src="/util.js?v=3"></script>
 <script>
 // ── Config ────────────────────────────────────────────────────────────────
@@ -442,148 +427,45 @@ var CITY_COORDS = {
   'Reykjavik':{lat:64.135,lon:-21.895,tz:'Atlantic/Reykjavik',cc:'is',country:'Iceland'},
 };
 
-// Default popular cities (first 6 show, next 6 in "View More")
-var DEFAULT_PRIMARY = ['New York','London','Dubai','Mumbai','Tokyo','Singapore'];
-var DEFAULT_MORE    = ['Los Angeles','Toronto','Sydney','Paris','Berlin','Bangkok'];
-
-// ── URL builder: maps city name to existing location page ──────────────
-function cityUrl(name) {
-  var slug = name.toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9\-]/g, '')
-    .replace(/-+/g, '-');
-  // Map to known location page slugs
-  var known = {
-    'new-york':'new-york','london':'london','dubai':'dubai',
-    'mumbai':'mumbai','tokyo':'tokyo','singapore':'singapore',
-    'los-angeles':'los-angeles','toronto':'toronto','sydney':'sydney',
-    'paris':'paris','berlin':'berlin','bangkok':'bangkok',
-    'new-delhi':'delhi','delhi':'delhi','riyadh':'riyadh',
-    'karachi':'karachi','doha':'doha','muscat':'muscat',
-    'bangkok':'bangkok','kuala-lumpur':'kuala-lumpur','jakarta':'jakarta',
-    'seoul':'seoul','osaka':'osaka','beijing':'beijing','shanghai':'shanghai',
-    'moscow':'moscow','istanbul':'istanbul','cairo':'cairo',
-    'lagos':'lagos','nairobi':'nairobi','johannesburg':'johannesburg',
-    'cape-town':'cape-town','casablanca':'casablanca',
-    'buenos-aires':'buenos-aires','sao-paulo':'sao-paulo',
-    'bogota':'bogota','lima':'lima','santiago':'santiago',
-    'mexico-city':'mexico-city','chicago':'chicago','houston':'houston',
-    'miami':'miami','seattle':'seattle','boston':'boston','denver':'denver',
-    'vancouver':'vancouver','montreal':'montreal','rome':'rome',
-    'madrid':'madrid','amsterdam':'amsterdam','athens':'athens',
-    'vienna':'vienna','stockholm':'stockholm','oslo':'oslo',
-    'copenhagen':'copenhagen','helsinki':'helsinki','zurich':'zurich',
-    'prague':'prague','warsaw':'warsaw','budapest':'budapest',
-    'lisbon':'lisbon','dublin':'dublin','kyiv':'kyiv',
-    'dubai':'dubai','abu-dhabi':'abu-dhabi',
-    'kolkata':'kolkata','bengaluru':'bengaluru','chennai':'chennai',
-    'hyderabad':'hyderabad','pune':'pune','ahmedabad':'ahmedabad',
-  };
-  var mapped = known[slug] || slug;
-  // Find matching country from CITIES array for correct path
-  if (typeof CITIES !== 'undefined') {
-    var match = CITIES.find(function(c){ return c.name.toLowerCase() === name.toLowerCase(); });
-    if (match) {
-      var cc = match.cc;
-      var countrySlug = match.country.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');
-      return '/location/' + countrySlug + '/' + mapped + '/';
-    }
-  }
-  return '/location/' + mapped + '/';
-}
-
-// ── Local time formatter ───────────────────────────────────────────────
-function localTime(tz) {
-  var now = new Date();
-  return now.toLocaleDateString('en-US',{timeZone:tz,weekday:'short',month:'short',day:'numeric'})
-    + ' • ' + now.toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:true});
-}
-
-// ── Fetch weather for a city ───────────────────────────────────────────
-function fetchWx(coords, cb) {
-  var key = coords.lat+','+coords.lon+'_'+WX_UNIT;
-  if (WX_CACHE[key]) { cb(null, WX_CACHE[key]); return; }
-  fetch('https://api.open-meteo.com/v1/forecast'
-    + '?latitude='+coords.lat+'&longitude='+coords.lon
-    + '&current=temperature_2m,weather_code'
-    + '&temperature_unit='+WX_UNIT+'&timezone=auto&forecast_days=1')
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if (d && d.current) { WX_CACHE[key] = d.current; cb(null, d.current); }
-      else cb(new Error('No data'), null);
-    })
-    .catch(function(e){ cb(e, null); });
-}
-
-// ── Build a city card HTML ─────────────────────────────────────────────
-function buildCard(name, coords, wxData) {
-  var U    = WX_UNIT === 'celsius' ? '°C' : '°F';
-  var temp = wxData ? Math.round(wxData.temperature_2m) + U : '—';
-  var code = wxData ? (wxData.weather_code || 0) : 0;
-  var icon = wxData ? (WX_ICONS[code] || '🌡') : '⏳';
-  var desc = wxData ? (WX_DESC[code] || '') : 'Loading…';
-  var time = coords.tz ? localTime(coords.tz) : '';
-  var url  = cityUrl(name);
-  var ccCode = coords.cc || 'un';
-
-  return '<a class="wa-city-card" href="'+url+'">'
-    + '<div class="wa-city-top">'
-    +   '<span class="wa-flag fi fi-'+ccCode+'"></span>'
-    +   '<div><div class="wa-city-name">'+name+'</div>'
-    +   '<div class="wa-country">'+(coords.country||'')+'</div></div>'
-    + '</div>'
-    + '<div class="wa-local-time">◷ '+time+'</div>'
-    + '<div class="wa-weather-row">'
-    +   '<div><div class="wa-temp">'+temp+'</div><div class="wa-condition">'+desc+'</div></div>'
-    +   '<div class="wa-icon">'+icon+'</div>'
-    + '</div>'
-    + '</a>';
-}
+// ── Popular city pool — same top-50-per-continent logic as World Clock ──
+var SA_CC={ar:1,bo:1,br:1,cl:1,co:1,ec:1,gy:1,py:1,pe:1,sr:1,uy:1,ve:1,gf:1,fk:1};
+function waPopRegion(c){return c.region==='americas'?(SA_CC[c.cc]?'sa':'na'):c.region;}
+var WA_POP={asia:[],europe:[],na:[],sa:[],africa:[],oceania:[]},WA_POP_ALL=[];
+(function(){
+  var src=(typeof CITIES!=='undefined'?CITIES:[]).filter(function(c){return c.cc&&c.tz&&WA_POP[waPopRegion(c)];});
+  src.sort(function(a,b){return (b.pop||0)-(a.pop||0);});
+  var seen={};
+  src.forEach(function(c){var r=waPopRegion(c),k=c.name+'|'+c.country;if(seen[k])return;seen[k]=1;var row=[c.name,c.country,c.cc,c.tz,r,c.lat||c.latitude||0,c.lng||c.lon||c.longitude||0,c.pop||0];if(WA_POP[r].length<50)WA_POP[r].push(row);if(WA_POP_ALL.length<50)WA_POP_ALL.push(row);});
+})();
+var waActiveRegion='all',waShowAll=false,waSortMode='time',WA_INIT=12;
+function waOffNum(tz){var m=/([+-])(\d{2}):(\d{2})/.exec(utcOff(tz));return m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;}
+function waSortList(l){return l.slice().sort(waSortMode==='az'?function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0;}:function(a,b){return waOffNum(a[3])-waOffNum(b[3])||(a[0]<b[0]?-1:1);});}
+function waCoords(c){var x=CITY_COORDS[c[0]]||{};return {lat:+(c[5]||x.lat||0),lon:+(c[6]||x.lon||0),tz:c[3],cc:c[2],country:c[1]};}
 
 // ── Render popular grid ────────────────────────────────────────────────
-function renderPopular(primary, more) {
-  var pGrid = document.getElementById('wa-popular-grid');
-  var mGrid = document.getElementById('wa-more-grid');
-  if (!pGrid) return;
-
-  // Skeleton
-  pGrid.innerHTML = primary.map(function(n){
-    return '<a class="wa-city-card wa-card-skeleton" id="wac-'+n.replace(/\s/g,'_')+'">'
-      + '<div class="wa-city-top"><span class="wa-flag">🌍</span>'
-      + '<div><div class="wa-city-name">'+n+'</div></div></div>'
-      + '<div class="wa-card-loading">Loading…</div></a>';
-  }).join('');
-
-  if (mGrid) {
-    mGrid.innerHTML = more.map(function(n){
-      return '<a class="wa-city-card" id="wac-'+n.replace(/\s/g,'_')+'">'
-        + '<div class="wa-city-top"><span class="wa-flag">🌍</span>'
-        + '<div><div class="wa-city-name">'+n+'</div></div></div>'
-        + '<div class="wa-card-loading">Loading…</div></a>';
-    }).join('');
-  }
-
-  // Fetch and update each card
-  primary.concat(more).forEach(function(name) {
-    var coords = CITY_COORDS[name];
-    if (!coords) return;
-    var el = document.getElementById('wac-'+name.replace(/\s/g,'_'));
-    if (!el) return;
-    fetchWx(coords, function(err, wx) {
-      if (el) el.outerHTML = buildCard(name, coords, err ? null : wx);
-    });
+function renderPopular(){
+  var grid=document.getElementById('wa-popular-grid'),moreBtn=document.getElementById('wa-viewmore-btn');if(!grid)return;
+  var full=waSortList(waActiveRegion==='all'?WA_POP_ALL:(WA_POP[waActiveRegion]||[]));
+  var list=waShowAll?full:full.slice(0,WA_INIT);grid.innerHTML='';
+  list.forEach(function(c,i){
+    var coords=waCoords(c),id='wa-pop-'+i+'-'+c[0].replace(/[^a-z0-9]/gi,'_');
+    var el=document.createElement('a');el.className='wa-city-card wa-card-skeleton';el.id=id;el.href=cityUrl(c[0]);
+    el.innerHTML='<div class="wa-city-top"><span class="wa-flag fi fi-'+c[2]+'"></span><div><div class="wa-city-name">'+c[0]+'</div><div class="wa-country">'+c[1]+'</div></div></div><div class="wa-card-loading">Loading…</div>';
+    grid.appendChild(el);
+    if(coords.lat||coords.lon){fetchWx(coords,function(err,wx){var node=document.getElementById(id);if(node)node.outerHTML=buildCard(c[0],coords,err?null:wx);});}
+    else el.outerHTML=buildCard(c[0],coords,null);
   });
+  if(moreBtn){moreBtn.style.display=full.length>WA_INIT?'inline-block':'none';moreBtn.textContent=waShowAll?'Show Less Cities ↑':'View More Cities ↓';}
 }
-
-// ── View More toggle ───────────────────────────────────────────────────
-var moreOpen = false;
-function waToggleMore() {
-  var grid = document.getElementById('wa-more-grid');
-  var btn  = document.getElementById('wa-viewmore-btn');
-  moreOpen = !moreOpen;
-  grid.classList.toggle('show', moreOpen);
-  btn.textContent = moreOpen ? 'Show Less Cities ↑' : 'View More Cities ↓';
+function renderWaFilters(){
+  var host=document.getElementById('wa-pop-filters');if(!host)return;host.innerHTML='';
+  [['all','All'],['asia','Asia'],['europe','Europe'],['na','North America'],['sa','South America'],['africa','Africa'],['oceania','Australia']].forEach(function(x){var b=document.createElement('button');b.textContent=x[1];if(x[0]===waActiveRegion)b.className='active';b.onclick=function(){waActiveRegion=x[0];waShowAll=false;renderWaFilters();renderWaSort();renderPopular();};host.appendChild(b);});
 }
+function renderWaSort(){
+  var host=document.getElementById('wa-pop-sort');if(!host)return;host.innerHTML='';
+  [['time','Sort by Time'],['az','Sort A–Z']].forEach(function(x){var b=document.createElement('button');b.textContent=x[1];if(x[0]===waSortMode)b.className='active';b.onclick=function(){waSortMode=x[0];renderWaSort();renderPopular();};host.appendChild(b);});
+}
+function waToggleMore(){waShowAll=!waShowAll;renderPopular();}
 
 // ── Search ─────────────────────────────────────────────────────────────
 function waDoSearch() {
@@ -759,103 +641,18 @@ setInterval(function(){
 // ── Footer year ────────────────────────────────────────────────────────
 document.getElementById('wa-year').textContent = new Date().getFullYear();
 
-/* ── Shared Popular Weather city component ── */
-(function(){
-  var WA_CITIES = [
-    ["New York","United States","us","America/New_York","na",40.71,-74.01],
-    ["Los Angeles","United States","us","America/Los_Angeles","na",34.05,-118.24],
-    ["Chicago","United States","us","America/Chicago","na",41.88,-87.63],
-    ["Denver","United States","us","America/Denver","na",39.74,-104.99],
-    ["Houston","United States","us","America/Chicago","na",29.76,-95.37],
-    ["Miami","United States","us","America/New_York","na",25.76,-80.19],
-    ["Toronto","Canada","ca","America/Toronto","na",43.65,-79.38],
-    ["Vancouver","Canada","ca","America/Vancouver","na",49.28,-123.12],
-    ["Mexico City","Mexico","mx","America/Mexico_City","na",19.43,-99.13],
-    ["Sao Paulo","Brazil","br","America/Sao_Paulo","sa",-23.55,-46.63],
-    ["Rio de Janeiro","Brazil","br","America/Sao_Paulo","sa",-22.91,-43.17],
-    ["Buenos Aires","Argentina","ar","America/Argentina/Buenos_Aires","sa",-34.6,-58.38],
-    ["Lima","Peru","pe","America/Lima","sa",-12.05,-77.04],
-    ["Bogota","Colombia","co","America/Bogota","sa",4.71,-74.07],
-    ["Santiago","Chile","cl","America/Santiago","sa",-33.45,-70.66],
-    ["London","United Kingdom","gb","Europe/London","europe",51.51,-0.13],
-    ["Dublin","Ireland","ie","Europe/Dublin","europe",53.35,-6.26],
-    ["Paris","France","fr","Europe/Paris","europe",48.85,2.35],
-    ["Berlin","Germany","de","Europe/Berlin","europe",52.52,13.41],
-    ["Madrid","Spain","es","Europe/Madrid","europe",40.42,-3.7],
-    ["Rome","Italy","it","Europe/Rome","europe",41.9,12.5],
-    ["Amsterdam","Netherlands","nl","Europe/Amsterdam","europe",52.37,4.9],
-    ["Zurich","Switzerland","ch","Europe/Zurich","europe",47.37,8.54],
-    ["Stockholm","Sweden","se","Europe/Stockholm","europe",59.33,18.06],
-    ["Lisbon","Portugal","pt","Europe/Lisbon","europe",38.72,-9.14],
-    ["Athens","Greece","gr","Europe/Athens","europe",37.98,23.73],
-    ["Vienna","Austria","at","Europe/Vienna","europe",48.21,16.37],
-    ["Warsaw","Poland","pl","Europe/Warsaw","europe",52.23,21.01],
-    ["Moscow","Russia","ru","Europe/Moscow","europe",55.76,37.62],
-    ["Istanbul","Turkiye","tr","Europe/Istanbul","europe",41.01,28.98],
-    ["Dubai","United Arab Emirates","ae","Asia/Dubai","asia",25.2,55.27],
-    ["Riyadh","Saudi Arabia","sa","Asia/Riyadh","asia",24.71,46.68],
-    ["Tel Aviv","Israel","il","Asia/Jerusalem","asia",32.09,34.78],
-    ["Karachi","Pakistan","pk","Asia/Karachi","asia",24.86,67.01],
-    ["Mumbai","India","in","Asia/Kolkata","asia",19.08,72.88],
-    ["Delhi","India","in","Asia/Kolkata","asia",28.61,77.21],
-    ["Dhaka","Bangladesh","bd","Asia/Dhaka","asia",23.81,90.41],
-    ["Bangkok","Thailand","th","Asia/Bangkok","asia",13.76,100.5],
-    ["Jakarta","Indonesia","id","Asia/Jakarta","asia",-6.21,106.85],
-    ["Singapore","Singapore","sg","Asia/Singapore","asia",1.35,103.82],
-    ["Kuala Lumpur","Malaysia","my","Asia/Kuala_Lumpur","asia",3.14,101.69],
-    ["Hong Kong","Hong Kong","hk","Asia/Hong_Kong","asia",22.32,114.17],
-    ["Shanghai","China","cn","Asia/Shanghai","asia",31.23,121.47],
-    ["Manila","Philippines","ph","Asia/Manila","asia",14.6,120.98],
-    ["Seoul","South Korea","kr","Asia/Seoul","asia",37.57,126.98],
-    ["Tokyo","Japan","jp","Asia/Tokyo","asia",35.68,139.69],
-    ["Cairo","Egypt","eg","Africa/Cairo","africa",30.04,31.24],
-    ["Casablanca","Morocco","ma","Africa/Casablanca","africa",33.57,-7.59],
-    ["Lagos","Nigeria","ng","Africa/Lagos","africa",6.52,3.38],
-    ["Accra","Ghana","gh","Africa/Accra","africa",5.6,-0.19],
-    ["Nairobi","Kenya","ke","Africa/Nairobi","africa",-1.29,36.82],
-    ["Johannesburg","South Africa","za","Africa/Johannesburg","africa",-26.2,28.05],
-    ["Sydney","Australia","au","Australia/Sydney","oceania",-33.87,151.21],
-    ["Melbourne","Australia","au","Australia/Melbourne","oceania",-37.81,144.96],
-    ["Brisbane","Australia","au","Australia/Brisbane","oceania",-27.47,153.03],
-    ["Perth","Australia","au","Australia/Perth","oceania",-31.95,115.86],
-    ["Auckland","New Zealand","nz","Pacific/Auckland","oceania",-36.85,174.76]
-  ];
-  var labels={all:'All',asia:'Asia',europe:'Europe',na:'North America',sa:'South America',africa:'Africa',oceania:'Australia'};
-  var active='all',sortMode='time',showAll=false,INIT=12;
-  function region(c){return c[4];}
-  function timeMin(tz){try{var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());return Number(p.find(function(x){return x.type==='hour';}).value)*60+Number(p.find(function(x){return x.type==='minute';}).value);}catch(e){return 0;}}
-  function time(tz){try{return new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:true}).format(new Date());}catch(e){return '—';}}
-  function offset(tz){try{var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'longOffset'}).formatToParts(new Date()).find(function(x){return x.type==='timeZoneName';});return (p?p.value:'GMT').replace('GMT','UTC');}catch(e){return 'UTC';}}
-  function weather(c,done){fetchWx({lat:c[5],lon:c[6],tz:c[3],cc:c[2],country:c[1]},done);}
-  function icon(code){return WX_ICONS[code]||'🌡';}
-  function desc(code){return WX_DESC[code]||'';}
-  function url(c){var slug=c[0].toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'').replace(/-+/g,'-');var country=c[1].toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');var known={'new-york':'new-york','los-angeles':'los-angeles','sao-paulo':'sao-paulo','rio-de-janeiro':'rio-de-janeiro','mexico-city':'mexico-city','new-delhi':'delhi'};return '/location/'+country+'/'+(known[slug]||slug)+'/';}
-  function renderFilters(){var h=document.getElementById('wa-shared-filters');h.innerHTML='';Object.keys(labels).forEach(function(k){var b=document.createElement('button');b.type='button';b.textContent=labels[k];if(k===active)b.className='active';b.onclick=function(){active=k;showAll=false;renderFilters();renderSort();render();};h.appendChild(b);});}
-  function renderSort(){var h=document.getElementById('wa-shared-sort');h.innerHTML='';[['time','Sort by Time'],['az','Sort A–Z']].forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent=x[1];if(sortMode===x[0])b.className='active';b.onclick=function(){sortMode=x[0];renderSort();render();};h.appendChild(b);});}
-  function render(){var h=document.getElementById('wa-popular-grid'),btn=document.getElementById('wa-viewmore-btn');var list=WA_CITIES.filter(function(c){return active==='all'||region(c)===active;});list.sort(function(a,b){return sortMode==='az'?(a[0]<b[0]?-1:a[0]>b[0]?1:0):timeMin(a[3])-timeMin(b[3])||(a[0]<b[0]?-1:1);});var fullLength=list.length;if(!showAll)list=list.slice(0,INIT);h.innerHTML='';list.forEach(function(c,i){var a=document.createElement('a');a.className='shared-city-card';a.href=url(c);a.innerHTML='<div class="top"><span class="fi fi-'+c[2]+'" style="width:26px;height:18px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0"></span><span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div><div class="local">'+time(c[3])+'</div><div class="zone">'+offset(c[3])+'</div><div class="weather-row"><div><div class="temp">—</div><div class="condition">Loading weather…</div></div><div class="weather-icon">⏳</div></div>';h.appendChild(a);weather(c,function(err,wx){var card=a;if(!card.isConnected)return;if(err||!wx){card.querySelector('.condition').textContent='Weather unavailable';card.querySelector('.weather-icon').textContent='🌡';return;}card.querySelector('.temp').textContent=Math.round(wx.temperature_2m)+(WX_UNIT==='celsius'?'°C':'°F');card.querySelector('.condition').textContent=desc(wx.weather_code||0);card.querySelector('.weather-icon').textContent=icon(wx.weather_code||0);});});btn.style.display=(!showAll&&fullLength>INIT)?'inline-flex':'none';}
-  window.waSharedMore=function(){showAll=true;render();};
-  window.waSharedRefresh=function(){render();};
-  document.addEventListener('DOMContentLoaded',function(){renderFilters();renderSort();render();setInterval(render,60000);});
-})();
-
 // ── Boot ───────────────────────────────────────────────────────────────
 // Load recently searched cities from localStorage first
 var recent = JSON.parse(localStorage.getItem('wa_recent') || '[]');
-var primary = DEFAULT_PRIMARY.slice();
-var more    = DEFAULT_MORE.slice();
-// Prepend recent searches that aren't already in primary
-recent.forEach(function(name) {
-  if (primary.indexOf(name) === -1 && more.indexOf(name) === -1) {
-    primary.unshift(name);
-    if (primary.length > 6) { more.unshift(primary.pop()); }
-    if (!CITY_COORDS[name] && typeof CITIES !== 'undefined') {
-      var c = CITIES.find(function(x){ return x.name === name && x.pop > 0; });
-      if (c) CITY_COORDS[name] = {lat:0, lon:0, tz:c.tz, cc:c.cc, country:c.country};
-    }
+recent.forEach(function(name){
+  if(!CITY_COORDS[name] && typeof CITIES!=='undefined'){
+    var c=CITIES.find(function(x){return x.name===name&&x.pop>0;});
+    if(c) CITY_COORDS[name]={lat:+(c.lat||c.latitude||0),lon:+(c.lng||c.lon||c.longitude||0),tz:c.tz,cc:c.cc,country:c.country};
   }
 });
-
-waSharedRefresh();
+renderWaFilters();
+renderWaSort();
+renderPopular();
 loadRankings();
 
 // ── Hash-based city panel ───────────────────────────────────────────────

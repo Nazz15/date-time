@@ -88,6 +88,12 @@
 }
 .sm-pop-filter:hover { border-color:var(--clr-brand,#2463b5); color:var(--clr-brand,#2463b5); }
 .sm-pop-filter.active { background:var(--clr-brand,#2463b5); color:#fff; border-color:var(--clr-brand,#2463b5); }
+.sm-pop-filtersbar { display:flex; justify-content:space-between; align-items:flex-start; gap:18px; flex-wrap:wrap; margin-bottom:18px; }
+.sm-pop-filters { margin-bottom:0; }
+.sm-pop-sort { display:flex; flex-wrap:wrap; gap:8px; }
+.sm-pop-sort button { border:1px solid var(--clr-border2,#d9e1ec); background:var(--clr-bg2,#fff); color:var(--clr-text2,#43546a); font:600 13px var(--sans,Inter,sans-serif); padding:8px 16px; border-radius:999px; cursor:pointer; }
+.sm-pop-sort button.active { background:var(--clr-brand,#2463b5); color:#fff; border-color:var(--clr-brand,#2463b5); }
+@media(max-width:600px){ .sm-pop-filtersbar{flex-direction:column;align-items:stretch;} .sm-pop-sort{width:100%;} }
 .sm-pop-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
 .sm-pop-card {
   background:var(--clr-tile,#fff); border:1px solid var(--clr-border,#d9e1ec);
@@ -99,6 +105,8 @@
 .sm-pop-city { min-width:0; }
 .sm-pop-city strong { display:block; color:var(--clr-text,#172235); font-size:18px; font-weight:800; line-height:1.2; }
 .sm-pop-city span { display:block; color:var(--wx-muted); font-size:13px; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sm-pop-local { color:var(--clr-text,#172235); font-size:13px; font-weight:700; margin:0 0 14px; }
+.sm-pop-local span { color:var(--wx-muted); font-weight:500; margin-left:6px; }
 .sm-pop-times { display:grid; grid-template-columns:1fr 1fr; gap:12px 14px; }
 .sm-pop-stat { min-width:0; }
 .sm-pop-label { color:var(--wx-muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin-bottom:3px; }
@@ -123,31 +131,6 @@
   .sm-pop-filter{font-size:13px;padding:8px 15px;}
 }
 
-
-/* ── Shared Popular City component: mirrors /world-clock/ ── */
-.wc-filtersbar.shared-city-filtersbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:18px;flex-wrap:wrap;}
-.wc-filters.shared-city-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0;}
-.wc-filters.shared-city-filters button,.wc-sort.shared-city-sort button{border:1px solid var(--clr-border2);background:var(--clr-bg2);color:var(--clr-text2);font-family:var(--sans);font-weight:600;font-size:13px;padding:8px 16px;border-radius:var(--rxl);cursor:pointer;}
-.wc-filters.shared-city-filters button.active,.wc-sort.shared-city-sort button.active{background:var(--clr-brand);color:#fff;border-color:var(--clr-brand);}
-.wc-sort.shared-city-sort{display:flex;gap:8px;flex-wrap:wrap;}
-.shared-city-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.shared-city-card{background:var(--clr-tile,#fff);border:1px solid var(--clr-border);border-radius:var(--rlg);box-shadow:var(--sh);padding:16px;min-width:0;text-decoration:none;color:inherit;}
-.shared-city-card:hover{border-color:#83a9d8;box-shadow:0 5px 16px rgba(31,71,123,.1);transform:translateY(-2px);}
-.shared-city-card .top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-.shared-city-card .cn{font-weight:700;color:var(--clr-text);line-height:1.2;}
-.shared-city-card .cn small{display:block;color:var(--wx-muted);font-weight:500;font-size:12px;}
-.shared-city-card .local{font-size:22px;font-weight:800;color:var(--clr-text);font-variant-numeric:tabular-nums;}
-.shared-city-card .zone{font-size:12px;color:var(--wx-muted);margin-top:2px;}
-.shared-city-card .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin-top:12px;padding-top:12px;border-top:1px solid var(--clr-border);}
-.shared-city-card .info-label{color:var(--wx-muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;}
-.shared-city-card .info-value{color:var(--clr-text);font-size:13px;font-weight:700;white-space:nowrap;}
-.shared-city-card .weather-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--clr-border);}
-.shared-city-card .temp{font-size:22px;font-weight:800;color:var(--clr-text);}
-.shared-city-card .condition{font-size:12px;color:var(--wx-muted);margin-top:2px;}
-.shared-city-card .weather-icon{font-size:30px;line-height:1;}
-.shared-city-more{text-align:center;margin-top:18px;}
-@media(max-width:900px){.shared-city-grid{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:560px){.wc-filtersbar.shared-city-filtersbar{display:block}.wc-sort.shared-city-sort{margin-top:10px}.shared-city-grid{grid-template-columns:1fr;gap:10px}.shared-city-card{display:block;padding:14px}.shared-city-card .local{font-size:18px;}}
 </style>
 </head>
 <body>
@@ -228,7 +211,7 @@
 </section>
 
 <!-- ── POPULAR CITIES ── -->
-<section class="wx-sec wx-sec-alt">
+<section class="wx-sec wx-sec-alt sm-popular-section">
   <div class="wx-container">
     <div class="wx-sec-head">
       <div>
@@ -236,12 +219,16 @@
         <p>Compare sunrise, sunset, day length and moon times for major cities around the world.</p>
       </div>
     </div>
-    <div class="wc-filtersbar shared-city-filtersbar">
-      <div class="wc-filters shared-city-filters" id="sm-pop-filters"></div>
-      <div class="wc-sort shared-city-sort" id="sm-pop-sort"></div>
+    <div class="sm-pop-filtersbar">
+      <div class="sm-pop-filters" id="sm-pop-filters" aria-label="Filter cities by region"></div>
+      <div class="sm-pop-sort" id="sm-pop-sort" aria-label="Sort cities"></div>
     </div>
-    <div class="shared-city-grid" id="sm-pop-body"><div class="sm-loading">Calculating…</div></div>
-    <div class="shared-city-more"><button class="sm-pop-more-btn" id="sm-pop-more" onclick="smPopMore()">View more cities →</button></div>
+    <div class="sm-pop-grid" id="sm-pop-body">
+      <div class="sm-loading">Calculating…</div>
+    </div>
+    <div class="sm-pop-more-wrap">
+      <button class="sm-pop-more-btn" id="sm-pop-more" onclick="smPopMore()">View more cities →</button>
+    </div>
   </div>
 </section>
 
@@ -329,6 +316,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
 <script src="/cities.js"></script>
+<script src="/cities-full.js?v=4"></script>
 <script src="/util.js?v=3"></script>
 <script>
 // Footer year
@@ -342,89 +330,77 @@ setInterval(function(){
 <script src="/sunmoon.js?v=2"></script>
 
 <script>
-/* ===== Popular Sun & Moon city listing =====
-   Uses the same city coverage/filter/sort pattern as /world-clock/. */
+/* ===== Popular Sun & Moon cards — same city pool/filter logic as World Clock ===== */
 (function(){
-  var SM_CITIES = [
-    ["New York","United States","us","America/New_York","na",40.71,-74.01],
-    ["Los Angeles","United States","us","America/Los_Angeles","na",34.05,-118.24],
-    ["Chicago","United States","us","America/Chicago","na",41.88,-87.63],
-    ["Denver","United States","us","America/Denver","na",39.74,-104.99],
-    ["Houston","United States","us","America/Chicago","na",29.76,-95.37],
-    ["Miami","United States","us","America/New_York","na",25.76,-80.19],
-    ["Toronto","Canada","ca","America/Toronto","na",43.65,-79.38],
-    ["Vancouver","Canada","ca","America/Vancouver","na",49.28,-123.12],
-    ["Mexico City","Mexico","mx","America/Mexico_City","na",19.43,-99.13],
-    ["Sao Paulo","Brazil","br","America/Sao_Paulo","sa",-23.55,-46.63],
-    ["Rio de Janeiro","Brazil","br","America/Sao_Paulo","sa",-22.91,-43.17],
-    ["Buenos Aires","Argentina","ar","America/Argentina/Buenos_Aires","sa",-34.6,-58.38],
-    ["Lima","Peru","pe","America/Lima","sa",-12.05,-77.04],
-    ["Bogota","Colombia","co","America/Bogota","sa",4.71,-74.07],
-    ["Santiago","Chile","cl","America/Santiago","sa",-33.45,-70.66],
-    ["London","United Kingdom","gb","Europe/London","europe",51.51,-0.13],
-    ["Dublin","Ireland","ie","Europe/Dublin","europe",53.35,-6.26],
-    ["Paris","France","fr","Europe/Paris","europe",48.85,2.35],
-    ["Berlin","Germany","de","Europe/Berlin","europe",52.52,13.41],
-    ["Madrid","Spain","es","Europe/Madrid","europe",40.42,-3.7],
-    ["Rome","Italy","it","Europe/Rome","europe",41.9,12.5],
-    ["Amsterdam","Netherlands","nl","Europe/Amsterdam","europe",52.37,4.9],
-    ["Zurich","Switzerland","ch","Europe/Zurich","europe",47.37,8.54],
-    ["Stockholm","Sweden","se","Europe/Stockholm","europe",59.33,18.06],
-    ["Lisbon","Portugal","pt","Europe/Lisbon","europe",38.72,-9.14],
-    ["Athens","Greece","gr","Europe/Athens","europe",37.98,23.73],
-    ["Vienna","Austria","at","Europe/Vienna","europe",48.21,16.37],
-    ["Warsaw","Poland","pl","Europe/Warsaw","europe",52.23,21.01],
-    ["Moscow","Russia","ru","Europe/Moscow","europe",55.76,37.62],
-    ["Istanbul","Turkiye","tr","Europe/Istanbul","europe",41.01,28.98],
-    ["Dubai","United Arab Emirates","ae","Asia/Dubai","asia",25.2,55.27],
-    ["Riyadh","Saudi Arabia","sa","Asia/Riyadh","asia",24.71,46.68],
-    ["Tel Aviv","Israel","il","Asia/Jerusalem","asia",32.09,34.78],
-    ["Karachi","Pakistan","pk","Asia/Karachi","asia",24.86,67.01],
-    ["Mumbai","India","in","Asia/Kolkata","asia",19.08,72.88],
-    ["Delhi","India","in","Asia/Kolkata","asia",28.61,77.21],
-    ["Dhaka","Bangladesh","bd","Asia/Dhaka","asia",23.81,90.41],
-    ["Bangkok","Thailand","th","Asia/Bangkok","asia",13.76,100.5],
-    ["Jakarta","Indonesia","id","Asia/Jakarta","asia",-6.21,106.85],
-    ["Singapore","Singapore","sg","Asia/Singapore","asia",1.35,103.82],
-    ["Kuala Lumpur","Malaysia","my","Asia/Kuala_Lumpur","asia",3.14,101.69],
-    ["Hong Kong","Hong Kong","hk","Asia/Hong_Kong","asia",22.32,114.17],
-    ["Shanghai","China","cn","Asia/Shanghai","asia",31.23,121.47],
-    ["Manila","Philippines","ph","Asia/Manila","asia",14.6,120.98],
-    ["Seoul","South Korea","kr","Asia/Seoul","asia",37.57,126.98],
-    ["Tokyo","Japan","jp","Asia/Tokyo","asia",35.68,139.69],
-    ["Cairo","Egypt","eg","Africa/Cairo","africa",30.04,31.24],
-    ["Casablanca","Morocco","ma","Africa/Casablanca","africa",33.57,-7.59],
-    ["Lagos","Nigeria","ng","Africa/Lagos","africa",6.52,3.38],
-    ["Accra","Ghana","gh","Africa/Accra","africa",5.6,-0.19],
-    ["Nairobi","Kenya","ke","Africa/Nairobi","africa",-1.29,36.82],
-    ["Johannesburg","South Africa","za","Africa/Johannesburg","africa",-26.2,28.05],
-    ["Sydney","Australia","au","Australia/Sydney","oceania",-33.87,151.21],
-    ["Melbourne","Australia","au","Australia/Melbourne","oceania",-37.81,144.96],
-    ["Brisbane","Australia","au","Australia/Brisbane","oceania",-27.47,153.03],
-    ["Perth","Australia","au","Australia/Perth","oceania",-31.95,115.86],
-    ["Auckland","New Zealand","nz","Pacific/Auckland","oceania",-36.85,174.76]
-  ];
-  var labels={all:"All",asia:"Asia",europe:"Europe",na:"North America",sa:"South America",africa:"Africa",oceania:"Australia"};
-  var active="all", sortMode="time", showAll=false, INIT=12;
-  function region(c){return c[4];}
-  function nowTimeMinutes(tz){try{var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date());var h=Number(p.find(function(x){return x.type==='hour';}).value);var m=Number(p.find(function(x){return x.type==='minute';}).value);return h*60+m;}catch(e){return 0;}}
-  function nowTime(tz){try{return new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:true}).format(new Date());}catch(e){return '—';}}
-  function utcOffset(tz){try{var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'longOffset'}).formatToParts(new Date()).find(function(x){return x.type==='timeZoneName';});return (p?p.value:'GMT').replace('GMT','UTC');}catch(e){return 'UTC';}}
-  function localNoon(dateStr,tz){var base=new Date(dateStr+'T12:00:00Z');var parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(base);var get=function(t){return Number(parts.find(function(p){return p.type===t;}).value);};var asUtc=Date.UTC(get('year'),get('month')-1,get('day'),get('hour'),get('minute'),get('second'));return new Date(base.getTime()+(Date.UTC(get('year'),get('month')-1,get('day'),12)-asUtc));}
+  var SA_CC={ar:1,bo:1,br:1,cl:1,co:1,ec:1,gy:1,py:1,pe:1,sr:1,uy:1,ve:1,gf:1,fk:1};
+  function popRegion(c){return c.region==='americas'?(SA_CC[c.cc]?'sa':'na'):c.region;}
+  var POP={asia:[],europe:[],na:[],sa:[],africa:[],oceania:[]},POP_ALL=[];
+  (function(){
+    var src=(typeof CITIES!=='undefined'?CITIES:[]).filter(function(c){return c.cc&&c.tz&&POP[popRegion(c)];});
+    src.sort(function(a,b){return (b.pop||0)-(a.pop||0);});
+    var seen={};
+    src.forEach(function(c){
+      var r=popRegion(c),k=c.name+'|'+c.country;if(seen[k])return;seen[k]=1;
+      var row=[c.name,c.country,c.cc,c.tz,r,c.lat||c.latitude||0,c.lng||c.lon||c.longitude||0,c.pop||0];
+      if(POP[r].length<50)POP[r].push(row);
+      if(POP_ALL.length<50)POP_ALL.push(row);
+    });
+  })();
+
+  var labels={all:'All',asia:'Asia',europe:'Europe',na:'North America',sa:'South America',africa:'Africa',oceania:'Australia'};
+  var activeRegion='all',showAll=false,sortMode='time',INIT=12;
+  function esc(v){return String(v).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
+  function offNum(tz){var m=/([+-])(\d{2}):(\d{2})/.exec(utcOff(tz));return m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;}
+  function sortList(l){return l.slice().sort(sortMode==='az'
+    ?function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0;}
+    :function(a,b){return offNum(a[3])-offNum(b[3])||(a[0]<b[0]?-1:1);});}
+
+  function localNoon(dateStr,tz){
+    var base=new Date(dateStr+'T12:00:00Z');
+    var parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(base);
+    var get=function(t){return Number(parts.find(function(p){return p.type===t;}).value);};
+    var asUtc=Date.UTC(get('year'),get('month')-1,get('day'),get('hour'),get('minute'),get('second'));
+    return new Date(base.getTime()+(Date.UTC(get('year'),get('month')-1,get('day'),12)-asUtc));
+  }
   function fmtTime(d,tz){if(!d||isNaN(d.getTime()))return '—';return new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:true}).format(d);}
   function fmtDay(ms){if(!isFinite(ms)||ms<=0)return '—';var m=Math.round(ms/60000),h=Math.floor(m/60),mm=m%60;return h+'h '+String(mm).padStart(2,'0')+'m';}
-  function phaseName(p){if(p<.03||p>.97)return 'New Moon';if(p<.22)return 'Waxing Crescent';if(p<.28)return 'First Quarter';if(p<.47)return 'Waxing Gibbous';if(p<.53)return 'Full Moon';if(p<.72)return 'Waning Gibbous';if(p<.78)return 'Last Quarter';return 'Waning Crescent';}
-  function data(c){var el=document.getElementById('sm-date'),date=(el&&el.value)||new Date().toISOString().slice(0,10),d=localNoon(date,c[3]),sun=SunCalc.getTimes(d,c[5],c[6]),moon=SunCalc.getMoonTimes(d,c[5],c[6],false),illum=SunCalc.getMoonIllumination(d);return {sunrise:sun.sunrise,sunset:sun.sunset,moonrise:moon.rise,moonset:moon.set,day:(sun.sunset&&sun.sunrise)?sun.sunset-sun.sunrise:0,phase:phaseName(illum.phase),illum:Math.round(illum.fraction*100)};}
-  function flag(cc){return '<span class="fi fi-'+cc+'" style="width:26px;height:18px;border-radius:2px;display:inline-block;background-size:cover;flex-shrink:0" aria-hidden="true"></span>';}
-  function cityUrl(c){var slug=c[0].toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'').replace(/-+/g,'-');var country=c[1].toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'');var known={'delhi':'delhi','sao-paulo':'sao-paulo','bogota':'bogota','istanbul':'istanbul','moscow':'moscow','tel-aviv':'tel-aviv','new-york':'new-york','los-angeles':'los-angeles','mexico-city':'mexico-city'};return '/location/'+country+'/'+(known[slug]||slug)+'/';}
-  function renderFilters(){var host=document.getElementById('sm-pop-filters');host.innerHTML='';Object.keys(labels).forEach(function(k){var b=document.createElement('button');b.type='button';b.textContent=labels[k];if(k===active)b.className='active';b.onclick=function(){active=k;showAll=false;renderFilters();renderCards();};host.appendChild(b);});}
-  function renderSort(){var host=document.getElementById('sm-pop-sort');host.innerHTML='';[['time','Sort by Time'],['az','Sort A–Z']].forEach(function(x){var b=document.createElement('button');b.type='button';b.textContent=x[1];if(sortMode===x[0])b.className='active';b.onclick=function(){sortMode=x[0];renderSort();renderCards();};host.appendChild(b);});}
-  function renderCards(){var host=document.getElementById('sm-pop-body'),more=document.getElementById('sm-pop-more');var list=SM_CITIES.filter(function(c){return active==='all'||region(c)===active;});list.sort(function(a,b){return sortMode==='az'?(a[0]<b[0]?-1:a[0]>b[0]?1:0):nowTimeMinutes(a[3])-nowTimeMinutes(b[3])||(a[0]<b[0]?-1:1);});var fullLength=list.length;if(!showAll)list=list.slice(0,INIT);host.innerHTML='';list.forEach(function(c){var d=data(c),a=document.createElement('a');a.className='shared-city-card';a.href=cityUrl(c);a.innerHTML='<div class="top">'+flag(c[2])+'<span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div><div class="local">'+nowTime(c[3])+'</div><div class="zone">'+utcOffset(c[3])+'</div><div class="info-grid"><div><div class="info-label">Sunrise</div><div class="info-value">'+fmtTime(d.sunrise,c[3])+'</div></div><div><div class="info-label">Sunset</div><div class="info-value">'+fmtTime(d.sunset,c[3])+'</div></div><div><div class="info-label">Moonrise</div><div class="info-value">'+fmtTime(d.moonrise,c[3])+'</div></div><div><div class="info-label">Moonset</div><div class="info-value">'+fmtTime(d.moonset,c[3])+'</div></div></div><div class="weather-row"><div><div class="condition">Day length '+fmtDay(d.day)+'</div><div class="condition">'+d.phase+' · '+d.illum+'% illumination</div></div><div class="weather-icon">☀️</div></div>';host.appendChild(a);});more.style.display=(fullLength>INIT&&!showAll)?'inline-flex':'none';}
+  function phaseName(p){if(p<0.03||p>0.97)return 'New Moon';if(p<0.22)return 'Waxing Crescent';if(p<0.28)return 'First Quarter';if(p<0.47)return 'Waxing Gibbous';if(p<0.53)return 'Full Moon';if(p<0.72)return 'Waning Gibbous';if(p<0.78)return 'Last Quarter';return 'Waning Crescent';}
+  function cityData(c){
+    var dateEl=document.getElementById('sm-date');
+    var dateStr=(dateEl&&dateEl.value)||new Date().toISOString().slice(0,10);
+    var d=localNoon(dateStr,c[3]),sun=SunCalc.getTimes(d,c[5],c[6]),moon=SunCalc.getMoonTimes(d,c[5],c[6],false),illum=SunCalc.getMoonIllumination(d);
+    return {sunrise:sun.sunrise,sunset:sun.sunset,moonrise:moon.rise,moonset:moon.set,day:(sun.sunset&&sun.sunrise)?sun.sunset-sun.sunrise:0,phase:phaseName(illum.phase),illum:Math.round(illum.fraction*100)};
+  }
+
+  function renderFilters(){
+    var host=document.getElementById('sm-pop-filters');if(!host)return;host.innerHTML='';
+    Object.keys(labels).forEach(function(key){var b=document.createElement('button');b.type='button';b.className='sm-pop-filter'+(key===activeRegion?' active':'');b.textContent=labels[key];b.onclick=function(){activeRegion=key;showAll=false;renderFilters();renderSort();renderCards();};host.appendChild(b);});
+  }
+  function renderSort(){
+    var host=document.getElementById('sm-pop-sort');if(!host)return;host.innerHTML='';
+    [['time','Sort by Time'],['az','Sort A–Z']].forEach(function(x){var b=document.createElement('button');b.type='button';b.className=x[0]===sortMode?'active':'';b.textContent=x[1];b.onclick=function(){sortMode=x[0];renderSort();renderCards();};host.appendChild(b);});
+  }
+  function renderCards(){
+    var host=document.getElementById('sm-pop-body'),more=document.getElementById('sm-pop-more');if(!host)return;
+    var full=sortList(activeRegion==='all'?POP_ALL:(POP[activeRegion]||[]));
+    var list=showAll?full:full.slice(0,INIT);host.innerHTML='';
+    if(!list.length){host.innerHTML='<div class="sm-pop-empty">No cities found for this region.</div>';if(more)more.style.display='none';return;}
+    list.forEach(function(c){var d=cityData(c),card=document.createElement('article');card.className='sm-pop-card';
+      card.innerHTML='<div class="sm-pop-card-head"><span class="sm-pop-flag fi fi-'+esc(c[2])+'" aria-hidden="true"></span><div class="sm-pop-city"><strong>'+esc(c[0])+'</strong><span>'+esc(c[1])+'</span></div></div>'+
+      '<div class="sm-pop-local">Local time: '+esc(fmt(c[3]))+'<span>'+esc(utcOff(c[3]))+'</span></div>'+
+      '<div class="sm-pop-times"><div class="sm-pop-stat"><div class="sm-pop-label">Sunrise</div><div class="sm-pop-value sunrise">'+fmtTime(d.sunrise,c[3])+'</div></div><div class="sm-pop-stat"><div class="sm-pop-label">Sunset</div><div class="sm-pop-value sunset">'+fmtTime(d.sunset,c[3])+'</div></div><div class="sm-pop-stat"><div class="sm-pop-label">Moonrise</div><div class="sm-pop-value">'+fmtTime(d.moonrise,c[3])+'</div></div><div class="sm-pop-stat"><div class="sm-pop-label">Moonset</div><div class="sm-pop-value">'+fmtTime(d.moonset,c[3])+'</div></div></div>'+
+      '<div class="sm-pop-bottom"><span class="sm-pop-day">Day length '+fmtDay(d.day)+'</span><span class="sm-pop-phase">'+esc(d.phase)+' · '+d.illum+'%</span></div>';
+      host.appendChild(card);
+    });
+    if(more)more.style.display=(full.length>INIT&&!showAll)?'inline-flex':'none';
+  }
+  window.smPopFilter=function(){renderFilters();renderSort();renderCards();};
   window.smPopMore=function(){showAll=true;renderCards();};
   function refresh(){renderFilters();renderSort();renderCards();}
   document.addEventListener('DOMContentLoaded',function(){var date=document.getElementById('sm-date');if(date)date.addEventListener('change',refresh);setTimeout(refresh,0);});
 })();
 </script>
+
 <script src="/nav.js?v=3"></script>
 </body>
 </html>
