@@ -411,35 +411,105 @@
   // ---- search dropdown ----
   var state={from:null,to:null};
   function setupSearch(box){
-    var side=box.dataset.side, input=box.querySelector('input'), drop=box.querySelector('.tzb-drop'), hi=-1, list=[];
+    var side=box.dataset.side,
+        input=box.querySelector('input'),
+        drop=box.querySelector('.tzb-drop'),
+        hi=-1,
+        list=[];
+
+    function score(c,q){
+      var name=fold(c.name), country=fold(c.country), tz=fold(c.tz), alias=fold(c.alias||'');
+      if(name===q)return 0;
+      if(name.indexOf(q)===0)return 1;
+      if(alias.indexOf(q)===0)return 2;
+      if(country.indexOf(q)===0)return 3;
+      if(tz.indexOf(q)>-1)return 4;
+      if(name.indexOf(q)>-1)return 5;
+      if(country.indexOf(q)>-1)return 6;
+      if(alias.indexOf(q)>-1)return 7;
+      return 99;
+    }
+
     function render(q){
       var data=pool(),ql=fold(q).trim();
-      list=!ql?[]:data.filter(function(c){return c.q.indexOf(ql)>-1;}).sort(function(a,b){
-        var an=fold(a.name).indexOf(ql),bn=fold(b.name).indexOf(ql);
-        if((an===0)!==(bn===0))return an===0?-1:1;
-        if((an>-1)!==(bn>-1))return an>-1?-1:1;
-        var ap=a.pop||0,bp=b.pop||0; if(ap!==bp)return bp-ap;
-        return a.name.length-b.name.length;
-      }).slice(0,10);
+
+      // Search across city, country, time zone and aliases.
+      if(!ql){
+        list=data.filter(function(c){return c.pop;})
+          .sort(function(a,b){return (b.pop||0)-(a.pop||0);})
+          .slice(0,10);
+      }else{
+        list=data.filter(function(c){
+          return c.q.indexOf(ql)>-1 || fold(c.tz||'').indexOf(ql)>-1;
+        }).sort(function(a,b){
+          var sa=score(a,ql),sb=score(b,ql);
+          if(sa!==sb)return sa-sb;
+          var ap=a.pop||0,bp=b.pop||0;
+          if(ap!==bp)return bp-ap;
+          return a.name.length-b.name.length;
+        }).slice(0,10);
+      }
+
       drop.innerHTML=list.map(function(c,i){
-        return '<div class="tzb-opt" data-i="'+i+'">'+flag(c.cc)+'<span>'+c.name+'</span><small>'+(c.country||'')+'</small></div>';
+        var country=c.country||'';
+        return '<div class="tzb-opt" data-i="'+i+'" role="option">'
+          +flag(c.cc)
+          +'<span>'+c.name+'</span>'
+          +'<small>'+(country||c.tz||'')+'</small>'
+          +'</div>';
       }).join('');
-      drop.classList.toggle('open',list.length>0);hi=-1;
+
+      drop.classList.toggle('open',list.length>0);
+      hi=-1;
     }
-    function pick(c){state[side]=c;input.value=c.name+', '+c.country;drop.classList.remove('open');calc();}
-    input.addEventListener('input',function(){render(input.value);});
-    input.addEventListener('focus',function(){if(input.value)render(input.value);});
+
+    function pick(c){
+      if(!c)return;
+      state[side]=c;
+      input.value=c.name+(c.country?', '+c.country:'');
+      drop.classList.remove('open');
+      calc();
+    }
+
+    input.addEventListener('input',function(){
+      // Do not keep the previous selection when the user starts a new search.
+      state[side]=null;
+      render(input.value);
+    });
+
+    input.addEventListener('focus',function(){
+      render(input.value);
+    });
+
     input.addEventListener('keydown',function(e){
+      if(e.key==='Escape'){
+        drop.classList.remove('open');
+        return;
+      }
       if(!drop.classList.contains('open'))return;
-      if(e.key==='ArrowDown'){hi=Math.min(hi+1,list.length-1);}
-      else if(e.key==='ArrowUp'){hi=Math.max(hi-1,0);}
-      else if(e.key==='Enter'){if(list[hi])pick(list[hi]);e.preventDefault();return;}
-      else return;
-      [].forEach.call(drop.children,function(el,i){el.classList.toggle('hl',i===hi);});
+      if(e.key==='ArrowDown'){
+        hi=Math.min(hi+1,list.length-1);
+      }else if(e.key==='ArrowUp'){
+        hi=Math.max(hi-1,0);
+      }else if(e.key==='Enter'){
+        if(list[hi]||list[0])pick(list[hi]||list[0]);
+        e.preventDefault();
+        return;
+      }else return;
+      [].forEach.call(drop.children,function(el,i){
+        el.classList.toggle('hl',i===hi);
+      });
       e.preventDefault();
     });
-    drop.addEventListener('mousedown',function(e){var o=e.target.closest('.tzb-opt');if(o)pick(list[+o.dataset.i]);});
-    document.addEventListener('click',function(e){if(!box.contains(e.target))drop.classList.remove('open');});
+
+    drop.addEventListener('click',function(e){
+      var o=e.target.closest('.tzb-opt');
+      if(o)pick(list[+o.dataset.i]);
+    });
+
+    document.addEventListener('click',function(e){
+      if(!box.contains(e.target))drop.classList.remove('open');
+    });
   }
   document.querySelectorAll('.tzb-search').forEach(setupSearch);
 
