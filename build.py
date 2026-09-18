@@ -239,6 +239,29 @@ def flag(cc, w=18, h=14):
             f'border-radius:2px;display:inline-block;background-size:cover;'
             f'flex-shrink:0" aria-hidden="true"></span>')
 
+# City landmark photos. Verified Unsplash CDN URLs (same source as /weather/) for
+# the six top cities; every other city gets a correct-by-keyword city photo so no
+# card ever shows a wrong image. <img> onerror falls back to the CSS gradient.
+import urllib.parse
+CITY_IMG = {
+  "new-york":"https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?w=600&q=80&auto=format&fit=crop",
+  "london":"https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80&auto=format&fit=crop",
+  "dubai":"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80&auto=format&fit=crop",
+  "mumbai":"https://images.unsplash.com/photo-1529253355930-ddbe423a2ac7?w=600&q=80&auto=format&fit=crop",
+  "tokyo":"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=600&q=80&auto=format&fit=crop",
+  "singapore":"https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80&auto=format&fit=crop",
+}
+def city_img_url(slug, city):
+    if slug in CITY_IMG:
+        return CITY_IMG[slug]
+    q = urllib.parse.quote(city + ",cityscape")
+    return f"https://loremflickr.com/640/360/{q}"
+
+def city_img_tag(slug, city, cls="tzb-cimg"):
+    url = city_img_url(slug, city)
+    return (f'<img class="{cls}" src="{esc(url)}" alt="{esc(city)} cityscape" '
+            f'loading="lazy" onerror="this.style.display=\'none\'">')
+
 # ---------------------------------------------------------------- city page
 def build_city(city, country):
     slug, name = city["slug"], city["city"]
@@ -287,7 +310,7 @@ def build_city(city, country):
 
     nearby_html = "".join(
         f'<a class="tzb-ncard" href="/location/{c["country_slug"]}/{c["slug"]}/">'
-        f'<div class="img"></div><div class="body">'
+        f'<div class="img">{city_img_tag(c["slug"], c["city"])}</div><div class="body">'
         f'<div class="nm">{esc(c["city"])}</div>'
         f'<div class="tm" data-tz="{esc(c["timezone"])}">--:--</div>'
         f'<div class="wx" data-wx-lat="{c["lat"]}" data-wx-lng="{c["lng"]}">☀️ --°</div>'
@@ -310,6 +333,7 @@ def build_city(city, country):
 <main class="wrap tzb-loc">
 
   <section class="tzb-hero" data-wx-lat="{lat}" data-wx-lng="{lng}">
+    <img class="tzb-hero-bg" src="{esc(city_img_url(slug, name))}" alt="{esc(name)}, {esc(cname)} skyline" loading="eager" onerror="this.style.display='none'">
     <div class="tzb-hero-in">
       <div class="tzb-hero-main">
         <nav class="tzb-crumb"><a href="/location/">Locations</a> › <a href="/location/{cslug}/">{esc(cname)}</a> › <span>{esc(name)}</span></nav>
@@ -432,7 +456,7 @@ def build_country(country):
                     key=lambda c: -int(c.get("population") or 0))
     city_cards = "".join(
         f'<a class="tzb-ncard" href="/location/{cslug}/{c["slug"]}/">'
-        f'<div class="img"></div><div class="body">'
+        f'<div class="img">{city_img_tag(c["slug"], c["city"])}</div><div class="body">'
         f'<div class="nm">{esc(c["city"])}</div>'
         f'<div class="tm" data-tz="{esc(c["timezone"])}">--:--</div>'
         f'</div></a>' for c in cities)
@@ -456,6 +480,7 @@ def build_country(country):
     body = f"""
 <main class="wrap tzb-loc">
   <section class="tzb-hero tzb-hero-country">
+    <img class="tzb-hero-bg" src="{esc(city_img_url(g(country,'slug'), g(country,'capital_city') or cname))}" alt="{esc(cname)} skyline" loading="eager" onerror="this.style.display='none'">
     <div class="tzb-hero-in">
       <div class="tzb-hero-main">
         <nav class="tzb-crumb"><a href="/location/">Locations</a> › <span>{esc(cname)}</span></nav>

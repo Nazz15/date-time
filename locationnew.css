@@ -177,3 +177,9 @@
   .hub-h1{font-size:24px}
   .hub-metrics{gap:14px}
 }
+
+/* ---------- City images on location pages ---------- */
+.tzb-hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.tzb-hero-in{position:relative;z-index:2}
+.tzb-ncard .img{position:relative}
+.tzb-cimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
