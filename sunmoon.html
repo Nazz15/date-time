@@ -17,6 +17,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/main.css">
 <link rel="stylesheet" href="/footer.css">
+<link rel="stylesheet" href="/sunmoon.css?v=3">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -131,7 +132,6 @@
 }
 
 </style>
-<link rel="stylesheet" href="/sunmoon.css?v=2">
 </head>
 <body>
 
@@ -388,7 +388,11 @@ setInterval(function(){
     list.forEach(function(c){var d=cityData(c),card=document.createElement('article');card.className='sm-pop-card';
       card.innerHTML='<div class="sm-pop-card-head"><span class="sm-pop-flag fi fi-'+esc(c[2])+'" aria-hidden="true"></span><div class="sm-pop-city"><strong>'+esc(c[0])+'</strong><span>'+esc(c[1])+'</span></div></div>'+
       '<div class="sm-pop-local">Local time: '+esc(fmt(c[3]))+'<span>'+esc(utcOff(c[3]))+'</span></div>'+
-      '<div class="sm-pop-times"><div class="sm-pop-stat"><div class="sm-pop-label">Sunrise</div><div class="sm-pop-value sunrise">'+fmtTime(d.sunrise,c[3])+'</div></div><div class="sm-pop-stat"><div class="sm-pop-label">Sunset</div><div class="sm-pop-value sunset">'+fmtTime(d.sunset,c[3])+'</div></div><div class="sm-pop-stat"><div class="sm-pop-label">Moonrise</div><div class="sm-pop-value">'+fmtTime(d.moonrise,c[3])+'</div></div><div class="sm-pop-stat"><div class="sm-pop-label">Moonset</div><div class="sm-pop-value">'+fmtTime(d.moonset,c[3])+'</div></div></div>'+
+      '<div class="sm-pop-times">'+
+      '<div class="sm-pop-stat" title="Sunrise"><span class="sm-pop-icon sun" aria-label="Sunrise">☀</span><span class="sm-pop-value sunrise">'+fmtTime(d.sunrise,c[3])+'</span></div>'+
+      '<div class="sm-pop-stat" title="Sunset"><span class="sm-pop-icon sunset" aria-label="Sunset">🌇</span><span class="sm-pop-value sunset">'+fmtTime(d.sunset,c[3])+'</span></div>'+
+      '<div class="sm-pop-stat" title="Moonrise"><span class="sm-pop-icon moon" aria-label="Moonrise">☾</span><span class="sm-pop-value">'+fmtTime(d.moonrise,c[3])+'</span></div>'+
+      '<div class="sm-pop-stat" title="Moonset"><span class="sm-pop-icon moon" aria-label="Moonset">☽</span><span class="sm-pop-value">'+fmtTime(d.moonset,c[3])+'</span></div></div>'+
       '<div class="sm-pop-bottom"><span class="sm-pop-day">Day length '+fmtDay(d.day)+'</span><span class="sm-pop-phase">'+esc(d.phase)+' · '+d.illum+'%</span></div>';
       host.appendChild(card);
     });
