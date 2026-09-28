@@ -11,13 +11,6 @@
     ["Weather",     "/weather/", "cloud"],
     ["Locations",   "/location/", "pin"]
   ];
-  var MORE = [
-    ["Time Zone Converter",        "/converter/",        "swap"],  // (?)
-    ["Meeting Planner",            "/meeting-planner/",  "cal"],   // (?)
-    ["DST (Daylight Saving Time)", "/dst/",              "clock"], // (?)
-    ["Time Zone Abbreviations",    "/abbreviations/",    "doc"],   // (?)
-    ["Time Zone News",             "/news/",             "news"]   // (?)
-  ];
   /* =================================================== */
 
   var GLOBE = '<svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">' +
@@ -43,7 +36,6 @@
   function active(h){ h = norm(h); return h==="/" ? here==="/" : (here===h || here.indexOf(h+"/")===0); }
   function link(l){ return '<a href="'+l[1]+'"'+(active(l[1])?' class="on"':'')+'>'+ic(l[2])+'<span>'+l[0]+'</span></a>'; }
 
-  var moreOn = MORE.some(function(l){ return active(l[1]); });
   var brand = '<a class="tzb-logo" href="https://timezonebudy.com/">'+GLOBE+
     '<span class="tzb-name"><span>Timezone<b>Buddy</b></span><small>Time Around the World</small></span></a>';
 
@@ -52,10 +44,7 @@
       '<button class="tzb-burger" aria-label="Open menu">'+
         '<svg viewBox="0 0 24 24" width="24" height="24"><path d="M3 6h18M3 12h18M3 18h18" stroke="#1f2a44" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>' +
       brand +
-      '<nav class="tzb-links">' + MAIN.map(link).join("") +
-        '<div class="tzb-more'+(moreOn?" on":"")+'"><button class="tzb-mbtn" aria-expanded="false">More <svg viewBox="0 0 24 24" width="14" height="14"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>' +
-          '<div class="tzb-drop">' + MORE.map(link).join("") + '</div></div>' +
-      '</nav>' +
+      '<nav class="tzb-links">' + MAIN.map(link).join("") + '</nav>' +
       '<div class="tzb-ctl"></div>' +
     '</div></header>';
 
@@ -63,10 +52,7 @@
     '<div class="tzb-scrim"></div>' +
     '<aside class="tzb-drawer"><div class="tzb-dhead">'+brand+
       '<button class="tzb-close" aria-label="Close menu"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 6l12 12M18 6L6 18" stroke="#1f2a44" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></div>' +
-      '<nav class="tzb-dlist">' + MAIN.map(link).join("") +
-        '<button class="tzb-acc'+(moreOn?" open":"")+'" aria-expanded="'+moreOn+'">More <svg viewBox="0 0 24 24" width="16" height="16"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>' +
-        '<div class="tzb-sub">' + MORE.map(link).join("") + '</div>' +
-      '</nav></aside>';
+      '<nav class="tzb-dlist">' + MAIN.map(link).join("") + '</nav></aside>';
 
   var css =
   ':root{--tzb-blue:#2f7fe0;--tzb-ink:#1f2a44}' +
@@ -81,12 +67,6 @@
   '.tzb-ic{color:#7a8698;flex:none}' +
   '.tzb-links a:hover,.tzb-mbtn:hover{color:var(--tzb-blue);background:#f4f7fb}.tzb-links a:hover .tzb-ic,.tzb-mbtn:hover .tzb-ic{color:var(--tzb-blue)}' +
   '.tzb-links a.on{color:var(--tzb-blue);font-weight:600;background:#e9f2fe}.tzb-links a.on .tzb-ic{color:var(--tzb-blue)}' +
-  '.tzb-more.on>.tzb-mbtn{color:var(--tzb-blue);font-weight:600}' +
-  '.tzb-more{position:relative}' +
-  '.tzb-drop{position:absolute;top:calc(100% + 12px);right:0;min-width:250px;background:#fff;border:1px solid #eef1f5;border-radius:10px;box-shadow:0 10px 30px rgba(20,30,60,.12);padding:6px;display:none;flex-direction:column}' +
-  '.tzb-more.open .tzb-drop{display:flex}' +
-  '.tzb-drop a{padding:10px 14px;border-radius:7px;font-size:14px;color:#3a465c;display:flex;align-items:center;gap:10px;text-decoration:none}' +
-  '.tzb-drop a:hover{background:#f4f7fb;color:var(--tzb-blue)}.tzb-drop a:hover .tzb-ic{color:var(--tzb-blue)}.tzb-drop a.on{color:var(--tzb-blue);font-weight:600}' +
   '.tzb-burger{display:none;background:none;border:0;cursor:pointer;padding:4px}' +
   /* relocated controls (UTC / 24h / theme) */
   '.tzb-ctl{display:flex;align-items:center;gap:6px;margin-left:8px;padding-left:8px;border-left:1px solid #e8ecf2;flex:0 0 auto}.tzb-ctl:empty{display:none}' +
@@ -103,12 +83,8 @@
   '.tzb-dhead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #eef1f5}' +
   '.tzb-close{background:none;border:0;cursor:pointer;padding:4px}' +
   '.tzb-dlist{display:flex;flex-direction:column;overflow-y:auto;padding:6px 0}' +
-  '.tzb-dlist>a,.tzb-acc{font-size:16px;color:#2b3752;text-decoration:none;background:none;border:0;border-bottom:1px solid #f1f4f8;text-align:left;padding:15px 20px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:14px}' +
-  '.tzb-acc{justify-content:space-between}' +
+  '.tzb-dlist>a{font-size:16px;color:#2b3752;text-decoration:none;background:none;border:0;border-bottom:1px solid #f1f4f8;text-align:left;padding:15px 20px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:14px}' +
   '.tzb-dlist>a.on{color:var(--tzb-blue);font-weight:600}.tzb-dlist>a.on .tzb-ic{color:var(--tzb-blue)}' +
-  '.tzb-acc svg:last-child{transition:transform .2s}.tzb-acc.open svg:last-child{transform:rotate(180deg)}' +
-  '.tzb-sub{display:none;flex-direction:column;background:#f7f9fc}.tzb-acc.open + .tzb-sub{display:flex}' +
-  '.tzb-sub a{font-size:15px;color:#3a465c;text-decoration:none;padding:13px 20px 13px 24px;border-bottom:1px solid #eef2f7;display:flex;align-items:center;gap:12px}.tzb-sub a.on{color:var(--tzb-blue);font-weight:600}' +
   'body.tzb-lock{overflow:hidden}' +
     '@media(max-width:1140px){.tzb-links{display:none}.tzb-burger{display:block}.tzb-logo{margin:0 auto;flex:0 1 auto;min-width:0}.tzb-name{min-width:0}.tzb-name span,.tzb-name small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tzb-in{gap:0}.tzb-ctl{margin-left:8px;padding-left:8px}}' +
   '@media(max-width:768px){.tzb-ctl .nav-utc{display:none}}';
@@ -164,11 +140,5 @@
   document.querySelector(".tzb-close").onclick = close;
   scr.onclick = close;
 
-  var more = document.querySelector(".tzb-more"), mbtn = more.querySelector(".tzb-mbtn");
-  mbtn.onclick = function(e){ e.stopPropagation(); var o = more.classList.toggle("open"); mbtn.setAttribute("aria-expanded", o); };
-  document.addEventListener("click", function(){ more.classList.remove("open"); mbtn.setAttribute("aria-expanded", false); });
-  document.addEventListener("keydown", function(e){ if (e.key==="Escape"){ close(); more.classList.remove("open"); } });
-
-  var acc = document.querySelector(".tzb-acc");
-  acc.onclick = function(){ var o = acc.classList.toggle("open"); acc.setAttribute("aria-expanded", o); };
+  document.addEventListener("keydown", function(e){ if (e.key==="Escape") close(); });
 })();
