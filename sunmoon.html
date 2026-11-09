@@ -132,6 +132,43 @@
 }
 
 </style>
+
+<style>
+/* ===== v2 design layer (matches homepage + time difference) — keeps all IDs/JS ===== */
+.wx-hero{text-align:left;padding:22px 0 40px;}
+.wx-hero .wx-container{max-width:1180px;}
+.wx-hero h1{font-size:clamp(26px,3.4vw,38px);font-weight:700;letter-spacing:-.01em;color:#fff !important;text-shadow:0 2px 12px rgba(0,0,0,.35);margin:0 0 8px;}
+.wx-hero p{margin:0 0 22px !important;max-width:640px;font-size:16px;color:#dbe5f3 !important;text-shadow:0 1px 8px rgba(0,0,0,.35);}
+.v2-crumb{font-size:13px;color:#c9d4e5;margin:0 0 12px;text-shadow:0 1px 6px rgba(0,0,0,.4);}
+.v2-crumb a{color:#c9d4e5;text-decoration:none;} .v2-crumb a:hover{color:#fff;}
+.v2-card{background:var(--clr-tile);color:var(--clr-text);border-radius:18px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);text-align:left;}
+.v2-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center;font-size:13px;color:var(--clr-text2);}
+.v2-chips button{font:600 13px Inter,sans-serif;color:var(--clr-text);background:var(--clr-bg3);border:1px solid var(--clr-border);border-radius:999px;padding:7px 13px;cursor:pointer;white-space:nowrap;}
+.v2-chips button:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.wx-sec-head h2{font-weight:700 !important;letter-spacing:-.01em;}
+.v2-dock{display:none;}
+@media(max-width:640px){
+  body{padding-bottom:68px;}
+  .wx-hero{padding:14px 0 22px;}
+  .wx-hero h1{font-size:24px;}
+  .wx-hero p{font-size:14px;margin-bottom:14px !important;}
+  .v2-crumb{display:none;}
+  .v2-card{padding:12px;border-radius:14px;}
+  .v2-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
+  .v2-chips span{display:none;}
+  .v2-dock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:300;background:var(--clr-tile);border-top:1px solid var(--clr-border);box-shadow:0 -4px 14px rgba(0,0,0,.08);padding-bottom:env(safe-area-inset-bottom);}
+  .v2-dock a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;font-size:11px;font-weight:600;color:var(--clr-text2);text-decoration:none;}
+  .v2-dock a i{font-size:21px;} .v2-dock a.on{color:var(--clr-brand);}
+  #pwa-install-banner{bottom:78px !important;}
+}
+
+.wx-hero{background:linear-gradient(180deg,rgba(13,34,64,.78) 0%,rgba(13,34,64,.55) 55%,rgba(13,34,64,.85) 100%),url('/Sunset_to_Moonlit_Mountain_Panorama.png') center/cover no-repeat !important;}
+.wx-hero{overflow:visible !important;z-index:5;}
+.wx-hero .sm-controls{margin:0;padding:0;max-width:none;z-index:5;}
+.wx-hero .sm-ctrl,.wx-hero .sm-mybtn{min-height:50px;}
+@media(max-width:640px){.wx-hero .sm-controls{margin:0;gap:8px;} .wx-hero .sm-mybtn{width:100%;justify-content:center;} .wx-hero .sm-ctrl-date{flex:1 1 100%;}}
+
+</style>
 </head>
 <body>
 
@@ -175,11 +212,10 @@
 <!-- ── HERO ── -->
 <section class="wx-hero">
   <div class="wx-container">
+    <nav class="v2-crumb" aria-label="Breadcrumb"><a href="/">Home</a> › Sun &amp; Moon</nav>
     <h1>Sun &amp; Moon</h1>
-    <p>Sunrise, sunset and moon information for cities around the world. Get accurate solar and lunar times, moon phases and daylight details for any location and date.</p>
-  </div>
-</section>
-
+    <p>Sunrise, sunset, daylight and moon phase for any city and date. Pick a place below — everything on the page updates.</p>
+    <div class="v2-card">
 <!-- ── LOCATION + DATE ── -->
 <div class="sm-controls">
   <div class="sm-ctrl sm-ctrl-loc">
@@ -196,6 +232,9 @@
   </div>
   <button class="sm-mybtn" onclick="smUseMyLocation()"><i class="ti ti-current-location"></i> Use my location</button>
 </div>
+    </div>
+  </div>
+</section>
 
 <!-- ── LIVE LOCATION (Sun Journey + Moon Today) ── -->
 <section class="wx-sec">
@@ -312,6 +351,7 @@
   </div>
 </footer>
 
+<nav class="v2-dock" aria-label="Quick tools"><a href="/world-clock/"><i class="ti ti-clock"></i>Clock</a><a href="/converter"><i class="ti ti-arrows-exchange"></i>Convert</a><a href="/time-difference-calculator"><i class="ti ti-arrows-left-right"></i>Difference</a><a href="/sunmoon" class="on" aria-current="page"><i class="ti ti-sun"></i>Sun</a><a href="/weather/"><i class="ti ti-cloud"></i>Weather</a></nav>
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
