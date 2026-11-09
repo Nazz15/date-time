@@ -11,110 +11,213 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="description" content="TimezoneBudy — check the current time anywhere, convert time zones, plan meetings, and explore sun, moon, weather and locations around the world.">
-<meta name="keywords" content="world clock,time zone converter,meeting planner,sun and moon,current time,time zones">
-<title>TimezoneBudy — Current Time, Time Zones & World Tools</title>
+<meta name="description" content="Check the current time anywhere, convert time zones instantly, find meeting times across cities, and see live time and weather around the world.">
+<title>TimezoneBudy — Current Time Anywhere, Time Zone Converter &amp; Meeting Planner</title>
 <link rel="canonical" href="https://timezonebudy.com/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css?v=2">
-<link rel="stylesheet" href="/location.css?v=2">
-<link rel="stylesheet" href="/footer.css?v=2">
+<link rel="stylesheet" href="/main.css?v=3">
+<link rel="stylesheet" href="/footer.css?v=3">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css?v=2">
+<link rel="stylesheet" href="/pwa.css?v=3">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
 
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What time is it in UTC right now?","acceptedAnswer":{"@type":"Answer","text":"UTC (Coordinated Universal Time) is the world's reference time. It never changes for daylight saving, so it is the same everywhere. TimezoneBudy shows the live UTC time in the top bar of every page, and every time zone is described as an offset from it, such as UTC+5:30 for India or UTC-5 for New York in winter."}},
+{"@type":"Question","name":"How do I convert time between two time zones?","acceptedAnswer":{"@type":"Answer","text":"Pick a 'From' city, enter the time, and pick a 'To' city in the converter at the top of this page. The result updates instantly and accounts for daylight saving time on that date. For more than two cities, open the full Time Zone Converter."}},
+{"@type":"Question","name":"Does TimezoneBudy adjust for daylight saving time?","acceptedAnswer":{"@type":"Answer","text":"Yes. All times use your browser's built-in IANA time zone database, so daylight saving changes are applied automatically for every city, including countries that change on different dates, like the US and the UK."}},
+{"@type":"Question","name":"How do I find the best meeting time across time zones?","acceptedAnswer":{"@type":"Answer","text":"Add each participant's city to the Meeting Planner. It lines up 9am–6pm working hours for every city and highlights the hours where they overlap, so you can pick a slot that works for everyone."}}
+]}
+</script>
+
 <style>
-/* ===== Homepage (Main Hub) — scoped hp- ===== */
-.hp-wrap{max-width:1120px;margin:0 auto;padding:0 20px;}
-.hp-section{margin:38px auto;}
-.hp-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 16px;flex-wrap:wrap;}
-.hp-head h2{font-size:22px;font-weight:700;margin:0;color:var(--clr-text);}
-.hp-head h2 .hp-sub{font-size:15px;font-weight:500;color:var(--clr-text2);margin-left:6px;}
-.hp-link{font-size:14px;font-weight:600;color:var(--clr-brand);text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
-.hp-link:hover{text-decoration:underline;}
+/* ===== Homepage v2 — scoped hn- ===== */
+.hn-wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+.hn-sec{margin:44px auto;}
+.hn-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:0 0 18px;flex-wrap:wrap;}
+.hn-head h2{font-size:24px;font-weight:700;margin:0;color:var(--clr-text);letter-spacing:-.01em;}
+.hn-head p{margin:4px 0 0;font-size:15px;color:var(--clr-text2);}
+.hn-link{font-size:14px;font-weight:600;color:var(--clr-brand);text-decoration:none;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;}
+.hn-link:hover{text-decoration:underline;}
+.hn-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:46px;padding:0 20px;border-radius:10px;font:600 15px Inter,sans-serif;text-decoration:none;cursor:pointer;border:0;background:var(--clr-brand);color:#fff;}
+.hn-btn:hover{filter:brightness(1.08);}
+.hn-btn.ghost{background:transparent;color:var(--clr-text);border:1px solid var(--clr-border2);}
+.hn-btn.ghost:hover{border-color:var(--clr-brand);color:var(--clr-brand);filter:none;}
 
 /* Hero */
-.hp-hero{position:relative;overflow:hidden;border-radius:var(--rxl);background:linear-gradient(135deg,#eaf2ff 0%,#f4f9ff 55%,#eef5ff 100%);margin-top:20px;box-shadow:var(--sh);}
-[data-theme=dark] .hp-hero{background:linear-gradient(135deg,#131c30 0%,#0f1524 60%,#131b2c 100%);}
-.hp-hero-inner{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:20px;padding:44px 44px;}
-.hp-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--clr-brand);margin:0 0 14px;}
-.hp-hero h1{font-size:clamp(30px,4.4vw,50px);line-height:1.06;font-weight:700;margin:0 0 16px;color:var(--clr-text);letter-spacing:-.02em;}
-.hp-hero p{font-size:16px;line-height:1.6;color:var(--clr-text2);max-width:440px;margin:0;}
-.hp-hero-art{width:100%;height:auto;display:block;}
+.hn-hero{background:#0d2240;color:#fff;padding:40px 0 48px;}
+.hn-hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:44px;align-items:center;}
+.hn-eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#a9bfe0;margin:0 0 10px;display:flex;align-items:center;gap:8px;}
+.hn-eyebrow .fi{width:20px;height:15px;border-radius:2px;}
+.hn-clock{font-family:var(--mono);font-size:clamp(46px,6.4vw,76px);font-weight:700;line-height:1;letter-spacing:-.02em;margin:0;}
+.hn-date{font-size:15px;color:#c9d4e5;margin:10px 0 0;}
+.hn-dst{display:inline-block;font-size:11px;font-weight:700;background:#1e3a66;color:#cfe0ff;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:1px;}
+.hn-hero h1{font-size:clamp(24px,3vw,34px);line-height:1.2;font-weight:700;margin:26px 0 14px;letter-spacing:-.01em;}
+.hn-search{position:relative;display:flex;gap:6px;background:#fff;border-radius:12px;padding:6px;}
+.hn-search i{color:#5a6472;font-size:20px;align-self:center;padding-left:8px;}
+.hn-search input{flex:1;min-width:0;border:0;outline:0;font:16px Inter,sans-serif;padding:10px 6px;color:#1b2430;background:transparent;}
+.hn-search .search-dd{color:var(--clr-text);}
+.hn-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;align-items:center;font-size:13px;color:#a9bfe0;}
+.hn-chip{font:600 13px Inter,sans-serif;color:#fff;background:transparent;border:1px solid #3a5276;border-radius:999px;padding:7px 13px;cursor:pointer;white-space:nowrap;flex:none;}
+.hn-chip:hover{background:#16325a;}
+.hn-found{margin-top:14px;background:#16325a;border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.hn-found[hidden]{display:none;}
+.hn-found b{font-size:16px;}
+.hn-found .t{font-family:var(--mono);font-size:26px;font-weight:700;margin-left:auto;}
+.hn-found .d{font-size:13px;color:#c9d4e5;width:100%;}
 
-/* Quick World Clock */
-.hp-wc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
-.hp-wc-card{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:16px 16px 14px;box-shadow:var(--sh);}
-.hp-wc-city{display:flex;align-items:center;gap:9px;margin:0 0 12px;}
-.hp-wc-city .fi{width:22px;height:16px;border-radius:3px;flex:none;box-shadow:0 0 0 1px var(--clr-border);}
-.hp-wc-city b{font-size:15px;font-weight:700;color:var(--clr-text);display:block;line-height:1.15;}
-.hp-wc-city span{font-size:12.5px;color:var(--clr-text2);}
-.hp-wc-time{font-family:var(--mono);font-size:26px;font-weight:600;color:var(--clr-text);letter-spacing:-.01em;line-height:1;margin:0 0 10px;}
-.hp-wc-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;}
-.hp-wc-meta{font-size:12px;color:var(--clr-text2);line-height:1.5;}
-.hp-wc-meta .hp-wc-off{color:var(--clr-text3);}
-.hp-wc-ico{font-size:22px;line-height:1;}
-.hp-wc-ico.day{color:var(--clr-acc);}
-.hp-wc-ico.night{color:var(--clr-brand2);}
+/* Converter card */
+.hn-conv{background:var(--clr-tile);color:var(--clr-text);border-radius:18px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+.hn-conv h2{font-size:19px;margin:0 0 16px;display:flex;align-items:center;gap:8px;}
+.hn-conv h2 i{color:var(--clr-brand);}
+.hn-row{display:grid;grid-template-columns:minmax(0,1fr) 130px;gap:10px;}
+.hn-field{position:relative;display:flex;flex-direction:column;gap:5px;}
+.hn-field label{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--clr-text2);text-transform:uppercase;}
+.hn-field input{font:15px Inter,sans-serif;color:var(--clr-text);background:var(--clr-bg);border:1px solid var(--clr-border2);border-radius:9px;padding:11px 12px;outline:0;min-width:0;}
+.hn-field input:focus{border-color:var(--clr-brand);}
+.hn-swap{display:flex;align-items:center;gap:10px;margin:10px 0;}
+.hn-swap::before,.hn-swap::after{content:"";flex:1;height:1px;background:var(--clr-border);}
+.hn-swap button{width:42px;height:42px;border-radius:50%;border:1px solid var(--clr-border2);background:var(--clr-tile);color:var(--clr-text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.hn-swap button:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.hn-res{margin-top:14px;background:var(--clr-bg3);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.hn-res small{display:block;font-size:12px;color:var(--clr-text2);margin-bottom:3px;}
+.hn-res-t{font-family:var(--mono);font-size:26px;font-weight:700;}
+.hn-res-d{font-size:13px;color:var(--clr-text2);text-align:right;}
+.hn-conv-cta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+
+/* Your cities */
+.hn-mine-bar{background:var(--clr-tile);border-bottom:1px solid var(--clr-border);}
+.hn-mine-head{display:flex;align-items:center;gap:10px;padding:18px 0 12px;flex-wrap:wrap;}
+.hn-mine-head h2{font-size:16px;margin:0;color:var(--clr-text);}
+.hn-mine-head span{font-size:13px;color:var(--clr-text3);}
+.hn-mine-head .hn-link{margin-left:auto;}
+.hn-mine{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;padding-bottom:20px;}
+.hn-mc{position:relative;border:1px solid var(--clr-border);border-radius:12px;padding:12px 12px 10px;background:var(--clr-bg);}
+.hn-mc .n{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--clr-text);padding-right:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hn-mc .t{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--clr-text);margin:6px 0 2px;}
+.hn-mc .o{font-size:12px;color:var(--clr-text2);}
+.hn-mc .x{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;background:none;color:var(--clr-text3);cursor:pointer;border-radius:6px;font-size:15px;}
+.hn-mc .x:hover{background:var(--clr-bg3);color:var(--clr-text);}
+.hn-add{border:2px dashed var(--clr-border2);border-radius:12px;background:transparent;color:var(--clr-text);font:600 14px Inter,sans-serif;cursor:pointer;min-height:84px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.hn-add:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
 
 /* Tools */
-.hp-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.hp-tool{display:block;text-decoration:none;border:1px solid var(--clr-border);border-radius:var(--rlg);padding:22px 22px 18px;box-shadow:var(--sh);transition:transform .12s,box-shadow .12s;background:var(--clr-tile);}
-.hp-tool:hover{transform:translateY(-2px);box-shadow:var(--sh2);}
-.hp-tool .ti{font-size:30px;line-height:1;color:var(--clr-brand);}
-.hp-tool h3{font-size:17px;font-weight:700;margin:14px 0 6px;color:var(--clr-text);}
-.hp-tool p{font-size:14px;line-height:1.5;color:var(--clr-text2);margin:0 0 14px;}
-.hp-tool .hp-explore{font-size:14px;font-weight:600;color:var(--clr-brand);display:inline-flex;align-items:center;gap:5px;}
-.hp-tool.t-blue{background:#eef4ff;} .hp-tool.t-sun{background:#fff7e6;} .hp-tool.t-loc{background:#e9f7ef;} .hp-tool.t-flag{background:#fdeef2;}
-[data-theme=dark] .hp-tool.t-blue,[data-theme=dark] .hp-tool.t-sun,[data-theme=dark] .hp-tool.t-loc,[data-theme=dark] .hp-tool.t-flag{background:var(--clr-tile);}
-.hp-tool.t-sun .ti{color:var(--clr-acc);} .hp-tool.t-loc .ti{color:#2e9e6b;} .hp-tool.t-flag .ti{color:#d24d78;}
+.hn-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;}
+.hn-tool{display:flex;flex-direction:column;gap:10px;text-decoration:none;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:16px;padding:20px;box-shadow:var(--sh);transition:transform .12s,box-shadow .12s,border-color .12s;}
+.hn-tool:hover{transform:translateY(-2px);box-shadow:var(--sh2);border-color:var(--clr-brand);}
+.hn-tool .top{display:flex;align-items:center;gap:12px;}
+.hn-tool .top i{font-size:22px;width:42px;height:42px;border-radius:11px;background:var(--clr-bg3);color:var(--clr-brand);display:flex;align-items:center;justify-content:center;}
+.hn-tool h3{font-size:17px;margin:0;color:var(--clr-text);}
+.hn-tool p{font-size:14px;line-height:1.5;color:var(--clr-text2);margin:0;}
+.hn-live{font-family:var(--mono);font-size:13.5px;color:var(--clr-text);background:var(--clr-bg3);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:8px;min-height:20px;}
+.hn-live::before{content:"";width:7px;height:7px;border-radius:50%;background:#2e9e6b;flex:none;}
+.hn-tool .go{font-size:14px;font-weight:600;color:var(--clr-brand);margin-top:auto;}
 
-/* Pills */
-.hp-pills{display:flex;flex-wrap:wrap;gap:10px;}
-.hp-pill{text-decoration:none;font-size:14px;font-weight:600;color:var(--clr-text);background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rxl);padding:9px 18px;transition:background .12s,border-color .12s,color .12s;}
-.hp-pill:hover{background:var(--clr-brand);border-color:var(--clr-brand);color:#fff;}
+/* Meeting teaser */
+.hn-meet{display:grid;grid-template-columns:2fr 3fr;gap:36px;align-items:center;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:18px;padding:30px;box-shadow:var(--sh);}
+.hn-meet h2{font-size:26px;line-height:1.2;margin:0 0 10px;color:var(--clr-text);}
+.hn-meet p{font-size:15px;color:var(--clr-text2);margin:0 0 18px;line-height:1.55;}
+.hn-bars{display:flex;flex-direction:column;gap:10px;}
+.hn-bar{display:grid;grid-template-columns:110px 1fr;gap:12px;align-items:center;}
+.hn-bar .c{font-size:13px;font-weight:600;color:var(--clr-text);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hn-cells{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:2px;}
+.hn-cells span{height:26px;border-radius:3px;background:var(--clr-bg3);}
+.hn-cells span.w{background:#a9bbdd;}
+.hn-cells span.o{background:var(--clr-brand);}
+[data-theme=dark] .hn-cells span.w{background:#38507a;}
+.hn-axis{display:grid;grid-template-columns:110px 1fr;gap:12px;font-size:11px;color:var(--clr-text3);}
+.hn-axis div{display:flex;justify-content:space-between;}
+.hn-legend{font-size:13px;color:var(--clr-text2);margin-top:4px;padding-left:122px;}
+.hn-legend b{color:var(--clr-text);}
 
-/* Countries */
-.hp-countries{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;}
-.hp-country{display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rlg);padding:14px 14px;color:var(--clr-text);font-size:14px;font-weight:600;transition:border-color .12s,box-shadow .12s;}
-.hp-country:hover{border-color:var(--clr-brand);box-shadow:var(--sh);}
-.hp-country .fi{width:26px;height:18px;border-radius:3px;flex:none;box-shadow:0 0 0 1px var(--clr-border);}
+/* Locations */
+.hn-tabs{display:inline-flex;background:var(--clr-bg3);border-radius:999px;padding:4px;}
+.hn-tabs button{font:600 14px Inter,sans-serif;border:0;background:transparent;color:var(--clr-text2);border-radius:999px;padding:9px 18px;cursor:pointer;}
+.hn-tabs button[aria-selected=true]{background:var(--clr-tile);color:var(--clr-text);box-shadow:var(--sh);}
+.hn-cities{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+.hn-city{display:flex;flex-direction:column;gap:4px;text-decoration:none;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;padding:16px;transition:border-color .12s,box-shadow .12s;}
+.hn-city:hover{border-color:var(--clr-brand);box-shadow:var(--sh);}
+.hn-city .r1{display:flex;align-items:center;gap:8px;}
+.hn-city .r1 b{font-size:15px;color:var(--clr-text);}
+.hn-city .r1 i{margin-left:auto;font-size:18px;}
+.hn-city .r1 i.ti-sun{color:var(--clr-acc);} .hn-city .r1 i.ti-moon{color:var(--clr-brand2);}
+.hn-city .k{font-size:12px;color:var(--clr-text2);}
+.hn-city .t{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--clr-text);margin-top:6px;}
+.hn-city .m{font-size:12px;color:var(--clr-text2);}
+.hn-countries{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;}
+.hn-country{display:flex;align-items:center;gap:10px;text-decoration:none;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:12px;padding:13px 14px;color:var(--clr-text);font-size:14px;font-weight:600;}
+.hn-country:hover{border-color:var(--clr-brand);}
+.hn-country .fi{width:24px;height:17px;border-radius:3px;flex:none;}
+.hn-panel[hidden]{display:none;}
 
-/* Promo */
-.hp-promo{position:relative;overflow:hidden;border-radius:var(--rxl);background:linear-gradient(135deg,#e7f0ff 0%,#f3f8ff 100%);padding:40px 44px;box-shadow:var(--sh);}
-[data-theme=dark] .hp-promo{background:linear-gradient(135deg,#131c30 0%,#0f1524 100%);}
-.hp-promo h2{font-size:clamp(24px,3.2vw,34px);font-weight:700;margin:0 0 8px;color:var(--clr-text);letter-spacing:-.01em;}
-.hp-promo p{font-size:16px;color:var(--clr-text2);margin:0;}
-.hp-promo-art{position:absolute;right:0;bottom:0;width:min(52%,520px);opacity:.9;pointer-events:none;}
+/* FAQ */
+.hn-faq{display:grid;grid-template-columns:1fr 2fr;gap:36px;}
+.hn-faq details{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:12px;margin-bottom:10px;}
+.hn-faq summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:600;font-size:15px;color:var(--clr-text);display:flex;justify-content:space-between;gap:12px;}
+.hn-faq summary::-webkit-details-marker{display:none;}
+.hn-faq summary::after{content:"+";font-size:20px;line-height:1;color:var(--clr-text2);}
+.hn-faq details[open] summary::after{content:"−";}
+.hn-faq details p{margin:0;padding:0 18px 16px;font-size:14.5px;line-height:1.6;color:var(--clr-text2);}
 
-@media(max-width:900px){
-  .hp-hero-inner{grid-template-columns:1fr;gap:6px;padding:30px 24px;}
-  .hp-hero-art{max-width:340px;margin:8px auto 0;}
-  .hp-hero p{max-width:none;}
-  .hp-tools{grid-template-columns:repeat(2,1fr);}
-  .hp-countries{grid-template-columns:repeat(2,1fr);}
+/* Mobile dock */
+.hn-dock{display:none;}
+
+@media(max-width:960px){
+  .hn-hero-grid{grid-template-columns:minmax(0,1fr);gap:28px;}
+  .hn-mine{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .hn-tools{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .hn-meet{grid-template-columns:1fr;gap:20px;}
+  .hn-cities{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .hn-countries{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .hn-faq{grid-template-columns:1fr;gap:12px;}
 }
-@media(max-width:620px){
-  .hp-section{margin:28px auto;}
-  .hp-wc-grid{grid-template-columns:1fr;gap:0;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh);}
-  .hp-wc-card{border:0;border-bottom:1px solid var(--clr-border);border-radius:0;box-shadow:none;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:4px 12px;padding:14px 16px;}
-  .hp-wc-card:last-child{border-bottom:0;}
-  .hp-wc-city{margin:0;grid-row:1/3;align-self:center;}
-  .hp-wc-time{margin:0;font-size:22px;text-align:right;grid-column:2;grid-row:1;}
-  .hp-wc-foot{grid-column:2;grid-row:2;}
-  .hp-wc-ico{grid-column:3;grid-row:1/3;font-size:20px;}
-  .hp-tool{padding:18px;}
-  .hp-promo,.hp-hero-inner{padding:26px 22px;}
-  .hp-promo-art{display:none;}
+@media(max-width:640px){
+  body{padding-bottom:68px;}
+  .hn-wrap{padding:0 16px;}
+  .hn-hero{padding:22px 0 26px;}
+  .hn-hero h1{margin:18px 0 12px;}
+  .hn-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
+  .hn-chips span{display:none;}
+  .hn-conv{padding:18px;border-radius:14px;}
+  .hn-conv-cta{grid-template-columns:1fr;}
+  .hn-row{grid-template-columns:minmax(0,1fr) 128px;}
+  .hn-hero h1{font-size:21px;}
+  .hn-found .t{font-size:21px;}
+  .hn-mine{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;}
+  .hn-mc,.hn-add{flex:0 0 132px;scroll-snap-align:start;}
+  .hn-add{flex-basis:96px;min-height:80px;}
+  .hn-sec{margin:32px auto;}
+  .hn-head h2{font-size:21px;}
+  .hn-tools{gap:10px;}
+  .hn-tool{padding:14px;gap:8px;}
+  .hn-tool p,.hn-tool .go{display:none;}
+  .hn-tool .top{flex-direction:column;align-items:flex-start;gap:8px;}
+  .hn-tool h3{font-size:15px;}
+  .hn-live{font-size:11.5px;padding:8px;}
+  .hn-meet{padding:18px;}
+  .hn-bar,.hn-axis{grid-template-columns:78px 1fr;gap:8px;}
+  .hn-cells span{height:18px;}
+  .hn-legend{padding-left:0;}
+  .hn-cities{grid-template-columns:1fr;gap:0;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;overflow:hidden;}
+  .hn-city{border:0;border-bottom:1px solid var(--clr-border);border-radius:0;display:grid;grid-template-columns:1fr auto;gap:0 10px;padding:12px 14px;}
+  .hn-city:last-child{border-bottom:0;}
+  .hn-city .r1 i{display:none;}
+  .hn-city .t{grid-column:2;grid-row:1/3;align-self:center;margin:0;font-size:19px;}
+  .hn-city .m{grid-column:1;}
+  .hn-dock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:300;background:var(--clr-tile);border-top:1px solid var(--clr-border);box-shadow:0 -4px 14px rgba(0,0,0,.08);padding-bottom:env(safe-area-inset-bottom);}
+  .hn-dock a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;font-size:11px;font-weight:600;color:var(--clr-text2);text-decoration:none;}
+  .hn-dock a i{font-size:21px;}
+  .hn-dock a.on{color:var(--clr-brand);}
+  #pwa-install-banner{bottom:78px !important;}
 }
 </style>
 </head>
@@ -126,11 +229,11 @@
     <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
     <div class="nav-tabs" role="tablist">
       <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
-      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
+      <a class="nav-tab" href="/converter"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
+      <a class="nav-tab" href="/sunmoon"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
       <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
       <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
-      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
+      <a class="nav-tab" href="/tools"><i class="ti ti-tool"></i> <span>Tools</span></a>
       <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
     </div>
     <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
@@ -142,142 +245,142 @@
 </nav>
 
 <main>
-<div class="hp-wrap">
 
-  <!-- ===== HERO ===== -->
-  <section class="hp-hero" aria-label="Welcome">
-    <div class="hp-hero-inner">
-      <div>
-        <p class="hp-eyebrow">Explore a more connected world</p>
-        <h1>Time connects<br>a brighter world</h1>
-        <p>Check the current time anywhere, explore time zones, plan meetings and discover more with TimezoneBudy.</p>
+<!-- ===== 1+2. HERO: your time + search + converter ===== -->
+<section class="hn-hero" aria-label="Current time and converter">
+  <div class="hn-wrap hn-hero-grid">
+    <div>
+      <p class="hn-eyebrow"><span id="hn-flag"></span>Your time · <span id="hn-here">your location</span></p>
+      <p class="hn-clock" id="hn-clock">--:--:--</p>
+      <p class="hn-date" id="hn-date">&nbsp;</p>
+      <h1>What time is it anywhere? Find out in one search.</h1>
+      <div class="hn-search">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <label for="hn-q" class="sr-only" style="position:absolute;left:-9999px">Search a city or country</label>
+        <input id="hn-q" type="search" placeholder="Type a city or country…" autocomplete="off">
+        <div class="search-dd" id="hn-q-dd" hidden></div>
       </div>
-      <svg class="hp-hero-art" viewBox="0 0 520 380" role="img" aria-label="Illustration of a globe with location pins, sun and moon">
-        <defs>
-          <radialGradient id="hpGlobe" cx="42%" cy="38%" r="70%">
-            <stop offset="0%" stop-color="#dcebff"/><stop offset="60%" stop-color="#bcd7fb"/><stop offset="100%" stop-color="#9cc2f5"/>
-          </radialGradient>
-          <linearGradient id="hpSun" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ffd76b"/><stop offset="100%" stop-color="#f5a623"/></linearGradient>
-        </defs>
-        <!-- clouds -->
-        <g fill="#ffffff" opacity=".85">
-          <ellipse cx="120" cy="70" rx="34" ry="14"/><ellipse cx="150" cy="66" rx="26" ry="12"/>
-          <ellipse cx="430" cy="250" rx="30" ry="12"/><ellipse cx="405" cy="255" rx="22" ry="10"/>
-        </g>
-        <!-- sun -->
-        <g transform="translate(430,70)">
-          <g stroke="#f5a623" stroke-width="4" stroke-linecap="round">
-            <line x1="0" y1="-34" x2="0" y2="-24"/><line x1="0" y1="24" x2="0" y2="34"/>
-            <line x1="-34" y1="0" x2="-24" y2="0"/><line x1="24" y1="0" x2="34" y2="0"/>
-            <line x1="-24" y1="-24" x2="-17" y2="-17"/><line x1="17" y1="17" x2="24" y2="24"/>
-            <line x1="24" y1="-24" x2="17" y2="-17"/><line x1="-17" y1="17" x2="-24" y2="24"/>
-          </g>
-          <circle r="18" fill="url(#hpSun)"/>
-        </g>
-        <!-- moon -->
-        <path d="M470 300 a26 26 0 1 1 -20 -42 a20 20 0 0 0 20 42 z" fill="#cfe0f7"/>
-        <!-- globe -->
-        <g transform="translate(300,200)">
-          <circle r="120" fill="url(#hpGlobe)"/>
-          <g fill="none" stroke="#8fb6ee" stroke-width="1.4" opacity=".8">
-            <ellipse rx="120" ry="46"/><ellipse rx="120" ry="86"/>
-            <ellipse rx="46" ry="120"/><ellipse rx="86" ry="120"/>
-            <line x1="-120" y1="0" x2="120" y2="0"/>
-          </g>
-          <!-- soft landmasses -->
-          <g fill="#a9cbf3" opacity=".9">
-            <path d="M-60 -50 q20 -14 44 -6 q16 6 8 24 q-10 20 -34 16 q-28 -4 -18 -34 z"/>
-            <path d="M14 6 q26 -6 40 12 q10 16 -8 30 q-24 16 -40 -6 q-12 -22 8 -36 z"/>
-            <path d="M-38 40 q18 -6 26 10 q6 16 -12 24 q-22 8 -26 -12 q-2 -18 12 -22 z"/>
-          </g>
-          <!-- orbit dashed line -->
-          <ellipse rx="150" ry="58" fill="none" stroke="#7ea9e8" stroke-width="1.6" stroke-dasharray="4 6" transform="rotate(-16)" opacity=".7"/>
-        </g>
-        <!-- pins -->
-        <g>
-          <g transform="translate(250,150)"><path d="M0 0 C-11 -14 -11 -26 0 -30 C11 -26 11 -14 0 0 z" fill="#1e6bff"/><circle cx="0" cy="-22" r="4.5" fill="#fff"/></g>
-          <g transform="translate(322,196)"><path d="M0 0 C-11 -14 -11 -26 0 -30 C11 -26 11 -14 0 0 z" fill="#e5484d"/><circle cx="0" cy="-22" r="4.5" fill="#fff"/></g>
-          <g transform="translate(230,205)"><path d="M0 0 C-10 -12 -10 -23 0 -27 C10 -23 10 -12 0 0 z" fill="#1e6bff"/><circle cx="0" cy="-20" r="4" fill="#fff"/></g>
-        </g>
-      </svg>
+      <div class="hn-found" id="hn-found" hidden aria-live="polite"></div>
+      <div class="hn-chips"><span>Popular:</span>
+        <button class="hn-chip" data-c="London" data-tz="Europe/London">London</button>
+        <button class="hn-chip" data-c="New York" data-tz="America/New_York">New York</button>
+        <button class="hn-chip" data-c="Dubai" data-tz="Asia/Dubai">Dubai</button>
+        <button class="hn-chip" data-c="Tokyo" data-tz="Asia/Tokyo">Tokyo</button>
+        <button class="hn-chip" data-c="Sydney" data-tz="Australia/Sydney">Sydney</button>
+      </div>
+    </div>
+
+    <div class="hn-conv" id="hn-convert">
+      <h2><i class="ti ti-arrows-exchange"></i>Convert a time</h2>
+      <div class="hn-row">
+        <div class="hn-field"><label for="hn-from">From</label><input id="hn-from" autocomplete="off"><div class="search-dd" id="hn-from-dd" hidden></div></div>
+        <div class="hn-field"><label for="hn-time">Time</label><input id="hn-time" type="time"></div>
+      </div>
+      <div class="hn-swap"><button type="button" id="hn-swap" aria-label="Swap cities"><i class="ti ti-arrows-up-down"></i></button></div>
+      <div class="hn-field"><label for="hn-to">To</label><input id="hn-to" autocomplete="off"><div class="search-dd" id="hn-to-dd" hidden></div></div>
+      <div class="hn-res" aria-live="polite">
+        <div><small id="hn-res-l">Result</small><span class="hn-res-t" id="hn-res-t">--:--</span></div>
+        <div class="hn-res-d" id="hn-res-d"></div>
+      </div>
+      <div class="hn-conv-cta">
+        <a class="hn-btn" id="hn-conv-link" href="/converter">Add more cities</a>
+        <a class="hn-btn ghost" id="hn-conv-meet" href="/converter#meeting">Plan a meeting</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 3. YOUR CITIES ===== -->
+<section class="hn-mine-bar" aria-label="Your cities">
+  <div class="hn-wrap">
+    <div class="hn-mine-head">
+      <h2>Your cities</h2><span>Saved on this device</span>
+      <a class="hn-link" href="/world-clock/">Open World Clock <i class="ti ti-arrow-right"></i></a>
+    </div>
+    <div class="hn-mine" id="hn-mine"></div>
+  </div>
+</section>
+
+<div class="hn-wrap">
+
+  <!-- ===== 4. TOOLS WITH LIVE PREVIEWS ===== -->
+  <section class="hn-sec" id="hn-tools-sec" aria-label="Time tools">
+    <div class="hn-head"><div><h2>Every time tool, already showing your answer</h2><p>Live previews for where you are right now.</p></div></div>
+    <div class="hn-tools">
+      <a class="hn-tool" href="/world-clock/"><div class="top"><i class="ti ti-world"></i><h3>World Clock</h3></div><p>Live time in all your cities, side by side.</p><div class="hn-live" id="lv-clock">…</div><span class="go">Open World Clock →</span></a>
+      <a class="hn-tool" href="/converter" id="tl-conv"><div class="top"><i class="ti ti-arrows-exchange"></i><h3>Time Zone Converter</h3></div><p>Convert any time between zones, DST-aware.</p><div class="hn-live" id="lv-conv">…</div><span class="go">Convert a time →</span></a>
+      <a class="hn-tool" href="/converter#meeting" id="tl-meet"><div class="top"><i class="ti ti-calendar-event"></i><h3>Meeting Planner</h3></div><p>See where working hours overlap.</p><div class="hn-live" id="lv-meet">…</div><span class="go">Plan a meeting →</span></a>
+      <a class="hn-tool" href="/sunmoon"><div class="top"><i class="ti ti-sun"></i><h3>Sun &amp; Moon</h3></div><p>Sunrise, sunset and moon phase anywhere.</p><div class="hn-live" id="lv-moon">Moon phase loading…</div><span class="go">See sun &amp; moon →</span></a>
+      <a class="hn-tool" href="/weather"><div class="top"><i class="ti ti-cloud"></i><h3>Weather</h3></div><p>Current conditions next to local time.</p><div class="hn-live" id="lv-wx">Live temperatures…</div><span class="go">Check weather →</span></a>
+      <a class="hn-tool" href="/world-time-map"><div class="top"><i class="ti ti-map"></i><h3>World Time Map</h3></div><p>Day and night across the globe, live.</p><div class="hn-live" id="lv-map">…</div><span class="go">Open the map →</span></a>
     </div>
   </section>
 
-  <!-- ===== YOUR WORLD CLOCK (Quick View) ===== -->
-  <section class="hp-section" aria-label="Your World Clock">
-    <div class="hp-head">
-      <h2>Your World Clock <span class="hp-sub">(Quick View)</span></h2>
-      <a class="hp-link" href="/world-clock/">View World Clock <i class="ti ti-arrow-right"></i></a>
+  <!-- ===== 5. MEETING TEASER ===== -->
+  <section class="hn-sec hn-meet" aria-label="Meeting planner preview">
+    <div>
+      <h2>Find a meeting time that works for everyone</h2>
+      <p>Working hours (9am–6pm) for each city, lined up against your day. The highlighted hours work for all of you.</p>
+      <a class="hn-btn" id="hn-meet-cta" href="/converter#meeting">Plan a meeting <i class="ti ti-arrow-right"></i></a>
     </div>
-    <div class="hp-wc-grid" id="hp-wc"></div>
-  </section>
-
-  <!-- ===== EXPLORE OUR TOOLS ===== -->
-  <section class="hp-section" aria-label="Explore our tools">
-    <div class="hp-head"><h2>Explore Our Tools</h2></div>
-    <div class="hp-tools">
-      <a class="hp-tool t-blue" href="/world-clock/"><i class="ti ti-world"></i><h3>World Clock</h3><p>See the current time around the world.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
-      <a class="hp-tool t-blue" href="/converter.html"><i class="ti ti-arrows-exchange"></i><h3>Time Zone Converter</h3><p>Convert time between any time zones.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
-      <a class="hp-tool t-blue" href="/converter.html#meeting"><i class="ti ti-calendar-event"></i><h3>Meeting Planner</h3><p>Find the best time for everyone.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
-      <a class="hp-tool t-sun" href="/sunmoon.html"><i class="ti ti-sun"></i><h3>Sun &amp; Moon</h3><p>Check sunrise, sunset, moon phases and more.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
-      <a class="hp-tool t-loc" href="/location/"><i class="ti ti-map-pin"></i><h3>Locations</h3><p>Explore time, weather and more for any location.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
-      <a class="hp-tool t-flag" href="/location/"><i class="ti ti-flag"></i><h3>Countries</h3><p>Browse time zones by country.</p><span class="hp-explore">Explore <i class="ti ti-arrow-right"></i></span></a>
+    <div>
+      <div class="hn-bars" id="hn-bars"></div>
+      <div class="hn-axis" style="margin-top:6px"><span></span><div><span>12am</span><span>6am</span><span>12pm</span><span>6pm</span><span>12am</span></div></div>
+      <p class="hn-legend" id="hn-legend"></p>
     </div>
   </section>
 
-  <!-- ===== POPULAR LOCATIONS ===== -->
-  <section class="hp-section" aria-label="Popular locations">
-    <div class="hp-head">
-      <h2>Popular Locations</h2>
-      <a class="hp-link" href="/location/">View all locations <i class="ti ti-arrow-right"></i></a>
+  <!-- ===== 6. LOCATIONS (cities + countries) ===== -->
+  <section class="hn-sec" id="hn-loc-sec" aria-label="Time around the world">
+    <div class="hn-head">
+      <h2>Time around the world right now</h2>
+      <div class="hn-tabs" role="tablist">
+        <button role="tab" aria-selected="true" aria-controls="hn-p-cities" id="hn-t-cities">Cities</button>
+        <button role="tab" aria-selected="false" aria-controls="hn-p-countries" id="hn-t-countries">Countries</button>
+      </div>
     </div>
-    <div class="hp-pills">
-      <a class="hp-pill" href="/location/united-states/new-york/">New York</a>
-      <a class="hp-pill" href="/location/united-kingdom/london/">London</a>
-      <a class="hp-pill" href="/location/japan/tokyo/">Tokyo</a>
-      <a class="hp-pill" href="/location/united-arab-emirates/dubai/">Dubai</a>
-      <a class="hp-pill" href="/location/singapore/singapore/">Singapore</a>
-      <a class="hp-pill" href="/location/australia/sydney/">Sydney</a>
-      <a class="hp-pill" href="/location/france/paris/">Paris</a>
-      <a class="hp-pill" href="/location/canada/toronto/">Toronto</a>
+    <div class="hn-panel" id="hn-p-cities" role="tabpanel" aria-labelledby="hn-t-cities">
+      <div class="hn-cities" id="hn-cities"></div>
     </div>
+    <div class="hn-panel" id="hn-p-countries" role="tabpanel" aria-labelledby="hn-t-countries" hidden>
+      <div class="hn-countries">
+        <a class="hn-country" href="/location/india/"><span class="fi fi-in"></span>India</a>
+        <a class="hn-country" href="/location/united-states/"><span class="fi fi-us"></span>United States</a>
+        <a class="hn-country" href="/location/united-kingdom/"><span class="fi fi-gb"></span>United Kingdom</a>
+        <a class="hn-country" href="/location/australia/"><span class="fi fi-au"></span>Australia</a>
+        <a class="hn-country" href="/location/canada/"><span class="fi fi-ca"></span>Canada</a>
+        <a class="hn-country" href="/location/germany/"><span class="fi fi-de"></span>Germany</a>
+        <a class="hn-country" href="/location/united-arab-emirates/"><span class="fi fi-ae"></span>UAE</a>
+        <a class="hn-country" href="/location/japan/"><span class="fi fi-jp"></span>Japan</a>
+        <a class="hn-country" href="/location/singapore/"><span class="fi fi-sg"></span>Singapore</a>
+        <a class="hn-country" href="/location/france/"><span class="fi fi-fr"></span>France</a>
+      </div>
+    </div>
+    <p style="margin:16px 0 0"><a class="hn-link" href="/location/">View all locations <i class="ti ti-arrow-right"></i></a></p>
   </section>
 
-  <!-- ===== POPULAR COUNTRIES ===== -->
-  <section class="hp-section" aria-label="Popular countries">
-    <div class="hp-head">
-      <h2>Popular Countries</h2>
-      <a class="hp-link" href="/location/">View all countries <i class="ti ti-arrow-right"></i></a>
+  <!-- ===== 7. FAQ ===== -->
+  <section class="hn-sec hn-faq" aria-label="Frequently asked questions">
+    <div class="hn-head" style="display:block"><h2>Quick answers</h2><p>The questions people ask us most.</p></div>
+    <div>
+      <details open><summary>What time is it in UTC right now?</summary><p>It's <b id="hn-faq-utc">--:--</b> UTC. UTC (Coordinated Universal Time) is the world's reference time. It never changes for daylight saving, so it is the same everywhere. Every time zone is described as an offset from it, such as UTC+5:30 for India or UTC-5 for New York in winter.</p></details>
+      <details><summary>How do I convert time between two time zones?</summary><p>Pick a "From" city, enter the time, and pick a "To" city in the converter at the top of this page. The result updates instantly and accounts for daylight saving time on that date. For more than two cities, open the full <a href="/converter">Time Zone Converter</a>.</p></details>
+      <details><summary>Does TimezoneBudy adjust for daylight saving time?</summary><p>Yes. All times use your browser's built-in IANA time zone database, so daylight saving changes are applied automatically for every city, including countries that change on different dates, like the US and the UK.</p></details>
+      <details><summary>How do I find the best meeting time across time zones?</summary><p>Add each participant's city to the <a href="/converter#meeting">Meeting Planner</a>. It lines up 9am–6pm working hours for every city and highlights the hours where they overlap, so you can pick a slot that works for everyone.</p></details>
     </div>
-    <div class="hp-countries">
-      <a class="hp-country" href="/location/india/"><span class="fi fi-in"></span> India</a>
-      <a class="hp-country" href="/location/united-states/"><span class="fi fi-us"></span> United States</a>
-      <a class="hp-country" href="/location/united-kingdom/"><span class="fi fi-gb"></span> United Kingdom</a>
-      <a class="hp-country" href="/location/australia/"><span class="fi fi-au"></span> Australia</a>
-      <a class="hp-country" href="/location/canada/"><span class="fi fi-ca"></span> Canada</a>
-      <a class="hp-country" href="/location/germany/"><span class="fi fi-de"></span> Germany</a>
-    </div>
-  </section>
-
-  <!-- ===== PROMO ===== -->
-  <section class="hp-section hp-promo" aria-label="TimezoneBudy">
-    <h2>Explore time. Connect the world.</h2>
-    <p>Accurate. Simple. Useful. Everywhere you go.</p>
-    <svg class="hp-promo-art" viewBox="0 0 520 150" aria-hidden="true">
-      <g fill="none" stroke="#9bc0f2" stroke-width="1.6" opacity=".8">
-        <rect x="40" y="70" width="16" height="60"/><path d="M48 70 l0 -22"/>
-        <path d="M96 130 l0 -54 l14 -14 l14 14 l0 54"/><path d="M110 62 l0 -14"/>
-        <circle cx="180" cy="96" r="20"/><path d="M180 76 l0 54"/>
-        <path d="M236 130 l0 -60 q18 -20 36 0 l0 60"/>
-        <path d="M300 130 l0 -70 l30 -22 l30 22 l0 70"/>
-        <path d="M392 130 l0 -40 q22 -26 44 0 l0 40"/>
-        <path d="M4 130 l512 0"/>
-      </g>
-    </svg>
   </section>
 
 </div>
 </main>
+
+<!-- ===== 8. MOBILE DOCK ===== -->
+<nav class="hn-dock" aria-label="Quick tools">
+  <a href="/world-clock/"><i class="ti ti-clock"></i>Clock</a>
+  <a href="#hn-convert" class="on"><i class="ti ti-arrows-exchange"></i>Convert</a>
+  <a href="/converter#meeting"><i class="ti ti-calendar-event"></i>Meet</a>
+  <a href="/sunmoon"><i class="ti ti-sun"></i>Sun</a>
+  <a href="/weather"><i class="ti ti-cloud"></i>Weather</a>
+</nav>
 
 <!-- ===== LIVE FOOTER — mirrors live site ===== -->
 <footer class="site-footer">
@@ -290,11 +393,11 @@
       <div class="footer-col">
         <h4 class="footer-heading">Tools</h4>
         <a href="/world-clock/">World Clock</a>
-        <a href="/converter.html">Timezone Converter</a>
-        <a href="/converter.html#meeting">Meeting Planner</a>
-        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/converter">Timezone Converter</a>
+        <a href="/converter#meeting">Meeting Planner</a>
+        <a href="/sunmoon">Sun &amp; Moon</a>
         <a href="/weather">Weather</a>
-        <a href="/tools.html">Time Tools</a>
+        <a href="/tools">Time Tools</a>
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Locations</h4>
@@ -307,19 +410,19 @@
       </div>
       <div class="footer-col">
         <h4 class="footer-heading">Company</h4>
-        <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact Us</a>
+        <a href="/about">About Us</a>
+        <a href="/contact">Contact Us</a>
         <a href="/blog/">Blog</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Service</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
       <div class="footer-bottom-links">
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/contact.html">Contact</a>
+        <a href="/privacy-policy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/contact">Contact</a>
       </div>
     </div>
   </div>
@@ -327,54 +430,230 @@
 
 <div id="toast" role="status" aria-live="polite"></div>
 
-<!-- Shared assets (same as live) -->
 <script src="/cities.js"></script>
-<script src="/util.js?v=2"></script>
+<script src="/util.js?v=3"></script>
 <script src="/pwa-install.js" defer></script>
-<script src="/clock.js?v=2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js" defer></script>
 
-<!-- Homepage quick World Clock -->
 <script>
 (function(){
-  var CITIES=[
-    {n:'Mumbai',c:'India',cc:'in',tz:'Asia/Kolkata'},
-    {n:'New York',c:'United States',cc:'us',tz:'America/New_York'},
-    {n:'London',c:'United Kingdom',cc:'gb',tz:'Europe/London'},
-    {n:'Tokyo',c:'Japan',cc:'jp',tz:'Asia/Tokyo'}
-  ];
-  var el=document.getElementById('hp-wc');
-  if(!el) return;
-  el.innerHTML=CITIES.map(function(x){
-    return '<div class="hp-wc-card" data-tz="'+x.tz+'">'
-      +'<div class="hp-wc-city"><span class="fi fi-'+x.cc+'"></span><div><b>'+x.n+'</b><span>'+x.c+'</span></div></div>'
-      +'<div class="hp-wc-time">--:--</div>'
-      +'<div class="hp-wc-foot"><div class="hp-wc-meta"><span class="hp-wc-date"></span><br><span class="hp-wc-off"></span></div>'
-      +'<i class="ti hp-wc-ico"></i></div></div>';
-  }).join('');
+  // ---------- helpers ----------
+  function $(id){return document.getElementById(id);}
+  function track(ev,p){try{if(window.gtag)gtag('event',ev,p||{});}catch(e){}}
+  function findCity(name,tz){return CITIES.find(function(c){return c.name===name&&c.tz===tz;})||CITIES.find(function(c){return c.tz===tz;});}
+  var TZ_ALIAS={'Asia/Calcutta':'Asia/Kolkata','Asia/Saigon':'Asia/Ho_Chi_Minh','Asia/Katmandu':'Asia/Kathmandu','Asia/Rangoon':'Asia/Yangon','Europe/Kiev':'Europe/Kyiv','America/Buenos_Aires':'America/Argentina/Buenos_Aires','Pacific/Ponape':'Pacific/Pohnpei','Atlantic/Faeroe':'Atlantic/Faroe'};
+  function localCity(){
+    var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
+    if(TZ_ALIAS[tz]) tz=TZ_ALIAS[tz];
+    var hits=CITIES.filter(function(c){return c.tz===tz;}).sort(function(a,b){return b.pop-a.pop;});
+    return hits[0]||{name:tz.split('/').pop().replace(/_/g,' '),country:'',cc:'un',tz:tz};
+  }
+  function hourIn(tz,d){return parseInt(new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',hour12:false}).format(d),10)%24;}
+  function diffTxt(tz){
+    var m=offMin(new Date(),tz)-offMin(new Date(),HERE.tz);
+    if(m===0)return 'Same time as you';
+    var a=Math.abs(m),h=Math.floor(a/60),mm=a%60;
+    return (m>0?'+':'−')+h+'h'+(mm?' '+mm+'m':'')+' from you';
+  }
+  function daynight(tz){var h=hourIn(tz,new Date());return h>=6&&h<18;}
+  // wall-clock time in tz → real instant
+  function instantFor(tz,y,mo,d,h,mi){
+    var guess=Date.UTC(y,mo,d,h,mi);
+    var t=guess-offMin(new Date(guess),tz)*60000;
+    return new Date(guess-offMin(new Date(t),tz)*60000);
+  }
+  function tzLink(list){return list.map(function(c){return encodeURIComponent(c.tz);}).join(',');}
 
-  function is24h(){return localStorage.getItem('wc_24h')==='1';}
-  function parts(tz){
-    var d=new Date();
-    var t=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hour12:!is24h()}).format(d);
-    var dt=new Intl.DateTimeFormat('en-US',{timeZone:tz,weekday:'short',day:'numeric',month:'short'}).format(d);
-    var hr=parseInt(new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',hour12:false}).format(d),10);
-    var off='',abbr='';
-    try{off=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'shortOffset'}).formatToParts(d).find(function(p){return p.type==='timeZoneName';}).value.replace('GMT','UTC');}catch(e){}
-    try{var a=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'short'}).formatToParts(d).find(function(p){return p.type==='timeZoneName';}).value;if(!/GMT|UTC/.test(a))abbr=a;}catch(e){}
-    return {t:t,dt:dt.replace(',',''),lbl:(abbr?abbr+' · ':'')+off,day:hr>=6&&hr<18};
+  boot(); // util.js: loads pins, theme, UTC ticker
+  var HERE=localCity();
+
+  // ---------- 1. hero ----------
+  $('hn-here').textContent=HERE.name;
+  $('hn-flag').innerHTML=HERE.cc!=='un'?flag(HERE.cc,20):'';
+  function tickHero(){
+    $('hn-clock').textContent=fmt(HERE.tz,{sec:true});
+    $('hn-date').innerHTML=new Intl.DateTimeFormat('en-US',{timeZone:HERE.tz,weekday:'long',month:'long',day:'numeric',year:'numeric'}).format(new Date())
+      +' · '+utcOff(HERE.tz)+(isDST(HERE.tz)?'<span class="hn-dst">DST</span>':'');
+    $('hn-faq-utc').textContent=fmt('UTC');
   }
-  function tick(){
-    el.querySelectorAll('.hp-wc-card').forEach(function(card){
-      var p=parts(card.dataset.tz);
-      card.querySelector('.hp-wc-time').textContent=p.t;
-      card.querySelector('.hp-wc-date').textContent=p.dt;
-      card.querySelector('.hp-wc-off').textContent=p.lbl;
-      var ic=card.querySelector('.hp-wc-ico');
-      ic.className='ti hp-wc-ico '+(p.day?'day ti-sun':'night ti-moon');
+  var FOUND=null;
+  function showFound(c){
+    FOUND=c;
+    var box=$('hn-found');box.hidden=false;
+    box.innerHTML=flag(c.cc,22)+'<b>'+c.name+'</b><span class="t">'+fmt(c.tz)+'</span>'
+      +'<span class="d">'+fmtDate(c.tz)+' · '+utcOff(c.tz)+' · '+diffTxt(c.tz)+(isPinned(c)?' · in your cities':'')+'</span>';
+  }
+  function pickCity(c,src){
+    if(!isPinned(c)) addPin(c);
+    showFound(c); renderMine(); track('hero_city_pick',{city:c.name,source:src});
+  }
+  initSearch('hn-q','hn-q-dd',function(c){$('hn-q').value='';$('hn-q-dd').hidden=true;pickCity(c,'search');},{showPinned:true});
+  $('hn-q').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){var h=WC._srchIdx['hn-q'];if(h&&h.length){$('hn-q').value='';$('hn-q-dd').hidden=true;pickCity(h[0],'enter');}}
+  });
+  document.querySelectorAll('.hn-chip').forEach(function(b){
+    b.addEventListener('click',function(){var c=findCity(b.dataset.c,b.dataset.tz);if(c)pickCity(c,'chip');});
+  });
+
+  // ---------- 2. converter ----------
+  var CV={from:HERE,to:findCity('London','Europe/London')};
+  if(CV.to&&CV.to.tz===HERE.tz) CV.to=findCity('New York','America/New_York');
+  var now=new Date(),pad=function(n){return String(n).padStart(2,'0');};
+  $('hn-time').value=pad(now.getHours())+':'+pad(now.getMinutes());
+  function renderConv(){
+    $('hn-from').value=CV.from.name; $('hn-to').value=CV.to.name;
+    var tv=($('hn-time').value||'00:00').split(':');
+    var base=new Date(), y=parseInt(new Intl.DateTimeFormat('en-US',{timeZone:CV.from.tz,year:'numeric'}).format(base),10);
+    var md=new Intl.DateTimeFormat('en-US',{timeZone:CV.from.tz,month:'numeric',day:'numeric'}).formatToParts(base);
+    var mo=+md.find(function(p){return p.type==='month';}).value-1, d=+md.find(function(p){return p.type==='day';}).value;
+    var inst=instantFor(CV.from.tz,y,mo,d,+tv[0],+tv[1]);
+    $('hn-res-l').textContent='Time in '+CV.to.name;
+    $('hn-res-t').textContent=fmt(CV.to.tz,{date:inst})+' '+fmtDay(CV.to.tz,inst);
+    var m=offMin(inst,CV.to.tz)-offMin(inst,CV.from.tz),a=Math.abs(m);
+    $('hn-res-d').textContent=m===0?'Same time':(CV.to.name+' is '+Math.floor(a/60)+'h'+(a%60?' '+a%60+'m':'')+(m>0?' ahead':' behind'));
+    var q='?tz='+tzLink([CV.from,CV.to]);
+    $('hn-conv-link').href='/converter'+q; $('hn-conv-meet').href='/converter'+q+'#meeting';
+    $('lv-conv').textContent=fmt(HERE.tz)+' here = '+fmt(CV.to.tz)+' in '+CV.to.name;
+    $('tl-conv').href='/converter'+q;
+  }
+  initSearch('hn-from','hn-from-dd',function(c){CV.from=c;$('hn-from-dd').hidden=true;renderConv();track('converter_change');},{showPinned:false});
+  initSearch('hn-to','hn-to-dd',function(c){CV.to=c;$('hn-to-dd').hidden=true;renderConv();track('converter_change');},{showPinned:false});
+  ['hn-from','hn-to'].forEach(function(id){
+    $(id).addEventListener('focus',function(){this.select();});
+    $(id).addEventListener('blur',function(){var el=this;setTimeout(function(){if(document.activeElement!==el)renderConv();},250);});
+  });
+  $('hn-time').addEventListener('input',function(){renderConv();track('converter_change');});
+  $('hn-swap').addEventListener('click',function(){var t=CV.from;CV.from=CV.to;CV.to=t;renderConv();});
+
+  // ---------- 3. your cities ----------
+  function renderMine(){
+    var el=$('hn-mine');
+    el.innerHTML=WC.pinned.slice(0,5).map(function(c,i){
+      return '<div class="hn-mc" data-tz="'+c.tz+'"><div class="n">'+flag(c.cc,16)+c.name+'</div>'
+        +'<div class="t">'+fmt(c.tz)+'</div><div class="o">'+diffTxt(c.tz)+'</div>'
+        +'<button class="x" aria-label="Remove '+c.name+'" data-i="'+i+'">×</button></div>';
+    }).join('')+'<button class="hn-add" id="hn-add"><i class="ti ti-plus"></i>Add city</button>';
+    el.querySelectorAll('.x').forEach(function(b){b.addEventListener('click',function(){removePin(+b.dataset.i);});});
+    $('hn-add').addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});$('hn-q').focus();track('add_city_click');});
+    var n=WC.pinned.length;
+    $('lv-clock').textContent=n+' saved '+(n===1?'city':'cities')+(n?' · '+WC.pinned[0].name+' '+fmt(WC.pinned[0].tz):'');
+  }
+  window.onPinsChanged=function(){renderMine();if(FOUND)showFound(FOUND);};
+
+  // ---------- 5. meeting teaser ----------
+  // pick up to 2 other cities that actually share working hours with the visitor
+  function workArr(tz){var mid=new Date();mid.setHours(0,0,0,0);var a=[];for(var h=0;h<24;h++){var hh=hourIn(tz,new Date(mid.getTime()+h*3600000));a.push(hh>=9&&hh<18);}return a;}
+  function shared(list){var w=list.map(function(c){return workArr(c.tz);});var n=0;for(var h=0;h<24;h++)if(w.every(function(x){return x[h];}))n++;return n;}
+  var CAND=[['London','Europe/London'],['New York','America/New_York'],['Paris','Europe/Paris'],['Dubai','Asia/Dubai'],['Singapore','Asia/Singapore'],['Tokyo','Asia/Tokyo'],['Sydney','Australia/Sydney']]
+    .map(function(p){return findCity(p[0],p[1]);})
+    .filter(function(c){return c&&offMin(new Date(),c.tz)!==offMin(new Date(),HERE.tz);});
+  var MEET=null;
+  for(var i=0;i<CAND.length&&!MEET;i++)for(var j=i+1;j<CAND.length&&!MEET;j++)
+    if(shared([HERE,CAND[i],CAND[j]])>=2) MEET=[HERE,CAND[i],CAND[j]];
+  if(!MEET){for(var k=0;k<CAND.length&&!MEET;k++)if(shared([HERE,CAND[k]])>=2)MEET=[HERE,CAND[k]];}
+  if(!MEET) MEET=[HERE,CAND[0]];
+  function renderMeet(){
+    var mid=new Date();mid.setHours(0,0,0,0);
+    var work=MEET.map(function(c){var a=[];for(var h=0;h<24;h++){var hh=hourIn(c.tz,new Date(mid.getTime()+h*3600000));a.push(hh>=9&&hh<18);}return a;});
+    var ov=[];for(var h=0;h<24;h++)ov.push(work.every(function(w){return w[h];}));
+    $('hn-bars').innerHTML=MEET.map(function(c,i){
+      return '<div class="hn-bar"><div class="c">'+flag(c.cc,14)+(i===0?'You':c.name)+'</div><div class="hn-cells">'
+        +work[i].map(function(w,h){return '<span class="'+(ov[h]?'o':w?'w':'')+'"></span>';}).join('')+'</div></div>';
+    }).join('');
+    var s=ov.indexOf(true),e=s;while(e>=0&&e<24&&ov[e])e++;
+    function lab(h){var d=new Date(mid.getTime()+h*3600000);return fmt(HERE.tz,{date:d});}
+    var txt=s<0?'No shared working hours today — the planner helps you find the fairest slot.'
+      :'<b>Best overlap: '+lab(s)+' – '+lab(e)+'</b> your time';
+    $('hn-legend').innerHTML=txt;
+    $('lv-meet').textContent=s<0?'No 9–6 overlap with '+MEET[1].name+' today':'Overlap today: '+lab(s)+'–'+lab(e);
+    var href='/converter?tz='+tzLink(MEET)+'#meeting';
+    $('hn-meet-cta').href=href; $('tl-meet').href=href;
+  }
+
+  // ---------- 6. locations ----------
+  var POP=[
+    {n:'New York',tz:'America/New_York',k:'United States',cc:'us',u:'/location/united-states/new-york/',la:40.71,lo:-74.01},
+    {n:'London',tz:'Europe/London',k:'United Kingdom',cc:'gb',u:'/location/united-kingdom/london/',la:51.51,lo:-0.13},
+    {n:'Tokyo',tz:'Asia/Tokyo',k:'Japan',cc:'jp',u:'/location/japan/tokyo/',la:35.68,lo:139.69},
+    {n:'Dubai',tz:'Asia/Dubai',k:'United Arab Emirates',cc:'ae',u:'/location/united-arab-emirates/dubai/',la:25.2,lo:55.27},
+    {n:'Singapore',tz:'Asia/Singapore',k:'Singapore',cc:'sg',u:'/location/singapore/',la:1.35,lo:103.82},
+    {n:'Sydney',tz:'Australia/Sydney',k:'Australia',cc:'au',u:'/location/australia/sydney/',la:-33.87,lo:151.21},
+    {n:'Paris',tz:'Europe/Paris',k:'France',cc:'fr',u:'/location/france/paris/',la:48.86,lo:2.35},
+    {n:'Toronto',tz:'America/Toronto',k:'Canada',cc:'ca',u:'/location/canada/toronto/',la:43.65,lo:-79.38}
+  ];
+  var TEMPS={};
+  function renderCities(){
+    $('hn-cities').innerHTML=POP.map(function(c){
+      var t=TEMPS[c.n];
+      return '<a class="hn-city" href="'+c.u+'"><div class="r1">'+flag(c.cc,18)+'<b>'+c.n+'</b><i class="ti '+(daynight(c.tz)?'ti-sun':'ti-moon')+'"></i></div>'
+        +'<span class="k">'+c.k+'</span><span class="t">'+fmt(c.tz)+'</span>'
+        +'<span class="m">'+(t!=null?t+' · ':'')+diffTxt(c.tz)+'</span></a>';
+    }).join('');
+    var day=POP.filter(function(c){return daynight(c.tz);}).length;
+    $('lv-map').textContent='Daytime in '+day+' of '+POP.length+' major cities now';
+  }
+  function loadWeather(){
+    var f=localStorage.getItem('wx_unit')==='fahrenheit';
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+POP.map(function(c){return c.la;}).join(',')
+      +'&longitude='+POP.map(function(c){return c.lo;}).join(',')+'&current=temperature_2m'+(f?'&temperature_unit=fahrenheit':'');
+    fetch(url).then(function(r){return r.json();}).then(function(d){
+      var arr=Array.isArray(d)?d:[d];
+      arr.forEach(function(x,i){if(x&&x.current&&POP[i])TEMPS[POP[i].n]=Math.round(x.current.temperature_2m)+'°'+(f?'F':'C');});
+      renderCities();
+      var a=POP[1].n,b=POP[2].n;
+      if(TEMPS[a]) $('lv-wx').textContent=a+' '+TEMPS[a]+' · '+b+' '+TEMPS[b];
+    }).catch(function(){$('lv-wx').textContent='Live weather for 100+ cities';});
+  }
+  var wxDone=false;
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      if(!wxDone&&es.some(function(e){return e.isIntersecting;})){wxDone=true;loadWeather();io.disconnect();}
+    },{rootMargin:'200px'});
+    io.observe($('hn-tools-sec'));io.observe($('hn-loc-sec'));
+  } else loadWeather();
+
+  function setTab(which){
+    ['cities','countries'].forEach(function(k){
+      $('hn-t-'+k).setAttribute('aria-selected',k===which?'true':'false');
+      $('hn-p-'+k).hidden=k!==which;
     });
+    track('locations_tab',{tab:which});
   }
-  tick();setInterval(tick,1000*30);
-  window.onFmtChange=(function(o){return function(){if(o)o();tick();};})(window.onFmtChange);
+  $('hn-t-cities').addEventListener('click',function(){setTab('cities');});
+  $('hn-t-countries').addEventListener('click',function(){setTab('countries');});
+
+  // ---------- moon phase (location-independent) ----------
+  function renderMoon(){
+    if(!window.SunCalc)return;
+    var m=SunCalc.getMoonIllumination(new Date()),p=m.phase;
+    var names=['New moon','Waxing crescent','First quarter','Waxing gibbous','Full moon','Waning gibbous','Last quarter','Waning crescent'];
+    $('lv-moon').textContent=names[Math.round(p*8)%8]+' · '+Math.round(m.fraction*100)+'% lit';
+  }
+  window.addEventListener('load',renderMoon);
+
+  // ---------- tool-card clicks ----------
+  document.querySelectorAll('.hn-tool').forEach(function(a){
+    a.addEventListener('click',function(){track('tool_card_click',{tool:a.querySelector('h3').textContent});});
+  });
+
+  // ---------- scroll depth ----------
+  var marks={25:0,50:0,75:0,90:0};
+  window.addEventListener('scroll',function(){
+    var h=document.documentElement,pc=(h.scrollTop+innerHeight)/h.scrollHeight*100;
+    Object.keys(marks).forEach(function(k){if(!marks[k]&&pc>=+k){marks[k]=1;track('scroll_depth',{percent:+k});}});
+  },{passive:true});
+
+  // ---------- boot ----------
+  function tickAll(){
+    tickHero();
+    document.querySelectorAll('.hn-mc').forEach(function(c){c.querySelector('.t').textContent=fmt(c.dataset.tz);});
+    if(FOUND) showFound(FOUND);
+  }
+  window.onFmtChange=function(){renderConv();renderMine();renderMeet();renderCities();tickAll();};
+  renderConv(); renderMine(); renderMeet(); renderCities(); tickAll();
+  setInterval(tickAll,1000);
+  setInterval(function(){renderCities();renderConv();renderMine();},30000);
+  setInterval(renderMeet,600000);
 })();
 </script>
 
