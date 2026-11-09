@@ -86,6 +86,8 @@ var TZ_COORDS = {
 function getCoords(city) {
   if (city._lat != null) return {lat: city._lat, lon: city._lon};
   var nameKey = city.name + '|' + city.tz;
+  if (window.SM_COORDS && SM_COORDS[nameKey]) return {lat: SM_COORDS[nameKey][0], lon: SM_COORDS[nameKey][1]};
+  var gc = smGeoCache()[nameKey]; if (gc) return {lat: gc[0], lon: gc[1]};
   if (CITY_COORDS[nameKey]) return CITY_COORDS[nameKey];
   if (TZ_COORDS[city.tz]) return TZ_COORDS[city.tz];
   var tz = city.tz || '';
@@ -96,6 +98,24 @@ function getCoords(city) {
   if (tz.indexOf('Australia/') === 0) return {lat:-25,lon:135};
   if (tz.indexOf('Pacific/') === 0)   return {lat:-15,lon:170};
   return {lat:40.7, lon:-74.0};
+}
+
+function hasExactCoords(city){
+  var k=city.name+'|'+city.tz;
+  return city._lat!=null || !!(window.SM_COORDS&&SM_COORDS[k]) || !!CITY_COORDS[k] || !!smGeoCache()[k];
+}
+function smGeoCache(){ try{ return JSON.parse(localStorage.getItem('sm_geo')||'{}'); }catch(e){ return {}; } }
+// Look up exact coordinates for a searched city that isn't in our lists (Open-Meteo geocoding, keyless)
+function smGeocode(city, done){
+  if (hasExactCoords(city)) return done && done();
+  fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&format=json&name='+encodeURIComponent(city.name))
+    .then(function(r){return r.json();})
+    .then(function(x){
+      var rs=(x&&x.results)||[], cc=(city.cc||'').toUpperCase();
+      var hit=rs.filter(function(r){return r.timezone===city.tz;})[0]||rs.filter(function(r){return r.country_code===cc;})[0];
+      if(hit){ var c=smGeoCache(); c[city.name+'|'+city.tz]=[+hit.latitude.toFixed(3),+hit.longitude.toFixed(3)]; try{localStorage.setItem('sm_geo',JSON.stringify(c));}catch(e){} }
+      done && done();
+    }).catch(function(){ done && done(); });
 }
 
 // ── Time / duration helpers (reused) ──────────────────────────────────
@@ -188,8 +208,15 @@ function moonPhaseEvents(from, count) {
 }
 
 // ── App state ─────────────────────────────────────────────────────────
+function smTzCity(){
+  var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';
+  var AL={'Asia/Calcutta':'Asia/Kolkata','Asia/Saigon':'Asia/Ho_Chi_Minh','Asia/Katmandu':'Asia/Kathmandu','Europe/Kiev':'Europe/Kyiv'}; tz=AL[tz]||tz;
+  var list=(typeof CITIES!=='undefined'?CITIES:[]).filter(function(c){return c.tz===tz;}).sort(function(a,b){return (b.pop||0)-(a.pop||0);});
+  var c=list[0]||{name:tz.split('/').pop().replace(/_/g,' '),country:'',cc:'un',tz:tz};
+  return {name:c.name,country:c.country,cc:c.cc,tz:c.tz,_auto:true};
+}
 var SM = {
-  loc: {name:'Mumbai', country:'India', cc:'in', tz:'Asia/Kolkata'},
+  loc: smTzCity(),
   date: new Date(),
   popAll: false,
   phaseAll: false
@@ -201,69 +228,85 @@ function fmtLongDate(d){ return d.toLocaleDateString('en-US',{weekday:'short',da
 function fmtShortDate(d){ return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
 
 // ── Live Location: Sun Journey + Moon Today ───────────────────────────
+function smOk(d){ return d instanceof Date && !isNaN(d); }
+function smPct(a,b,t){ return Math.max(0,Math.min(100,(t-a)/(b-a)*100)); }
 function renderLive() {
   var el=document.getElementById('sm-live');
   if (!el) return;
   if (typeof SunCalc==='undefined'){ el.innerHTML='<div class="sm-empty">Loading…</div>'; setTimeout(renderLive,300); return; }
 
-  var c=getCoords(SM.loc), d=SM.date, tz=SM.loc.tz, mk=smMarker();
+  var c=getCoords(SM.loc), d=SM.date, tz=SM.loc.tz, today=smIsToday(), now=new Date();
   var s=SunCalc.getTimes(d, c.lat, c.lon);
-  var moon=SunCalc.getMoonIllumination(d);
+  var moon=SunCalc.getMoonIllumination(today?now:d);
   var mt=SunCalc.getMoonTimes(d, c.lat, c.lon);
-  var ph=moonPhase(moon.phase);
-  var dayLen=(s.sunrise&&s.sunset&&!isNaN(s.sunrise)&&!isNaN(s.sunset))?minsToHM(minsBetween(s.sunrise,s.sunset)):'—';
-
+  var ph=moonPhase(moon.phase), illum=Math.round(moon.fraction*100);
+  var sunOk=smOk(s.sunrise)&&smOk(s.sunset);
+  var dayLen=sunOk?minsToHM(minsBetween(s.sunrise,s.sunset)):'—';
   var remain='—';
-  if (smIsToday() && s.sunrise && s.sunset && !isNaN(s.sunrise) && !isNaN(s.sunset)) {
-    var now=new Date();
-    if (now < s.sunrise) remain=dayLen;
-    else if (now > s.sunset) remain='0h 0m';
-    else remain=minsToHM(minsBetween(now, s.sunset));
-  }
-
-  var ev=moonPhaseEvents(d, 8);
-  var nf=null, nn=null;
+  if (today && sunOk) remain = now<s.sunrise?dayLen : now>s.sunset?'0h 0m' : minsToHM(minsBetween(now,s.sunset));
+  var ev=moonPhaseEvents(d, 8), nf=null, nn=null;
   for (var k=0;k<ev.length;k++){ if(!nf&&ev[k].name==='Full Moon')nf=ev[k]; if(!nn&&ev[k].name==='New Moon')nn=ev[k]; }
 
-  // Sun card
-  var sun='<div class="sm-card sm-sun-card">'
-    +'<div class="sm-card-head"><span class="sm-card-ico">☀️</span>'
-      +'<div><div class="sm-card-title">Sun Journey</div><div class="sm-card-sub">The sun\u2019s path across the sky</div></div></div>'
-    +'<div class="sm-arc">'+sunArcSVG(s.sunrise,s.sunset,mk)+'</div>'
-    +'<div class="sm-arc-ends">'
-      +'<div class="sm-arc-end"><span class="sm-ae-ico">🌅</span><div class="sm-ae-val">'+fmtT(s.sunrise,tz)+'</div><div class="sm-ae-lbl">Sunrise</div></div>'
-      +'<div class="sm-arc-end"><span class="sm-ae-ico">🌇</span><div class="sm-ae-val">'+fmtT(s.sunset,tz)+'</div><div class="sm-ae-lbl">Sunset</div></div>'
-    +'</div>'
-    +'<div class="sm-stat-grid">'
-      +stat('Dawn',fmtT(s.dawn,tz))
-      +stat('Solar Noon',fmtT(s.solarNoon,tz))
-      +stat('Dusk',fmtT(s.dusk,tz))
-      +stat('Day Length',dayLen)
-      +stat('Remaining Daylight',remain)
-    +'</div></div>';
+  // ---- Sun journey ----
+  var sunTrack, sunState='';
+  if (sunOk){
+    var noonPct=smPct(s.sunrise,s.sunset,s.solarNoon), pos=null;
+    if (today){
+      if (now<s.sunrise){ pos=0; sunState='Before sunrise'; }
+      else if (now>s.sunset){ pos=100; sunState='After sunset'; }
+      else { pos=smPct(s.sunrise,s.sunset,now); sunState='Sun is up now'; }
+    }
+    var fill = pos==null?'':'<div class="sm-tl-fill sun" style="width:'+pos+'%"></div>';
+    var dot  = pos==null?'':'<div class="sm-tl-now sun'+(sunState==='Sun is up now'?'':' off')+'" style="left:'+pos+'%" title="Current sun position"><span>☀</span></div>';
+    sunTrack='<div class="sm-tl">'
+      +'<div class="sm-tl-end"><b>'+fmtT(s.sunrise,tz)+'</b><small>Sunrise</small></div>'
+      +'<div class="sm-tl-bar"><div class="sm-tl-line sun"></div>'+fill
+        +'<div class="sm-tl-tick" style="left:'+noonPct+'%"></div>'
+        +'<div class="sm-tl-mid" style="left:'+noonPct+'%">Solar noon <b>'+fmtT(s.solarNoon,tz)+'</b></div>'+dot+'</div>'
+      +'<div class="sm-tl-end r"><b>'+fmtT(s.sunset,tz)+'</b><small>Sunset</small></div></div>';
+  } else {
+    var up = s.solarNoon && SunCalc.getPosition(s.solarNoon,c.lat,c.lon).altitude>0;
+    sunTrack='<div class="sm-tl-na">'+(up?'The sun does not set on this date (midnight sun).':'The sun does not rise on this date (polar night).')+'</div>';
+    sunState=up?'Midnight sun':'Polar night';
+  }
 
-  // Moon card
-  var moon2='<div class="sm-card sm-moon-card">'
-    +'<div class="sm-card-head"><span class="sm-card-ico">🌙</span>'
-      +'<div><div class="sm-card-title">Moon Today</div><div class="sm-card-sub">Current moon phase and lunar times</div></div></div>'
-    +'<div class="sm-moon-hero">'
-      +'<div class="sm-moon-disc" aria-hidden="true">'+ph.icon+'</div>'
-      +'<div><div class="sm-moon-phase">'+ph.name+'</div>'
-      +'<div class="sm-moon-illum">'+Math.round(moon.fraction*100)+'% illuminated</div></div>'
-    +'</div>'
-    +'<div class="sm-arc">'+moonArcSVG(mt.rise,mt.set,mk)+'</div>'
-    +'<div class="sm-stat-grid">'
-      +stat('Moonrise',fmtT(mt.rise,tz))
-      +stat('Moonset',fmtT(mt.set,tz))
-      +stat('Next Full Moon',nf?fmtShortDate(nf.date):'—')
-      +stat('Next New Moon',nn?fmtShortDate(nn.date):'—')
-    +'</div></div>';
+  // ---- Moon journey ----
+  var mr=smOk(mt.rise)?mt.rise:null, ms=smOk(mt.set)?mt.set:null, moonTrack, moonState='';
+  if (mr||ms){
+    var first = (mr&&ms&&ms<mr) ? {t:ms,l:'Moonset'} : (mr?{t:mr,l:'Moonrise'}:{t:ms,l:'Moonset'});
+    var last  = (mr&&ms&&ms<mr) ? {t:mr,l:'Moonrise'} : (mr&&ms?{t:ms,l:'Moonset'}:null);
+    var mpos=null;
+    if (today && first && last){
+      if (now<first.t) mpos=0; else if (now>last.t) mpos=100; else mpos=smPct(first.t,last.t,now);
+      var visible = first.l==='Moonrise' ? (now>=first.t&&now<=last.t) : !(now>=first.t&&now<=last.t);
+      moonState = visible?'Moon is up now':'Moon is below the horizon';
+    }
+    moonTrack='<div class="sm-tl">'
+      +'<div class="sm-tl-end"><b>'+fmtT(first.t,tz)+'</b><small>'+first.l+'</small></div>'
+      +'<div class="sm-tl-bar"><div class="sm-tl-line moon'+(first.l==='Moonset'?' dash':'')+'"></div>'
+        +(mpos==null?'':'<div class="sm-tl-now moon'+(moonState==='Moon is up now'?'':' off')+'" style="left:'+mpos+'%" title="Current moon position"><span>'+ph.icon+'</span></div>')
+        +'<div class="sm-tl-mid" style="left:50%">'+ph.name+' · <b>'+illum+'% lit</b></div></div>'
+      +'<div class="sm-tl-end r">'+(last?'<b>'+fmtT(last.t,tz)+'</b><small>'+last.l+'</small>':'<b>—</b><small>'+(first.l==='Moonrise'?'No moonset':'No moonrise')+'</small>')+'</div></div>';
+  } else {
+    moonTrack='<div class="sm-tl-na">'+(mt.alwaysUp?'The moon stays above the horizon all day.':'The moon stays below the horizon all day.')+' '+ph.name+' · '+illum+'% lit.</div>';
+  }
 
-  el.innerHTML=sun+moon2;
+  var where = SM.loc._auto ? 'your time zone' : esc(SM.loc.name);
+  el.innerHTML='<div class="sm-journey">'
+    +'<div class="sm-jrow"><div class="sm-jhead"><span class="sm-jico">☀️</span><h3>Sun journey</h3>'+(sunState?'<span class="sm-jstate">'+sunState+'</span>':'')+'</div>'+sunTrack
+      +'<div class="sm-chips">'+chip('Dawn',fmtT(s.dawn,tz))+chip('Dusk',fmtT(s.dusk,tz))+chip('Day length',dayLen)+(today?chip('Daylight left',remain):'')+'</div></div>'
+    +'<div class="sm-jrow"><div class="sm-jhead"><span class="sm-jico">'+ph.icon+'</span><h3>Moon journey</h3>'+(moonState?'<span class="sm-jstate">'+moonState+'</span>':'')+'</div>'+moonTrack
+      +'<div class="sm-chips">'+chip('Phase',ph.name)+chip('Illumination',illum+'%')+chip('Next full moon',nf?fmtShortDate(nf.date):'—')+chip('Next new moon',nn?fmtShortDate(nn.date):'—')+'</div></div>'
+    +'</div>';
 
+  var h=document.getElementById('sm-live-title'); if(h) h.textContent='Sun & Moon in '+(SM.loc._auto?'your time zone':SM.loc.name);
+  var sub=document.getElementById('sm-live-sub');
+  if(sub) sub.innerHTML=fmtLongDate(d)+' · '+esc(utcOff(tz))+(SM.loc._auto?' · <a href="#" onclick="smUseMyLocation();return false">Use my location</a> for exact times':(hasExactCoords(SM.loc)?'':' · approximate location'));
   var lbl=document.getElementById('sm-loc-label');
-  if (lbl) lbl.textContent=SM.loc.name+(SM.loc.country?', '+SM.loc.country:'');
+  if (lbl){ lbl.textContent = SM.loc._auto ? '' : SM.loc.name+(SM.loc.country?', '+SM.loc.country:''); lbl.hidden = !!SM.loc._auto; }
 }
+function chip(l,v){ return '<span class="sm-chip"><small>'+l+'</small>'+v+'</span>'; }
+function esc(v){ return String(v).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
 function stat(lbl,val){ return '<div class="sm-stat"><div class="sm-stat-val">'+val+'</div><div class="sm-stat-lbl">'+lbl+'</div></div>'; }
 
 // ── Moon Phases section ───────────────────────────────────────────────
@@ -366,10 +409,10 @@ function smUseMyLocation() {
     fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+lat+'&longitude='+lon+'&localityLanguage=en')
       .then(function(r){return r.json();})
       .then(function(x){
-        SM.loc={name:x.city||x.locality||'My Location', country:x.countryName||'', cc:(x.countryCode||'un').toLowerCase(), tz:tz, _lat:lat, _lon:lon};
+        SM.loc={name:x.city||x.locality||'Your location', country:x.countryName||'', cc:(x.countryCode||'un').toLowerCase(), tz:tz, _lat:lat, _lon:lon};
         smRerender();
       }).catch(function(){
-        SM.loc={name:'My Location', country:'', cc:'un', tz:tz, _lat:lat, _lon:lon};
+        SM.loc={name:'Your location', country:'', cc:'un', tz:tz, _lat:lat, _lon:lon};
         smRerender();
       });
   }, function(){ if(typeof toast==='function')toast('Location access denied'); });
@@ -406,11 +449,24 @@ if (typeof initSearch==='function') {
     var i=document.getElementById('sm-loc-input'); if(i){ i.value=''; i.blur(); }
     var dd=document.getElementById('sm-loc-dd'); if(dd) dd.hidden=true;
     smRerender();
+    smGeocode(SM.loc, function(){ if(SM.loc.name===city.name&&SM.loc.tz===city.tz) renderLive(); });
   }, {showPinned:false});
 }
 
+(function(){
+  var i=document.getElementById('sm-loc-input'); if(!i) return;
+  i.addEventListener('keydown',function(e){
+    if(e.key!=='Enter') return; e.preventDefault();
+    var hits=(window.WC&&WC._srchIdx&&WC._srchIdx['sm-loc-input'])||[];
+    if(hits.length&&typeof _pick==='function') _pick('sm-loc-input',0);
+  });
+})();
+// Use precise location automatically only if the visitor already allowed it before
+function smAutoLocate(){
+  try{ navigator.permissions.query({name:'geolocation'}).then(function(p){ if(p.state==='granted') smUseMyLocation(); }); }catch(e){}
+}
 function smBoot(){
-  if (typeof SunCalc!=='undefined'){ smRerender(); }
+  if (typeof SunCalc!=='undefined'){ smRerender(); smAutoLocate(); }
   else setTimeout(smBoot,200);
 }
 if (document.readyState==='loading') document.addEventListener('DOMContentLoaded', smBoot);

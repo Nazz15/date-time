@@ -166,6 +166,70 @@
 .wx-hero{overflow:visible !important;z-index:5;}
 .wx-hero .sm-controls{margin:0;padding:0;max-width:none;z-index:5;}
 .wx-hero .sm-ctrl,.wx-hero .sm-mybtn{min-height:50px;}
+
+/* ===== Sun & Moon refinements: horizontal journeys + sortable table ===== */
+.sm-live{display:block !important;}
+.sm-journey{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:16px;box-shadow:var(--sh);padding:6px 24px;}
+.sm-jrow{padding:20px 0;}
+.sm-jrow+.sm-jrow{border-top:1px solid var(--clr-border);}
+.sm-jhead{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.sm-jhead h3{margin:0;font-size:17px;font-weight:700;color:var(--clr-text);}
+.sm-jico{font-size:22px;line-height:1;}
+.sm-jstate{margin-left:auto;font-size:12px;font-weight:600;color:var(--clr-text2);background:var(--clr-bg3);border-radius:999px;padding:4px 10px;}
+.sm-tl{display:grid;grid-template-columns:96px minmax(0,1fr) 96px;align-items:center;gap:16px;}
+.sm-tl-end b{display:block;font-size:17px;font-weight:700;color:var(--clr-text);white-space:nowrap;}
+.sm-tl-end small{font-size:12px;color:var(--clr-text2);}
+.sm-tl-end.r{text-align:right;}
+.sm-tl-bar{position:relative;height:60px;}
+.sm-tl-line{position:absolute;left:0;right:0;top:20px;height:3px;border-radius:3px;}
+.sm-tl-line.sun{background:linear-gradient(90deg,#fcd9a0,#f59e0b 50%,#fcd9a0);}
+.sm-tl-line.moon{background:#c4c8f5;}
+.sm-tl-line.moon.dash{background:repeating-linear-gradient(90deg,#c4c8f5 0 8px,transparent 8px 14px);}
+.sm-tl-fill{position:absolute;left:0;top:20px;height:3px;border-radius:3px;}
+.sm-tl-fill.sun{background:#d97706;}
+.sm-tl-line::before,.sm-tl-line::after{content:"";position:absolute;top:-3px;width:9px;height:9px;border-radius:50%;background:inherit;}
+.sm-tl-line.sun::before,.sm-tl-line.sun::after{background:#f59e0b;} .sm-tl-line.moon::before,.sm-tl-line.moon::after{background:#8b8fe8;}
+.sm-tl-line::before{left:-4px;} .sm-tl-line::after{right:-4px;}
+.sm-tl-tick{position:absolute;top:14px;width:2px;height:15px;background:#f59e0b;transform:translateX(-1px);border-radius:2px;}
+.sm-tl-mid{position:absolute;top:39px;transform:translateX(-50%);font-size:12px;color:var(--clr-text2);white-space:nowrap;}
+.sm-tl-mid b{color:var(--clr-text);}
+.sm-tl-now{position:absolute;top:21px;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;z-index:2;}
+.sm-tl-now.sun{background:#fff7e6;box-shadow:0 0 0 3px #f59e0b,0 0 18px rgba(245,158,11,.55);color:#d97706;}
+.sm-tl-now.moon{background:var(--clr-tile);box-shadow:0 0 0 3px #8b8fe8,0 0 14px rgba(139,143,232,.45);font-size:15px;}
+.sm-tl-now.off{opacity:.55;box-shadow:0 0 0 2px var(--clr-border2);}
+[data-theme=dark] .sm-tl-now.sun{background:#3a2a0a;}
+.sm-tl-na{font-size:14px;color:var(--clr-text2);background:var(--clr-bg3);border-radius:10px;padding:14px;}
+.sm-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.sm-chip{display:inline-flex;align-items:baseline;gap:6px;font-size:14px;font-weight:600;color:var(--clr-text);background:var(--clr-bg3);border-radius:8px;padding:6px 10px;}
+.sm-chip small{font-size:12px;font-weight:500;color:var(--clr-text2);}
+#sm-live-sub a{color:var(--clr-brand);font-weight:600;}
+.sm-sort-hint{font-size:12px;color:var(--clr-text2);}
+.sm-tbl-wrap{overflow-x:auto;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;box-shadow:var(--sh);}
+.sm-tbl{width:100%;border-collapse:collapse;min-width:860px;font-size:14px;}
+.sm-tbl th,.sm-tbl td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--clr-border);white-space:nowrap;color:var(--clr-text);font-weight:500;}
+.sm-tbl tbody tr:last-child>*{border-bottom:0;}
+.sm-tbl tbody tr:hover>*{background:var(--clr-bg3);}
+.sm-tbl thead th{position:sticky;top:0;background:var(--clr-tile);padding:0;}
+.sm-th{display:flex;align-items:center;gap:5px;width:100%;padding:12px;background:none;border:0;font:700 12px Inter,sans-serif;letter-spacing:.03em;text-transform:uppercase;color:var(--clr-text2);cursor:pointer;text-align:left;}
+.sm-th span{font-size:10px;opacity:.55;} .sm-th:hover{color:var(--clr-text);}
+.sm-th.on{color:var(--clr-brand);} .sm-th.on span{opacity:1;}
+.sm-tbl .c{position:sticky;left:0;z-index:1;background:var(--clr-tile);}
+.sm-tbl th.c{min-width:170px;} .sm-tbl thead th.c{z-index:3;}
+.sm-tbl .cc{display:flex;align-items:center;gap:10px;}
+.sm-tbl .cc .fi{width:22px;height:16px;border-radius:2px;flex:none;}
+.sm-tbl b{display:block;font-weight:700;} .sm-tbl small{display:block;font-size:12px;color:var(--clr-text2);}
+.sm-tbl td.sun{color:var(--clr-brand);font-weight:700;}
+.sm-tbl small.ph{display:inline;font-size:13px;}
+@media(max-width:640px){
+  .sm-journey{padding:2px 14px;}
+  .sm-jrow{padding:16px 0;}
+  .sm-tl{grid-template-columns:72px minmax(0,1fr) 72px;gap:10px;}
+  .sm-tl-end b{font-size:14px;}
+  .sm-tl-mid{font-size:11px;}
+  .sm-chip{font-size:13px;}
+  .sm-tbl{font-size:13px;}
+  .sm-tbl th.c{min-width:130px;} .sm-tbl .cc{gap:8px;}
+}
 @media(max-width:640px){.wx-hero .sm-controls{margin:0;gap:8px;} .wx-hero .sm-mybtn{width:100%;justify-content:center;} .wx-hero .sm-ctrl-date{flex:1 1 100%;}}
 
 </style>
@@ -221,8 +285,8 @@
   <div class="sm-ctrl sm-ctrl-loc">
     <i class="ti ti-map-pin" aria-hidden="true"></i>
     <div style="flex:1;min-width:0">
-      <input type="search" id="sm-loc-input" placeholder="Search a city or country…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Select location">
-      <div class="sm-loc-label" id="sm-loc-label">Mumbai, India</div>
+      <input type="search" id="sm-loc-input" placeholder="Search a city…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Select location">
+      <div class="sm-loc-label" id="sm-loc-label" hidden></div>
     </div>
     <div id="sm-loc-dd" class="search-dd" hidden></div>
   </div>
@@ -241,8 +305,8 @@
   <div class="wx-container">
     <div class="wx-sec-head">
       <div>
-        <h2>Live Location</h2>
-        <p>Real-time sun and moon information for the selected location and date.</p>
+        <h2 id="sm-live-title">Sun &amp; Moon</h2>
+        <p id="sm-live-sub">Sun and moon times for the selected location and date.</p>
       </div>
     </div>
     <div class="sm-live" id="sm-live"><div class="sm-empty">Loading…</div></div>
@@ -262,7 +326,7 @@
       <div class="sm-pop-filters" id="sm-pop-filters" aria-label="Filter cities by region"></div>
       <div class="sm-pop-sort" id="sm-pop-sort" aria-label="Sort cities"></div>
     </div>
-    <div class="sm-pop-grid" id="sm-pop-body">
+    <div class="sm-tbl-wrap" id="sm-pop-body">
       <div class="sm-loading">Calculating…</div>
     </div>
     <div class="sm-pop-more-wrap">
@@ -367,7 +431,8 @@ setInterval(function(){
   if (el) el.textContent = new Date().toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',hour12:false});
 }, 1000);
 </script>
-<script src="/sunmoon.js?v=2"></script>
+<script src="/sunmoon-coords.js?v=1"></script>
+<script src="/sunmoon.js?v=3"></script>
 
 <script>
 /* ===== Popular Sun & Moon cards — same city pool/filter logic as World Clock ===== */
@@ -388,13 +453,18 @@ setInterval(function(){
   })();
 
   var labels={all:'All',asia:'Asia',europe:'Europe',na:'North America',sa:'South America',africa:'Africa',oceania:'Australia'};
-  var activeRegion='all',showAll=false,sortMode='time',INIT=12;
+  var activeRegion='all',showAll=false,sortKey='local',sortDir=1,INIT=12;
   function esc(v){return String(v).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch];});}
   function offNum(tz){var m=/([+-])(\d{2}):(\d{2})/.exec(utcOff(tz));return m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;}
-  function sortList(l){return l.slice().sort(sortMode==='az'
-    ?function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0;}
-    :function(a,b){return offNum(a[3])-offNum(b[3])||(a[0]<b[0]?-1:1);});}
-
+  function minsOfDay(d,tz){if(!d||isNaN(d.getTime()))return null;var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(d).split(':');return +p[0]*60+ +p[1];}
+  var COLS=[['city','City'],['local','Local time'],['sunrise','Sunrise'],['sunset','Sunset'],['day','Day length'],['moonrise','Moonrise'],['moonset','Moonset'],['phase','Moon']];
+  function sortVal(c,d,k){
+    if(k==='city')return c[0].toLowerCase();
+    if(k==='local')return minsOfDay(new Date(),c[3]);
+    if(k==='day')return d.day>0?d.day:null;
+    if(k==='phase')return d.illum;
+    return minsOfDay(d[k],c[3]);
+  }
   function localNoon(dateStr,tz){
     var base=new Date(dateStr+'T12:00:00Z');
     var parts=new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(base);
@@ -408,7 +478,8 @@ setInterval(function(){
   function cityData(c){
     var dateEl=document.getElementById('sm-date');
     var dateStr=(dateEl&&dateEl.value)||new Date().toISOString().slice(0,10);
-    var d=localNoon(dateStr,c[3]),sun=SunCalc.getTimes(d,c[5],c[6]),moon=SunCalc.getMoonTimes(d,c[5],c[6],false),illum=SunCalc.getMoonIllumination(d);
+    var g=(typeof getCoords==='function')?getCoords({name:c[0],tz:c[3]}):{lat:c[5],lon:c[6]};
+    var d=localNoon(dateStr,c[3]),sun=SunCalc.getTimes(d,g.lat,g.lon),moon=SunCalc.getMoonTimes(d,g.lat,g.lon,false),illum=SunCalc.getMoonIllumination(d);
     return {sunrise:sun.sunrise,sunset:sun.sunset,moonrise:moon.rise,moonset:moon.set,day:(sun.sunset&&sun.sunrise)?sun.sunset-sun.sunrise:0,phase:phaseName(illum.phase),illum:Math.round(illum.fraction*100)};
   }
 
@@ -416,27 +487,32 @@ setInterval(function(){
     var host=document.getElementById('sm-pop-filters');if(!host)return;host.innerHTML='';
     Object.keys(labels).forEach(function(key){var b=document.createElement('button');b.type='button';b.className='sm-pop-filter'+(key===activeRegion?' active':'');b.textContent=labels[key];b.onclick=function(){activeRegion=key;showAll=false;renderFilters();renderSort();renderCards();};host.appendChild(b);});
   }
-  function renderSort(){
-    var host=document.getElementById('sm-pop-sort');if(!host)return;host.innerHTML='';
-    [['time','Sort by Time'],['az','Sort A–Z']].forEach(function(x){var b=document.createElement('button');b.type='button';b.className=x[0]===sortMode?'active':'';b.textContent=x[1];b.onclick=function(){sortMode=x[0];renderSort();renderCards();};host.appendChild(b);});
-  }
+  function renderSort(){var host=document.getElementById('sm-pop-sort');if(host)host.innerHTML='<span class="sm-sort-hint">Tap a column to sort ▲▼</span>';}
+  function setSort(k){if(sortKey===k)sortDir=-sortDir;else{sortKey=k;sortDir=1;}renderCards();}
+  window.smPopSort=setSort;
   function renderCards(){
     var host=document.getElementById('sm-pop-body'),more=document.getElementById('sm-pop-more');if(!host)return;
-    var full=sortList(activeRegion==='all'?POP_ALL:(POP[activeRegion]||[]));
-    var list=showAll?full:full.slice(0,INIT);host.innerHTML='';
-    if(!list.length){host.innerHTML='<div class="sm-pop-empty">No cities found for this region.</div>';if(more)more.style.display='none';return;}
-    list.forEach(function(c){var d=cityData(c),card=document.createElement('article');card.className='sm-pop-card';
-      card.innerHTML='<div class="sm-pop-card-head"><span class="sm-pop-flag fi fi-'+esc(c[2])+'" aria-hidden="true"></span><div class="sm-pop-city"><strong>'+esc(c[0])+'</strong><span>'+esc(c[1])+'</span></div></div>'+
-      '<div class="sm-pop-local">Local time: '+esc(fmt(c[3]))+'<span>'+esc(utcOff(c[3]))+'</span></div>'+
-      '<div class="sm-pop-times">'+
-      '<div class="sm-pop-stat" title="Sunrise"><span class="sm-pop-icon sun" aria-label="Sunrise">☀</span><span class="sm-pop-value sunrise">'+fmtTime(d.sunrise,c[3])+'</span></div>'+
-      '<div class="sm-pop-stat" title="Sunset"><span class="sm-pop-icon sunset" aria-label="Sunset">🌇</span><span class="sm-pop-value sunset">'+fmtTime(d.sunset,c[3])+'</span></div>'+
-      '<div class="sm-pop-stat" title="Moonrise"><span class="sm-pop-icon moon" aria-label="Moonrise">☾</span><span class="sm-pop-value">'+fmtTime(d.moonrise,c[3])+'</span></div>'+
-      '<div class="sm-pop-stat" title="Moonset"><span class="sm-pop-icon moon" aria-label="Moonset">☽</span><span class="sm-pop-value">'+fmtTime(d.moonset,c[3])+'</span></div></div>'+
-      '<div class="sm-pop-bottom"><span class="sm-pop-day">Day length '+fmtDay(d.day)+'</span><span class="sm-pop-phase">'+esc(d.phase)+' · '+d.illum+'%</span></div>';
-      host.appendChild(card);
+    var src=activeRegion==='all'?POP_ALL:(POP[activeRegion]||[]);
+    if(!src.length){host.innerHTML='<div class="sm-pop-empty">No cities found for this region.</div>';if(more)more.style.display='none';return;}
+    var rows=src.map(function(c){var d=cityData(c);return {c:c,d:d,v:sortVal(c,d,sortKey)};});
+    rows.sort(function(a,b){
+      if(a.v==null&&b.v==null)return a.c[0]<b.c[0]?-1:1; if(a.v==null)return 1; if(b.v==null)return -1;
+      return (a.v<b.v?-1:a.v>b.v?1:(a.c[0]<b.c[0]?-1:1))*sortDir;
     });
-    if(more)more.style.display=(full.length>INIT&&!showAll)?'inline-flex':'none';
+    var list=showAll?rows:rows.slice(0,INIT);
+    var head='<tr>'+COLS.map(function(x){
+      var on=x[0]===sortKey,arr=on?(sortDir>0?'▲':'▼'):'↕';
+      return '<th scope="col" aria-sort="'+(on?(sortDir>0?'ascending':'descending'):'none')+'"'+(x[0]==='city'?' class="c"':'')+'><button type="button" class="sm-th'+(on?' on':'')+'" onclick="smPopSort(\''+x[0]+'\')">'+x[1]+'<span>'+arr+'</span></button></th>';
+    }).join('')+'</tr>';
+    var body=list.map(function(r){var c=r.c,d=r.d;
+      return '<tr><th scope="row" class="c"><div class="cc"><span class="fi fi-'+esc(c[2])+'" aria-hidden="true"></span><span><b>'+esc(c[0])+'</b><small>'+esc(c[1])+'</small></span></div></th>'
+        +'<td><b>'+esc(fmt(c[3]))+'</b><small>'+esc(utcOff(c[3]))+'</small></td>'
+        +'<td class="sun">'+fmtTime(d.sunrise,c[3])+'</td><td class="sun">'+fmtTime(d.sunset,c[3])+'</td>'
+        +'<td>'+fmtDay(d.day)+'</td><td>'+fmtTime(d.moonrise,c[3])+'</td><td>'+fmtTime(d.moonset,c[3])+'</td>'
+        +'<td><small class="ph">'+esc(d.phase)+' · '+d.illum+'%</small></td></tr>';
+    }).join('');
+    host.innerHTML='<table class="sm-tbl"><thead>'+head+'</thead><tbody>'+body+'</tbody></table>';
+    if(more)more.style.display=(rows.length>INIT&&!showAll)?'inline-flex':'none';
   }
   window.smPopFilter=function(){renderFilters();renderSort();renderCards();};
   window.smPopMore=function(){showAll=true;renderCards();};
