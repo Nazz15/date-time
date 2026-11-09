@@ -711,8 +711,9 @@
   }
   function renderPairs(){
     var now=new Date(),list=[];
+    if(state.from) $('tdTabYou').textContent=short(state.from)+' vs…';
     if(TAB==='you'){
-      var me=HOME||state.from;
+      var me=state.from||HOME;
       YOUVS.forEach(function(n){var c=byName(n);if(c&&c.tz!==me.tz&&list.length<8)list.push([me,c]);});
     } else {
       (TAB==='pop'?POPPAIRS:CTYPAIRS).forEach(function(p){var a=byName(p[0]),b=byName(p[1]);if(a&&b)list.push([a,b]);});
