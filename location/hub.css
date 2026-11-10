@@ -232,3 +232,4 @@
   .v2-dock a i{font-size:21px;} .v2-dock a.on{color:var(--clr-brand);}
   #toast{bottom:84px;}
 }
+.lc-about+.v2-dock+.site-footer,main+.v2-dock+.site-footer{margin-top:0;}

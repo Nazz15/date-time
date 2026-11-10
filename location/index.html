@@ -20,7 +20,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/main.css">
 <link rel="stylesheet" href="/footer.css">
-<link rel="stylesheet" href="/location/hub.css?v=1">
+<link rel="stylesheet" href="/location/hub.css?v=2">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -128,23 +128,47 @@
   <a href="/holiday/"><i class="ti ti-calendar-event"></i>Holidays</a>
   <a href="/location/" class="on" aria-current="page"><i class="ti ti-map-pin"></i>Places</a>
 </nav>
-<footer class="wx-footer">
-  <div class="wx-container">
-    <div class="wx-footer-top">
-      <div>
-        <div class="wx-footer-logo">Timezone<span>Budy</span></div>
-        <div class="wx-footer-tagline">Time. Weather. Sun. Moon. Worldwide.</div>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col footer-brand">
+        <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
+        <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
       </div>
-      <div class="wx-footer-links">
-        <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Use</a>
+      <div class="footer-col">
+        <h4 class="footer-heading">Tools</h4>
+        <a href="/world-clock/">World Clock</a>
+        <a href="/converter">Timezone Converter</a>
+        <a href="/converter#meeting">Meeting Planner</a>
+        <a href="/sunmoon">Sun &amp; Moon</a>
+        <a href="/weather">Weather</a>
+        <a href="/tools">Time Tools</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Locations</h4>
+        <a href="/location/">Browse All Countries</a>
+        <a href="/location/india/">India</a>
+        <a href="/location/united-states/">United States</a>
+        <a href="/location/united-kingdom/">United Kingdom</a>
+        <a href="/location/china/">China</a>
+        <a href="/location/japan/">Japan</a>
+      </div>
+      <div class="footer-col">
+        <h4 class="footer-heading">Company</h4>
+        <a href="/about">About Us</a>
+        <a href="/contact">Contact Us</a>
+        <a href="/blog/">Blog</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
       </div>
     </div>
-    <div class="wx-footer-bottom">
-      <span>© <span id="wx-year"></span> TimezoneBudy. All rights reserved.</span>
-      <span>Accurate information for a more connected world.</span>
+    <div class="footer-bottom">
+      <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
+      <div class="footer-bottom-links">
+        <a href="/privacy-policy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/contact">Contact</a>
+      </div>
     </div>
   </div>
 </footer>
@@ -153,7 +177,7 @@
 <script src="/util.js?v=3"></script>
 <script>window.LOC={"k":[{"s":"australia","n":"Australia","cc":"au","tz":"Australia/Sydney","al":"","cap":"Canberra","c":[["sydney","Sydney","Australia/Sydney"],["melbourne","Melbourne","Australia/Melbourne"],["brisbane","Brisbane","Australia/Brisbane"],["perth","Perth","Australia/Perth"]]},{"s":"brazil","n":"Brazil","cc":"br","tz":"America/Sao_Paulo","al":"","cap":"Brasília","c":[["sao-paulo","São Paulo","America/Sao_Paulo"],["rio-de-janeiro","Rio de Janeiro","America/Sao_Paulo"],["brasilia","Brasília","America/Sao_Paulo"],["salvador","Salvador","America/Bahia"]]},{"s":"canada","n":"Canada","cc":"ca","tz":"America/Toronto","al":"","cap":"Ottawa","c":[["toronto","Toronto","America/Toronto"],["vancouver","Vancouver","America/Vancouver"],["montreal","Montreal","America/Toronto"],["calgary","Calgary","America/Edmonton"],["ottawa","Ottawa","America/Toronto"]]},{"s":"china","n":"China","cc":"cn","tz":"Asia/Shanghai","al":"","cap":"Beijing","c":[["shanghai","Shanghai","Asia/Shanghai"],["beijing","Beijing","Asia/Shanghai"],["shenzhen","Shenzhen","Asia/Shanghai"],["guangzhou","Guangzhou","Asia/Shanghai"],["hong-kong","Hong Kong","Asia/Hong_Kong"],["chongqing","Chongqing","Asia/Shanghai"]]},{"s":"france","n":"France","cc":"fr","tz":"Europe/Paris","al":"","cap":"Paris","c":[["paris","Paris","Europe/Paris"],["lyon","Lyon","Europe/Paris"],["marseille","Marseille","Europe/Paris"],["nice","Nice","Europe/Paris"]]},{"s":"germany","n":"Germany","cc":"de","tz":"Europe/Berlin","al":"","cap":"Berlin","c":[["berlin","Berlin","Europe/Berlin"],["munich","Munich","Europe/Berlin"],["frankfurt","Frankfurt","Europe/Berlin"],["hamburg","Hamburg","Europe/Berlin"],["cologne","Cologne","Europe/Berlin"]]},{"s":"india","n":"India","cc":"in","tz":"Asia/Kolkata","al":"","cap":"New Delhi","c":[["delhi","Delhi","Asia/Kolkata"],["mumbai","Mumbai","Asia/Kolkata"],["bengaluru","Bengaluru","Asia/Kolkata"],["chennai","Chennai","Asia/Kolkata"],["hyderabad","Hyderabad","Asia/Kolkata"],["kolkata","Kolkata","Asia/Kolkata"]]},{"s":"indonesia","n":"Indonesia","cc":"id","tz":"Asia/Jakarta","al":"","cap":"Jakarta","c":[["jakarta","Jakarta","Asia/Jakarta"],["bali-denpasar","Bali (Denpasar)","Asia/Makassar"],["surabaya","Surabaya","Asia/Jakarta"],["bandung","Bandung","Asia/Jakarta"]]},{"s":"italy","n":"Italy","cc":"it","tz":"Europe/Rome","al":"","cap":"Rome","c":[["rome","Rome","Europe/Rome"],["milan","Milan","Europe/Rome"],["venice","Venice","Europe/Rome"],["naples","Naples","Europe/Rome"]]},{"s":"japan","n":"Japan","cc":"jp","tz":"Asia/Tokyo","al":"","cap":"Tokyo","c":[["tokyo","Tokyo","Asia/Tokyo"],["osaka","Osaka","Asia/Tokyo"],["yokohama","Yokohama","Asia/Tokyo"],["nagoya","Nagoya","Asia/Tokyo"]]},{"s":"mexico","n":"Mexico","cc":"mx","tz":"America/Mexico_City","al":"","cap":"Mexico City","c":[["mexico-city","Mexico City","America/Mexico_City"],["cancun","Cancún","America/Cancun"],["guadalajara","Guadalajara","America/Mexico_City"],["monterrey","Monterrey","America/Monterrey"]]},{"s":"netherlands","n":"Netherlands","cc":"nl","tz":"Europe/Amsterdam","al":"Holland","cap":"Amsterdam","c":[["amsterdam","Amsterdam","Europe/Amsterdam"],["rotterdam","Rotterdam","Europe/Amsterdam"],["the-hague","The Hague","Europe/Amsterdam"]]},{"s":"saudi-arabia","n":"Saudi Arabia","cc":"sa","tz":"Asia/Riyadh","al":"KSA","cap":"Riyadh","c":[["riyadh","Riyadh","Asia/Riyadh"],["jeddah","Jeddah","Asia/Riyadh"],["mecca","Mecca","Asia/Riyadh"]]},{"s":"singapore","n":"Singapore","cc":"sg","tz":"Asia/Singapore","al":"","cap":"Singapore","c":[["singapore-city","Singapore","Asia/Singapore"]]},{"s":"south-africa","n":"South Africa","cc":"za","tz":"Africa/Johannesburg","al":"","cap":"Pretoria","c":[["johannesburg","Johannesburg","Africa/Johannesburg"],["cape-town","Cape Town","Africa/Johannesburg"],["durban","Durban","Africa/Johannesburg"],["pretoria","Pretoria","Africa/Johannesburg"]]},{"s":"south-korea","n":"South Korea","cc":"kr","tz":"Asia/Seoul","al":"Korea","cap":"Seoul","c":[["seoul","Seoul","Asia/Seoul"],["busan","Busan","Asia/Seoul"],["incheon","Incheon","Asia/Seoul"]]},{"s":"spain","n":"Spain","cc":"es","tz":"Europe/Madrid","al":"","cap":"Madrid","c":[["madrid","Madrid","Europe/Madrid"],["barcelona","Barcelona","Europe/Madrid"],["valencia","Valencia","Europe/Madrid"]]},{"s":"united-arab-emirates","n":"United Arab Emirates","cc":"ae","tz":"Asia/Dubai","al":"UAE Emirates","cap":"Abu Dhabi","c":[["dubai","Dubai","Asia/Dubai"],["abu-dhabi","Abu Dhabi","Asia/Dubai"],["sharjah","Sharjah","Asia/Dubai"],["ajman","Ajman","Asia/Dubai"]]},{"s":"united-kingdom","n":"United Kingdom","cc":"gb","tz":"Europe/London","al":"UK Britain England Scotland GB","cap":"London","c":[["london","London","Europe/London"],["manchester","Manchester","Europe/London"],["birmingham","Birmingham","Europe/London"],["glasgow","Glasgow","Europe/London"],["edinburgh","Edinburgh","Europe/London"],["liverpool","Liverpool","Europe/London"]]},{"s":"united-states","n":"United States","cc":"us","tz":"America/New_York","al":"USA US America","cap":"Washington D.C.","c":[["new-york","New York","America/New_York"],["los-angeles","Los Angeles","America/Los_Angeles"],["chicago","Chicago","America/Chicago"],["houston","Houston","America/Chicago"],["san-francisco","San Francisco","America/Los_Angeles"],["miami","Miami","America/New_York"]]}],"z":[["Pacific Time","PST","PDT",["America/Los_Angeles","America/Vancouver"]],["Mountain Time","MST","MDT",["America/Edmonton"]],["Central Time (US)","CST","CDT",["America/Chicago"]],["Central Standard Time (Mexico)","CST","",["America/Mexico_City","America/Monterrey"]],["Eastern Time","EST","EDT",["America/New_York","America/Toronto"]],["Eastern Standard Time (Cancún)","EST","",["America/Cancun"]],["Brasília Time","BRT","",["America/Sao_Paulo","America/Bahia"]],["Greenwich Mean Time / British Summer Time","GMT","BST",["Europe/London"]],["Central European Time","CET","CEST",["Europe/Paris","Europe/Berlin","Europe/Rome","Europe/Amsterdam","Europe/Madrid"]],["South Africa Standard Time","SAST","",["Africa/Johannesburg"]],["Arabia Standard Time","AST","",["Asia/Riyadh"]],["Gulf Standard Time","GST","",["Asia/Dubai"]],["India Standard Time","IST","",["Asia/Kolkata"]],["Western Indonesia Time","WIB","",["Asia/Jakarta"]],["China Standard Time","CST","",["Asia/Shanghai"]],["Hong Kong Time","HKT","",["Asia/Hong_Kong"]],["Singapore Time","SGT","",["Asia/Singapore"]],["Central Indonesia Time","WITA","",["Asia/Makassar"]],["Australian Western Standard Time","AWST","",["Australia/Perth"]],["Japan Standard Time","JST","",["Asia/Tokyo"]],["Korea Standard Time","KST","",["Asia/Seoul"]],["Australian Eastern Standard Time (Queensland)","AEST","",["Australia/Brisbane"]],["Australian Eastern Time","AEST","AEDT",["Australia/Sydney","Australia/Melbourne"]]]};</script>
 <script src="/location/hub.js?v=1"></script>
-<script>if(typeof boot==='function')try{boot();}catch(e){} LC_BOOT(); var fy=document.getElementById('wx-year');if(fy)fy.textContent=new Date().getFullYear();</script>
+<script>if(typeof boot==='function')try{boot();}catch(e){} LC_BOOT(); var fy=document.getElementById('footer-year');if(fy)fy.textContent=new Date().getFullYear();</script>
 <script src="/nav.js?v=3"></script>
 </body>
 </html>
