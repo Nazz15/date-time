@@ -7,6 +7,7 @@
     ["World Clock", "/world-clock/", "clock"],
     ["Time Difference Calculator", "https://timezonebudy.com/time-difference-calculator", "swap"],
     ["World Map",   "https://timezonebudy.com/world-time-map", "map"],
+    ["Holidays",    "/holiday/", "cal"],
     ["Sun & Moon",  "/sunmoon/", "sun"],
     ["Weather",     "/weather/", "cloud"],
     ["Locations",   "/location/", "pin"]
