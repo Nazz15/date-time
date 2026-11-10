@@ -316,12 +316,193 @@
   .wtm-legend { display:none; }
 }
 </style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How accurate is the day/night boundary on this map?", "acceptedAnswer": {"@type": "Answer", "text": "The terminator line is calculated from the Sun's current ecliptic longitude and declination, updated every 60 seconds. It accurately represents the idealized day/night boundary on a spherical Earth projected onto a flat map. It does not account for terrain elevation, atmospheric refraction, or civil vs. astronomical twilight distinctions."}}, {"@type": "Question", "name": "What is UTC and why does the map use it as a reference?", "acceptedAnswer": {"@type": "Answer", "text": "UTC (Coordinated Universal Time) is the atomic-clock-based standard against which every time zone offset is defined. It replaced GMT in 1972 as the world's primary time reference. Using UTC as the anchor makes it straightforward to calculate any local time: UTC + the zone's offset = local time. Your computer's system clock synchronizes to UTC automatically."}}, {"@type": "Question", "name": "Which country has the most time zones?", "acceptedAnswer": {"@type": "Answer", "text": "France spans 12 time zones when including its overseas territories — more than any other country. Russia covers 11 time zones across its mainland, the widest span of any single contiguous landmass. The United States covers 6 time zones across the continental states, Alaska, and Hawaii."}}, {"@type": "Question", "name": "Why do India and Nepal use non-standard UTC offsets?", "acceptedAnswer": {"@type": "Answer", "text": "India uses UTC+5:30 so that a single national time zone places sunrise and sunset at reasonable hours across the country's roughly 30-degree east-west span. Nepal uses UTC+5:45 — deliberately different from India's offset — as a way of asserting national distinction while still compromising geographically."}}, {"@type": "Question", "name": "Can I use this map to schedule international meetings?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — pin the cities where your participants are located and drag the time slider to see what time it will be for each of them. For precise meeting planning with an overlap visualizer, use the Time Difference Calculator or the Time Zone Converter."}}, {"@type": "Question", "name": "Does Daylight Saving Time affect the times shown?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. All times shown use the IANA time zone database via the browser's built-in Intl.DateTimeFormat API, which handles DST transitions automatically and accurately for every supported time zone. The city panel also shows the next daylight saving change for the selected city."}}]}</script>
+<style>
+/* ===== World Time Map v2 — scoped wm- (matches World Clock / homepage) ===== */
+.wm-wrap{max-width:1320px;margin:0 auto;padding:0 20px;}
+.wm-top{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:18px 0 14px;}
+.wm-crumb{font-size:13px;color:var(--clr-text2);margin:0 0 6px;} .wm-crumb a{color:var(--clr-text2);text-decoration:none;}
+.wm-top h1{font-size:clamp(24px,3vw,32px);font-weight:700;margin:0;color:var(--clr-text);letter-spacing:-.01em;}
+.wm-top p{margin:4px 0 0;font-size:15px;color:var(--clr-text2);}
+.wm-stats{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;}
+.wm-stat{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:10px;padding:8px 12px;display:flex;flex-direction:column;min-width:0;}
+.wm-stat small{font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--clr-text2);text-transform:uppercase;}
+.wm-stat b{font-family:var(--mono,ui-monospace,monospace);font-size:15px;color:var(--clr-text);white-space:nowrap;}
+.wm-stat b.s{font-family:Inter,sans-serif;}
+
+.wm-shell{display:grid;grid-template-columns:minmax(0,1fr) 360px;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:18px;overflow:hidden;height:min(660px,calc(100vh - 150px));min-height:520px;box-shadow:var(--sh);}
+.wm-mapbox{position:relative;min-width:0;background:#dce6f2;}
+[data-theme=dark] .wm-mapbox{background:#0d1117;}
+#wm-map{position:absolute;inset:0 0 58px 0;}
+.wm-noimg{position:absolute;inset:0 0 58px 0;z-index:1;display:none;background:inherit;align-items:center;justify-content:center;text-align:center;padding:20px;color:var(--clr-text2);font-size:14px;}
+
+.wm-search{position:absolute;left:14px;top:14px;width:min(380px,calc(100% - 28px - 330px));min-width:240px;z-index:6;}
+.wm-sbox{display:flex;align-items:center;gap:8px;background:var(--clr-tile);border:1px solid var(--clr-border2);border-radius:12px;padding:0 12px;box-shadow:0 6px 18px rgba(0,0,0,.12);}
+.wm-sbox i{color:var(--clr-text2);font-size:18px;}
+.wm-sbox input{flex:1;min-width:0;border:0;outline:0;background:transparent;font:15px Inter,sans-serif;color:var(--clr-text);padding:12px 0;}
+.wm-sbox kbd{font:11px Inter,sans-serif;color:var(--clr-text2);border:1px solid var(--clr-border2);border-radius:4px;padding:1px 6px;}
+.wm-sbox:focus-within{border-color:var(--clr-brand);}
+.wm-drop{display:none;margin-top:6px;background:var(--clr-bg2);border:1px solid var(--clr-border2);border-radius:12px;box-shadow:var(--sh2);max-height:340px;overflow-y:auto;}
+.wm-drop.open{display:block;}
+.wm-opt{display:flex;align-items:center;gap:9px;padding:10px 12px;cursor:pointer;border-bottom:1px solid var(--clr-border);font-size:14px;color:var(--clr-text);}
+.wm-opt:last-child{border-bottom:0;} .wm-opt:hover,.wm-opt.hl{background:var(--clr-bg3);}
+.wm-opt small{color:var(--clr-text2);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wm-opt .r{margin-left:auto;font-family:var(--mono,ui-monospace,monospace);font-size:13px;color:var(--clr-text);white-space:nowrap;}
+.wm-opt .z{width:20px;text-align:center;color:var(--clr-brand);font-size:16px;flex:none;}
+
+.wm-layers{position:absolute;right:14px;top:14px;z-index:6;display:flex;gap:2px;background:var(--clr-tile);border:1px solid var(--clr-border2);border-radius:12px;padding:4px;box-shadow:0 6px 18px rgba(0,0,0,.12);}
+.wm-layers button{border:0;background:transparent;color:var(--clr-text2);border-radius:8px;padding:0 10px;min-height:34px;font:500 12.5px Inter,sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+.wm-layers button[aria-pressed=true]{background:#eef2fa;color:var(--clr-brand);font-weight:600;}
+[data-theme=dark] .wm-layers button[aria-pressed=true]{background:#16325a;color:#cfe0ff;}
+.wm-layers button i{font-size:15px;}
+.wm-lbtn{display:none;}
+.wm-legend{position:absolute;left:14px;bottom:72px;z-index:5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;background:color-mix(in srgb,var(--clr-tile) 92%,transparent);border:1px solid var(--clr-border);border-radius:10px;padding:6px 10px;font-size:12px;color:var(--clr-text);}
+.wm-legend i{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin-right:4px;border:1.5px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);}
+.wm-ctrls{position:absolute;right:14px;bottom:72px;z-index:5;display:flex;flex-direction:column;gap:6px;}
+.wm-ctrls button{width:40px;height:40px;border-radius:10px;border:1px solid var(--clr-border2);background:var(--clr-tile);color:var(--clr-text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.wm-ctrls button:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+
+.wm-time{position:absolute;left:0;right:0;bottom:0;height:58px;z-index:6;background:var(--clr-tile);border-top:1px solid var(--clr-border);display:flex;align-items:center;gap:12px;padding:0 14px;}
+.wm-time b{font-size:13px;white-space:nowrap;color:var(--clr-text);display:flex;align-items:center;gap:6px;} .wm-time b i{color:var(--clr-brand);font-size:17px;}
+.wm-time input{flex:1;min-width:0;accent-color:var(--clr-brand);height:30px;cursor:pointer;}
+.wm-time .v{font-family:var(--mono,ui-monospace,monospace);font-size:13px;font-weight:700;background:var(--clr-bg3);border-radius:8px;padding:6px 10px;white-space:nowrap;color:var(--clr-text);}
+.wm-time.moved .v{background:#eef2fa;color:var(--clr-brand);}
+[data-theme=dark] .wm-time.moved .v{background:#16325a;color:#cfe0ff;}
+.wm-tbtn{border:1px solid var(--clr-border2);background:var(--clr-tile);color:var(--clr-text);border-radius:8px;min-height:36px;padding:0 10px;font:600 12.5px Inter,sans-serif;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px;}
+.wm-tbtn:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.wm-tbtn[hidden]{display:none;}
+
+/* panel */
+.wm-panel{border-left:1px solid var(--clr-border);padding:18px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;background:var(--clr-tile);min-width:0;}
+.wm-ph{display:flex;align-items:center;gap:8px;}
+.wm-ph small{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--clr-text2);text-transform:uppercase;}
+.wm-ph .x{margin-left:auto;border:0;background:none;color:var(--clr-text2);font-size:20px;cursor:pointer;width:36px;height:36px;border-radius:8px;}
+.wm-ph .x:hover{background:var(--clr-bg3);}
+.wm-handle{display:none;}
+.wm-who{display:flex;align-items:center;gap:10px;min-width:0;}
+.wm-who b{display:block;font-size:20px;color:var(--clr-text);line-height:1.2;}
+.wm-who span{font-size:13px;color:var(--clr-text2);}
+.wm-clock{font-family:var(--mono,ui-monospace,monospace);font-size:38px;font-weight:700;line-height:1.1;color:var(--clr-text);font-variant-numeric:tabular-nums;}
+.wm-sub{font-size:13px;color:var(--clr-text2);}
+.wm-rel{background:#eef2fa;border-radius:10px;padding:10px 12px;font-size:14px;color:#1b2430;}
+[data-theme=dark] .wm-rel{background:#16325a;color:#e8eefa;}
+.wm-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.wm-fact{background:var(--clr-bg3);border-radius:8px;padding:8px 10px;min-width:0;}
+.wm-fact small{display:block;font-size:11px;color:var(--clr-text2);}
+.wm-fact b{font-size:14px;color:var(--clr-text);overflow-wrap:anywhere;}
+.wm-acts{display:flex;flex-direction:column;gap:8px;margin-top:auto;}
+.wm-acts .row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+.wm-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 12px;border-radius:10px;font:600 14px Inter,sans-serif;cursor:pointer;border:1px solid var(--clr-border2);background:var(--clr-tile);color:var(--clr-text);text-decoration:none;white-space:nowrap;}
+.wm-btn:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.wm-btn.pri{background:var(--clr-brand);border-color:var(--clr-brand);color:#fff;} .wm-btn.pri:hover{filter:brightness(1.08);color:#fff;}
+.wm-btn.on{background:transparent;color:#2e9e6b;border-color:#bfe5d1;}
+.wm-btn[hidden]{display:none;}
+.wm-zc{display:flex;flex-wrap:wrap;gap:6px;}
+.wm-zc button{font:600 12.5px Inter,sans-serif;border:1px solid var(--clr-border);background:var(--clr-bg3);color:var(--clr-text);border-radius:999px;padding:6px 10px;cursor:pointer;}
+.wm-zc button:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.wm-empty{color:var(--clr-text2);font-size:14px;line-height:1.6;}
+
+/* maplibre tooltip + markers */
+.wm-tip .maplibregl-popup-content{padding:6px 10px;border-radius:8px;font:12px Inter,sans-serif;color:#1b2430;box-shadow:0 6px 18px rgba(0,0,0,.18);}
+.wm-tip .maplibregl-popup-content b{font-size:13px;}
+.wm-tip .maplibregl-popup-tip{display:none;}
+.wm-you{width:14px;height:14px;border-radius:50%;background:#1e6bff;border:2.5px solid #fff;box-shadow:0 0 0 0 rgba(30,107,255,.5);animation:wmPulse 1.8s ease-out infinite;}
+.wm-selm{width:20px;height:20px;border-radius:50%;border:3px solid #c2410c;background:rgba(194,65,12,.18);box-sizing:border-box;}
+@keyframes wmPulse{0%{box-shadow:0 0 0 0 rgba(30,107,255,.5);}70%{box-shadow:0 0 0 12px rgba(30,107,255,0);}100%{box-shadow:0 0 0 0 rgba(30,107,255,0);}}
+@media (prefers-reduced-motion:reduce){.wm-you{animation:none;}}
+
+/* below map */
+.wm-sec{margin:26px auto 0;}
+.wm-head{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin-bottom:12px;}
+.wm-head h2{font-size:21px;font-weight:700;margin:0;color:var(--clr-text);}
+.wm-head span{font-size:13px;color:var(--clr-text2);}
+.wm-head a{margin-left:auto;font-size:14px;font-weight:600;color:var(--clr-brand);text-decoration:none;}
+.wm-pins{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;}
+.wm-pin{position:relative;text-align:left;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:12px;padding:12px;cursor:pointer;font:inherit;color:var(--clr-text);min-width:0;}
+.wm-pin:hover{border-color:var(--clr-brand);}
+.wm-pin .n{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;padding-right:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wm-pin .t{display:block;font-family:var(--mono,ui-monospace,monospace);font-size:20px;font-weight:700;margin:4px 0 2px;}
+.wm-pin small{font-size:11px;color:var(--clr-text2);}
+.wm-pin .rm{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;background:none;color:var(--clr-text3);border-radius:6px;cursor:pointer;font-size:14px;}
+.wm-pin .rm:hover{background:var(--clr-bg3);color:#c62828;}
+.wm-pins .wm-empty{grid-column:1/-1;background:var(--clr-tile);border:1px dashed var(--clr-border2);border-radius:12px;padding:16px;}
+.wm-rail{display:flex;gap:4px;overflow-x:auto;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:12px;padding:10px;scrollbar-width:thin;}
+.wm-z{flex:0 0 74px;border:1px solid transparent;border-radius:8px;padding:7px 4px;text-align:center;cursor:pointer;font:inherit;background:var(--clr-bg3);color:var(--clr-text);}
+.wm-z.day{background:#fdf3dd;} [data-theme=dark] .wm-z.day{background:#3a2e12;}
+.wm-z small{display:block;font-size:10.5px;font-weight:700;color:var(--clr-text2);}
+.wm-z b{font-family:var(--mono,ui-monospace,monospace);font-size:13px;}
+.wm-z.me{border-color:var(--clr-brand);}
+.wm-z.on{background:var(--clr-brand);color:#fff;} .wm-z.on small{color:#dbe6ff;}
+.wm-note{font-size:12px;color:var(--clr-text3);margin:6px 2px 0;}
+
+.wm-about{display:grid;grid-template-columns:1fr 1.6fr;gap:36px;margin:40px auto 56px;}
+.wm-about h2{font-size:22px;margin:0 0 10px;color:var(--clr-text);}
+.wm-about p{font-size:14.5px;line-height:1.7;color:var(--clr-text2);margin:0 0 12px;}
+.wm-about details{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:12px;margin-bottom:10px;}
+.wm-about summary{list-style:none;cursor:pointer;padding:15px 18px;font-weight:600;font-size:15px;color:var(--clr-text);display:flex;justify-content:space-between;gap:12px;}
+.wm-about summary::-webkit-details-marker{display:none;}
+.wm-about summary::after{content:"+";font-size:20px;line-height:1;color:var(--clr-text2);}
+.wm-about details[open] summary::after{content:"−";}
+.wm-about details p{padding:0 18px 4px;}
+.wm-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+.wm-links a{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--clr-text);text-decoration:none;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:999px;padding:7px 12px;}
+.wm-links a:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+#toast.show{pointer-events:auto;z-index:2000;}
+.v2-dock{display:none;}
+
+@media(max-width:1000px){
+  .wm-shell{grid-template-columns:minmax(0,1fr) 300px;}
+  .wm-search{width:min(320px,calc(100% - 28px));}
+  .wm-layers{top:68px;}
+  .wm-pins{grid-template-columns:repeat(3,minmax(0,1fr));}
+  .wm-about{grid-template-columns:1fr;gap:12px;}
+}
+@media(max-width:760px){
+  body{padding-bottom:68px;}
+  .wm-wrap{padding:0 12px;}
+  .wm-top{padding:10px 0 8px;gap:8px;}
+  .wm-crumb,.wm-top p{display:none;}
+  .wm-top h1{font-size:21px;}
+  .wm-stats{margin-left:auto;} .wm-stat{padding:5px 9px;} .wm-stat.noon{display:none;}
+  .wm-shell{display:block;position:relative;height:auto;min-height:0;border-radius:14px;}
+  .wm-mapbox{height:min(68vh,560px);}
+  .wm-search{left:10px;top:10px;width:calc(100% - 76px);min-width:0;}
+  .wm-lbtn{display:flex;position:absolute;right:10px;top:10px;z-index:7;width:46px;height:46px;border-radius:12px;border:1px solid var(--clr-border2);background:var(--clr-tile);color:var(--clr-text);font-size:20px;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.12);cursor:pointer;}
+  .wm-layers{display:none;top:62px;right:10px;flex-direction:column;}
+  .wm-layers.open{display:flex;}
+  .wm-layers button{min-height:40px;justify-content:flex-start;}
+  .wm-legend{left:10px;top:64px;bottom:auto;font-size:11px;gap:8px;padding:4px 8px;}
+  .wm-legend .x{display:none;}
+  .wm-ctrls{right:10px;bottom:auto;top:116px;} .wm-ctrls .zi,.wm-ctrls .zo{display:none;}
+  .wm-ctrls button{width:44px;height:44px;}
+  #wm-map,.wm-noimg{bottom:0;}
+  .wm-time{position:relative;height:auto;padding:8px 12px;gap:8px;border-top:1px solid var(--clr-border);}
+  .wm-time b span,.wm-tbtn .tx{display:none;}
+  .wm-panel{position:absolute;left:0;right:0;bottom:var(--wm-th,52px);z-index:8;border-left:0;border-radius:18px 18px 0 0;box-shadow:0 -6px 22px rgba(0,0,0,.18);padding:6px 14px 14px;gap:10px;max-height:52%;overflow:hidden;transition:max-height .25s ease;}
+  .wm-panel.full{max-height:calc(100% - var(--wm-th,52px) - 8px);overflow-y:auto;}
+  .wm-panel.closed{display:none;}
+  .wm-handle{display:block;align-self:center;width:56px;height:20px;border:0;background:none;cursor:pointer;position:relative;flex:none;}
+  .wm-handle::before{content:"";position:absolute;left:12px;right:12px;top:8px;height:4px;border-radius:2px;background:var(--clr-border2);}
+  .wm-ph small{display:none;}
+  .wm-ph{position:absolute;right:8px;top:4px;}
+  .wm-who b{font-size:17px;}
+  .wm-clock{font-size:28px;}
+  .wm-panel:not(.full) .wm-facts,.wm-panel:not(.full) .wm-sub{display:none;}
+  .wm-panel:not(.full) .wm-acts .row .sec{display:none;}
+  .wm-acts{margin-top:4px;}
+  .wm-pins{display:flex;overflow-x:auto;scrollbar-width:none;}
+  .wm-pin{flex:0 0 132px;}
+  .wm-sec{margin-top:18px;}
+  .wm-head h2{font-size:18px;}
+  .v2-dock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:300;background:var(--clr-tile);border-top:1px solid var(--clr-border);box-shadow:0 -4px 14px rgba(0,0,0,.08);padding-bottom:env(safe-area-inset-bottom);}
+  .v2-dock a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;font-size:11px;font-weight:600;color:var(--clr-text2);text-decoration:none;}
+  .v2-dock a i{font-size:21px;} .v2-dock a.on{color:var(--clr-brand);}
+  #toast{bottom:84px;}
+  #pwa-install-banner{bottom:78px !important;}
+}
+</style>
 </head>
 <body>
-
-<!-- ══════════════════════════════════════════════════════════
-     NAV — identical to index.html, World Time Map tab added
-     ══════════════════════════════════════════════════════════ -->
 <nav class="topnav" aria-label="Main navigation">
   <div class="topnav-inner">
     <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
@@ -342,189 +523,127 @@
     </div>
   </div>
 </nav>
+<main class="wm-wrap">
 
-<!-- ══════════════════════════════════════════════════════════
-     MAIN CONTENT
-     ══════════════════════════════════════════════════════════ -->
-<main class="wtm-wrap">
-
-  <!-- H1 + intro -->
-  <div class="wtm-hero">
-    <h1><i class="ti ti-map" style="font-size:.9em;vertical-align:-.05em;margin-right:6px"></i>World Time Map</h1>
-    <p>An interactive map showing live local times, day &amp; night regions, and time zones for cities worldwide. Click any city to see its current time, UTC offset, and time zone details.</p>
-  </div>
-
-  <!-- ── MAP + SIDE PANEL STAGE ── -->
-  <div class="wtm-stage">
-
-    <!-- Map -->
-    <div class="wtm-map-wrap">
-      <div id="wtm-map"></div>
-
-      <!-- Search -->
-      <div class="wtm-search-wrap">
-        <input type="text" id="wtm-search" placeholder="🔍  Search city or country…" autocomplete="off" aria-label="Search for a city">
-        <div class="wtm-search-results" id="wtm-search-results" role="listbox"></div>
-      </div>
-
-      <!-- Controls -->
-      <div class="wtm-controls" role="group" aria-label="Map controls">
-        <button class="wtm-ctrl-btn" id="btn-zoom-in"  title="Zoom in"  aria-label="Zoom in">+</button>
-        <button class="wtm-ctrl-btn" id="btn-zoom-out" title="Zoom out" aria-label="Zoom out">−</button>
-        <button class="wtm-ctrl-btn" id="btn-reset"    title="Reset"    aria-label="Reset view"><i class="ti ti-home" style="font-size:13px"></i></button>
-        <button class="wtm-ctrl-btn active" id="btn-daynight" title="Day/Night" aria-label="Toggle day/night"><i class="ti ti-sun" style="font-size:13px"></i></button>
-      </div>
-
-      <!-- Legend -->
-      <div class="wtm-legend" aria-label="Map legend">
-        <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#fde68a"></div>Daytime</div>
-        <div class="wtm-legend-row"><div class="wtm-legend-dot" style="background:#1e3a5f"></div>Night</div>
-      </div>
+  <!-- 1. Title bar -->
+  <div class="wm-top">
+    <div>
+      <nav class="wm-crumb" aria-label="Breadcrumb"><a href="/">Home</a> › World Time Map</nav>
+      <h1>World Time Map</h1>
+      <p>Live day and night across the globe. Tap any city or time zone to see its local time.</p>
     </div>
-
-    <!-- ── RIGHT-SIDE INFO PANEL ── -->
-    <div class="wtm-panel" id="wtm-panel">
-      <!-- Empty state (shown before any city selected) -->
-      <div class="wtm-panel-empty" id="panel-empty">
-        <div class="wtm-panel-empty-icon"><i class="ti ti-map-pin"></i></div>
-        <div class="wtm-panel-empty-text">Click any city on the map to see its local time and details here.</div>
-      </div>
-      <!-- City details (hidden until a city is selected) -->
-      <div id="panel-city" style="display:none">
-        <div class="panel-header">
-          <span class="panel-flag" id="panel-flag">🌍</span>
-          <div class="panel-location">
-            <div class="panel-city" id="panel-city-name">—</div>
-            <div class="panel-country" id="panel-country">—</div>
-          </div>
-          <button class="panel-close" id="panel-close" aria-label="Close panel">✕</button>
-        </div>
-        <div class="panel-time-block">
-          <div class="panel-time" id="panel-time">--:--:--</div>
-          <div class="panel-date" id="panel-date">—</div>
-        </div>
-        <div class="panel-details">
-          <div class="panel-row">
-            <span class="panel-row-icon"><i class="ti ti-clock"></i></span>
-            <span class="panel-row-label">UTC offset</span>
-            <span class="panel-row-value" id="panel-offset">—</span>
-          </div>
-          <div class="panel-row">
-            <span class="panel-row-icon"><i class="ti ti-world"></i></span>
-            <span class="panel-row-label">Time zone</span>
-            <span class="panel-row-value" id="panel-tz">—</span>
-          </div>
-          <div class="panel-row">
-            <span class="panel-row-icon"><i class="ti ti-info-circle"></i></span>
-            <span class="panel-row-label">Full name</span>
-            <span class="panel-row-value" id="panel-tzfull" style="font-size:10.5px;word-break:break-word;max-width:120px">—</span>
-          </div>
-          <div class="panel-row">
-            <span class="panel-row-icon"><i class="ti ti-sun"></i></span>
-            <span class="panel-row-label">Day/Night</span>
-            <span class="panel-row-value" id="panel-daynight">—</span>
-          </div>
-        </div>
-        <!-- Weather block -->
-        <div class="panel-weather-block" id="panel-weather"></div>
-        <div class="panel-footer">
-          <button class="panel-pin-btn unpinned" id="panel-pin-btn">
-            <i class="ti ti-map-pin"></i> Pin to compare
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /.wtm-stage -->
-
-  <!-- Pinned cities -->
-  <div class="wtm-pins-section">
-    <div class="wtm-pins-header">
-      <h2><i class="ti ti-map-pin" style="font-size:.85em;vertical-align:-.05em;margin-right:6px"></i>Pinned Cities</h2>
-      <button class="wtm-pins-clear" onclick="clearPins()">Clear all</button>
-    </div>
-    <div class="wtm-pins-grid" id="wtm-pins">
-      <p class="wtm-pins-empty">Click any city on the map, then pin it to compare times here.</p>
+    <div class="wm-stats">
+      <div class="wm-stat"><small>Your time</small><b id="wmYou">--:--</b></div>
+      <div class="wm-stat noon"><small>Noon right now near</small><b class="s" id="wmNoon">—</b></div>
     </div>
   </div>
 
-  <!-- SEO content -->
-  <section class="seo-sec" aria-label="About World Time Map">
+  <div class="wm-shell">
+    <div class="wm-mapbox" id="wmBox">
+      <div id="wm-map" role="region" aria-label="Interactive world time map"></div>
+      <div class="wm-noimg" id="wmNoMap">The interactive map couldn't load in this browser. You can still search for any city and see its time in the panel.</div>
 
-    <h2>What Is the World Time Map?</h2>
-    <p>The World Time Map is a live, interactive visualization of Earth's current time zones overlaid with a real-time day and night boundary. As Earth rotates, the solar terminator — the line dividing daylight from night — moves westward at approximately 1,040 km/h. This map recalculates that boundary every 60 seconds so you always see which parts of the world are in daylight, twilight, or darkness right now.</p>
-    <p>Click any city marker to see its current local time, date, UTC offset, and time zone name. Use the search bar to jump to any location instantly, or pin multiple cities to compare their times side by side in the panel above.</p>
+      <!-- 2. Search -->
+      <div class="wm-search">
+        <div class="wm-sbox">
+          <i class="ti ti-search" aria-hidden="true"></i>
+          <input id="wmQ" type="search" autocomplete="off" spellcheck="false" placeholder="Search city, country or time zone…" aria-label="Search for a city, country or time zone" aria-controls="wmDrop" aria-autocomplete="list">
+          <kbd aria-hidden="true">/</kbd>
+        </div>
+        <div class="wm-drop" id="wmDrop" role="listbox"></div>
+      </div>
 
-    <div class="seo-grid">
-      <article class="seo-card">
-        <h3>Live Day &amp; Night</h3>
-        <p>The night overlay updates every 60 seconds using precise solar position math — no API required, fully computed in your browser.</p>
-      </article>
-      <article class="seo-card">
-        <h3>City Time Popups</h3>
-        <p>Click any dot to see a live clock for that city, showing local time, date, UTC offset, and full time zone name — updated every second.</p>
-      </article>
-      <article class="seo-card">
-        <h3>Pin &amp; Compare</h3>
-        <p>Pin up to 8 cities to the comparison panel below the map. All pinned clocks update live so you can track multiple time zones at once.</p>
-      </article>
+      <!-- 4. Layers -->
+      <button class="wm-lbtn" id="wmLBtn" type="button" aria-label="Map layers" aria-expanded="false" aria-controls="wmLayers"><i class="ti ti-stack-2"></i></button>
+      <div class="wm-layers" id="wmLayers" role="group" aria-label="Map layers">
+        <button type="button" data-l="daynight" aria-pressed="true"><i class="ti ti-sun-moon"></i>Day/night</button>
+        <button type="button" data-l="bands" aria-pressed="false"><i class="ti ti-columns-3"></i>Hour bands</button>
+        <button type="button" data-l="labels" aria-pressed="true"><i class="ti ti-tag"></i>Labels</button>
+        <button type="button" data-l="weather" aria-pressed="false"><i class="ti ti-temperature"></i>Weather</button>
+      </div>
+
+      <!-- 3. Legend -->
+      <div class="wm-legend" aria-label="Map legend">
+        <span><i style="background:#f59e0b"></i>Day</span>
+        <span><i style="background:#1b2d4f"></i>Night</span>
+        <span><i style="background:transparent;border-color:#c2410c;box-shadow:0 0 0 1px #c2410c"></i>Pinned</span>
+        <span><i style="background:#1e6bff"></i>You</span>
+        <span class="x">Shaded = night side</span>
+      </div>
+
+      <div class="wm-ctrls">
+        <button type="button" id="wmLocate" aria-label="Show my location" title="Show my location"><i class="ti ti-current-location"></i></button>
+        <button type="button" class="zi" id="wmZin" aria-label="Zoom in" title="Zoom in">+</button>
+        <button type="button" class="zo" id="wmZout" aria-label="Zoom out" title="Zoom out">−</button>
+        <button type="button" id="wmReset" aria-label="Reset map view" title="Reset view"><i class="ti ti-world"></i></button>
+      </div>
+
+      <!-- 6. Time slider -->
+      <div class="wm-time" id="wmTime">
+        <b><i class="ti ti-clock-play"></i><span>Time slider</span></b>
+        <input type="range" id="wmShift" min="-720" max="720" step="15" value="0" aria-label="Move the map forward or back in time, up to 12 hours">
+        <span class="v" id="wmShiftV">Now</span>
+        <button class="wm-tbtn" type="button" id="wmPlay" aria-pressed="false"><i class="ti ti-player-play"></i><span class="tx">Play 24h</span></button>
+        <button class="wm-tbtn" type="button" id="wmNow" hidden>Now</button>
+      </div>
+
+
     </div>
+    <!-- 5. City panel (bottom sheet on mobile) -->
+      <aside class="wm-panel" id="wmPanel" aria-live="polite" aria-label="Selected location">
+        <button class="wm-handle" id="wmHandle" type="button" aria-label="Expand details"></button>
+        <div class="wm-ph"><small id="wmPKind">Selected city</small><button class="x" id="wmClose" type="button" aria-label="Close panel">×</button></div>
+        <div id="wmPBody"><p class="wm-empty">Tap a city or anywhere on the map, or search above.</p></div>
+      </aside>
+  </div>
 
-    <h2>How Time Zones Work</h2>
-    <p>The Earth is divided into 24 primary time zones, each roughly 15 degrees of longitude wide — corresponding to one hour of time difference. In practice, political and geographic decisions mean real time zone boundaries are far more irregular than a clean 24-slice model suggests.</p>
-    <p>All time zones are defined as offsets from Coordinated Universal Time (UTC). Offsets range from UTC−12 (Baker Island) to UTC+14 (Line Islands, Kiribati). Some countries use half-hour or quarter-hour offsets — India (UTC+5:30), Iran (UTC+3:30), and Nepal (UTC+5:45) are the most well-known examples.</p>
+  <!-- 7. Pinned cities -->
+  <section class="wm-sec" aria-labelledby="wmPinsH">
+    <div class="wm-head"><h2 id="wmPinsH">Your pinned cities</h2><span>Same list as World Clock · tap to find on the map</span><a href="/world-clock/">Open World Clock →</a></div>
+    <div class="wm-pins" id="wmPins"></div>
+  </section>
 
-    <h2>Frequently Asked Questions</h2>
+  <section class="wm-sec" aria-labelledby="wmRailH">
+    <div class="wm-head"><h2 id="wmRailH">Time zones right now</h2><span>Tap an offset to highlight its cities on the map</span></div>
+    <div class="wm-rail" id="wmRail" role="group" aria-label="UTC offsets"></div>
+    <p class="wm-note">Every UTC offset in use today, from UTC−12 to UTC+14, including :30 and :45 zones like India and Nepal. Blue outline = your offset.</p>
+  </section>
 
-    <div class="seo-faq-item">
-      <h3>How accurate is the day/night boundary on this map?</h3>
-      <p>The terminator line is calculated from the Sun's current ecliptic longitude and declination, updated every 60 seconds. It accurately represents the idealized day/night boundary on a spherical Earth projected onto a flat map. It does not account for terrain elevation, atmospheric refraction, or civil vs. astronomical twilight distinctions.</p>
+  <!-- About + FAQ (existing content) -->
+  <section class="wm-about" aria-label="About the World Time Map">
+    <div>
+      <h2>What is the World Time Map?</h2>
+      <p>The World Time Map is a live, interactive visualization of Earth's current time zones overlaid with a real-time day and night boundary. As Earth rotates, the solar terminator — the line dividing daylight from night — moves westward at approximately 1,040 km/h. This map recalculates that boundary every 60 seconds so you always see which parts of the world are in daylight or darkness.</p>
+      <h2 style="font-size:18px;margin-top:20px">How time zones work</h2>
+      <p>The Earth is divided into 24 primary time zones, each roughly 15 degrees of longitude wide — corresponding to one hour of time difference. In practice, political and geographic decisions mean real time zone boundaries are far more irregular than a clean 24-slice model suggests.</p>
+      <p>All time zones are defined as offsets from Coordinated Universal Time (UTC). Offsets range from UTC−12 (Baker Island) to UTC+14 (Line Islands, Kiribati). Some countries use half-hour or quarter-hour offsets — India (UTC+5:30), Iran (UTC+3:30), and Nepal (UTC+5:45) are the most well-known examples.</p>
+      <div class="wm-links">
+        <a href="/world-clock/"><i class="ti ti-clock"></i>World Clock</a>
+        <a href="/converter"><i class="ti ti-arrows-exchange"></i>Converter</a>
+        <a href="/time-difference-calculator"><i class="ti ti-arrows-left-right"></i>Time Difference</a>
+        <a href="/sunmoon"><i class="ti ti-sun"></i>Sun &amp; Moon</a>
+        <a href="/weather/"><i class="ti ti-cloud"></i>Weather</a>
+        <a href="/location/"><i class="ti ti-map-pin"></i>Locations</a>
+      </div>
     </div>
-
-    <div class="seo-faq-item">
-      <h3>What is UTC and why does the map use it as a reference?</h3>
-      <p>UTC (Coordinated Universal Time) is the atomic-clock-based standard against which every time zone offset is defined. It replaced GMT in 1972 as the world's primary time reference. Using UTC as the anchor makes it straightforward to calculate any local time: UTC + the zone's offset = local time. Your computer's system clock synchronizes to UTC automatically.</p>
+    <div>
+      <details open><summary>How accurate is the day/night boundary on this map?</summary><p>The terminator line is calculated from the Sun's current ecliptic longitude and declination, updated every 60 seconds. It accurately represents the idealized day/night boundary on a spherical Earth projected onto a flat map. It does not account for terrain elevation, atmospheric refraction, or civil vs. astronomical twilight distinctions.</p></details>
+      <details><summary>What is UTC and why does the map use it as a reference?</summary><p>UTC (Coordinated Universal Time) is the atomic-clock-based standard against which every time zone offset is defined. It replaced GMT in 1972 as the world's primary time reference. Using UTC as the anchor makes it straightforward to calculate any local time: UTC + the zone's offset = local time. Your computer's system clock synchronizes to UTC automatically.</p></details>
+      <details><summary>Which country has the most time zones?</summary><p>France spans 12 time zones when including its overseas territories — more than any other country. Russia covers 11 time zones across its mainland, the widest span of any single contiguous landmass. The United States covers 6 time zones across the continental states, Alaska, and Hawaii.</p></details>
+      <details><summary>Why do India and Nepal use non-standard UTC offsets?</summary><p>India uses UTC+5:30 so that a single national time zone places sunrise and sunset at reasonable hours across the country's roughly 30-degree east-west span. Nepal uses UTC+5:45 — deliberately different from India's offset — as a way of asserting national distinction while still compromising geographically.</p></details>
+      <details><summary>Can I use this map to schedule international meetings?</summary><p>Yes — pin the cities where your participants are located and drag the time slider to see what time it will be for each of them. For precise meeting planning with an overlap visualizer, use the <a href="/time-difference-calculator">Time Difference Calculator</a> or the <a href="/converter">Time Zone Converter</a>.</p></details>
+      <details><summary>Does Daylight Saving Time affect the times shown?</summary><p>Yes. All times shown use the IANA time zone database via the browser's built-in <code>Intl.DateTimeFormat</code> API, which handles DST transitions automatically and accurately for every supported time zone. The city panel also shows the next daylight saving change for the selected city.</p></details>
     </div>
-
-    <div class="seo-faq-item">
-      <h3>Which country has the most time zones?</h3>
-      <p>France spans 12 time zones when including its overseas territories — more than any other country. Russia covers 11 time zones across its mainland, the widest span of any single contiguous landmass. The United States covers 6 time zones across the continental states, Alaska, and Hawaii.</p>
-    </div>
-
-    <div class="seo-faq-item">
-      <h3>Why do India and Nepal use non-standard UTC offsets?</h3>
-      <p>India uses UTC+5:30 so that a single national time zone places sunrise and sunset at reasonable hours across the country's roughly 30-degree east-west span. Nepal uses UTC+5:45 — deliberately different from India's offset — as a way of asserting national distinction while still compromising geographically.</p>
-    </div>
-
-    <div class="seo-faq-item">
-      <h3>Can I use this map to schedule international meetings?</h3>
-      <p>Yes — pin the cities where your participants are located and compare their live times in the panel below the map. For more precise meeting planning with a time selector and overlap visualizer, use the <a href="/converter.html">Time Zone Converter</a> or <a href="/time-difference-calculator">Time Difference Calculator</a>.</p>
-    </div>
-
-    <div class="seo-faq-item">
-      <h3>Does Daylight Saving Time affect the times shown?</h3>
-      <p>Yes. All times shown use the IANA time zone database via the browser's built-in <code>Intl.DateTimeFormat</code> API, which handles DST transitions automatically and accurately for every supported time zone.</p>
-    </div>
-
-    <h2>Explore More TimezoneBudy Tools</h2>
-    <p>The World Time Map works alongside the rest of TimezoneBudy's tool suite for a complete time zone reference experience.</p>
-    <div class="wtm-internal-links">
-      <a href="/"><i class="ti ti-clock"></i> World Clock</a>
-      <a href="/converter.html"><i class="ti ti-arrows-exchange"></i> Timezone Converter</a>
-      <a href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> Time Difference</a>
-      <a href="/sunmoon.html"><i class="ti ti-sun"></i> Sun &amp; Moon</a>
-      <a href="/weather"><i class="ti ti-cloud"></i> Weather</a>
-      <a href="/tools.html"><i class="ti ti-tool"></i> Tools</a>
-      <a href="/location/"><i class="ti ti-map-pin"></i> Locations</a>
-      <a href="/blog/"><i class="ti ti-pencil"></i> Blog</a>
-    </div>
-
   </section>
 </main>
 
-<!-- ══════════════════════════════════════════════════════════
-     FOOTER — identical to index.html
-     ══════════════════════════════════════════════════════════ -->
+<nav class="v2-dock" aria-label="Quick tools">
+  <a href="/world-clock/"><i class="ti ti-clock"></i>Clock</a>
+  <a href="/converter"><i class="ti ti-arrows-exchange"></i>Convert</a>
+  <a href="/time-difference-calculator"><i class="ti ti-arrows-left-right"></i>Difference</a>
+  <a href="/world-time-map" class="on" aria-current="page"><i class="ti ti-map"></i>Map</a>
+  <a href="/weather/"><i class="ti ti-cloud"></i>Weather</a>
+</nav>
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -575,15 +694,26 @@
     </div>
   </div>
 </footer>
-
 <div id="toast" role="status" aria-live="polite"></div>
 
-<!-- Shared site scripts (same as every other page) -->
-<script src="/util.js?v=2"></script>
-
+<script src="/cities.js"></script>
+<script src="/util.js?v=3"></script>
+<script src="/sunmoon-coords.js?v=1"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
 <script>
-// ── City database ─────────────────────────────────────────────────────────
-const CITIES = [
+/* ===== World Time Map v2 ===== */
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function track(ev,p){try{if(window.gtag)gtag('event',ev,p||{});}catch(e){}}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v);}catch(e){return null;}}
+function slug(s){return String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');}
+function key(c){return c.name+'|'+c.tz;}
+if(typeof boot==='function') boot();
+
+/* ---------- data ---------- */
+var MAP_CITIES = [
   { name:'New York', country:'United States', flag:'🇺🇸', tz:'America/New_York', lat:40.71, lng:-74.01 },
   { name:'London', country:'United Kingdom', flag:'🇬🇧', tz:'Europe/London', lat:51.51, lng:-0.13 },
   { name:'Tokyo', country:'Japan', flag:'🇯🇵', tz:'Asia/Tokyo', lat:35.68, lng:139.69 },
@@ -697,490 +827,491 @@ const CITIES = [
   { name:'Reykjavik', country:'Iceland', flag:'🇮🇸', tz:'Atlantic/Reykjavik', lat:64.14, lng:-21.90 },
   { name:'Port Moresby', country:'Papua New Guinea', flag:'🇵🇬', tz:'Pacific/Port_Moresby', lat:-9.48, lng:147.15 },
 ];
-
-// ── Solar terminator math ─────────────────────────────────────────────────
-function getSunPosition(ts) {
-  const D = ts / 86400000 - 10957.5;
-  const g = (357.529 + 0.98560028 * D) * Math.PI / 180;
-  const q = 280.459 + 0.98564736 * D;
-  const L = (q + 1.915 * Math.sin(g) + 0.020 * Math.sin(2*g)) * Math.PI / 180;
-  const e = 23.439 * Math.PI / 180;
-  const sinDec = Math.sin(e) * Math.sin(L);
-  const dec = Math.asin(sinDec);
-  const RA = Math.atan2(Math.cos(e)*Math.sin(L), Math.cos(L));
-  const GMST = (18.697374558 + 24.06570982441908 * D) * Math.PI / 12;
-  const lon = -(GMST - RA);
-  return { lat: dec * 180/Math.PI, lng: ((lon * 180/Math.PI + 540) % 360) - 180 };
+var LOC_PAGES=["australia/brisbane", "australia/melbourne", "australia/perth", "australia/sydney", "brazil/brasilia", "brazil/rio-de-janeiro", "brazil/salvador", "brazil/sao-paulo", "canada/calgary", "canada/montreal", "canada/ottawa", "canada/toronto", "canada/vancouver", "china/beijing", "china/chongqing", "china/guangzhou", "china/hong-kong", "china/shanghai", "china/shenzhen", "france/lyon", "france/marseille", "france/nice", "france/paris", "germany/berlin", "germany/cologne", "germany/frankfurt", "germany/hamburg", "germany/munich", "india/bengaluru", "india/chennai", "india/delhi", "india/hyderabad", "india/kolkata", "india/mumbai", "indonesia/bali-denpasar", "indonesia/bandung", "indonesia/jakarta", "indonesia/surabaya", "italy/milan", "italy/naples", "italy/rome", "italy/venice", "japan/nagoya", "japan/osaka", "japan/tokyo", "japan/yokohama", "mexico/cancun", "mexico/guadalajara", "mexico/mexico-city", "mexico/monterrey", "netherlands/amsterdam", "netherlands/rotterdam", "netherlands/the-hague", "saudi-arabia/jeddah", "saudi-arabia/mecca", "saudi-arabia/riyadh", "singapore/singapore-city", "south-africa/cape-town", "south-africa/durban", "south-africa/johannesburg", "south-africa/pretoria", "south-korea/busan", "south-korea/incheon", "south-korea/seoul", "spain/barcelona", "spain/madrid", "spain/valencia", "united-arab-emirates/abu-dhabi", "united-arab-emirates/ajman", "united-arab-emirates/dubai", "united-arab-emirates/sharjah", "united-kingdom/birmingham", "united-kingdom/edinburgh", "united-kingdom/glasgow", "united-kingdom/liverpool", "united-kingdom/london", "united-kingdom/manchester", "united-states/chicago", "united-states/houston", "united-states/los-angeles", "united-states/miami", "united-states/new-york", "united-states/san-francisco"];
+function ccFromFlag(f){var cp=Array.from(f||'').map(function(c){return c.codePointAt(0)-127397;});return cp.length===2&&cp[0]>64&&cp[0]<91?String.fromCharCode(cp[0],cp[1]).toLowerCase():'un';}
+MAP_CITIES.forEach(function(c){c.cc=ccFromFlag(c.flag);});
+var BY_KEY={};MAP_CITIES.forEach(function(c){BY_KEY[key(c)]=c;});
+function coordsOf(c){
+  if(!c) return null;
+  if(c.lat!=null&&c.lng!=null) return [c.lat,c.lng];
+  var k=key(c),m=BY_KEY[k]; if(m) return [m.lat,m.lng];
+  if(window.SM_COORDS&&SM_COORDS[k]) return SM_COORDS[k];
+  try{var g=JSON.parse(ls('sm_geo')||'{}');if(g[k])return g[k];}catch(e){}
+  return null;
+}
+function geocode(c,done){
+  var cached=coordsOf(c); if(cached) return done(cached);
+  fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&format=json&name='+encodeURIComponent(c.name))
+    .then(function(r){return r.json();}).then(function(x){
+      var rs=(x&&x.results)||[],cc=(c.cc||'').toUpperCase();
+      var hit=rs.filter(function(r){return r.timezone===c.tz;})[0]||rs.filter(function(r){return r.country_code===cc;})[0];
+      if(!hit) return done(null);
+      var g={};try{g=JSON.parse(ls('sm_geo')||'{}');}catch(e){} g[key(c)]=[+hit.latitude.toFixed(3),+hit.longitude.toFixed(3)]; ls('sm_geo',JSON.stringify(g));
+      done(g[key(c)]);
+    }).catch(function(){done(null);});
 }
 
-function getNightPolygon(ts) {
-  const sun = getSunPosition(ts);
-  const sunLat = sun.lat * Math.PI / 180;
-  const coords = [];
-  for (let az = 0; az <= 360; az += 2) {
-    const a = az * Math.PI / 180;
-    const lat = Math.asin(
-      Math.sin(sunLat)*Math.cos(Math.PI/2) +
-      Math.cos(sunLat)*Math.sin(Math.PI/2)*Math.cos(a + Math.PI)
-    );
-    const lng = sun.lng * Math.PI/180 + Math.atan2(
-      Math.sin(a + Math.PI)*Math.sin(Math.PI/2)*Math.cos(sunLat),
-      Math.cos(Math.PI/2) - Math.sin(sunLat)*Math.sin(lat)
-    );
-    coords.push([lng*180/Math.PI, lat*180/Math.PI]);
+/* ---------- time helpers ---------- */
+var SHIFT=0;
+function now(){return new Date(Date.now()+SHIFT*60000);}
+function off(tz,d){return offMin(d||now(),tz);}
+function fmtOff(m){var s=m<0?'−':'+',a=Math.abs(m);return 'UTC'+s+Math.floor(a/60)+(a%60?':'+String(a%60).padStart(2,'0'):'');}
+function hm(m){var a=Math.abs(m),h=Math.floor(a/60),r=a%60;return (h?h+'h':'')+(r?(h?' ':'')+r+'m':'')||'0h';}
+function abbr(tz,d){try{var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'short'}).formatToParts(d||now()).filter(function(x){return x.type==='timeZoneName';})[0].value;return /^(GMT|UTC)[+-]/.test(p)?'':p;}catch(e){return '';}}
+function tAt(tz,d,sec){return fmt(tz,{date:d||now(),sec:!!sec});}
+function utcTimeAtOffset(m,d){return new Intl.DateTimeFormat('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',hour12:!WC.is24h}).format(new Date((d||now()).getTime()+m*60000));}
+var TZ_ALIAS={'Asia/Calcutta':'Asia/Kolkata','Asia/Saigon':'Asia/Ho_Chi_Minh','Asia/Katmandu':'Asia/Kathmandu','Asia/Rangoon':'Asia/Yangon','Europe/Kiev':'Europe/Kyiv'};
+var DEV_TZ=(function(){var t=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC';return TZ_ALIAS[t]||t;})();
+function homeCity(){
+  var p=WC.pinned.filter(function(c){return c.tz===DEV_TZ;})[0]; if(p) return p;
+  var m=MAP_CITIES.filter(function(c){return c.tz===DEV_TZ;})[0]; if(m) return m;
+  var c=(window.CITIES||[]).filter(function(x){return x.tz===DEV_TZ;}).sort(function(a,b){return (b.pop||0)-(a.pop||0);})[0];
+  return c?{name:c.name,country:c.country,cc:c.cc,tz:c.tz}:{name:DEV_TZ.split('/').pop().replace(/_/g,' '),country:'',cc:'un',tz:DEV_TZ};
+}
+var HOME=homeCity();
+
+/* ---------- sun ---------- */
+function sunPos(ts){
+  var D=ts/86400000-10957.5,g=(357.529+0.98560028*D)*Math.PI/180,q=280.459+0.98564736*D;
+  var L=(q+1.915*Math.sin(g)+0.020*Math.sin(2*g))*Math.PI/180,e=23.439*Math.PI/180;
+  var dec=Math.asin(Math.sin(e)*Math.sin(L)),RA=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L));
+  var GMST=(18.697374558+24.06570982441908*D)*Math.PI/12;
+  var lng=((RA-GMST)*180/Math.PI)%360; if(lng>180)lng-=360; if(lng<-180)lng+=360;
+  return {lat:dec*180/Math.PI,lng:lng};
+}
+function nightPolygon(ts){
+  var s=sunPos(ts),sl=s.lat*Math.PI/180,pts=[];
+  for(var lng=-180;lng<=180;lng+=2){
+    var h=(lng-s.lng)*Math.PI/180;
+    var lat=Math.atan(-Math.cos(h)/Math.tan(sl||1e-6))*180/Math.PI;
+    pts.push([lng,lat]);
   }
-  const pole = sun.lat > 0 ? -90 : 90;
-  return {
-    type:'FeatureCollection',
-    features:[{ type:'Feature', geometry:{ type:'Polygon', coordinates:[[
-      ...coords,
-      [coords[coords.length-1][0], pole],
-      [coords[0][0], pole],
-      coords[0]
-    ]] } }]
-  };
+  var pole=s.lat>0?-90:90;
+  return {type:'FeatureCollection',features:[{type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[[ [-180,pole] ].concat(pts,[[180,pole],[-180,pole]])]}}]};
+}
+function isDay(lat,lng,d){
+  if(window.SunCalc) return SunCalc.getPosition(d,lat,lng).altitude>-0.0145;
+  var s=sunPos(d.getTime()),r=Math.PI/180;
+  return Math.sin(lat*r)*Math.sin(s.lat*r)+Math.cos(lat*r)*Math.cos(s.lat*r)*Math.cos((lng-s.lng)*r)>-0.0145;
+}
+function partOfDay(c,d){
+  var xy=coordsOf(c),h=parseInt(new Intl.DateTimeFormat('en-US',{timeZone:c.tz,hour:'2-digit',hourCycle:'h23'}).format(d),10);
+  if(xy&&!isDay(xy[0],xy[1],d)) return 'Night';
+  return h<12?'Morning':h<17?'Afternoon':h<21?'Evening':'Night';
 }
 
-// ── Time helpers ──────────────────────────────────────────────────────────
-function getLocalTime(tz) {
-  const now = new Date();
-  const use24 = localStorage.getItem('wc_24h') === '1';
-  return {
-    time: now.toLocaleTimeString('en-US', { timeZone:tz, hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:!use24 }),
-    date: now.toLocaleDateString('en-US', { timeZone:tz, weekday:'long', month:'long', day:'numeric' }),
-    offset: getOffset(tz, now),
-    tzName: new Intl.DateTimeFormat('en', { timeZone:tz, timeZoneName:'long' }).formatToParts(now).find(p=>p.type==='timeZoneName')?.value || tz
-  };
+/* ---------- map ---------- */
+var map=null,READY=false,LAYERS={daynight:true,bands:false,labels:true,weather:false},SEL_OFF=null,youMarker=null,selMarker=null,tip=null;
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark';}
+function styleUrl(){return isDark()?'https://tiles.openfreemap.org/styles/dark':'https://tiles.openfreemap.org/styles/positron';}
+function citiesFC(d){
+  return {type:'FeatureCollection',features:MAP_CITIES.map(function(c){
+    var k=key(c);return {type:'Feature',geometry:{type:'Point',coordinates:[c.lng,c.lat]},properties:{k:k,name:c.name,day:isDay(c.lat,c.lng,d)?1:0,off:off(c.tz,d),wx:WX[k]?WX[k].t:''}};
+  })};
 }
-
-function getOffset(tz, date) {
-  const d = date || new Date();
-  const utcMs = new Date(d.toLocaleString('en-US',{timeZone:'UTC'}));
-  const locMs = new Date(d.toLocaleString('en-US',{timeZone:tz}));
-  const diffMin = (locMs - utcMs) / 60000;
-  const sign = diffMin >= 0 ? '+' : '-';
-  const abs = Math.abs(diffMin);
-  return `UTC${sign}${String(Math.floor(abs/60)).padStart(2,'0')}:${String(abs%60).padStart(2,'0')}`;
+function pinsFC(){
+  return {type:'FeatureCollection',features:WC.pinned.map(function(c){var xy=coordsOf(c);return xy?{type:'Feature',geometry:{type:'Point',coordinates:[xy[1],xy[0]]},properties:{k:key(c),name:c.name}}:null;}).filter(Boolean)};
 }
-
-// ── Map init ──────────────────────────────────────────────────────────────
-let map, dayNightOn = true;
-
-// Add pulse keyframe dynamically
-const styleEl = document.createElement('style');
-styleEl.textContent = `@keyframes markerPulse {
-  0%   { box-shadow:0 0 0 0   rgba(88,166,255,0.5); }
-  70%  { box-shadow:0 0 0 8px rgba(88,166,255,0); }
-  100% { box-shadow:0 0 0 0   rgba(88,166,255,0); }
-}`;
-document.head.appendChild(styleEl);
-const pinnedCities = [];
-
-function initMap() {
-  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
-  map = new maplibregl.Map({
-    container: 'wtm-map',
-    style: dark
-      ? 'https://tiles.openfreemap.org/styles/dark'
-      : 'https://tiles.openfreemap.org/styles/positron',
-    center: [15, 20],
-    zoom: 1.6,
-    minZoom: 1,
-    maxZoom: 10,
-    attributionControl: false,
-    pitchWithRotate: false,
+function bandsFC(){
+  var f=[];for(var i=0;i<24;i++){var w=-187.5+i*15,e=w+15;f.push({type:'Feature',properties:{odd:i%2},geometry:{type:'Polygon',coordinates:[[[Math.max(w,-180),-85],[Math.min(e,180),-85],[Math.min(e,180),85],[Math.max(w,-180),85],[Math.max(w,-180),-85]]]}});}
+  return {type:'FeatureCollection',features:f};
+}
+function vis(on){return on?'visible':'none';}
+function fontStack(){
+  try{var lay=map.getStyle().layers.filter(function(l){return l.layout&&l.layout['text-font'];})[0];if(lay&&Array.isArray(lay.layout['text-font']))return lay.layout['text-font'];}catch(e){}
+  return ['Noto Sans Regular'];
+}
+function addLayers(){
+  if(map.getSource('wm-night')) return;
+  var d=now(),dark=isDark(),font=fontStack();
+  map.addSource('wm-bands',{type:'geojson',data:bandsFC()});
+  map.addLayer({id:'wm-bands',type:'fill',source:'wm-bands',layout:{visibility:vis(LAYERS.bands)},paint:{'fill-color':['case',['==',['get','odd'],1],'#1e6bff','#000000'],'fill-opacity':['case',['==',['get','odd'],1],0.07,0]}});
+  map.addSource('wm-night',{type:'geojson',data:nightPolygon(d.getTime())});
+  map.addLayer({id:'wm-night',type:'fill',source:'wm-night',layout:{visibility:vis(LAYERS.daynight)},paint:{'fill-color':'#000a28','fill-opacity':dark?0.55:0.36}});
+  map.addLayer({id:'wm-night-line',type:'line',source:'wm-night',layout:{visibility:vis(LAYERS.daynight)},paint:{'line-color':'#f59e0b','line-width':1.5,'line-blur':2,'line-opacity':0.55}});
+  map.addSource('wm-cities',{type:'geojson',data:citiesFC(d),cluster:true,clusterRadius:36,clusterMaxZoom:2});
+  map.addSource('wm-all',{type:'geojson',data:citiesFC(d)});
+  // text layers use their own sources so a font (glyph) failure can never hide the dots
+  map.addSource('wm-cities-t',{type:'geojson',data:citiesFC(d),cluster:true,clusterRadius:36,clusterMaxZoom:2});
+  map.addSource('wm-wx',{type:'geojson',data:citiesFC(d)});
+  map.addLayer({id:'wm-off',type:'circle',source:'wm-all',filter:['==',['get','off'],SEL_OFF==null?99999:SEL_OFF],paint:{'circle-radius':11,'circle-color':'#1e6bff','circle-opacity':0.25,'circle-stroke-color':'#1e6bff','circle-stroke-width':2}});
+  map.addLayer({id:'wm-cluster',type:'circle',source:'wm-cities',filter:['has','point_count'],paint:{'circle-color':dark?'#16325a':'#ffffff','circle-stroke-color':'#1e6bff','circle-stroke-width':2,'circle-radius':['step',['get','point_count'],13,10,16,25,20]}});
+  map.addLayer({id:'wm-cluster-n',type:'symbol',source:'wm-cities-t',filter:['has','point_count'],layout:{'text-field':['get','point_count_abbreviated'],'text-font':font,'text-size':12,'text-allow-overlap':true},paint:{'text-color':dark?'#e8eefa':'#1e6bff'}});
+  map.addLayer({id:'wm-dot',type:'circle',source:'wm-cities',filter:['!',['has','point_count']],paint:{'circle-radius':['interpolate',['linear'],['zoom'],1,4.5,4,6,8,8],'circle-color':['case',['==',['get','day'],1],'#f59e0b','#1b2d4f'],'circle-stroke-color':'#ffffff','circle-stroke-width':1.5}});
+  map.addSource('wm-pins',{type:'geojson',data:pinsFC()});
+  map.addLayer({id:'wm-pin',type:'circle',source:'wm-pins',paint:{'circle-radius':['interpolate',['linear'],['zoom'],1,8,6,11],'circle-color':'rgba(0,0,0,0)','circle-stroke-color':'#c2410c','circle-stroke-width':2.5}});
+  map.addLayer({id:'wm-label',type:'symbol',source:'wm-cities-t',minzoom:3,filter:['!',['has','point_count']],layout:{visibility:vis(LAYERS.labels),'text-field':['get','name'],'text-font':font,'text-size':['interpolate',['linear'],['zoom'],3,11,7,13],'text-offset':[0,1.1],'text-anchor':'top','text-optional':true},paint:{'text-color':dark?'#e6edf3':'#1b2430','text-halo-color':dark?'#0d1117':'#ffffff','text-halo-width':1.4}});
+  map.addLayer({id:'wm-wx',type:'symbol',source:'wm-wx',filter:['!=',['get','wx'],''],layout:{visibility:vis(LAYERS.weather),'text-field':['get','wx'],'text-font':font,'text-size':11,'text-offset':[0,-1.2],'text-anchor':'bottom','text-allow-overlap':false},paint:{'text-color':'#c2410c','text-halo-color':dark?'#0d1117':'#ffffff','text-halo-width':1.4}});
+  READY=true;
+}
+function refreshSources(){
+  if(!READY) return;
+  var d=now();
+  map.getSource('wm-night').setData(nightPolygon(d.getTime()));
+  ['wm-cities','wm-all','wm-cities-t','wm-wx'].forEach(function(id){map.getSource(id).setData(citiesFC(d));});
+}
+function refreshPins(){if(READY)map.getSource('wm-pins').setData(pinsFC());}
+function setOffFilter(){if(READY)map.setFilter('wm-off',['==',['get','off'],SEL_OFF==null?99999:SEL_OFF]);}
+var DEFAULT_VIEW={center:[15,22],zoom:innerWidth<760?0.6:1.4};
+function webglOK(){try{var c=document.createElement('canvas');return !!(c.getContext('webgl2')||c.getContext('webgl'));}catch(e){return false;}}
+function initMap(){
+  if(!window.maplibregl||!webglOK()){ $('wmNoMap').style.display='flex'; return; }
+  try{
+    map=new maplibregl.Map({container:'wm-map',style:styleUrl(),center:DEFAULT_VIEW.center,zoom:DEFAULT_VIEW.zoom,minZoom:0.4,maxZoom:10,attributionControl:false,dragRotate:false,pitchWithRotate:false,renderWorldCopies:false});
+  }catch(e){ $('wmNoMap').style.display='flex'; return; }
+  map.touchZoomRotate.disableRotation();
+  map.addControl(new maplibregl.AttributionControl({compact:true}),'bottom-left');
+  map.on('style.load',function(){READY=false;addLayers();placeYou();if(SEL&&SEL.xy)placeSel(SEL.xy);if(LAYERS.weather)loadWeather();});
+  map.on('error',function(e){if(e&&e.error&&/style/i.test(String(e.error.message||''))&&!READY){$('wmNoMap').style.display='flex';}});
+  map.on('dragstart',function(){$('wmPanel').classList.remove('full');});
+  map.on('click','wm-cluster',function(e){
+    var f=e.features[0];
+    map.getSource('wm-cities').getClusterExpansionZoom(f.properties.cluster_id).then(function(z){map.easeTo({center:f.geometry.coordinates,zoom:z+0.3});});
   });
-  map.addControl(new maplibregl.AttributionControl({ compact:true }), 'bottom-right');
-
-  map.on('load', () => {
-    // Night overlay — two layers: main dark fill + soft twilight edge
-    map.addSource('nightzone', { type:'geojson', data: getNightPolygon(Date.now()) });
-    map.addLayer({
-      id: 'nightzone-fill', type:'fill', source:'nightzone',
-      paint: { 'fill-color':'#000820', 'fill-opacity': dark ? 0.65 : 0.50 }
-    });
-    // Soft terminator glow (line layer for the boundary)
-    map.addLayer({
-      id: 'nightzone-line', type:'line', source:'nightzone',
-      paint: {
-        'line-color': '#4a90d9',
-        'line-width': 2,
-        'line-blur': 3,
-        'line-opacity': 0.4
-      }
-    });
-
-    // City dots
-    map.addSource('cities', {
-      type:'geojson',
-      data: {
-        type:'FeatureCollection',
-        features: CITIES.map(c => ({
-          type:'Feature',
-          geometry: { type:'Point', coordinates:[c.lng, c.lat] },
-          properties: { name:c.name, country:c.country, flag:c.flag, tz:c.tz }
-        }))
-      }
-    });
-    map.addLayer({
-      id:'city-dots', type:'circle', source:'cities',
-      paint: {
-        'circle-radius': ['interpolate',['linear'],['zoom'], 1,3, 4,4.5, 7,8],
-        'circle-color': '#58a6ff',
-        'circle-stroke-width': 1.5,
-        'circle-stroke-color': '#ffffff',
-        'circle-opacity': 0.88
-      }
-    });
-
-    // City name labels — visible from zoom 4+
-    map.addLayer({
-      id: 'city-labels', type: 'symbol', source: 'cities',
-      minzoom: 3.5,
-      layout: {
-        'text-field': ['get', 'name'],
-        'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-        'text-size': ['interpolate', ['linear'], ['zoom'], 3.5, 10, 7, 13],
-        'text-offset': [0, 1.4],
-        'text-anchor': 'top',
-        'text-allow-overlap': false,
-        'text-ignore-placement': false,
-      },
-      paint: {
-        'text-color': dark ? '#e6edf3' : '#1a1d23',
-        'text-halo-color': dark ? '#0d1117' : '#ffffff',
-        'text-halo-width': 1.5,
-        'text-opacity': ['interpolate', ['linear'], ['zoom'], 3.5, 0, 4.5, 1]
-      }
-    });
-
-    map.on('click', 'city-dots', e => {
-      const p = e.features[0].properties;
-      const c = CITIES.find(x => x.name === p.name);
-      if (c) openPanel(c);
-    });
-    map.on('mouseenter','city-dots', () => { map.getCanvas().style.cursor = 'pointer'; });
-    map.on('mouseleave','city-dots', () => { map.getCanvas().style.cursor = ''; });
-
-    // Click on map background — snap to nearest city
-    map.on('click', e => {
-      const hits = map.queryRenderedFeatures(e.point, { layers:['city-dots'] });
-      if (!hits.length) {
-        const nearest = nearestCity(e.lngLat.lat, e.lngLat.lng);
-        if (nearest) openPanel(nearest);
-      }
-    });
+  ['wm-dot','wm-pin'].forEach(function(id){
+    map.on('click',id,function(e){e.preventDefault();var k=e.features[0].properties.k;var c=BY_KEY[k]||WC.pinned.filter(function(p){return key(p)===k;})[0];if(c)select(c,{fly:false,src:'marker'});});
+    map.on('mouseenter',id,function(e){map.getCanvas().style.cursor='pointer';showTip(e.features[0]);});
+    map.on('mouseleave',id,function(){map.getCanvas().style.cursor='';if(tip)tip.remove();});
+  });
+  map.on('mouseenter','wm-cluster',function(){map.getCanvas().style.cursor='pointer';});
+  map.on('mouseleave','wm-cluster',function(){map.getCanvas().style.cursor='';});
+  map.on('click',function(e){
+    if(e.defaultPrevented) return;
+    if(map.queryRenderedFeatures(e.point,{layers:['wm-dot','wm-pin','wm-cluster']}).length) return;
+    var ll=e.lngLat.wrap(),best=null,bd=1e9;
+    MAP_CITIES.forEach(function(c){var d=Math.hypot(c.lat-ll.lat,(c.lng-ll.lng)*Math.cos(ll.lat*Math.PI/180));if(d<bd){bd=d;best=c;}});
+    if(best&&bd<4) select(best,{fly:false,src:'map'});
+    else selectSea(ll.lat,ll.lng);
   });
 }
+function showTip(f){
+  if(matchMedia('(hover: none)').matches) return;
+  var c=BY_KEY[f.properties.k]||WC.pinned.filter(function(p){return key(p)===f.properties.k;})[0]; if(!c) return;
+  var xy=coordsOf(c); if(!xy) return;
+  if(!tip) tip=new maplibregl.Popup({closeButton:false,closeOnClick:false,offset:12,className:'wm-tip'});
+  tip.setLngLat([xy[1],xy[0]]).setHTML('<b>'+esc(c.name)+' · '+tAt(c.tz)+'</b><br>'+fmtOff(off(c.tz))+' · '+partOfDay(c,now())).addTo(map);
+}
+function placeYou(){
+  if(!map) return; var xy=YOU_XY||coordsOf(HOME); if(!xy) return;
+  var el=document.createElement('div');el.className='wm-you';el.title='You';
+  if(youMarker) youMarker.remove();
+  youMarker=new maplibregl.Marker({element:el}).setLngLat([xy[1],xy[0]]).addTo(map);
+}
+function placeSel(xy){
+  if(!map) return; if(selMarker) selMarker.remove();
+  if(!xy) return; var el=document.createElement('div');el.className='wm-selm';
+  selMarker=new maplibregl.Marker({element:el}).setLngLat([xy[1],xy[0]]).addTo(map);
+}
+function flyTo(xy,z){if(map&&xy)map.flyTo({center:[xy[1],xy[0]],zoom:Math.max(map.getZoom(),z||4),duration:900,essential:true,padding:panelPad()});}
+function setTH(){document.documentElement.style.setProperty('--wm-th',$('wmTime').offsetHeight+'px');}
+window.addEventListener('resize',setTH);
+function panelPad(){return innerWidth<=760?{bottom:Math.round($('wmBox').clientHeight*0.42),top:60,left:0,right:0}:{top:0,bottom:0,left:0,right:0};}
 
-function nearestCity(lat, lng) {
-  let best = null, d = Infinity;
-  CITIES.forEach(c => {
-    const dist = Math.hypot(c.lat - lat, c.lng - lng);
-    if (dist < d) { d = dist; best = c; }
+/* ---------- selection + panel ---------- */
+var SEL=null;
+function select(c,opt){
+  opt=opt||{};
+  var xy=coordsOf(c);
+  SEL={type:'city',c:c,xy:xy};
+  placeSel(xy); if(opt.fly!==false&&xy) flyTo(xy,4.5);
+  $('wmPanel').classList.remove('closed');
+  renderPanel(); loadCityWeather(c);
+  try{history.replaceState(null,'','/world-time-map?city='+slug(c.name)+(c.cc&&c.cc!=='un'?'&cc='+c.cc:''));}catch(e){}
+  track('map_select',{city:c.name,source:opt.src||''});
+}
+function selectSea(lat,lng){
+  var m=Math.round(lng/15)*60;
+  SEL={type:'sea',lat:lat,lng:lng,m:m,xy:[lat,lng]}; placeSel([lat,lng]);
+  $('wmPanel').classList.remove('closed'); renderPanel();
+}
+function selectOffset(m,fit){
+  SEL_OFF=(SEL_OFF===m&&fit!==false)?null:m; setOffFilter(); renderRail();
+  if(SEL_OFF==null){ if(SEL&&SEL.type==='zone'){SEL=null;renderPanel();} return; }
+  var list=MAP_CITIES.filter(function(c){return off(c.tz)===m;});
+  SEL={type:'zone',m:m,list:list}; placeSel(null); $('wmPanel').classList.remove('closed'); renderPanel();
+  if(map&&fit!==false){
+    if(list.length>1){var b=new maplibregl.LngLatBounds();list.forEach(function(c){b.extend([c.lng,c.lat]);});map.fitBounds(b,{padding:Object.assign({top:80,bottom:80,left:60,right:60},innerWidth<=760?{bottom:Math.round($('wmBox').clientHeight*0.5)}:{}),maxZoom:4.5,duration:900});}
+    else if(list.length===1) flyTo([list[0].lat,list[0].lng],4);
+    else map.flyTo({center:[m/4,15],zoom:2,duration:900});
+  }
+  track('map_offset',{offset:fmtOff(m)});
+}
+function cityPage(c){var p=slug(c.country||'')+'/'+slug(c.name);return LOC_PAGES.indexOf(p)>-1?'/location/'+p+'/':'';}
+function nextDst(tz){
+  var t=Date.now(),base=offMin(new Date(t),tz);
+  for(var d=1;d<=370;d++){var x=t+d*86400000;if(offMin(new Date(x),tz)!==base){
+    var lo=x-86400000;for(var h=0;h<=24;h++){var y=lo+h*3600000;if(offMin(new Date(y),tz)!==base){x=y;break;}}
+    var to=offMin(new Date(x),tz);
+    return new Intl.DateTimeFormat('en-US',{timeZone:tz,month:'short',day:'numeric',year:'numeric'}).format(new Date(x))+' → '+fmtOff(to);
+  }}
+  return 'None in the next 12 months';
+}
+var CW={};
+function loadCityWeather(c){
+  var k=key(c); if(CW[k]&&Date.now()-CW[k].at<600000) return;
+  var xy=coordsOf(c); if(!xy){geocode(c,function(g){if(g&&SEL&&SEL.c===c){SEL.xy=g;placeSel(g);flyTo(g,4.5);loadCityWeather(c);refreshPins();renderPanel();}});return;}
+  var f=ls('wx_unit')==='fahrenheit';
+  CW[k]={at:Date.now(),v:'Loading…'};
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+xy[0]+'&longitude='+xy[1]+'&current=temperature_2m,weather_code'+(f?'&temperature_unit=fahrenheit':''))
+    .then(function(r){return r.json();}).then(function(d){CW[k]={at:Date.now(),v:Math.round(d.current.temperature_2m)+'°'+(f?'F':'C')+' · '+wDesc(d.current.weather_code)};if(SEL&&SEL.c&&key(SEL.c)===k)renderFacts();})
+    .catch(function(){CW[k]={at:Date.now()-540000,v:'Unavailable'};if(SEL&&SEL.c&&key(SEL.c)===k)renderFacts();});
+}
+function wDesc(c){return c===0?'Clear':c<=2?'Partly cloudy':c===3?'Cloudy':c<=48?'Fog':c<=57?'Drizzle':c<=67?'Rain':c<=77?'Snow':c<=82?'Showers':c<=86?'Snow showers':'Thunderstorm';}
+function sunTimes(c,xy){
+  if(!window.SunCalc||!xy) return ['—','—'];
+  var d=now(),s=SunCalc.getTimes(d,xy[0],xy[1]);
+  function f(x){return x instanceof Date&&!isNaN(x)?tAt(c.tz,x):'—';}
+  if(!(s.sunrise instanceof Date)||isNaN(s.sunrise)){var up=SunCalc.getPosition(s.solarNoon,xy[0],xy[1]).altitude>0;return up?['Midnight sun','—']:['Polar night','—'];}
+  return [f(s.sunrise),f(s.sunset)];
+}
+function relText(c){
+  var d=now(),m=off(c.tz,d)-off(HOME.tz,d);
+  var who=key(c)===key(HOME)?'This is your time zone':(m===0?'Same time as you':'<b>'+(m>0?'+':'−')+hm(m)+'</b> '+(m>0?'ahead of':'behind')+' you');
+  return who+' · '+partOfDay(c,d);
+}
+function renderPanel(){
+  var b=$('wmPBody'),P=$('wmPanel');
+  if(!SEL){$('wmPKind').textContent='Selected city';b.innerHTML='<p class="wm-empty">Tap a city or anywhere on the map, or search above. Your own city is shown with a pulsing blue dot.</p>';return;}
+  if(SEL.type==='city'){
+    var c=SEL.c,pinned=isPinned(c),page=cityPage(c),home=key(c)===key(HOME);
+    $('wmPKind').textContent='Selected city';
+    b.innerHTML='<div class="wm-who">'+flag(c.cc,30)+'<div style="min-width:0"><b>'+esc(c.name)+'</b><span>'+esc(c.country||'')+(c.country?' · ':'')+esc(c.tz)+'</span></div></div>'
+      +'<div><div class="wm-clock" id="wmPClock"></div><div class="wm-sub" id="wmPSub"></div></div>'
+      +'<div class="wm-rel" id="wmPRel"></div>'
+      +'<div class="wm-facts" id="wmPFacts"></div>'
+      +'<div class="wm-acts"><button class="wm-btn '+(pinned?'on':'pri')+'" type="button" id="wmPin" aria-pressed="'+pinned+'"><i class="ti ti-'+(pinned?'check':'star')+'"></i>'+(pinned?'Pinned to my cities':'Pin to my cities')+'</button>'
+      +'<div class="row">'+(home?'':'<a class="wm-btn sec" href="/time-difference-calculator?from='+slug(HOME.name)+'&to='+slug(c.name)+'"><i class="ti ti-arrows-left-right"></i>Compare</a>')
+      +(page?'<a class="wm-btn sec" href="'+page+'">City page →</a>':'<a class="wm-btn sec" href="/world-clock/">World Clock →</a>')+'</div></div>';
+    $('wmPin').addEventListener('click',function(){
+      if(isPinned(c)){var i=WC.pinned.map(key).indexOf(key(c));if(i>-1)removePin(i);}else{addPin({name:c.name,country:c.country||'',cc:c.cc||'un',tz:c.tz});track('pin_city',{city:c.name});}
+    });
+    renderFacts(); tickPanel();
+  } else if(SEL.type==='sea'){
+    $('wmPKind').textContent='Open water';
+    b.innerHTML='<div class="wm-who"><span style="font-size:26px">🌊</span><div><b>Nominal time zone</b><span>'+SEL.lat.toFixed(1)+'°, '+SEL.lng.toFixed(1)+'° · '+fmtOff(SEL.m)+'</span></div></div>'
+      +'<div><div class="wm-clock" id="wmPClock"></div><div class="wm-sub">Ships at sea use nautical time: one hour per 15° of longitude.</div></div>'
+      +'<div class="wm-acts"><button class="wm-btn pri" type="button" id="wmSeaZone">Show '+fmtOff(SEL.m)+' cities</button></div>';
+    $('wmSeaZone').addEventListener('click',function(){selectOffset(SEL.m);});
+    tickPanel();
+  } else {
+    $('wmPKind').textContent='Time zone';
+    var l=SEL.list;
+    b.innerHTML='<div class="wm-who"><span style="font-size:26px;color:var(--clr-brand)"><i class="ti ti-world"></i></span><div><b>'+fmtOff(SEL.m)+'</b><span>'+l.length+' '+(l.length===1?'city':'cities')+' on this map</span></div></div>'
+      +'<div><div class="wm-clock" id="wmPClock"></div></div>'
+      +(l.length?'<div class="wm-zc">'+l.map(function(c){return '<button type="button" data-k="'+esc(key(c))+'">'+esc(c.name)+'</button>';}).join('')+'</div>':'<p class="wm-empty">No cities on this map use this offset — it\'s used by smaller islands or territories.</p>')
+      +'<div class="wm-acts"><button class="wm-btn" type="button" id="wmClrOff">Clear highlight</button></div>';
+    b.querySelectorAll('[data-k]').forEach(function(x){x.addEventListener('click',function(){select(BY_KEY[x.dataset.k],{src:'zone'});});});
+    $('wmClrOff').addEventListener('click',function(){SEL_OFF=null;setOffFilter();renderRail();SEL=null;renderPanel();});
+    tickPanel();
+  }
+}
+function renderFacts(){
+  var el=$('wmPFacts'); if(!el||!SEL||SEL.type!=='city') return;
+  var c=SEL.c,st=sunTimes(c,SEL.xy||coordsOf(c)),w=CW[key(c)];
+  el.innerHTML='<div class="wm-fact"><small>Sunrise</small><b>'+st[0]+'</b></div><div class="wm-fact"><small>Sunset</small><b>'+st[1]+'</b></div>'
+    +'<div class="wm-fact"><small>Weather now</small><b>'+(w?esc(w.v):'—')+'</b></div><div class="wm-fact"><small>Next DST change</small><b>'+nextDst(c.tz)+'</b></div>';
+}
+function tickPanel(){
+  if(!SEL) return; var d=now(),cl=$('wmPClock'); if(!cl) return;
+  if(SEL.type==='city'){var c=SEL.c;cl.textContent=tAt(c.tz,d,SHIFT===0);var a=abbr(c.tz,d);$('wmPSub').textContent=fmtDate(c.tz,d)+' · '+(a?a+' · ':'')+fmtOff(off(c.tz,d));$('wmPRel').innerHTML=relText(c);}
+  else cl.textContent=utcTimeAtOffset(SEL.m,d);
+}
+$('wmClose').addEventListener('click',function(){SEL=null;placeSel(null);if(innerWidth<=760)$('wmPanel').classList.add('closed');renderPanel();try{history.replaceState(null,'','/world-time-map');}catch(e){}});
+$('wmHandle').addEventListener('click',function(){var p=$('wmPanel');p.classList.toggle('full');this.setAttribute('aria-label',p.classList.contains('full')?'Collapse details':'Expand details');});
+(function(){var p=$('wmPanel'),y0=null;p.addEventListener('touchstart',function(e){if(e.target.closest('.wm-handle,.wm-who,.wm-clock'))y0=e.touches[0].clientY;},{passive:true});
+  p.addEventListener('touchend',function(e){if(y0==null)return;var dy=e.changedTouches[0].clientY-y0;y0=null;if(dy<-30)p.classList.add('full');else if(dy>40){if(p.classList.contains('full'))p.classList.remove('full');else $('wmClose').click();}});})();
+
+/* ---------- search: cities, countries, abbreviations, UTC offsets ---------- */
+var FULL_LOADING=false;
+function loadFull(cb){
+  if(window.CITIES_FULL||FULL_LOADING) return cb&&cb();
+  FULL_LOADING=true; var s=document.createElement('script'); s.src='/cities-full.js?v=4'; s.onload=function(){IDX=null;cb&&cb();if($('wmQ').value)runSearch();}; document.head.appendChild(s);
+}
+var ABBR={ist:'Asia/Kolkata',jst:'Asia/Tokyo',kst:'Asia/Seoul',sgt:'Asia/Singapore',hkt:'Asia/Hong_Kong',pkt:'Asia/Karachi',gst:'Asia/Dubai',msk:'Europe/Moscow',gmt:'Europe/London',bst:'Europe/London',wet:'Europe/Lisbon',cet:'Europe/Paris',cest:'Europe/Paris',eet:'Europe/Athens',eest:'Europe/Athens',est:'America/New_York',edt:'America/New_York',cst:'America/Chicago',cdt:'America/Chicago',mst:'America/Denver',mdt:'America/Denver',pst:'America/Los_Angeles',pdt:'America/Los_Angeles',akst:'America/Anchorage',hst:'Pacific/Honolulu',aest:'Australia/Sydney',aedt:'Australia/Sydney',acst:'Australia/Adelaide',awst:'Australia/Perth',nzst:'Pacific/Auckland',nzdt:'Pacific/Auckland',wat:'Africa/Lagos',cat:'Africa/Johannesburg',sast:'Africa/Johannesburg',eat:'Africa/Nairobi',brt:'America/Sao_Paulo',art:'America/Argentina/Buenos_Aires',npt:'Asia/Kathmandu',irst:'Asia/Tehran',wib:'Asia/Jakarta',pht:'Asia/Manila',ict:'Asia/Bangkok',utc:'UTC'};
+var ALIASES={usa:'United States',america:'United States',uk:'United Kingdom',britain:'United Kingdom',uae:'United Arab Emirates',nyc:'New York',bombay:'Mumbai',calcutta:'Kolkata',madras:'Chennai',bangalore:'Bengaluru',saigon:'Ho Chi Minh City',peking:'Beijing',la:'Los Angeles',sf:'San Francisco'};
+var IDX=null;
+function fold(s){return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();}
+function index(){
+  if(IDX) return IDX; var map2={},out=[];
+  function add(x,boost){if(!x||!x.name||!x.tz)return;var k=fold(x.name)+'|'+x.tz;if(map2[k]){map2[k].pop=Math.max(map2[k].pop,(x.pop||0)*boost);return;}map2[k]={name:x.name,country:x.country||'',cc:(x.cc||'un').toLowerCase(),tz:x.tz,pop:(x.pop||0)*boost,alias:''};}
+  MAP_CITIES.forEach(function(c){add({name:c.name,country:c.country,cc:c.cc,tz:c.tz,pop:1},5e6);});
+  (window.CITIES||[]).forEach(function(c){add(c,1000);});
+  (window.CITIES_FULL||[]).forEach(function(c){add(c,1);});
+  out=Object.keys(map2).map(function(k){return map2[k];});
+  Object.keys(ALIASES).forEach(function(a){var t=fold(ALIASES[a]);out.forEach(function(c){if(fold(c.name)===t||fold(c.country)===t)c.alias+=' '+a;});});
+  IDX=out; return out;
+}
+function zoneHits(q){
+  var out=[],m=q.replace(/\s+/g,'').match(/^(?:utc|gmt)?([+\-−])(\d{1,2})(?::?(\d{2}))?$/)||q.replace(/\s+/g,'').match(/^(?:utc|gmt)([+\-−]?)(\d{1,2})?(?::?(\d{2}))?$/);
+  if(m&&(m[2]!==undefined)){var sg=m[1]==='-'||m[1]==='−'?-1:1,mins=sg*(+m[2]*60+(+(m[3]||0)));if(mins>=-720&&mins<=840)out.push({zone:true,m:mins,label:fmtOff(mins),sub:'UTC offset'});}
+  else if(/^(utc|gmt)$/.test(q)) out.push({zone:true,m:0,label:'UTC+0',sub:'Coordinated Universal Time'});
+  var tz=ABBR[q]; if(tz&&tz!=='UTC'){var mm=off(tz,new Date());out.push({zone:true,m:mm,label:q.toUpperCase()+' · '+fmtOff(mm),sub:tz.split('/').pop().replace(/_/g,' ')+' time',tz:tz});}
+  return out;
+}
+function score(c,q){var n=fold(c.name),co=fold(c.country);if(n===q)return 0;if(n.indexOf(q)===0)return 1;if((' '+c.alias+' ').indexOf(' '+q+' ')>-1)return 2;if(co.indexOf(q)===0)return 3;return 5;}
+var HITS=[],HL=0;
+function runSearch(){
+  var raw=$('wmQ').value,q=fold(raw).trim(),dd=$('wmDrop');
+  if(!q){HITS=[];dd.classList.remove('open');dd.innerHTML='';return;}
+  var z=zoneHits(q);
+  var c=index().filter(function(c){return fold(c.name).indexOf(q)>-1||fold(c.country).indexOf(q)===0||c.alias.indexOf(q)>-1;})
+    .sort(function(a,b){return score(a,q)-score(b,q)||b.pop-a.pop||a.name.length-b.name.length;}).slice(0,8);
+  HITS=z.concat(c); HL=0; drawDrop();
+}
+function drawDrop(){
+  var dd=$('wmDrop');
+  if(!HITS.length){dd.innerHTML='<div class="wm-opt" aria-disabled="true">'+(window.CITIES_FULL?'No matches':'Searching all cities…')+'</div>';dd.classList.add('open');return;}
+  dd.innerHTML=HITS.map(function(h,i){
+    if(h.zone) return '<div class="wm-opt'+(i===HL?' hl':'')+'" role="option" aria-selected="'+(i===HL)+'" data-i="'+i+'"><span class="z"><i class="ti ti-world"></i></span><b>'+esc(h.label)+'</b><small>'+esc(h.sub)+'</small><span class="r">'+utcTimeAtOffset(h.m,new Date())+'</span></div>';
+    return '<div class="wm-opt'+(i===HL?' hl':'')+'" role="option" aria-selected="'+(i===HL)+'" data-i="'+i+'">'+flag(h.cc,20)+'<b>'+esc(h.name)+'</b><small>'+esc(h.country)+'</small><span class="r">'+tAt(h.tz,new Date())+'</span></div>';
+  }).join('');
+  dd.classList.add('open');
+}
+function pick(i){
+  var h=HITS[i]; if(!h) return;
+  $('wmQ').value=''; $('wmDrop').classList.remove('open'); $('wmQ').blur();
+  if(h.zone){ if(h.tz){var c0=MAP_CITIES.filter(function(c){return c.tz===h.tz;})[0];if(c0){select(c0,{src:'search_abbr'});return;}} selectOffset(h.m); return; }
+  var c=BY_KEY[key(h)]||{name:h.name,country:h.country,cc:h.cc,tz:h.tz};
+  select(c,{src:'search'});
+  if(!coordsOf(c)) toast('Finding '+esc(c.name)+' on the map…');
+}
+$('wmQ').addEventListener('focus',function(){loadFull();});
+$('wmQ').addEventListener('input',runSearch);
+$('wmQ').addEventListener('keydown',function(e){
+  if(e.key==='ArrowDown'){HL=Math.min(HL+1,HITS.length-1);drawDrop();e.preventDefault();}
+  else if(e.key==='ArrowUp'){HL=Math.max(HL-1,0);drawDrop();e.preventDefault();}
+  else if(e.key==='Enter'){e.preventDefault();pick(HL);}
+  else if(e.key==='Escape'){$('wmDrop').classList.remove('open');this.blur();}
+});
+$('wmDrop').addEventListener('mousedown',function(e){var o=e.target.closest('[data-i]');if(o){e.preventDefault();pick(+o.dataset.i);}});
+document.addEventListener('click',function(e){if(!e.target.closest('.wm-search'))$('wmDrop').classList.remove('open');if(!e.target.closest('#wmLayers,#wmLBtn')&&innerWidth<=760){$('wmLayers').classList.remove('open');$('wmLBtn').setAttribute('aria-expanded','false');}});
+document.addEventListener('keydown',function(e){if(e.key==='/'&&!/input|textarea|select/i.test((e.target.tagName||''))){e.preventDefault();$('wmQ').focus();}});
+
+/* ---------- layers + controls ---------- */
+var WX={};
+function loadWeather(){
+  var f=ls('wx_unit')==='fahrenheit';
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+MAP_CITIES.map(function(c){return c.lat;}).join(',')+'&longitude='+MAP_CITIES.map(function(c){return c.lng;}).join(',')+'&current=temperature_2m'+(f?'&temperature_unit=fahrenheit':''))
+    .then(function(r){return r.json();}).then(function(d){(Array.isArray(d)?d:[d]).forEach(function(x,i){if(x&&x.current&&MAP_CITIES[i])WX[key(MAP_CITIES[i])]={t:Math.round(x.current.temperature_2m)+'°'};});refreshSources();})
+    .catch(function(){toast('Weather is unavailable right now');});
+}
+document.querySelectorAll('#wmLayers [data-l]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var l=b.dataset.l; LAYERS[l]=!LAYERS[l]; b.setAttribute('aria-pressed',String(LAYERS[l]));
+    if(READY){
+      var ids={daynight:['wm-night','wm-night-line'],bands:['wm-bands'],labels:['wm-label'],weather:['wm-wx']}[l];
+      ids.forEach(function(id){map.setLayoutProperty(id,'visibility',vis(LAYERS[l]));});
+    }
+    if(l==='weather'&&LAYERS.weather&&!Object.keys(WX).length) loadWeather();
+    ls('wm_layers',JSON.stringify(LAYERS)); track('map_layer',{layer:l,on:LAYERS[l]});
   });
-  return d < 22 ? best : null;
-}
-
-// ── Side panel — replaces popup entirely ─────────────────────────────────
-let panelCity = null;   // currently displayed city object
-let panelTimer = null;  // 1s tick for panel time
-
-// Small dot marker on map to show selected city (optional, not a popup)
-let selectedMarker = null;
-
-function openPanel(city) {
-  panelCity = city;
-
-  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
-  if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
-
-  // Pulsing selected marker
-  const el = document.createElement('div');
-  el.style.cssText = `
-    width:14px;height:14px;border-radius:50%;
-    background:var(--accent,#58a6ff);
-    border:2.5px solid #fff;
-    box-shadow:0 0 0 4px rgba(88,166,255,0.3);
-    animation:markerPulse 1.6s ease-out infinite;
-  `;
-  selectedMarker = new maplibregl.Marker({ element:el, anchor:'center' })
-    .setLngLat([city.lng, city.lat])
-    .addTo(map);
-
-  // Fly to city smoothly
-  map.flyTo({ center:[city.lng, city.lat], zoom: Math.max(map.getZoom(), 4), duration:800, essential:true });
-
-  // Populate panel DOM
-  const t = getLocalTime(city.tz);
-
-  // Determine day/night for this city
-  const sunPos = getSunPosition(Date.now());
-  const cityIsDay = isDaytime(city.lat, city.lng, sunPos);
-
-  document.getElementById('panel-empty').style.display = 'none';
-  document.getElementById('panel-city').style.display  = 'block';
-  document.getElementById('panel-flag').textContent        = city.flag;
-  document.getElementById('panel-city-name').textContent  = city.name;
-  document.getElementById('panel-country').textContent    = city.country;
-  document.getElementById('panel-time').textContent       = t.time;
-  document.getElementById('panel-date').textContent       = t.date;
-  document.getElementById('panel-offset').textContent     = t.offset;
-  document.getElementById('panel-tz').textContent         = city.tz.split('/').pop().replace(/_/g,' ');
-  document.getElementById('panel-tzfull').textContent     = t.tzName;
-
-  // Day/Night status
-  const dnEl = document.getElementById('panel-daynight');
-  if (dnEl) dnEl.textContent = cityIsDay ? '🌞 Daytime' : '🌙 Nighttime';
-
-  // Clear previous weather
-  const wxEl = document.getElementById('panel-weather');
-  if (wxEl) wxEl.innerHTML = '<span style="font-size:11px;opacity:.4">Loading weather…</span>';
-
-  // Fetch weather
-  fetchCityWeather(city, function(wx) {
-    const wxEl2 = document.getElementById('panel-weather');
-    if (!wxEl2 || panelCity !== city) return;
-    if (!wx) { wxEl2.innerHTML = ''; return; }
-    wxEl2.innerHTML =
-      '<div class="panel-wx-main">'
-      + '<span class="panel-wx-icon">' + wx.icon + '</span>'
-      + '<span class="panel-wx-temp">' + wx.temp + '°C</span>'
-      + '</div>'
-      + '<div class="panel-wx-desc">' + wx.desc + '</div>'
-      + '<div class="panel-wx-meta">'
-      + '<span>💧 ' + wx.hum + '%</span>'
-      + '<span>💨 ' + wx.wind + ' km/h</span>'
-      + (wx.rise ? '<span>🌅 ' + wx.rise + '</span>' : '')
-      + '</div>';
-  });
-
-  updatePinBtn();
-  document.getElementById('wtm-panel').classList.add('panel-open');
-
-  panelTimer = setInterval(() => {
-    if (!panelCity) { clearInterval(panelTimer); return; }
-    const t2 = getLocalTime(panelCity.tz);
-    document.getElementById('panel-time').textContent = t2.time;
-    document.getElementById('panel-date').textContent = t2.date;
-  }, 1000);
-}
-
-// Is a point in daytime given sun position?
-function isDaytime(lat, lng, sunPos) {
-  // Simple: if the angle between the point and the sub-solar point < 90°, it's daytime
-  const lat1 = lat * Math.PI/180, lat2 = sunPos.lat * Math.PI/180;
-  const dLng = (lng - sunPos.lng) * Math.PI/180;
-  const cosAngle = Math.sin(lat1)*Math.sin(lat2) + Math.cos(lat1)*Math.cos(lat2)*Math.cos(dLng);
-  return cosAngle > 0; // > 0 means sun above horizon
-}
-
-// Open-Meteo weather fetch
-const WX_ICONS_MAP = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'❄️',75:'❄️',77:'❄️',80:'🌦',81:'🌧',82:'⛈',85:'🌨',86:'❄️',95:'⛈',96:'⛈',99:'⛈'};
-const WX_DESC_MAP  = {0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',51:'Light drizzle',53:'Drizzle',61:'Slight rain',63:'Moderate rain',65:'Heavy rain',71:'Slight snow',73:'Moderate snow',75:'Heavy snow',80:'Showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm'};
-const wxCache = {};
-
-function fetchCityWeather(city, cb) {
-  // Use CITY_COORDS from weather.js approach — inline coords
-  const coordsMap = {
-    'Mumbai':{lat:19.076,lon:72.877},'New Delhi':{lat:28.611,lon:77.209},
-    'Delhi':{lat:28.611,lon:77.209},'London':{lat:51.507,lon:-0.128},
-    'New York':{lat:40.714,lon:-74.006},'Tokyo':{lat:35.689,lon:139.692},
-    'Sydney':{lat:-33.869,lon:151.209},'Dubai':{lat:25.204,lon:55.270},
-    'Paris':{lat:48.857,lon:2.352},'Berlin':{lat:52.520,lon:13.405},
-    'Shanghai':{lat:31.230,lon:121.473},'Beijing':{lat:39.906,lon:116.391},
-    'Singapore':{lat:1.352,lon:103.820},'Los Angeles':{lat:34.052,lon:-118.244},
-    'Chicago':{lat:41.850,lon:-87.650},'Toronto':{lat:43.651,lon:-79.383},
-    'Moscow':{lat:55.752,lon:37.616},'Seoul':{lat:37.566,lon:126.978},
-    'Bangkok':{lat:13.754,lon:100.502},'Cairo':{lat:30.060,lon:31.229},
-    'Istanbul':{lat:41.013,lon:28.948},'Mexico City':{lat:19.433,lon:-99.133},
-    'São Paulo':{lat:-23.550,lon:-46.633},'Buenos Aires':{lat:-34.603,lon:-58.381},
-    'Jakarta':{lat:-6.211,lon:106.845},'Karachi':{lat:24.861,lon:67.010},
-    'Lagos':{lat:6.455,lon:3.384},'Nairobi':{lat:-1.286,lon:36.820},
-    'Miami':{lat:25.775,lon:-80.208},'Houston':{lat:29.760,lon:-95.369},
-    'Seattle':{lat:47.606,lon:-122.332},'Boston':{lat:42.360,lon:-71.059},
-    'Vancouver':{lat:49.246,lon:-123.116},'Montreal':{lat:45.509,lon:-73.554},
-  };
-  const coords = coordsMap[city.name] || {lat: city.lat, lon: city.lng};
-  const key = coords.lat + ',' + coords.lon;
-  if (wxCache[key]) { cb(wxCache[key]); return; }
-  fetch('https://api.open-meteo.com/v1/forecast?latitude=' + coords.lat + '&longitude=' + coords.lon
-    + '&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m'
-    + '&daily=sunrise,sunset&timezone=auto&forecast_days=1')
-    .then(r => r.json())
-    .then(d => {
-      if (!d.current) { cb(null); return; }
-      const code = d.current.weather_code || 0;
-      const result = {
-        temp: Math.round(d.current.temperature_2m),
-        icon: WX_ICONS_MAP[code] || '🌡',
-        desc: WX_DESC_MAP[code] || '',
-        hum:  d.current.relative_humidity_2m,
-        wind: d.current.wind_speed_10m,
-        rise: d.daily?.sunrise?.[0]?.slice(11,16) || ''
-      };
-      wxCache[key] = result;
-      cb(result);
-    })
-    .catch(() => cb(null));
-}
-
-function closePanel() {
-  panelCity = null;
-  if (panelTimer) { clearInterval(panelTimer); panelTimer = null; }
-  if (selectedMarker) { selectedMarker.remove(); selectedMarker = null; }
-  document.getElementById('panel-empty').style.display = 'flex';
-  document.getElementById('panel-city').style.display  = 'none';
-  document.getElementById('wtm-panel').classList.remove('panel-open');
-}
-
-function updatePinBtn() {
-  if (!panelCity) return;
-  const isPinned = pinnedCities.some(p => p.name === panelCity.name);
-  const btn = document.getElementById('panel-pin-btn');
-  btn.className = 'panel-pin-btn ' + (isPinned ? 'pinned' : 'unpinned');
-  btn.innerHTML = isPinned
-    ? '<i class="ti ti-map-pin-off"></i> Unpin city'
-    : '<i class="ti ti-map-pin"></i> Pin to compare';
-}
-
-// Panel close button
-document.getElementById('panel-close').addEventListener('click', closePanel);
-
-// Panel pin button
-document.getElementById('panel-pin-btn').addEventListener('click', () => {
-  if (panelCity) togglePin(panelCity);
+});
+(function(){try{var s=JSON.parse(ls('wm_layers')||'null');if(s){Object.keys(LAYERS).forEach(function(k){if(typeof s[k]==='boolean')LAYERS[k]=s[k];});document.querySelectorAll('#wmLayers [data-l]').forEach(function(b){b.setAttribute('aria-pressed',String(LAYERS[b.dataset.l]));});}}catch(e){}})();
+$('wmLBtn').addEventListener('click',function(e){e.stopPropagation();$('wmPanel').classList.remove('full');var o=$('wmLayers').classList.toggle('open');this.setAttribute('aria-expanded',String(o));});
+$('wmZin').addEventListener('click',function(){if(map)map.zoomIn();});
+$('wmZout').addEventListener('click',function(){if(map)map.zoomOut();});
+$('wmReset').addEventListener('click',function(){if(map)map.flyTo({center:DEFAULT_VIEW.center,zoom:DEFAULT_VIEW.zoom,duration:800});});
+var YOU_XY=null;
+$('wmLocate').addEventListener('click',function(){
+  $('wmPanel').classList.remove('full');
+  if(!navigator.geolocation){toast('Location is not supported in this browser');return;}
+  navigator.geolocation.getCurrentPosition(function(p){
+    YOU_XY=[+p.coords.latitude.toFixed(3),+p.coords.longitude.toFixed(3)]; placeYou();
+    var c={name:'Your location',country:'',cc:HOME.cc||'un',tz:DEV_TZ,lat:YOU_XY[0],lng:YOU_XY[1]};
+    select(c,{src:'locate'}); track('map_locate');
+  },function(){toast('Location access was denied — showing your time zone instead');var xy=coordsOf(HOME);if(xy)flyTo(xy,4);},{timeout:10000,maximumAge:600000});
 });
 
-// ── Pin / unpin ───────────────────────────────────────────────────────────
-function togglePin(city) {
-  const idx = pinnedCities.findIndex(p => p.name === city.name);
-  if (idx >= 0) {
-    pinnedCities.splice(idx, 1);
-  } else {
-    if (pinnedCities.length >= 8) pinnedCities.shift();
-    pinnedCities.push(city);
-  }
-  updatePinBtn();
-  renderPins();
+/* ---------- time slider ---------- */
+var raf=0;
+function setShiftLabel(){
+  $('wmShiftV').textContent=SHIFT===0?'Now · '+tAt('UTC',new Date())+' UTC':(SHIFT>0?'+':'−')+hm(SHIFT)+' · '+tAt(HOME.tz)+' your time';
+  $('wmTime').classList.toggle('moved',SHIFT!==0); $('wmNow').hidden=SHIFT===0;
 }
+function applyShift(){cancelAnimationFrame(raf);raf=requestAnimationFrame(function(){setShiftLabel();refreshSources();tickAll();renderRail();});}
+$('wmShift').addEventListener('input',function(){SHIFT=+this.value;applyShift();});
+$('wmShift').addEventListener('change',function(){track('map_time_slider');});
+$('wmNow').addEventListener('click',function(){stopPlay();SHIFT=0;$('wmShift').value=0;applyShift();});
+var PLAY=0;
+function stopPlay(){if(PLAY){clearInterval(PLAY);PLAY=0;$('wmPlay').setAttribute('aria-pressed','false');$('wmPlay').innerHTML='<i class="ti ti-player-play"></i><span class="tx">Play 24h</span>';}}
+$('wmPlay').addEventListener('click',function(){
+  if(PLAY){stopPlay();return;}
+  if(SHIFT>=720){SHIFT=-720;}
+  this.setAttribute('aria-pressed','true'); this.innerHTML='<i class="ti ti-player-pause"></i><span class="tx">Pause</span>';
+  PLAY=setInterval(function(){SHIFT+=15;if(SHIFT>720){stopPlay();SHIFT=720;}$('wmShift').value=SHIFT;applyShift();},matchMedia('(prefers-reduced-motion: reduce)').matches?250:90);
+  track('map_play');
+});
 
-function clearPins() {
-  pinnedCities.length = 0;
-  renderPins();
+/* ---------- pinned cities + offset rail ---------- */
+function renderPins(){
+  var el=$('wmPins');
+  if(!WC.pinned.length){el.innerHTML='<div class="wm-empty">No pinned cities yet. Select a city on the map and tap <b>Pin to my cities</b>.</div>';return;}
+  el.innerHTML=WC.pinned.map(function(c,i){
+    return '<div class="wm-pin" role="button" tabindex="0" data-i="'+i+'" aria-label="Show '+esc(c.name)+' on the map"><span class="n">'+flag(c.cc,16)+esc(c.name)+'</span><span class="t" data-tz="'+esc(c.tz)+'"></span><small data-rel="'+i+'"></small><button class="rm" type="button" data-rm="'+i+'" aria-label="Unpin '+esc(c.name)+'">×</button></div>';
+  }).join('');
+  tickPins();
 }
-
-function renderPins() {
-  const el = document.getElementById('wtm-pins');
-  if (!pinnedCities.length) {
-    el.innerHTML = '<p class="wtm-pins-empty">Click any city on the map, then pin it to compare times here.</p>';
-    return;
-  }
-  el.innerHTML = pinnedCities.map(city => {
-    const t = getLocalTime(city.tz);
-    const key = city.name.replace(/\s/g,'_');
-    const safeCity = JSON.stringify(city).replace(/"/g,'&quot;');
-    return `
-    <div class="wtm-pin-card">
-      <button class="wtm-pin-remove" onclick="togglePin(${safeCity})" title="Remove ${city.name}">✕</button>
-      <div class="wtm-pin-flag">${city.flag}</div>
-      <div class="wtm-pin-city">${city.name}</div>
-      <div class="wtm-pin-meta">${t.offset} · ${city.country}</div>
-      <div class="wtm-pin-time" id="pin-t-${key}">${t.time}</div>
-      <div class="wtm-pin-date" id="pin-d-${key}">${t.date}</div>
-    </div>`;
+function tickPins(){
+  var d=now();
+  document.querySelectorAll('#wmPins .wm-pin').forEach(function(p){
+    var c=WC.pinned[+p.dataset.i]; if(!c) return;
+    p.querySelector('.t').textContent=tAt(c.tz,d);
+    var m=off(c.tz,d)-off(HOME.tz,d); p.querySelector('small').textContent=(key(c)===key(HOME)?'You':(m===0?'Same time':(m>0?'+':'−')+hm(m)))+' · '+partOfDay(c,d);
+  });
+}
+$('wmPins').addEventListener('click',function(e){
+  var rm=e.target.closest('[data-rm]'); if(rm){e.stopPropagation();removePin(+rm.dataset.rm);return;}
+  var p=e.target.closest('.wm-pin'); if(!p) return; var c=WC.pinned[+p.dataset.i]; if(!c) return;
+  select(BY_KEY[key(c)]||c,{src:'pinned'}); if(innerWidth<=760) $('wmBox').scrollIntoView({behavior:'smooth',block:'start'});
+});
+$('wmPins').addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('wm-pin')){e.preventDefault();e.target.click();}});
+var OFFSETS=[];
+function computeOffsets(){
+  var zones=[];try{zones=Intl.supportedValuesOf('timeZone');}catch(e){zones=MAP_CITIES.map(function(c){return c.tz;});}
+  var d=now(),set={};zones.forEach(function(z){set[off(z,d)]=1;});set[0]=1;
+  OFFSETS=Object.keys(set).map(Number).sort(function(a,b){return a-b;});
+}
+function renderRail(){
+  var d=now(),me=off(HOME.tz,d),el=$('wmRail');
+  el.innerHTML=OFFSETS.map(function(m){
+    var h=new Date(d.getTime()+m*60000).getUTCHours(),day=h>=6&&h<18;
+    return '<button type="button" class="wm-z'+(day?' day':'')+(m===me?' me':'')+(m===SEL_OFF?' on':'')+'" data-m="'+m+'" aria-pressed="'+(m===SEL_OFF)+'"><small>'+fmtOff(m).replace('UTC','')+'</small><b>'+utcTimeAtOffset(m,d).replace(/ ?[AP]M/,function(x){return x.trim().toLowerCase()[0];})+'</b></button>';
   }).join('');
 }
+$('wmRail').addEventListener('click',function(e){var b=e.target.closest('[data-m]');if(!b)return;selectOffset(+b.dataset.m);if(innerWidth<=760)$('wmBox').scrollIntoView({behavior:'smooth',block:'start'});});
 
-// ── Live tick (UTC clock + pins + night overlay) ───────────────────────────
-let lastNightUpdate = 0;
-function tick() {
-  const now = new Date();
-  const use24 = localStorage.getItem('wc_24h') === '1';
-
-  // Nav UTC val (matches every other page)
-  const navUtc = document.getElementById('utc-val');
-  if (navUtc) navUtc.textContent = now.toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-
-  // (UTC overlay removed — cleaner interface)
-
-  // Night overlay — update every 60s
-  if (map && map.isStyleLoaded() && dayNightOn && now - lastNightUpdate > 60000) {
-    const nightData = getNightPolygon(now.getTime());
-    map.getSource('nightzone')?.setData(nightData);
-    lastNightUpdate = now.getTime();
-  }
-
-  // Update pinned cities
-  pinnedCities.forEach(city => {
-    const key = city.name.replace(/\s/g,'_');
-    const t = getLocalTime(city.tz);
-    const tEl = document.getElementById('pin-t-' + key);
-    const dEl = document.getElementById('pin-d-' + key);
-    if (tEl) tEl.textContent = t.time;
-    if (dEl) dEl.textContent = t.date;
-  });
+/* ---------- header stats ---------- */
+function tickHeader(){
+  $('wmYou').textContent=tAt(HOME.tz,new Date())+' · '+fmtOff(off(HOME.tz,new Date()));
+  var s=sunPos(now().getTime()),best=null,bd=1e9;
+  MAP_CITIES.forEach(function(c){var dl=Math.abs(((c.lng-s.lng+540)%360)-180)+Math.abs(c.lat-s.lat)*0.15;if(dl<bd){bd=dl;best=c;}});
+  $('wmNoon').textContent=best?best.name:'—';
 }
-setInterval(tick, 1000);
-tick();
 
-// ── Controls ──────────────────────────────────────────────────────────────
-document.getElementById('btn-zoom-in').addEventListener('click', () => map?.zoomIn({duration:350}));
-document.getElementById('btn-zoom-out').addEventListener('click', () => map?.zoomOut({duration:350}));
-document.getElementById('btn-reset').addEventListener('click', () => map?.flyTo({center:[15,20],zoom:1.6,duration:700}));
-document.getElementById('btn-daynight').addEventListener('click', function() {
-  dayNightOn = !dayNightOn;
-  this.classList.toggle('active', dayNightOn);
-  if (map?.isStyleLoaded()) {
-    map.setLayoutProperty('nightzone-fill','visibility', dayNightOn ? 'visible' : 'none');
-    map.setLayoutProperty('nightzone-line','visibility', dayNightOn ? 'visible' : 'none');
-  }
-});
-
-// ── Search ────────────────────────────────────────────────────────────────
-const searchInput = document.getElementById('wtm-search');
-const searchBox   = document.getElementById('wtm-search-results');
-
-searchInput.addEventListener('input', () => {
-  const q = searchInput.value.trim().toLowerCase();
-  if (q.length < 2) { searchBox.style.display='none'; return; }
-  const hits = CITIES.filter(c =>
-    c.name.toLowerCase().includes(q) || c.country.toLowerCase().includes(q)
-  ).slice(0, 7);
-  if (!hits.length) { searchBox.style.display='none'; return; }
-  searchBox.innerHTML = hits.map(c => `
-    <div class="wtm-search-result" data-name="${c.name}" role="option">
-      <strong>${c.flag} ${c.name}</strong><span>${c.country}</span>
-    </div>`).join('');
-  searchBox.style.display = 'block';
-  searchBox.querySelectorAll('.wtm-search-result').forEach(el => {
-    el.addEventListener('click', () => {
-      const city = CITIES.find(c => c.name === el.dataset.name);
-      if (city) {
-        map?.flyTo({ center:[city.lng, city.lat], zoom:5, duration:900 });
-        setTimeout(() => openPanel(city), 500);
-        searchInput.value = city.name;
-        searchBox.style.display = 'none';
-      }
-    });
-  });
-});
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('.wtm-search-wrap')) searchBox.style.display='none';
-});
-searchInput.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { searchBox.style.display='none'; searchInput.blur(); }
-});
-
-// ── Footer year ───────────────────────────────────────────────────────────
-const fyEl = document.getElementById('footer-year');
-if (fyEl) fyEl.textContent = new Date().getFullYear();
-
-// ── Boot ──────────────────────────────────────────────────────────────────
+/* ---------- shared hooks + boot ---------- */
+window.onPinsChanged=function(){renderPins();refreshPins();if(SEL&&SEL.type==='city')renderPanel();};
+window.onFmtChange=function(){tickAll();renderRail();renderPins();setShiftLabel();if(SEL)renderPanel();};
+var _toggleTheme=window.toggleTheme;
+window.toggleTheme=function(){if(_toggleTheme)_toggleTheme.apply(this,arguments);if(map){READY=false;map.setStyle(styleUrl(),{diff:false});}};
+function tickAll(){tickHeader();tickPanel();tickPins();}
+computeOffsets(); renderRail(); renderPins(); setShiftLabel(); tickAll(); renderPanel(); setTH();
 initMap();
+// deep link ?city=tokyo&cc=jp, otherwise preselect your own city on desktop
+(function(){
+  var q=new URLSearchParams(location.search),s=q.get('city'),cc=q.get('cc');
+  if(s){var c=MAP_CITIES.filter(function(x){return slug(x.name)===s&&(!cc||x.cc===cc);})[0];
+    if(!c){var f=index().filter(function(x){return slug(x.name)===s&&(!cc||x.cc===cc);}).sort(function(a,b){return b.pop-a.pop;})[0];if(f)c={name:f.name,country:f.country,cc:f.cc,tz:f.tz};}
+    if(c){select(c,{src:'url'});return;}}
+  if(innerWidth>760){SEL={type:'city',c:HOME,xy:coordsOf(HOME)};renderPanel();loadCityWeather(HOME);}
+  else $('wmPanel').classList.add('closed');
+})();
+setInterval(tickAll,1000);
+setInterval(function(){if(!PLAY){refreshSources();renderRail();if(SHIFT===0)setShiftLabel();}},60000);
+setInterval(function(){computeOffsets();},3600000);
+var marks={25:0,50:0,75:0,90:0};
+window.addEventListener('scroll',function(){var h=document.documentElement,pc=(h.scrollTop+innerHeight)/h.scrollHeight*100;Object.keys(marks).forEach(function(k){if(!marks[k]&&pc>=+k){marks[k]=1;track('scroll_depth',{percent:+k});}});},{passive:true});
+})();
 </script>
-<!-- nav_inject_v2 -->
 <script src="/nav.js?v=3"></script>
 </body>
 </html>
