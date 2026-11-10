@@ -2,191 +2,140 @@
 <html lang="en">
 <head>
 <script>
-(function() {
-  var saved = localStorage.getItem('wc_theme');
-  var isDark = saved === 'dark' ||
-    (!saved && matchMedia('(prefers-color-scheme:dark)').matches);
-  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-})();
+(function(){var s=localStorage.getItem('wc_theme');var d=s==='dark'||(!s&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',d?'dark':'light');})();
 </script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<meta name="description" content="Free timezone converter, meeting planner and time difference calculator. Convert between 130+ cities instantly.">
-<meta name="keywords" content="timezone converter,meeting planner,time difference,world time,UTC converter">
-<title>Timezone Converter & Meeting Planner | WorldClock</title>
-<link rel="canonical" href="https://timezonebudy.com/converter.html">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meeting Planner – Find the Best Time Across Time Zones | TimezoneBuddy</title>
+<meta name="description" content="Free meeting planner and time zone converter. Add your team’s cities, see working hours side by side and find the best meeting time. DST-aware, shareable, no sign-up.">
+<link rel="canonical" href="https://timezonebudy.com/converter">
+<meta property="og:title" content="Meeting Planner – Find the Best Time Across Time Zones | TimezoneBuddy">
+<meta property="og:description" content="Free meeting planner and time zone converter. Add your team’s cities, see working hours side by side and find the best meeting time. DST-aware, shareable, no sign-up.">
+<meta property="og:url" content="https://timezonebudy.com/converter">
+<meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.11.0/dist/tabler-icons.min.css">
-<link rel="stylesheet" href="/main.css?v=2">
-<link rel="stylesheet" href="/location.css?v=2">
-<link rel="stylesheet" href="/footer.css?v=2">
-<link rel="stylesheet" href="/converter.css">
+<link rel="stylesheet" href="/main.css">
+<link rel="stylesheet" href="/footer.css">
+<link rel="stylesheet" href="/converter.css?v=3">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#0d2240">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="TimezoneBudy">
-<link rel="stylesheet" href="/pwa.css?v=2">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "TimezoneBuddy Meeting Planner", "url": "https://timezonebudy.com/converter", "applicationCategory": "UtilitiesApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "Free meeting planner that finds the best time across time zones for teams in multiple cities."}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://timezonebudy.com/"}, {"@type": "ListItem", "position": 2, "name": "Meeting Planner", "item": "https://timezonebudy.com/converter"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I find a good meeting time across time zones?", "acceptedAnswer": {"@type": "Answer", "text": "Add the city of every attendee, pick the meeting date and look at the overlap bar under the timeline. Green hours are inside everyone’s work hours; amber hours keep most people working with nobody asleep. The “Best times” cards rank the top three slots for you."}}, {"@type": "Question", "name": "Does the Meeting Planner handle daylight saving time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Times are calculated for the exact date you choose, so if London or New York changes its clocks that week, the timeline and suggestions shift automatically."}}, {"@type": "Question", "name": "Can I share the meeting time with my team?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Select a slot and use Share link: anyone who opens it sees the same cities, date and time. You can also copy all local times as text or add the meeting to Google Calendar, Outlook or any calendar app (.ics file)."}}, {"@type": "Question", "name": "Can I convert one specific time between cities?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. In the selected-slot bar, type a time and choose the city it belongs to: every other city updates instantly. You can also click any hour on the timeline."}}, {"@type": "Question", "name": "Can I change the work hours?", "acceptedAnswer": {"@type": "Answer", "text": "Use the Work hours menu at the top to pick 8–16, 9–17, 9–18, 10–18 or 10–19. The colours, overlap bar and suggestions all follow your choice."}}, {"@type": "Question", "name": "Are my cities saved?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Your cities, meeting length and work hours are saved in your browser, and cities you star in World Clock or World Map appear as one-tap “Saved” chips."}}]}</script>
 </head>
 <body>
-
-<nav class="topnav" aria-label="Main navigation">
-  <div class="topnav-inner">
-    <a class="logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
-    <div class="nav-tabs" role="tablist">
-      <a class="nav-tab" href="/"><i class="ti ti-clock"></i> <span>World Clock</span></a>
-      <a class="nav-tab active" href="/converter.html"><i class="ti ti-arrows-exchange"></i> <span>Converter</span></a>
-      <a class="nav-tab" href="/sunmoon.html"><i class="ti ti-sun"></i> <span>Sun &amp; Moon</span></a>
-      <a class="nav-tab" href="/weather"><i class="ti ti-cloud"></i> <span>Weather</span></a>
-      <a class="nav-tab" href="/time-difference-calculator"><i class="ti ti-chart-bar"></i> <span>Time Difference</span></a>
-      <a class="nav-tab" href="/tools.html"><i class="ti ti-tool"></i> <span>Tools</span></a>
-      <a class="nav-tab" href="/location/"><i class="ti ti-map-pin"></i> <span>Locations</span></a>
-      <a class="nav-tab" href="/world-time-map"><i class="ti ti-map"></i> <span>World Map</span></a>
-    </div>
-    <div class="nav-utc"><span class="utc-l">UTC</span><span class="utc-v" id="utc-val">--:--:--</span></div>
-    <div class="nav-btns">
-      <button class="nav-btn" id="fmt-btn" onclick="toggle24h()">AM/PM</button>
-      <button class="nav-btn" id="theme-btn" onclick="toggleTheme()">🌙</button>
-    </div>
+<nav class="topnav" aria-label="Main navigation"></nav>
+<main>
+<section class="mp-hero">
+ <div class="mp-wrap">
+  <div class="mp-hero-l">
+   <nav class="mp-crumb" aria-label="Breadcrumb"><a href="/">Home</a> › Meeting Planner</nav>
+   <h1>Meeting Planner: find the best time across time zones</h1>
+   <p>Add your team’s cities, pick a day and see at a glance when everyone is awake and working.</p>
   </div>
-</nav>
-
-<!-- My Cities -->
-<section class="my-section" aria-label="My Cities">
-  <div class="wrap">
-    <div class="my-head">
-      <h2 class="my-title"><i class="ti ti-map-pin" aria-hidden="true"></i> My Cities</h2>
-    </div>
-    <div id="my-strip" role="list"></div>
+  <div class="mp-ctl">
+   <div class="mp-f d"><span>DATE</span>
+    <div class="mp-date"><button type="button" id="mpPrev" aria-label="Previous day">‹</button>
+     <label><i class="ti ti-calendar" aria-hidden="true"></i><span id="mpDateTxt">&nbsp;</span><input type="date" id="mpDateIn" aria-label="Meeting date"></label>
+     <button type="button" id="mpNext" aria-label="Next day">›</button></div></div>
+   <button type="button" class="mp-btn dk" id="mpToday">Today</button>
+   <div class="mp-f l"><span>LENGTH</span><select class="mp-sel" id="mpLen" aria-label="Meeting length"><option value="30">30 min</option><option value="45">45 min</option><option value="60">1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option></select></div>
+   <div class="mp-f w"><span>WORK HOURS</span><select class="mp-sel" id="mpWork" aria-label="Work hours"><option value="8-16">8:00–16:00</option><option value="9-17">9:00–17:00</option><option value="9-18">9:00–18:00</option><option value="10-18">10:00–18:00</option><option value="10-19">10:00–19:00</option></select></div>
   </div>
+ </div>
 </section>
 
-<main class="wrap">
-
-  <!-- Tool tabs -->
-  <div class="tool-tabs" role="tablist">
-    <button class="tool-tab active" data-t="converter" onclick="setTool('converter')"><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Converter</button>
-    <button class="tool-tab" data-t="meeting" onclick="setTool('meeting')"><i class="ti ti-calendar-time" aria-hidden="true"></i> Meeting Planner</button>
+<div class="mp-wrap mp-main">
+ <section class="mp-box mp-add" aria-label="Add cities">
+  <div class="mp-search" role="search">
+   <i class="ti ti-plus" aria-hidden="true"></i>
+   <label class="mp-sr" for="mpQ">Add a city or time zone</label>
+   <input id="mpQ" type="search" autocomplete="off" spellcheck="false" placeholder="Add a city or time zone (Tokyo, PST, UTC+8)…" role="combobox" aria-expanded="false" aria-controls="mpDrop" aria-autocomplete="list">
+   <div class="mp-drop" id="mpDrop" role="listbox"></div>
   </div>
+  <div class="mp-chips" id="mpChips"></div>
+ </section>
 
-  <div class="conv-layout">
+ <div class="mp-mbest" id="mpMBest"></div>
 
-    <!-- Left: panels -->
-    <div>
-
-      <!-- CONVERTER PANEL -->
-      <div id="p-converter" class="tool-panel">
-        <div class="conv-card">
-          <div class="conv-hdr"><h2><i class="ti ti-arrows-exchange" aria-hidden="true"></i> Timezone Converter</h2><p>Select a date and time. Click any city flag to make it the source.</p></div>
-          <div class="conv-body">
-            <!-- Search -->
-            <div class="search-wrap" style="margin-bottom:12px">
-              <div class="search-pill" onclick="document.getElementById('conv-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
-                <i class="ti ti-search search-ico" aria-hidden="true"></i>
-                <input type="search" id="conv-srch" placeholder="Search and add a city…" autocomplete="off" autocorrect="off">
-              </div>
-              <div id="conv-dd" class="search-dd" hidden></div>
-            </div>
-            <!-- Date/time -->
-            <div class="date-row">
-              <label>Date:</label><input type="date" id="date-inp" class="date-inp" onchange="onDateChange(this.value)">
-              <label>Time:</label><input type="time" id="time-inp" class="time-inp" onchange="onTimeChange(this.value)">
-              <button class="now-btn" onclick="CV.selDate=new Date();renderConv()">Now</button>
-            </div>
-            <!-- City rows -->
-            <div id="conv-rows" class="conv-rows"></div>
-          </div>
-        </div>
-        <!-- Quick add -->
-        <div class="sb-card" style="margin-top:12px">
-          <div class="sb-head"><i class="ti ti-bolt" aria-hidden="true"></i> Quick Add</div>
-          <div class="sb-body"><div class="quick-add" id="qa-body"></div></div>
-        </div>
-      </div>
-
-      <!-- MEETING PANEL -->
-      <div id="p-meeting" class="tool-panel" style="display:none">
-        <div class="conv-card">
-          <div class="conv-hdr"><h2><i class="ti ti-calendar-time" aria-hidden="true"></i> Meeting Planner</h2><p>Find the best overlap time. Cities shared with the Converter. Click any hour to highlight it.</p></div>
-          <div class="conv-body" style="padding-bottom:0">
-            <div class="search-wrap" style="margin-bottom:12px">
-              <div class="search-pill" onclick="document.getElementById('mtg-srch').focus()" style="width:100%;max-width:100%;border-radius:8px">
-                <i class="ti ti-search search-ico" aria-hidden="true"></i>
-                <input type="search" id="mtg-srch" placeholder="Add city to planner…" autocomplete="off" autocorrect="off" style="width:100%">
-              </div>
-              <div id="mtg-dd" class="search-dd" hidden></div>
-            </div>
-          </div>
-          <div id="mtg-wrap" style="overflow-x:auto;padding:0 0 4px"></div>
-          <div class="mtg-legend" style="padding:0 20px 14px">
-            <span><span class="leg-dot" style="background:var(--clr-work)"></span>Work (9–17)</span>
-            <span><span class="leg-dot" style="background:var(--clr-morn)"></span>Morning (7–9)</span>
-            <span><span class="leg-dot" style="background:var(--clr-eve)"></span>Evening (17–21)</span>
-            <span><span class="leg-dot" style="background:var(--clr-sleep)"></span>Sleep (21–7)</span>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Sidebar -->
-    <aside class="conv-sidebar">
-      <div class="sb-card">
-        <div class="sb-head"><i class="ti ti-link" aria-hidden="true"></i> Share Link</div>
-        <div class="sb-body">
-          <div class="share-box"><span class="share-url" id="share-url">…</span><button class="copy-btn" onclick="copyShare()">Copy</button></div>
-        </div>
-      </div>
-      <div class="sb-card">
-        <div class="sb-head"><i class="ti ti-clock" aria-hidden="true"></i> Current UTC</div>
-        <div class="sb-clock"><div class="sb-big" id="utc-big">--:--:--</div><div class="sb-sub" id="utc-date"></div></div>
-      </div>
-      <div class="sb-card">
-        <div class="sb-head"><i class="ti ti-map-pin" aria-hidden="true"></i> Your Local Time</div>
-        <div class="sb-clock"><div class="sb-big" id="local-big">--:--:--</div><div class="sb-sub" id="local-date"></div></div>
-      </div>
-    </aside>
-
+ <section class="mp-box mp-plan" aria-labelledby="mpCount">
+  <div class="mp-ph"><h2 id="mpCount">&nbsp;</h2><span class="mp-hint" id="mpHint"></span>
+   <div class="mp-legend"><span class="mp-lg"><i class="k-work"></i>Work</span><span class="mp-lg"><i class="k-morn"></i>Morning 7–</span><span class="mp-lg"><i class="k-eve"></i>Evening –22</span><span class="mp-lg"><i class="k-sleep"></i>Sleep 22–7</span></div></div>
+  <div class="mp-grid">
+   <div class="mp-gr mp-axis"><span class="mp-k">City · time at selected slot</span><div class="mp-hrs" id="mpAxis"></div><span></span></div>
+   <div class="mp-rows" id="mpRows"></div>
+   <div class="mp-gr mp-ov"><div class="mp-ol">Overlap</div><div class="mp-ovb" id="mpOv"></div><span></span></div>
+   <div class="mp-ovleg"><span class="mp-lg"><i class="o-all"></i>Everyone in work hours</span><span class="mp-lg"><i class="o-most"></i>Most working, nobody asleep</span><span class="mp-lg"><i class="o-awake"></i>Everyone awake</span><span class="mp-lg"><i class="o-no"></i>Someone asleep</span></div>
   </div>
+  <div class="mp-vg" id="mpV"></div>
+  <div class="mp-slot">
+   <div class="mp-slot-i"><span class="mp-k">Selected slot</span><b id="mpSlotT">&nbsp;</b><span class="mp-slot-c" id="mpSlotC"></span><span class="mp-sum" id="mpSlotS"></span></div>
+   <div class="mp-type"><label for="mpTypeT">or type</label><input type="time" id="mpTypeT" step="900"><label for="mpTypeC">in</label><select id="mpTypeC"></select></div>
+   <div class="mp-acts">
+    <button type="button" class="mp-btn" data-copy><i class="ti ti-copy"></i>Copy</button>
+    <span style="position:relative"><button type="button" class="mp-btn" data-menu aria-haspopup="true" aria-expanded="false"><i class="ti ti-calendar-plus"></i>Calendar ▾</button>
+     <div class="mp-menu" role="menu"><button type="button" data-cal="google" role="menuitem"><i class="ti ti-brand-google"></i>Google Calendar</button><button type="button" data-cal="outlook" role="menuitem"><i class="ti ti-mail"></i>Outlook.com</button><button type="button" data-cal="ics" role="menuitem"><i class="ti ti-download"></i>Download .ics (Apple, Outlook)</button></div></span>
+    <button type="button" class="mp-btn pri" data-share><i class="ti ti-link"></i>Share link</button>
+   </div>
+  </div>
+ </section>
 
-  <!-- SEO -->
-  <section class="seo-sec">
-    <h2>Free Timezone Converter</h2>
-    <p>Convert times between any cities worldwide. DST-aware, real-time, no account needed. Use the Meeting Planner to find the best time for global meetings, or our standalone <a href="/time-difference-calculator">Time Difference Calculator</a> to instantly see the gap between any two cities.</p>
-    <div class="seo-grid">
-      <article class="seo-card"><h3>DST Automatic</h3><p>All conversions automatically account for Daylight Saving Time. Cities with active DST show a DST badge so you always see the accurate offset.</p></article>
-      <article class="seo-card"><h3>Share a Comparison</h3><p>Use the Share Link to send your exact city comparison to anyone. The URL encodes all selected timezones so the recipient sees the same view instantly.</p></article>
-      <article class="seo-card"><h3>Meeting Planner</h3><p>The color-coded 24-hour grid shows work hours, morning, evening, and sleep time at a glance — making it easy to find windows that work for everyone.</p></article>
-    </div>
-  </section>
+ <section class="mp-best" aria-labelledby="mpBestH">
+  <div class="mp-bh"><h2 id="mpBestH">Best times for this group</h2><span>Ranked by how many people are in work hours. Click to select.</span></div>
+  <div class="mp-bgrid" id="mpBest"></div>
+  <p class="mp-tip" id="mpTip" hidden></p>
+ </section>
 
+ <section class="mp-learn">
+  <div>
+   <h2>How to use the Meeting Planner</h2>
+   <ol><li>Add every city your attendees are in. Star ☆ the city you want hours shown in.</li><li>Pick the meeting date: daylight saving changes are handled for that exact day.</li><li>Look for green in the overlap bar, or pick one of the suggested best times.</li><li>Click a slot, then copy the times, add it to your calendar or share the link.</li></ol>
+   <p class="mp-rel">Related: <a href="/time-difference-calculator">Time Difference Calculator</a> · <a href="/world-clock/">World Clock</a> · <a href="/world-time-map">World Time Map</a> · <a href="/holiday/">Public holidays</a></p>
+  </div>
+  <div class="mp-faq"><h2>Frequently asked questions</h2><details open><summary>How do I find a good meeting time across time zones?</summary><p>Add the city of every attendee, pick the meeting date and look at the overlap bar under the timeline. Green hours are inside everyone’s work hours; amber hours keep most people working with nobody asleep. The “Best times” cards rank the top three slots for you.</p></details><details><summary>Does the Meeting Planner handle daylight saving time?</summary><p>Yes. Times are calculated for the exact date you choose, so if London or New York changes its clocks that week, the timeline and suggestions shift automatically.</p></details><details><summary>Can I share the meeting time with my team?</summary><p>Yes. Select a slot and use Share link: anyone who opens it sees the same cities, date and time. You can also copy all local times as text or add the meeting to Google Calendar, Outlook or any calendar app (.ics file).</p></details><details><summary>Can I convert one specific time between cities?</summary><p>Yes. In the selected-slot bar, type a time and choose the city it belongs to: every other city updates instantly. You can also click any hour on the timeline.</p></details><details><summary>Can I change the work hours?</summary><p>Use the Work hours menu at the top to pick 8–16, 9–17, 9–18, 10–18 or 10–19. The colours, overlap bar and suggestions all follow your choice.</p></details><details><summary>Are my cities saved?</summary><p>Yes. Your cities, meeting length and work hours are saved in your browser, and cities you star in World Clock or World Map appear as one-tap “Saved” chips.</p></details></div>
+ </section>
+</div>
 </main>
 
+<div class="mp-sheet" aria-label="Selected meeting time">
+ <div class="mp-sh-t"><b id="mpShT">&nbsp;</b><span class="mp-sh-c" id="mpShC"></span></div>
+ <div class="mp-acts">
+  <button type="button" class="mp-btn" data-copy><i class="ti ti-copy"></i>Copy</button>
+  <span style="position:relative;display:grid"><button type="button" class="mp-btn" data-menu aria-haspopup="true" aria-expanded="false"><i class="ti ti-calendar-plus"></i>Calendar</button>
+   <div class="mp-menu" role="menu"><button type="button" data-cal="google" role="menuitem"><i class="ti ti-brand-google"></i>Google Calendar</button><button type="button" data-cal="outlook" role="menuitem"><i class="ti ti-mail"></i>Outlook.com</button><button type="button" data-cal="ics" role="menuitem"><i class="ti ti-download"></i>Download .ics</button></div></span>
+  <button type="button" class="mp-btn pri" data-share><i class="ti ti-share"></i>Share</button>
+ </div>
+</div>
+<nav class="v2-dock" aria-label="Quick tools">
+  <a href="/world-clock/"><i class="ti ti-clock"></i>Clock</a>
+  <a href="/converter" class="on" aria-current="page"><i class="ti ti-users"></i>Meet</a>
+  <a href="/time-difference-calculator"><i class="ti ti-arrows-left-right"></i>Difference</a>
+  <a href="/holiday/"><i class="ti ti-calendar-event"></i>Holidays</a>
+  <a href="/location/"><i class="ti ti-map-pin"></i>Places</a>
+</nav>
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
-
       <div class="footer-col footer-brand">
         <a class="footer-logo" href="/"><span>🌍</span><span class="logo-name">World<em>Clock</em></span></a>
         <p class="footer-tagline">Free world clock, timezone converter, weather, and travel time tools for 130+ cities worldwide.</p>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Tools</h4>
-        <a href="/">World Clock</a>
-        <a href="/converter.html">Timezone Converter</a>
-        <a href="/converter.html#meeting">Meeting Planner</a>
-        <a href="/time-difference-calculator">Time Difference Calculator</a>
-        <a href="/sunmoon.html">Sun &amp; Moon</a>
+        <a href="/world-clock/">World Clock</a>
+        <a href="/converter">Timezone Converter</a>
+        <a href="/converter#meeting">Meeting Planner</a>
+        <a href="/sunmoon">Sun &amp; Moon</a>
         <a href="/weather">Weather</a>
-        <a href="/tools.html">Time Tools</a>
+        <a href="/tools">Time Tools</a>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Locations</h4>
         <a href="/location/">Browse All Countries</a>
@@ -196,56 +145,31 @@
         <a href="/location/china/">China</a>
         <a href="/location/japan/">Japan</a>
       </div>
-
       <div class="footer-col">
         <h4 class="footer-heading">Company</h4>
-        <a href="/about.html">About Us</a>
-        <a href="/contact.html">Contact Us</a>
+        <a href="/about">About Us</a>
+        <a href="/contact">Contact Us</a>
         <a href="/blog/">Blog</a>
-        <a href="/privacy-policy.html">Privacy Policy</a>
-        <a href="/terms.html">Terms of Service</a>
+        <a href="/privacy-policy">Privacy Policy</a>
+        <a href="/terms">Terms of Service</a>
       </div>
-
     </div>
-
     <div class="footer-bottom">
       <span>© <span id="footer-year">2026</span> TimezoneBudy. All rights reserved.</span>
       <div class="footer-bottom-links">
-        <a href="/privacy-policy.html">Privacy</a>
-        <a href="/terms.html">Terms</a>
-        <a href="/contact.html">Contact</a>
+        <a href="/privacy-policy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/contact">Contact</a>
       </div>
     </div>
   </div>
 </footer>
-
-
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="/cities.js"></script>
-<script src="/util.js?v=2"></script>
-<script src="/pwa-install.js" defer></script>
-<script src="/converter.js"></script>
-<script>
-// Locations mega menu toggle (click-based, not hover — avoids stuck-open bugs)
-document.querySelectorAll('.loc-menu-trigger').forEach(function(trigger) {
-  trigger.addEventListener('click', function(e) {
-    if (e.target.closest('.loc-mega-menu')) return; // clicking inside menu shouldn't toggle
-    trigger.classList.toggle('menu-open');
-  });
-});
-document.addEventListener('click', function(e) {
-  document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t) {
-    if (!t.contains(e.target)) t.classList.remove('menu-open');
-  });
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.loc-menu-trigger.menu-open').forEach(function(t){ t.classList.remove('menu-open'); });
-  }
-});
-</script>
+<script src="/util.js?v=3"></script>
+<script src="/converter.js?v=3"></script>
+<script>if(typeof boot==='function')try{boot();}catch(e){} MP_BOOT(); var fy=document.getElementById('footer-year');if(fy)fy.textContent=new Date().getFullYear();</script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"1accd9204922456bb187fb685895e31e","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<!-- nav_inject_v2 -->
-<script src="/nav.js?v=3"></script>
+<script src="/nav.js?v=4"></script>
 </body>
 </html>

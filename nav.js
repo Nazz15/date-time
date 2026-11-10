@@ -5,7 +5,8 @@
   /* ==== EDIT LINKS HERE — confirm paths marked (?) ==== */
   var MAIN = [
     ["World Clock", "/world-clock/", "clock"],
-    ["Time Difference Calculator", "https://timezonebudy.com/time-difference-calculator", "swap"],
+    ["Time Difference", "https://timezonebudy.com/time-difference-calculator", "swap"],
+    ["Meeting Planner", "/converter", "users"],
     ["World Map",   "https://timezonebudy.com/world-time-map", "map"],
     ["Holidays",    "/holiday/", "cal"],
     ["Sun & Moon",  "/sunmoon/", "sun"],
@@ -26,6 +27,7 @@
     sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6 19 19M19 5l-1.4 1.4M6.4 17.6 5 19"/>',
     cloud:'<path d="M7 17a4 4 0 0 1 .5-8 5 5 0 0 1 9.7 1.2A3.3 3.3 0 0 1 17.5 17H7z"/>',
     pin:'<path d="M12 21s7-6.5 7-11a7 7 0 1 0-14 0c0 4.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    users:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c2.8.4 5 2.8 5 5.8"/>',
     cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',
     doc:'<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/>',
     news:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 9h6M7 13h10M7 17h10"/>'
@@ -87,7 +89,7 @@
   '.tzb-dlist>a{font-size:16px;color:#2b3752;text-decoration:none;background:none;border:0;border-bottom:1px solid #f1f4f8;text-align:left;padding:15px 20px;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:14px}' +
   '.tzb-dlist>a.on{color:var(--tzb-blue);font-weight:600}.tzb-dlist>a.on .tzb-ic{color:var(--tzb-blue)}' +
   'body.tzb-lock{overflow:hidden}' +
-    '@media(max-width:1140px){.tzb-links{display:none}.tzb-burger{display:block}.tzb-logo{margin:0 auto;flex:0 1 auto;min-width:0}.tzb-name{min-width:0}.tzb-name span,.tzb-name small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tzb-in{gap:0}.tzb-ctl{margin-left:8px;padding-left:8px}}' +
+    '@media(max-width:1300px){.tzb-links{display:none}.tzb-burger{display:block}.tzb-logo{margin:0 auto;flex:0 1 auto;min-width:0}.tzb-name{min-width:0}.tzb-name span,.tzb-name small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tzb-in{gap:0}.tzb-ctl{margin-left:8px;padding-left:8px}}' +
   '@media(max-width:768px){.tzb-ctl .nav-utc{display:none}}';
 
   var s = document.createElement("style"); s.textContent = css; document.head.appendChild(s);
