@@ -209,9 +209,208 @@
 .wc-diff-opt .ct{font-size:12px;color:var(--wx-muted);margin-left:auto;white-space:nowrap;}
 @media(max-width:600px){.wc-diff-search input{font-size:15px;}.wc-diff-drop{position:relative;top:auto;margin-top:5px;max-height:240px;}}
 </style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"How do I add or remove cities?","acceptedAnswer":{"@type":"Answer","text":"Search for any city, country or time zone in the Add a city box at the top, or tap + on any popular city. To remove a city, use the remove button on its row, or swipe it left on mobile. You can also drag cities to reorder them."}},
+{"@type":"Question","name":"Are my cities saved?","acceptedAnswer":{"@type":"Answer","text":"Yes. Your cities are saved in your browser on this device, so they are still there when you come back. Nothing is stored on our servers."}},
+{"@type":"Question","name":"Does the world clock handle daylight saving time?","acceptedAnswer":{"@type":"Answer","text":"Yes. Every clock uses the IANA time zone database built into your browser, so daylight saving changes are applied automatically on the right date for every city."}},
+{"@type":"Question","name":"What does the time travel slider do?","acceptedAnswer":{"@type":"Answer","text":"It moves every clock forward or back by up to 12 hours at once, so you can see what time it will be in each city when it is a given time where you are."}},
+{"@type":"Question","name":"Can I share my world clock with someone?","acceptedAnswer":{"@type":"Answer","text":"Yes. Tap Share to copy a link with your cities. Whoever opens it sees your list and can add those cities to their own world clock in one tap."}}
+]}
+</script>
+<style>
+/* ===== World Clock v2 — scoped wc2- (matches homepage / time difference / sun & moon) ===== */
+.wc2-wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
+.wc2-hero{background:linear-gradient(90deg,rgba(13,34,64,.97) 0%,rgba(13,34,64,.93) 50%,rgba(13,34,64,.72) 100%),url('world-clock-hero.png') center/cover no-repeat;color:#fff;padding:22px 0 36px;position:relative;z-index:5;}
+.wc2-hero-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:end;}
+.wc2-crumb{font-size:13px;color:#c9d4e5;margin:0 0 12px;} .wc2-crumb a{color:#c9d4e5;text-decoration:none;} .wc2-crumb a:hover{color:#fff;}
+.wc2-hero h1{font-size:clamp(26px,3.4vw,38px);font-weight:700;letter-spacing:-.01em;margin:0 0 6px;}
+.wc2-lede{margin:0 0 18px;font-size:16px;color:#dbe5f3;}
+.wc2-now{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;}
+.wc2-now .t{font-family:var(--mono,ui-monospace,monospace);font-size:clamp(42px,5.6vw,64px);font-weight:700;line-height:1;font-variant-numeric:tabular-nums;}
+.wc2-now .d{font-size:14px;color:#c9d4e5;display:flex;align-items:center;gap:8px;}
+.wc2-add{background:var(--clr-tile);color:var(--clr-text);border-radius:16px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25);}
+.wc2-add label{display:block;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--clr-text2);text-transform:uppercase;margin-bottom:8px;}
+.wc2-srow{display:flex;gap:8px;}
+.wc2-sbox{position:relative;flex:1;min-width:0;}
+.wc2-sbox input{width:100%;box-sizing:border-box;font:16px Inter,sans-serif;color:var(--clr-text);background:var(--clr-bg);border:1px solid var(--clr-border2);border-radius:10px;padding:13px 14px;outline:0;}
+.wc2-sbox input:focus{border-color:var(--clr-brand);box-shadow:0 0 0 3px rgba(30,107,255,.15);}
+.wc2-drop{display:none;position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--clr-bg2);border:1px solid var(--clr-border2);border-radius:12px;box-shadow:var(--sh2);z-index:600;max-height:320px;overflow-y:auto;}
+.wc2-drop.open{display:block;}
+.wc2-opt{display:flex;align-items:center;gap:9px;padding:10px 13px;cursor:pointer;border-bottom:1px solid var(--clr-border);font-size:14px;color:var(--clr-text);}
+.wc2-opt:last-child{border-bottom:0;} .wc2-opt:hover,.wc2-opt.hl{background:var(--clr-bg3);}
+.wc2-opt small{margin-left:auto;font-size:12px;color:var(--clr-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48%;}
+.wc2-opt.dim{opacity:.55;}
+.wc2-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border-radius:10px;font:600 14px Inter,sans-serif;cursor:pointer;border:1px solid var(--clr-border2);background:var(--clr-tile);color:var(--clr-text);text-decoration:none;white-space:nowrap;}
+.wc2-btn:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.wc2-btn.pri{background:var(--clr-brand);border-color:var(--clr-brand);color:#fff;} .wc2-btn.pri:hover{filter:brightness(1.08);color:#fff;}
+.wc2-btn i{font-size:18px;}
+.wc2-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.wc2-chip{font:600 13px Inter,sans-serif;color:var(--clr-text);background:var(--clr-bg3);border:1px solid var(--clr-border);border-radius:999px;padding:7px 12px;cursor:pointer;white-space:nowrap;}
+.wc2-chip:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.wc2-chip.on{color:#2e9e6b;border-color:#bfe5d1;background:transparent;}
+
+.wc2-sec{margin:32px auto;}
+.wc2-head{display:flex;align-items:center;gap:10px 12px;flex-wrap:wrap;margin-bottom:14px;}
+.wc2-head h2{font-size:26px;font-weight:700;margin:0;color:var(--clr-text);letter-spacing:-.01em;}
+.wc2-count{font-size:13px;color:var(--clr-text2);}
+.wc2-tools{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.wc2-seg{display:inline-flex;background:var(--clr-bg3);border-radius:10px;padding:3px;}
+.wc2-seg button{font:600 13px Inter,sans-serif;border:0;background:transparent;color:var(--clr-text2);border-radius:8px;padding:0 12px;min-height:36px;cursor:pointer;}
+.wc2-seg button[aria-pressed=true]{background:var(--clr-tile);color:var(--clr-text);box-shadow:var(--sh);}
+.wc2-more{position:relative;}
+.wc2-menu{position:absolute;right:0;top:calc(100% + 6px);background:var(--clr-bg2);border:1px solid var(--clr-border);border-radius:12px;box-shadow:var(--sh2);padding:6px;z-index:50;min-width:200px;}
+.wc2-menu[hidden]{display:none;}
+.wc2-menu button{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;text-align:left;font:500 14px Inter,sans-serif;color:var(--clr-text);padding:10px 12px;border-radius:8px;cursor:pointer;}
+.wc2-menu button:hover{background:var(--clr-bg3);} .wc2-menu button.danger{color:#c62828;}
+
+.wc2-scrub{display:flex;align-items:center;gap:14px;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;padding:12px 18px;margin-bottom:12px;box-shadow:var(--sh);}
+.wc2-scrub b{font-size:14px;white-space:nowrap;color:var(--clr-text);display:flex;align-items:center;gap:6px;}
+.wc2-scrub b i{color:var(--clr-brand);font-size:18px;}
+.wc2-scrub input[type=range]{flex:1;min-width:0;accent-color:var(--clr-brand);height:32px;cursor:pointer;}
+.wc2-scrub .val{font-family:var(--mono,ui-monospace,monospace);font-size:14px;font-weight:700;background:var(--clr-bg3);border-radius:8px;padding:6px 10px;white-space:nowrap;color:var(--clr-text);}
+.wc2-scrub.moved .val{background:#eef2fa;color:var(--clr-brand);}
+[data-theme=dark] .wc2-scrub.moved .val{background:#16325a;color:#cfe0ff;}
+.wc2-scrub .rst{border:0;background:none;color:var(--clr-brand);font:600 14px Inter,sans-serif;cursor:pointer;min-height:40px;}
+.wc2-scrub .rst[hidden]{display:none;}
+
+.wc2-shared{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#eef2fa;border:1px solid #cfdcf5;border-radius:12px;padding:12px 16px;margin-bottom:12px;font-size:14px;color:#1b2430;}
+.wc2-shared[hidden]{display:none;}
+[data-theme=dark] .wc2-shared{background:#16325a;border-color:#23406b;color:#e8eefa;}
+
+.wc2-list{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;box-shadow:var(--sh);overflow:hidden;}
+.wc2-row{position:relative;display:grid;grid-template-columns:24px minmax(0,1.5fr) minmax(0,1fr) minmax(0,1.6fr) 150px auto;gap:16px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--clr-border);background:var(--clr-tile);transition:background .15s;}
+.wc2-row:last-child{border-bottom:0;}
+.wc2-row.flash{background:#fff7e6;}
+.wc2-row.drag{opacity:.45;} .wc2-row.over-top{box-shadow:inset 0 3px 0 var(--clr-brand);} .wc2-row.over-bot{box-shadow:inset 0 -3px 0 var(--clr-brand);}
+.wc2-grip{border:0;background:none;color:var(--clr-text3);cursor:grab;font-size:18px;padding:0;width:24px;height:36px;display:flex;align-items:center;justify-content:center;}
+.wc2-who{display:flex;align-items:center;gap:12px;min-width:0;}
+.wc2-who .nm{font-size:16px;font-weight:700;color:var(--clr-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc2-who .sub{font-size:12px;color:var(--clr-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc2-home{font-size:10px;font-weight:700;letter-spacing:.04em;background:#eef2fa;color:var(--clr-brand);border-radius:6px;padding:2px 6px;margin-left:6px;vertical-align:2px;}
+[data-theme=dark] .wc2-home{background:#16325a;color:#cfe0ff;}
+.wc2-wx{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--clr-text2);white-space:nowrap;min-width:0;}
+.wc2-wx i{font-size:20px;color:var(--clr-acc,#f59e0b);} .wc2-wx i.n{color:var(--clr-text3);}
+.wc2-wx b{color:var(--clr-text);}
+.wc2-dn{display:flex;flex-direction:column;gap:4px;min-width:0;}
+.wc2-bar{position:relative;height:10px;border-radius:5px;background:#2b3a55;}
+.wc2-bar i{position:absolute;top:-4px;width:3px;height:18px;border-radius:2px;background:#c2410c;transform:translateX(-1px);box-shadow:0 0 0 2px var(--clr-tile);}
+.wc2-dn small{font-size:11px;color:var(--clr-text2);}
+.wc2-t{text-align:right;}
+.wc2-t .tm{font-family:var(--mono,ui-monospace,monospace);font-size:26px;font-weight:700;color:var(--clr-text);white-space:nowrap;font-variant-numeric:tabular-nums;}
+.wc2-t .dt{font-size:12px;color:var(--clr-text2);}
+.wc2-act{display:flex;gap:4px;justify-content:flex-end;}
+.wc2-ib{width:36px;height:36px;border-radius:9px;border:1px solid var(--clr-border);background:var(--clr-tile);color:var(--clr-text2);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:17px;text-decoration:none;}
+.wc2-ib:hover{border-color:var(--clr-brand);color:var(--clr-brand);}
+.wc2-ib.on{color:var(--clr-brand);border-color:var(--clr-brand);}
+.wc2-ib.rm:hover{border-color:#c62828;color:#c62828;}
+.wc2-ib.mv{display:none;}
+.wc2-empty{padding:28px;text-align:center;color:var(--clr-text2);font-size:15px;}
+.wc2-empty .wc2-chips{justify-content:center;}
+.wc2-hint{font-size:12px;color:var(--clr-text3);margin:8px 2px 0;} .wc2-hint .m{display:none;}
+.wc2-list.cards~.wc2-hint .d{display:none;}
+
+/* Cards view: same markup, grid layout */
+.wc2-list.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;background:none;border:0;box-shadow:none;overflow:visible;}
+.wc2-list.cards .wc2-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"who who" "t t" "dn dn" "wx act";gap:10px 12px;border:1px solid var(--clr-border);border-radius:14px;box-shadow:var(--sh);padding:16px;}
+.wc2-list.cards .wc2-grip{display:none;}
+.wc2-list.cards .wc2-who{grid-area:who;} .wc2-list.cards .wc2-t{grid-area:t;text-align:left;} .wc2-list.cards .wc2-t .tm{font-size:34px;}
+.wc2-list.cards .wc2-dn{grid-area:dn;} .wc2-list.cards .wc2-wx{grid-area:wx;} .wc2-list.cards .wc2-act{grid-area:act;}
+.wc2-list.cards .wc2-empty{grid-column:1/-1;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;}
+
+.wc2-tdlink{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#eef2fa;border-radius:12px;padding:14px 18px;font-size:15px;color:#1b2430;}
+.wc2-tdlink a{margin-left:auto;font-weight:600;color:var(--clr-brand);text-decoration:none;} .wc2-tdlink a:hover{text-decoration:underline;}
+[data-theme=dark] .wc2-tdlink{background:#16325a;color:#e8eefa;} [data-theme=dark] .wc2-tdlink a{color:#9cc3ff;}
+
+.wc2-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.wc2-tabs button{font:600 14px Inter,sans-serif;border:1px solid var(--clr-border2);background:var(--clr-tile);color:var(--clr-text2);border-radius:999px;padding:0 16px;min-height:38px;cursor:pointer;}
+.wc2-tabs button[aria-pressed=true]{background:var(--clr-brand);border-color:var(--clr-brand);color:#fff;}
+.wc2-sort{font:600 13px Inter,sans-serif;color:var(--clr-text);background:var(--clr-tile);border:1px solid var(--clr-border2);border-radius:10px;padding:0 10px;min-height:38px;}
+.wc2-pop{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;}
+.wc2-pc{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:4px;box-shadow:var(--sh);min-width:0;}
+.wc2-pc .r1{display:flex;align-items:center;gap:8px;min-width:0;}
+.wc2-pc .r1 b{font-size:15px;color:var(--clr-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc2-pc .r1 i{margin-left:auto;font-size:17px;} .wc2-pc .r1 i.ti-sun{color:var(--clr-acc,#f59e0b);} .wc2-pc .r1 i.ti-moon{color:var(--clr-text3);}
+.wc2-pc small{font-size:12px;color:var(--clr-text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wc2-pc .r3{display:flex;align-items:flex-end;justify-content:space-between;margin-top:6px;}
+.wc2-pc .tm{font-family:var(--mono,ui-monospace,monospace);font-size:24px;font-weight:700;color:var(--clr-text);white-space:nowrap;}
+.wc2-plus{width:38px;height:38px;border-radius:50%;border:1px solid var(--clr-brand);background:var(--clr-tile);color:var(--clr-brand);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;}
+.wc2-plus:hover{background:var(--clr-brand);color:#fff;}
+.wc2-plus.on{border-color:#2e9e6b;color:#2e9e6b;} .wc2-plus.on:hover{background:#2e9e6b;color:#fff;}
+.wc2-morewrap{text-align:center;margin-top:18px;}
+
+.wc2-faq{display:grid;grid-template-columns:1fr 2fr;gap:36px;}
+.wc2-faq details{background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:12px;margin-bottom:10px;}
+.wc2-faq summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:600;font-size:15px;color:var(--clr-text);display:flex;justify-content:space-between;gap:12px;}
+.wc2-faq summary::-webkit-details-marker{display:none;}
+.wc2-faq summary::after{content:"+";font-size:20px;line-height:1;color:var(--clr-text2);}
+.wc2-faq details[open] summary::after{content:"−";}
+.wc2-faq details p{margin:0;padding:0 18px 16px;font-size:14.5px;line-height:1.6;color:var(--clr-text2);}
+.wc2-faq .lead{font-size:14px;color:var(--clr-text2);line-height:1.6;margin:8px 0 0;}
+
+#toast.show{pointer-events:auto;z-index:2000;}
+#toast button{margin-left:10px;border:0;background:none;color:#9cc3ff;font:700 13px Inter,sans-serif;cursor:pointer;text-decoration:underline;}
+.v2-dock{display:none;}
+
+@media(max-width:1000px){
+  .wc2-hero-grid{grid-template-columns:minmax(0,1fr);gap:22px;}
+  .wc2-row{grid-template-columns:24px minmax(0,1.4fr) minmax(0,1.2fr) 130px auto;}
+  .wc2-row .wc2-wx{display:none;}
+  .wc2-list.cards .wc2-row .wc2-wx{display:flex;}
+  .wc2-list.cards{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .wc2-pop{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .wc2-faq{grid-template-columns:1fr;gap:10px;}
+}
+@media(max-width:640px){
+  body{padding-bottom:68px;}
+  .wc2-wrap{padding:0 16px;}
+  .wc2-hero{padding:14px 0 20px;}
+  .wc2-crumb,.wc2-lede{display:none;}
+  .wc2-hero h1{font-size:24px;margin-bottom:8px;}
+  .wc2-now .t{font-size:40px;} .wc2-now .d{font-size:12px;}
+  .wc2-add{padding:12px;border-radius:14px;}
+  .wc2-add label{display:none;}
+  .wc2-chips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-12px;margin-right:-12px;padding:0 12px;}
+  .wc2-sec{margin:22px auto;}
+  .wc2-head h2{font-size:21px;}
+  .wc2-tools .wc2-tbtxt{display:none;}
+  .wc2-tools .wc2-btn{padding:0 12px;}
+  .wc2-scrub{position:sticky;top:var(--wc2-navh,0px);z-index:40;border-radius:0;margin:0 -16px 12px;border-left:0;border-right:0;padding:8px 16px;gap:10px;}
+  .wc2-scrub b span{display:none;}
+  .wc2-row{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"who t" "dn dn" "act act";gap:8px 12px;padding:12px 14px;touch-action:pan-y;}
+  .wc2-grip{display:none;}
+  .wc2-hint .d{display:none !important;} .wc2-hint .m{display:inline;}
+  .wc2-who{grid-area:who;} .wc2-who .nm{font-size:15px;}
+  .wc2-t{grid-area:t;} .wc2-t .tm{font-size:22px;}
+  .wc2-dn{grid-area:dn;flex-direction:row;align-items:center;gap:10px;} .wc2-dn .wc2-bar{flex:1;height:6px;} .wc2-dn .wc2-bar i{height:14px;top:-4px;}
+  .wc2-act{grid-area:act;display:none;justify-content:flex-start;flex-wrap:wrap;}
+  .wc2-row.open .wc2-act{display:flex;}
+  .wc2-ib{width:auto;padding:0 10px;height:38px;font-size:13px;gap:5px;font-weight:600;}
+  .wc2-ib .lb{display:inline;}
+  .wc2-ib.mv{display:inline-flex;}
+  .wc2-list.cards{grid-template-columns:1fr;}
+  .wc2-list.cards .wc2-row{grid-template-areas:"who t" "dn dn" "wx wx" "act act";}
+  .wc2-list.cards .wc2-t{text-align:right;} .wc2-list.cards .wc2-t .tm{font-size:24px;}
+  .wc2-tdlink a{margin-left:0;}
+  .wc2-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;}
+  .wc2-tabs button{flex:none;}
+  .wc2-pop{grid-template-columns:1fr;gap:0;background:var(--clr-tile);border:1px solid var(--clr-border);border-radius:14px;overflow:hidden;}
+  .wc2-pc{border:0;border-bottom:1px solid var(--clr-border);border-radius:0;box-shadow:none;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:0 12px;padding:10px 14px;}
+  .wc2-pc:last-child{border-bottom:0;}
+  .wc2-pc .r1{grid-column:1;} .wc2-pc small{grid-column:1;}
+  .wc2-pc .r3{display:contents;}
+  .wc2-pc .tm{grid-column:2;grid-row:1/3;font-size:18px;}
+  .wc2-plus{grid-column:3;grid-row:1/3;width:36px;height:36px;}
+  .v2-dock{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:300;background:var(--clr-tile);border-top:1px solid var(--clr-border);box-shadow:0 -4px 14px rgba(0,0,0,.08);padding-bottom:env(safe-area-inset-bottom);}
+  .v2-dock a{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:60px;font-size:11px;font-weight:600;color:var(--clr-text2);text-decoration:none;}
+  .v2-dock a i{font-size:21px;} .v2-dock a.on{color:var(--clr-brand);}
+  #pwa-install-banner{bottom:78px !important;}
+  #toast{bottom:84px;}
+}
+@media(min-width:641px){.wc2-ib .lb{display:none;}}
+</style>
 </head>
 <body>
-
 <!-- ── NAV (same as all other pages, nav.js will fixLogo) ── -->
 <nav class="topnav" aria-label="Main navigation">
   <div class="topnav-inner">
@@ -246,93 +445,126 @@
     </div>
   </div>
 </nav>
-
 <main>
 
-<!-- ── HERO ── -->
-<section class="wc-hero" role="img" aria-label="World Clock — check the current time in cities around the world">
-  <h1 class="sr">World Clock — Check the current time in cities around the world</h1>
-</section>
-
-<!-- ── YOUR CITIES ── -->
-<section class="wx-sec">
-  <div class="wx-container">
-    <div class="wx-sec-head">
-      <div>
-        <h2>Your Cities</h2>
-        <p>Add and manage your cities to see the current time around the world.</p>
-      </div>
-      <div class="wc-head-actions">
-        <span class="wc-count"><span id="ycCount">0</span> cities</span>
-        <button class="wc-btn wc-btn-primary" id="addBtn"><i class="ti ti-plus"></i> Add City</button>
-        <button class="wc-btn wc-btn-ghost" id="clearBtn">Clear All</button>
+<!-- 1. HERO -->
+<section class="wc2-hero">
+  <div class="wc2-wrap wc2-hero-grid">
+    <div>
+      <nav class="wc2-crumb" aria-label="Breadcrumb"><a href="/">Home</a> › World Clock</nav>
+      <h1>World Clock</h1>
+      <p class="wc2-lede">Live time in all your cities, side by side. Saved on this device.</p>
+      <div class="wc2-now" aria-live="off">
+        <span class="t" id="wcNow">--:--:--</span>
+        <span class="d" id="wcNowSub"></span>
       </div>
     </div>
-    <div class="wc-rows" id="yourCities"></div>
-  </div>
-</section>
-
-<!-- ── TIME DIFFERENCE ── -->
-<section class="wx-sec wx-sec-alt">
-  <div class="wx-container">
-    <div class="wx-sec-head">
-      <div>
-        <h2>Time Difference</h2>
-        <p>See the time difference between any two cities.</p>
+    <div class="wc2-add">
+      <label for="wcQ">Add a city</label>
+      <div class="wc2-srow">
+        <div class="wc2-sbox">
+          <input id="wcQ" type="search" autocomplete="off" spellcheck="false" placeholder="Search a city, country or time zone…" aria-label="Search a city to add" aria-controls="wcQdd" aria-autocomplete="list">
+          <div class="wc2-drop" id="wcQdd" role="listbox"></div>
+        </div>
+        <button class="wc2-btn pri" id="wcQadd" type="button"><i class="ti ti-plus"></i>Add</button>
       </div>
-    </div>
-    <div class="wc-diff">
-      <div class="wc-diff-search" data-diff-side="a">
-        <input id="diffA" type="text" autocomplete="off" aria-label="First city" placeholder="Search city, country or time zone">
-        <span class="wc-diff-chevron">⌄</span>
-        <div class="wc-diff-drop" role="listbox"></div>
-      </div>
-      <button class="wc-swap" id="swapBtn" aria-label="Swap cities">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 4v13M7 4L4 7M7 4l3 3M17 20V7M17 20l3-3M17 20l-3-3"/></svg>
-      </button>
-      <div class="wc-diff-search" data-diff-side="b">
-        <input id="diffB" type="text" autocomplete="off" aria-label="Second city" placeholder="Search city, country or time zone">
-        <span class="wc-diff-chevron">⌄</span>
-        <div class="wc-diff-drop" role="listbox"></div>
-      </div>
-    </div>
-    <div class="wc-diff-out" id="diffOut"></div>
-  </div>
-</section>
-
-<!-- ── POPULAR ── -->
-<section class="wx-sec">
-  <div class="wx-container">
-    <div class="wx-sec-head">
-      <div>
-        <h2>Popular World Cities</h2>
-        <p>Quickly view the current time in the most popular cities around the world.</p>
-      </div>
-    </div>
-    <div class="wc-filtersbar">
-      <div class="wc-filters" id="filters"></div>
-      <div class="wc-sort" id="sortCtl"></div>
-    </div>
-    <div class="wc-grid" id="popular"></div>
-    <div class="wc-more"><button class="wc-btn wc-btn-ghost" id="moreBtn">View more cities →</button></div>
-  </div>
-</section>
-
-<!-- ── ABOUT ── -->
-<section class="wx-sec wx-sec-alt">
-  <div class="wx-container">
-    <div class="wc-about">
-      <div class="ai"><i class="ti ti-info-circle"></i></div>
-      <div>
-        <h2>About World Clock</h2>
-        <p>Our World Clock shows the current time, date and time zone information for cities around the world. Add multiple cities, compare times and plan your day easily. All times update live and automatically handle Daylight Saving Time and UTC offsets using the IANA time zone database.</p>
-      </div>
+      <div class="wc2-chips" id="wcChips"></div>
     </div>
   </div>
 </section>
 
+<div class="wc2-wrap">
+
+  <!-- 2–4. YOUR CITIES -->
+  <section class="wc2-sec" aria-labelledby="wcMineH">
+    <div class="wc2-head">
+      <h2 id="wcMineH">Your cities</h2>
+      <span class="wc2-count" id="wcCount"></span>
+      <div class="wc2-tools">
+        <button class="wc2-btn pri" id="wcAddBtn" type="button"><i class="ti ti-plus"></i><span class="wc2-tbtxt">Add city</span></button>
+        <div class="wc2-seg" role="group" aria-label="View">
+          <button type="button" data-view="rows" aria-pressed="true" aria-label="Rows view"><i class="ti ti-list"></i> <span class="wc2-tbtxt">Rows</span></button>
+          <button type="button" data-view="cards" aria-pressed="false" aria-label="Cards view"><i class="ti ti-layout-grid"></i> <span class="wc2-tbtxt">Cards</span></button>
+        </div>
+        <div class="wc2-seg" role="group" aria-label="Time format">
+          <button type="button" data-fmt="12" aria-pressed="true">12h</button>
+          <button type="button" data-fmt="24" aria-pressed="false">24h</button>
+        </div>
+        <button class="wc2-btn" id="wcShare" type="button"><i class="ti ti-share"></i><span class="wc2-tbtxt">Share</span></button>
+        <div class="wc2-more">
+          <button class="wc2-btn" id="wcMoreBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="More options"><i class="ti ti-dots"></i></button>
+          <div class="wc2-menu" id="wcMenu" hidden>
+            <button type="button" id="wcReset"><i class="ti ti-refresh"></i>Reset to default cities</button>
+            <button type="button" id="wcClear" class="danger"><i class="ti ti-trash"></i><span>Clear all cities</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wc2-shared" id="wcShared" hidden></div>
+
+    <div class="wc2-scrub" id="wcScrub">
+      <b><i class="ti ti-clock-play"></i><span>Time travel</span></b>
+      <input type="range" id="wcShift" min="-720" max="720" step="15" value="0" aria-label="Shift all clocks forward or back in time">
+      <span class="val" id="wcShiftVal">Now</span>
+      <button class="rst" id="wcShiftReset" type="button" hidden>Reset to now</button>
+    </div>
+
+    <div class="wc2-list" id="wcList" aria-live="polite"></div>
+    <p class="wc2-hint" id="wcHint"><span class="d">Drag <i class="ti ti-grip-vertical"></i> to reorder. Compare, set a home city or remove from each row.</span><span class="m">Tap a city to move, compare, set as home or remove it. Swipe left to remove.</span></p>
+  </section>
+
+  <!-- 5. TIME DIFFERENCE LINK -->
+  <section class="wc2-tdlink" aria-label="Time difference calculator">
+    <i class="ti ti-arrows-left-right" style="font-size:22px;color:var(--clr-brand)"></i>
+    <span><b>Need the gap between two places?</b> See the exact difference, the best time to call and upcoming DST changes.</span>
+    <a href="/time-difference-calculator">Open Time Difference Calculator →</a>
+  </section>
+
+  <!-- 6. POPULAR -->
+  <section class="wc2-sec" aria-labelledby="wcPopH" style="margin-top:44px">
+    <div class="wc2-head">
+      <h2 id="wcPopH">Popular world cities</h2>
+      <div class="wc2-tools">
+        <label for="wcSort" class="wc2-count">Sort</label>
+        <select id="wcSort" class="wc2-sort">
+          <option value="time-1">Time: earliest first</option>
+          <option value="time--1">Time: latest first</option>
+          <option value="az-1">Name: A–Z</option>
+          <option value="az--1">Name: Z–A</option>
+        </select>
+      </div>
+    </div>
+    <div class="wc2-tabs" id="wcTabs" role="group" aria-label="Filter by region"></div>
+    <div class="wc2-pop" id="wcPop"></div>
+    <div class="wc2-morewrap"><button class="wc2-btn" id="wcPopMore" type="button">View more cities</button></div>
+  </section>
+
+  <!-- 7. FAQ -->
+  <section class="wc2-sec wc2-faq" aria-label="Frequently asked questions" style="margin-bottom:56px">
+    <div>
+      <h2 style="font-size:24px;margin:0;color:var(--clr-text)">World clock questions</h2>
+      <p class="lead">Our World Clock shows the current time, date and time zone information for cities around the world. All times update live and automatically handle Daylight Saving Time and UTC offsets using the IANA time zone database.</p>
+    </div>
+    <div>
+      <details open><summary>How do I add or remove cities?</summary><p>Search for any city, country or time zone in the "Add a city" box at the top, or tap + on any popular city. To remove a city, use the × button on its row (on mobile, tap the row or swipe it left). You can also drag cities to reorder them.</p></details>
+      <details><summary>Are my cities saved?</summary><p>Yes. Your cities are saved in your browser on this device, so they're still there when you come back. They're shared with the "Your cities" strip on the homepage. Nothing is stored on our servers.</p></details>
+      <details><summary>Does the world clock handle daylight saving time?</summary><p>Yes. Every clock uses the IANA time zone database built into your browser, so daylight saving changes are applied automatically on the right date for every city.</p></details>
+      <details><summary>What does the time travel slider do?</summary><p>Drag it to move every clock forward or back by up to 12 hours at once. It's the quickest way to answer "if it's 4pm here, what time is it for everyone else?". Tap "Reset to now" to go back to live time.</p></details>
+      <details><summary>Can I share my world clock with someone?</summary><p>Yes. Tap Share to copy a link with your cities. Whoever opens it sees your list and can add those cities to their own world clock in one tap.</p></details>
+    </div>
+  </section>
+
+</div>
 </main>
 
+<nav class="v2-dock" aria-label="Quick tools">
+  <a href="/world-clock/" class="on" aria-current="page"><i class="ti ti-clock"></i>Clock</a>
+  <a href="/converter"><i class="ti ti-arrows-exchange"></i>Convert</a>
+  <a href="/time-difference-calculator"><i class="ti ti-arrows-left-right"></i>Difference</a>
+  <a href="/sunmoon"><i class="ti ti-sun"></i>Sun</a>
+  <a href="/weather/"><i class="ti ti-cloud"></i>Weather</a>
+</nav>
 <!-- ── FOOTER ── -->
 <footer class="wx-footer">
   <div class="wx-container">
@@ -354,39 +586,22 @@
     </div>
   </div>
 </footer>
-
-<!-- ── ADD CITY MODAL (dropdown-based, no search bar) ── -->
-<div class="wc-ov" id="ov">
-  <div class="wc-modal wc-pick">
-    <h3>Add a city</h3>
-    <p>Search and pick a city to add to Your Cities.</p>
-    <input type="text" class="wc-search" id="citySearch" placeholder="Search city or country..." aria-label="Search cities" autocomplete="off">
-    <div class="wc-results" id="cityResults" role="listbox"></div>
-    <div class="row">
-      <button class="wc-btn wc-btn-line" id="cancelAdd">Cancel</button>
-      <button class="wc-btn wc-btn-primary" id="confirmAdd">Add City</button>
-    </div>
-  </div>
-</div>
-
 <div id="toast" role="status" aria-live="polite"></div>
 
 <script src="/cities.js"></script>
 <script src="/cities-full.js?v=4"></script>
 <script src="/util.js?v=3"></script>
+<script src="/sunmoon-coords.js?v=1"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.9.0/suncalc.min.js"></script>
 <script>
-// Footer year + UTC nav clock (same as other pages)
 document.getElementById('wx-year').textContent=new Date().getFullYear();
 setInterval(function(){var el=document.getElementById('utc-val');
   if(el)el.textContent=new Date().toLocaleTimeString('en-US',{timeZone:'UTC',hour:'2-digit',minute:'2-digit',hour12:false});},1000);
-// Sync AM/PM button label with saved format (same behaviour as other pages)
-(function(){var b=document.getElementById('fmt-btn');if(b&&window.WC)b.textContent=WC.is24h?'24h':'AM/PM';})();
 </script>
-
 <script>
-/* ===== World Clock page — uses shared util.js helpers: fmt(), flag(), utcOff(), offMin(), period() ===== */
-
-/* City DB: [name, country, iso2, IANA tz, region, lat, lon] */
+/* ===== World Clock v2 =====
+   Uses util.js: WC.pinned / addPin / savePins / isPinned (shared "Your cities" list), fmt, fmtDate, offMin, flag, toast, toggle24h. */
+(function(){
 var C=[
 ["New York","United States","us","America/New_York","na",40.71,-74.01],
 ["Los Angeles","United States","us","America/Los_Angeles","na",34.05,-118.24],
@@ -446,240 +661,419 @@ var C=[
 ["Perth","Australia","au","Australia/Perth","oceania",-31.95,115.86],
 ["Auckland","New Zealand","nz","Pacific/Auckland","oceania",-36.85,174.76]
 ];
-function city(n){for(var i=0;i<C.length;i++)if(C[i][0]===n)return C[i];return null;}
-var REGIONS=[["all","All"],["asia","Asia"],["europe","Europe"],["na","North America"],["sa","South America"],["africa","Africa"],["oceania","Australia"]];
-var POPULAR=["New York","London","Tokyo","Paris","Dubai","Singapore","Sydney","Toronto"];
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function track(ev,p){try{if(window.gtag)gtag('event',ev,p||{});}catch(e){}}
+function key(c){return c.name+'|'+c.tz;}
+function slug(s){return encodeURIComponent(String(s).toLowerCase().replace(/\s+/g,'-'));}
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(e){return null;}}
 
-/* Timezone abbreviation (IST/EDT…) to complement utcOff() from util.js */
-function tzAbbr(tz){try{var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,timeZoneName:'short'}).formatToParts(new Date()).find(function(x){return x.type==='timeZoneName';}).value;return /GMT|UTC/.test(p)?'':p;}catch(e){return'';}}
-function zoneText(tz){var a=tzAbbr(tz);return (a?a+' · ':'')+utcOff(tz);}
-function dayIcon(tz){return period(tz)==='night'?'<i class="ti ti-moon-stars wc-ico night"></i>':'<i class="ti ti-sun wc-ico day"></i>';}
+if(typeof boot==='function') boot();
 
-/* State */
-var LS='wc_mycities';
-function loadS(){try{return JSON.parse(localStorage.getItem(LS))||null;}catch(e){return null;}}
-function saveS(a){try{localStorage.setItem(LS,JSON.stringify(a));}catch(e){}}
-var mine=loadS()||["Mumbai","New York","London","Tokyo"];
-var wxCache={};
+/* --- one-time migration: old World Clock list (wc_mycities) → shared list (wc_pins) --- */
+(function(){
+  if(ls('wc_mig_v2')) return;
+  try{
+    var old=JSON.parse(ls('wc_mycities')||'null');
+    if(old&&old.length){
+      var list=old.map(function(n){var c=C.filter(function(x){return x[0]===n;})[0];return c?{name:c[0],country:c[1],cc:c[2],tz:c[3]}:null;}).filter(Boolean);
+      if(!ls('wc_pins')) WC.pinned=list; else list.forEach(function(c){if(!isPinned(c))WC.pinned.push(c);});
+      savePins();
+    }
+  }catch(e){}
+  ls('wc_mig_v2','1');
+})();
 
-/* Weather (Open-Meteo, keyless; keyed by city NAME to avoid shared-tz collisions) */
-var WMO={0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Cloudy',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Drizzle',61:'Rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Snow',73:'Snow',75:'Heavy snow',77:'Snow',80:'Showers',81:'Showers',82:'Showers',85:'Snow',86:'Snow',95:'Storm',96:'Storm',99:'Storm'};
-function fetchWx(name){
-  if(wxCache[name])return Promise.resolve(wxCache[name]);
-  var c=city(name);if(!c)return Promise.resolve(null);
-  return fetch('https://api.open-meteo.com/v1/forecast?latitude='+c[5]+'&longitude='+c[6]+'&current=temperature_2m,weather_code')
-    .then(function(r){return r.json();})
-    .then(function(d){wxCache[name]={t:Math.round(d.current.temperature_2m),w:WMO[d.current.weather_code]||''};return wxCache[name];})
-    .catch(function(){return null;});
+/* --- search index (same engine as before: 33k cities + aliases) --- */
+var ALIASES={usa:'United States',america:'United States',uk:'United Kingdom',britain:'United Kingdom',england:'London',uae:'United Arab Emirates',nyc:'New York',bombay:'Mumbai',calcutta:'Kolkata',madras:'Chennai',bangalore:'Bengaluru',saigon:'Ho Chi Minh City',peking:'Beijing',la:'Los Angeles',sf:'San Francisco'};
+var IDX=null;
+function fold(s){return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();}
+function index(){
+  if(IDX) return IDX;
+  var map={},out=[];
+  function add(x){if(!x||!x.name||!x.tz)return;var k=fold(x.name)+'|'+x.tz;if(map[k]){if(x.pop>map[k].pop)map[k].pop=x.pop;return;}map[k]={name:x.name,country:x.country||'',cc:(x.cc||'un').toLowerCase(),tz:x.tz,pop:x.pop||0,alias:''};}
+  (window.CITIES_FULL||[]).forEach(add);
+  (window.CITIES||[]).forEach(function(c){add({name:c.name,country:c.country,cc:c.cc,tz:c.tz,pop:(c.pop||0)*1000});});
+  C.forEach(function(c){add({name:c[0],country:c[1],cc:c[2],tz:c[3],pop:5e6});});
+  out=Object.keys(map).map(function(k){return map[k];});
+  Object.keys(ALIASES).forEach(function(a){var t=fold(ALIASES[a]);out.forEach(function(c){if(fold(c.name)===t||fold(c.country)===t)c.alias+=' '+a;});});
+  IDX=out;return out;
+}
+function score(c,q){var n=fold(c.name),co=fold(c.country),al=c.alias;
+  if(n===q)return 0;if(n.indexOf(q)===0)return 1;if((' '+al+' ').indexOf(' '+q+' ')>-1)return 2;if(co.indexOf(q)===0)return 3;if(fold(c.tz).indexOf(q)>-1)return 4;if(n.indexOf(q)>-1)return 5;return 6;}
+function search(q){
+  q=fold(q).trim(); if(!q) return [];
+  return index().filter(function(c){return fold(c.name).indexOf(q)>-1||fold(c.country).indexOf(q)===0||c.alias.indexOf(q)>-1||fold(c.tz).indexOf(q)>-1;})
+    .sort(function(a,b){return score(a,q)-score(b,q)||b.pop-a.pop||a.name.length-b.name.length;}).slice(0,10);
+}
+function bestByName(name,cc){
+  var f=fold(name);return index().filter(function(c){return fold(c.name)===f&&(!cc||c.cc===cc);}).sort(function(a,b){return b.pop-a.pop;})[0]||null;
+}
+function pinOf(c){return {name:c.name,country:c.country,cc:c.cc,tz:c.tz};}
+
+/* --- home city (offsets are shown relative to it) --- */
+var TZ_ALIAS={'Asia/Calcutta':'Asia/Kolkata','Asia/Saigon':'Asia/Ho_Chi_Minh','Asia/Katmandu':'Asia/Kathmandu','Asia/Rangoon':'Asia/Yangon','Europe/Kiev':'Europe/Kyiv'};
+function deviceCity(){
+  var tz=Intl.DateTimeFormat().resolvedOptions().timeZone||'UTC'; tz=TZ_ALIAS[tz]||tz;
+  var p=WC.pinned.filter(function(c){return c.tz===tz;})[0]; if(p) return p;
+  var hit=(window.CITIES||[]).filter(function(c){return c.tz===tz;}).sort(function(a,b){return (b.pop||0)-(a.pop||0);})[0];
+  return hit?pinOf(hit):{name:tz.split('/').pop().replace(/_/g,' '),country:'',cc:'un',tz:tz};
+}
+function home(){
+  var k=ls('wc_home');
+  if(k){var p=WC.pinned.filter(function(c){return key(c)===k;})[0]; if(p) return p;}
+  return deviceCity();
 }
 
-function elc(html){var d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+/* --- time travel --- */
+var SHIFT=0;
+function now(){return new Date(Date.now()+SHIFT*60000);}
+function hm(m){var a=Math.abs(m),h=Math.floor(a/60),r=a%60;return (h?h+'h':'')+(r?(h?' ':'')+r+'m':'')||'0h';}
+function offLabel(c,t){
+  var h=home(); if(key(c)===key(h)) return 'Home';
+  var d=offMin(t,c.tz)-offMin(t,h.tz); return d===0?'Same time':(d>0?'+':'−')+hm(d);
+}
+function hourFrac(tz,t){var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(t).split(':');return (+p[0]+(+p[1])/60)/24;}
 
-/* Your Cities */
-function renderMine(){
-  var host=document.getElementById('yourCities');host.innerHTML='';
-  document.getElementById('ycCount').textContent=mine.length;
-  if(!mine.length){host.appendChild(elc('<div class="wc-empty">No cities yet. Tap <b>+ Add City</b> to get started.</div>'));return;}
-  mine.forEach(function(name,idx){
-    var c=city(name);if(!c)return;
-    var row=elc('<div class="wc-row" data-tz="'+c[3]+'">'
-      +'<div class="wc-who">'+flag(c[2],28)
-      +'<div><div class="nm">'+c[0]+', <span>'+c[1]+'</span></div><div class="zn t-zone"></div></div></div>'
-      +'<div class="wc-wx"><span class="t-icon"></span><span><b class="wx-t">—</b> <span class="wx-c"></span></span></div>'
-      +'<div class="wc-t"><div class="tm t-time"></div><div class="dt t-date"></div></div>'
-      +'<button class="wc-kebab" aria-label="Manage">⋮<span class="wc-menu"><button>Remove city</button></span></button>'
-      +'</div>');
-    var kb=row.querySelector('.wc-kebab'),mn=row.querySelector('.wc-menu');
-    kb.addEventListener('click',function(e){e.stopPropagation();
-      document.querySelectorAll('.wc-menu.open').forEach(function(m){if(m!==mn)m.classList.remove('open');});mn.classList.toggle('open');});
-    mn.querySelector('button').addEventListener('click',function(e){e.stopPropagation();mine.splice(idx,1);saveS(mine);renderMine();});
-    host.appendChild(row);
-    fetchWx(name).then(function(w){if(!w)return;row.querySelector('.wx-t').textContent=w.t+'°C';row.querySelector('.wx-c').textContent=w.w;});
+/* --- coordinates (for weather + day/night) --- */
+function coords(c){
+  var k=key(c);
+  if(window.SM_COORDS&&SM_COORDS[k]) return SM_COORDS[k];
+  var m=C.filter(function(x){return x[0]===c.name&&x[3]===c.tz;})[0]; if(m) return [m[5],m[6]];
+  try{var g=JSON.parse(ls('sm_geo')||'{}');if(g[k])return g[k];}catch(e){}
+  return null;
+}
+var GEO_PENDING={};
+function geocode(c){
+  var k=key(c); if(coords(c)||GEO_PENDING[k]) return; GEO_PENDING[k]=1;
+  fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&format=json&name='+encodeURIComponent(c.name))
+    .then(function(r){return r.json();}).then(function(x){
+      var rs=(x&&x.results)||[],cc=(c.cc||'').toUpperCase();
+      var hit=rs.filter(function(r){return r.timezone===c.tz;})[0]||rs.filter(function(r){return r.country_code===cc;})[0];
+      if(hit){var g={};try{g=JSON.parse(ls('sm_geo')||'{}');}catch(e){} g[k]=[+hit.latitude.toFixed(3),+hit.longitude.toFixed(3)]; ls('sm_geo',JSON.stringify(g)); DN={}; loadWeather(true); paint();}
+    }).catch(function(){});
+}
+
+/* --- day/night bar (real sunrise/sunset via SunCalc when coordinates are known) --- */
+var DN={};
+function dayNight(c,t){
+  var ymd=new Intl.DateTimeFormat('en-CA',{timeZone:c.tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(t), k=key(c)+'|'+ymd;
+  if(DN[k]) return DN[k];
+  var a=0.25,b=0.75,xy=coords(c);
+  if(xy&&window.SunCalc){
+    var p=ymd.split('-'),noon=new Date(Date.UTC(+p[0],+p[1]-1,+p[2],12)-offMin(t,c.tz)*60000);
+    var s=SunCalc.getTimes(noon,xy[0],xy[1]);
+    if(s.sunrise instanceof Date&&!isNaN(s.sunrise)&&s.sunset instanceof Date&&!isNaN(s.sunset)){a=hourFrac(c.tz,s.sunrise);b=hourFrac(c.tz,s.sunset);if(b<a)b=a;}
+    else {var up=SunCalc.getPosition(noon,xy[0],xy[1]).altitude>0;a=up?0:0.5;b=up?1:0.5;}
+  }
+  var night='#2b3a55',day='#f7c66b',A=(a*100).toFixed(1),B=(b*100).toFixed(1);
+  return DN[k]={a:a,b:b,bg:'linear-gradient(90deg,'+night+' 0 '+A+'%,#e9a05a '+A+'%,'+day+' '+(a*100+3).toFixed(1)+'%,'+day+' '+(b*100-3).toFixed(1)+'%,#e9a05a '+B+'%,'+night+' '+B+'% 100%)'};
+}
+function partOfDay(c,t){
+  var f=hourFrac(c.tz,t),d=dayNight(c,t);
+  if(f<d.a||f>=d.b) return 'Night';
+  var h=f*24; return h<12?'Morning':h<17?'Afternoon':'Evening';
+}
+
+/* --- weather (Open-Meteo, one request for all your cities) --- */
+var WX={},WX_AT=0,WX_FAIL=false;
+var WMO=function(code,day){
+  if(code===0||code===1) return [day?'ti-sun':'ti-moon',code?'Mainly clear':'Clear'];
+  if(code===2) return [day?'ti-cloud-sun':'ti-cloud-moon','Partly cloudy'];
+  if(code===3) return ['ti-cloud','Cloudy'];
+  if(code===45||code===48) return ['ti-mist','Fog'];
+  if(code>=51&&code<=57) return ['ti-cloud-rain','Drizzle'];
+  if(code>=61&&code<=67||code>=80&&code<=82) return ['ti-cloud-rain','Rain'];
+  if(code>=71&&code<=77||code===85||code===86) return ['ti-snowflake','Snow'];
+  if(code>=95) return ['ti-cloud-storm','Thunderstorm'];
+  return ['ti-cloud',''];
+};
+function loadWeather(force){
+  if(!force&&Date.now()-WX_AT<600000) return;
+  var list=WC.pinned.filter(function(c){return coords(c);}); if(!list.length) return;
+  var f=ls('wx_unit')==='fahrenheit';
+  WX_AT=Date.now();
+  fetch('https://api.open-meteo.com/v1/forecast?latitude='+list.map(function(c){return coords(c)[0];}).join(',')+'&longitude='+list.map(function(c){return coords(c)[1];}).join(',')+'&current=temperature_2m,weather_code,is_day'+(f?'&temperature_unit=fahrenheit':''))
+    .then(function(r){return r.json();}).then(function(d){
+      var arr=Array.isArray(d)?d:[d];
+      arr.forEach(function(x,i){if(x&&x.current&&list[i]){var w=WMO(x.current.weather_code,x.current.is_day);WX[key(list[i])]={t:Math.round(x.current.temperature_2m)+'°'+(f?'F':'C'),i:w[0],c:w[1],n:!x.current.is_day};}});
+      WX_FAIL=false;paintWeather();
+    }).catch(function(){WX_FAIL=true;paintWeather();});
+}
+function paintWeather(){
+  document.querySelectorAll('#wcList .wc2-row').forEach(function(r){
+    var w=WX[r.dataset.k],el=r.querySelector('.wc2-wx'); if(!el) return;
+    var c=WC.pinned[+r.dataset.i];
+    el.innerHTML=w?'<i class="ti '+w.i+(w.n?' n':'')+'"></i><b>'+w.t+'</b> '+esc(w.c):'<span style="opacity:.6">'+(WX_FAIL||(c&&!coords(c)&&!GEO_PENDING[key(c)])?'Weather unavailable':'—')+'</span>';
   });
-  tick();
-}
-document.addEventListener('click',function(){document.querySelectorAll('.wc-menu.open').forEach(function(m){m.classList.remove('open');});});
-
-/* Dropdowns */
-function fillSelect(sel,selected){
-  sel.innerHTML='';var byR={};C.forEach(function(c){(byR[c[4]]=byR[c[4]]||[]).push(c);});
-  REGIONS.slice(1).forEach(function(r){
-    var g=document.createElement('optgroup');g.label=r[1];
-    (byR[r[0]]||[]).sort(function(a,b){return a[0]<b[0]?-1:1;}).forEach(function(c){
-      var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' ('+(tzAbbr(c[3])||utcOff(c[3]))+')';
-      if(c[0]===selected)o.selected=true;g.appendChild(o);});
-    sel.appendChild(g);});
 }
 
-/* Time difference */
-function fmtDur(m){var h=Math.floor(m/60),mm=m%60;var o=h+' hour'+(h===1?'':'s');if(mm)o+=' '+mm+' minutes';return o;}
-var diffState={a:null,b:null};
-function updateDiff(){
-  var ca=diffState.a,cb=diffState.b;if(!ca||!cb)return;
-  var a=ca[0],b=cb[0],now=new Date();
-  var d=offMin(now,ca[3])-offMin(now,cb[3]);
-  var lead=d===0?(a+' is at the same time as '+b):d>0?(a+' is '+fmtDur(d)+' ahead of '+b):(a+' is '+fmtDur(-d)+' behind '+b);
-  document.getElementById('diffOut').innerHTML='<div class="lead">'+lead+'</div><div class="det">'
-    +a+': '+fmtDate(ca[3])+', '+fmt(ca[3])+' ('+(tzAbbr(ca[3])||utcOff(ca[3]))+')<br>'
-    +b+': '+fmtDate(cb[3])+', '+fmt(cb[3])+' ('+(tzAbbr(cb[3])||utcOff(cb[3]))+')</div>';
+/* --- your cities --- */
+var VIEW=ls('wc_view')==='cards'?'cards':'rows';
+function rowHTML(c,i){
+  var h=home(),isHome=key(c)===key(h);
+  return '<div class="wc2-row" data-i="'+i+'" data-k="'+esc(key(c))+'">'
+    +'<button class="wc2-grip" type="button" aria-label="Drag to reorder '+esc(c.name)+'" title="Drag to reorder"><i class="ti ti-grip-vertical"></i></button>'
+    +'<div class="wc2-who">'+flag(c.cc,28)+'<div style="min-width:0"><div class="nm">'+esc(c.name)+(isHome?'<span class="wc2-home">HOME</span>':'')+'</div><div class="sub">'+esc(c.country||c.tz)+' · <span class="off"></span></div></div></div>'
+    +'<div class="wc2-wx"><span style="opacity:.6">Loading weather…</span></div>'
+    +'<div class="wc2-dn"><div class="wc2-bar"><i></i></div><small class="pd"></small></div>'
+    +'<div class="wc2-t"><div class="tm"></div><div class="dt"></div></div>'
+    +'<div class="wc2-act">'
+      +'<button class="wc2-ib mv" type="button" data-a="up" aria-label="Move '+esc(c.name)+' up"><i class="ti ti-arrow-up"></i><span class="lb">Up</span></button>'
+      +'<button class="wc2-ib mv" type="button" data-a="down" aria-label="Move '+esc(c.name)+' down"><i class="ti ti-arrow-down"></i><span class="lb">Down</span></button>'
+      +(isHome?'':'<a class="wc2-ib" data-a="cmp" href="/time-difference-calculator?from='+slug(h.name)+'&to='+slug(c.name)+'" aria-label="Compare '+esc(h.name)+' and '+esc(c.name)+'" title="Compare with '+esc(h.name)+'"><i class="ti ti-arrows-left-right"></i><span class="lb">Compare</span></a>')
+      +'<button class="wc2-ib'+(isHome?' on':'')+'" type="button" data-a="home" aria-pressed="'+isHome+'" aria-label="Set '+esc(c.name)+' as home city" title="'+(isHome?'Home city':'Set as home city')+'"><i class="ti ti-home'+(isHome?'-check':'')+'"></i><span class="lb">'+(isHome?'Home':'Set home')+'</span></button>'
+      +'<button class="wc2-ib rm" type="button" data-a="rm" aria-label="Remove '+esc(c.name)+'" title="Remove"><i class="ti ti-x"></i><span class="lb">Remove</span></button>'
+    +'</div></div>';
+}
+var SUGGEST=[['London','gb'],['New York','us'],['Tokyo','jp'],['Dubai','ae'],['Singapore','sg'],['Sydney','au']];
+function renderMine(){
+  var list=$('wcList'),n=WC.pinned.length;
+  list.className='wc2-list'+(VIEW==='cards'?' cards':'');
+  $('wcCount').textContent=n+(n===1?' city':' cities');
+  $('wcHint').style.display=n>1?'':'none';
+  if(!n){
+    list.innerHTML='<div class="wc2-empty"><p style="margin:0 0 12px">No cities yet. Search above, or add a few popular ones in one tap:</p><div class="wc2-chips">'
+      +SUGGEST.map(function(s){return '<button class="wc2-chip" type="button" data-sug="'+s[0]+'|'+s[1]+'">+ '+s[0]+'</button>';}).join('')
+      +'<button class="wc2-chip" type="button" data-sug="*" style="border-color:var(--clr-brand);color:var(--clr-brand)">Add all 6</button></div></div>';
+  } else list.innerHTML=WC.pinned.map(rowHTML).join('');
+  document.querySelectorAll('.wc2-seg [data-view]').forEach(function(b){b.setAttribute('aria-pressed',b.dataset.view===VIEW?'true':'false');});
+  renderChips(); paint(); paintWeather(); loadWeather(true);
+  WC.pinned.forEach(function(c){if(!coords(c))geocode(c);});
+}
+function paint(){
+  var t=now(),h=home();
+  $('wcNow').textContent=fmt(h.tz,{sec:SHIFT===0,date:t});
+  $('wcNowSub').innerHTML=(h.cc&&h.cc!=='un'?flag(h.cc,18):'')+esc(h.name)+' · '+fmtDate(h.tz,t)+' · '+utcOff(h.tz)+(SHIFT?' · <b style="color:#ffd27a">time travel</b>':'');
+  document.querySelectorAll('#wcList .wc2-row').forEach(function(r){
+    var c=WC.pinned[+r.dataset.i]; if(!c) return;
+    r.querySelector('.tm').textContent=fmt(c.tz,{date:t});
+    var hd=new Intl.DateTimeFormat('en-CA',{timeZone:h.tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(t),cd=new Intl.DateTimeFormat('en-CA',{timeZone:c.tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(t);
+    r.querySelector('.dt').textContent=fmtDate(c.tz,t)+(cd>hd?' · next day':cd<hd?' · previous day':'');
+    r.querySelector('.off').textContent=offLabel(c,t);
+    var dn=dayNight(c,t),bar=r.querySelector('.wc2-bar');
+    if(bar.dataset.bg!==dn.bg){bar.style.background=dn.bg;bar.dataset.bg=dn.bg;}
+    bar.querySelector('i').style.left=(hourFrac(c.tz,t)*100).toFixed(2)+'%';
+    r.querySelector('.pd').textContent=partOfDay(c,t);
+  });
+  paintPopTimes(t);
 }
 
-/* Popular — built from full CITIES dataset, up to 50 per continent */
+/* row actions */
+var UNDO=null;
+function toastLong(msg){toast(msg);clearTimeout(WC._toastT);WC._toastT=setTimeout(function(){var t=$('toast');if(t)t.classList.remove('show');},5000);}
+window.wcUndo=function(){if(!UNDO)return;WC.pinned.splice(UNDO.i,0,UNDO.c);savePins();UNDO=null;renderMine();toast('Restored');};
+function removeAt(i){
+  var c=WC.pinned[i]; if(!c) return;
+  WC.pinned.splice(i,1); savePins(); UNDO={c:c,i:i};
+  if(ls('wc_home')===key(c)) ls('wc_home',null);
+  renderMine(); renderPop();
+  toastLong(esc(c.name)+' removed <button type="button" onclick="wcUndo()">Undo</button>');
+  track('remove_city',{city:c.name});
+}
+function move(from,to){
+  if(to<0||to>=WC.pinned.length||from===to) return;
+  var c=WC.pinned.splice(from,1)[0]; WC.pinned.splice(to,0,c); savePins(); renderMine();
+  var r=document.querySelector('#wcList .wc2-row[data-i="'+to+'"]'); if(r&&innerWidth<=640){r.classList.add('open');}
+}
+$('wcList').addEventListener('click',function(e){
+  var sug=e.target.closest('[data-sug]');
+  if(sug){
+    var picks=sug.dataset.sug==='*'?SUGGEST:[sug.dataset.sug.split('|')];
+    picks.forEach(function(s){var c=bestByName(s[0],s[1]);if(c&&!isPinned(c)){WC.pinned.push(pinOf(c));}});
+    savePins(); renderMine(); renderPop(); track('add_city',{source:'empty_state'}); return;
+  }
+  var row=e.target.closest('.wc2-row'); if(!row) return;
+  var i=+row.dataset.i, btn=e.target.closest('[data-a]');
+  if(!btn){ if(innerWidth<=640){row.classList.toggle('open');} return; }
+  var a=btn.dataset.a;
+  if(a==='rm'){e.preventDefault();removeAt(i);}
+  else if(a==='home'){e.preventDefault();var c=WC.pinned[i];ls('wc_home',key(c));WC.pinned.splice(i,1);WC.pinned.unshift(c);savePins();renderMine();renderPop();toast(flag(c.cc,16)+' <b>'+esc(c.name)+'</b> is now your home city');track('set_home',{city:c.name});}
+  else if(a==='up'){e.preventDefault();move(i,i-1);}
+  else if(a==='down'){e.preventDefault();move(i,i+1);}
+  else if(a==='cmp'){track('compare_click',{city:WC.pinned[i].name});}
+});
+
+/* drag to reorder (desktop) */
+(function(){
+  var list=$('wcList'),from=null;
+  list.addEventListener('pointerdown',function(e){var g=e.target.closest('.wc2-grip');if(g){g.closest('.wc2-row').setAttribute('draggable','true');}});
+  list.addEventListener('dragstart',function(e){var r=e.target.closest('.wc2-row');if(!r)return;from=+r.dataset.i;r.classList.add('drag');try{e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',String(from));}catch(x){}});
+  list.addEventListener('dragover',function(e){
+    if(from===null)return; var r=e.target.closest('.wc2-row'); if(!r)return; e.preventDefault();
+    list.querySelectorAll('.over-top,.over-bot').forEach(function(x){x.classList.remove('over-top','over-bot');});
+    var box=r.getBoundingClientRect(); r.classList.add(e.clientY<box.top+box.height/2?'over-top':'over-bot');
+  });
+  list.addEventListener('drop',function(e){
+    if(from===null)return; var r=e.target.closest('.wc2-row'); if(!r)return; e.preventDefault();
+    var to=+r.dataset.i, box=r.getBoundingClientRect(); if(e.clientY>=box.top+box.height/2) to++; if(to>from) to--;
+    var f=from; from=null; move(f,to); track('reorder');
+  });
+  list.addEventListener('dragend',function(){from=null;list.querySelectorAll('.wc2-row').forEach(function(x){x.classList.remove('drag','over-top','over-bot');x.removeAttribute('draggable');});});
+})();
+
+/* swipe left to remove (touch) */
+(function(){
+  var list=$('wcList'),sx=0,sy=0,row=null,dx=0,lock=null;
+  list.addEventListener('touchstart',function(e){row=e.target.closest('.wc2-row');if(!row||e.target.closest('[data-a]'))return row=null;sx=e.touches[0].clientX;sy=e.touches[0].clientY;dx=0;lock=null;},{passive:true});
+  list.addEventListener('touchmove',function(e){
+    if(!row)return; var x=e.touches[0].clientX-sx,y=e.touches[0].clientY-sy;
+    if(lock===null) lock=Math.abs(x)>Math.abs(y)+4?'x':(Math.abs(y)>8?'y':null);
+    if(lock!=='x')return; dx=Math.min(0,x); row.style.transform='translateX('+dx+'px)'; row.style.opacity=String(1+dx/300);
+  },{passive:true});
+  list.addEventListener('touchend',function(){
+    if(!row)return; var r=row; row=null;
+    if(dx<-100){removeAt(+r.dataset.i);return;}
+    r.style.transform='';r.style.opacity='';
+  });
+})();
+
+/* --- hero search + add --- */
+var HL=-1,HITS=[];
+function drawDrop(){
+  var dd=$('wcQdd');
+  if(!HITS.length){dd.innerHTML=$('wcQ').value.trim()?'<div class="wc2-opt" aria-disabled="true">No matching cities</div>':'';dd.classList.toggle('open',!!$('wcQ').value.trim());return;}
+  dd.innerHTML=HITS.map(function(c,i){var on=isPinned(c);return '<div class="wc2-opt'+(i===HL?' hl':'')+(on?' dim':'')+'" role="option" data-i="'+i+'" aria-selected="'+(i===HL)+'">'+flag(c.cc,20)+'<span>'+esc(c.name)+(on?' · added':'')+'</span><small>'+esc(c.country||c.tz)+' · '+utcOff(c.tz)+'</small></div>';}).join('');
+  dd.classList.add('open');
+}
+function addCity(c,src){
+  if(!c) return;
+  if(isPinned(c)){
+    var r=document.querySelector('#wcList .wc2-row[data-k="'+key(c).replace(/"/g,'\\"')+'"]');
+    toast(esc(c.name)+' is already in your cities');
+    if(r){r.scrollIntoView({behavior:'smooth',block:'center'});r.classList.add('flash');setTimeout(function(){r.classList.remove('flash');},1400);}
+    return;
+  }
+  addPin(pinOf(c)); track('add_city',{city:c.name,source:src});
+}
+$('wcQ').addEventListener('input',function(){HITS=search(this.value);HL=HITS.length?0:-1;drawDrop();});
+$('wcQ').addEventListener('keydown',function(e){
+  if(e.key==='ArrowDown'){HL=Math.min(HL+1,HITS.length-1);drawDrop();e.preventDefault();}
+  else if(e.key==='ArrowUp'){HL=Math.max(HL-1,0);drawDrop();e.preventDefault();}
+  else if(e.key==='Enter'){e.preventDefault();pickHit(HL<0?0:HL);}
+  else if(e.key==='Escape'){$('wcQdd').classList.remove('open');}
+});
+function pickHit(i){var c=HITS[i];if(!c)return;addCity(c,'search');$('wcQ').value='';HITS=[];$('wcQdd').classList.remove('open');}
+$('wcQdd').addEventListener('mousedown',function(e){var o=e.target.closest('[data-i]');if(o){e.preventDefault();pickHit(+o.dataset.i);}});
+$('wcQadd').addEventListener('click',function(){if(HITS.length)pickHit(HL<0?0:HL);else{$('wcQ').focus();}});
+document.addEventListener('click',function(e){if(!e.target.closest('.wc2-sbox'))$('wcQdd').classList.remove('open');});
+function renderChips(){
+  $('wcChips').innerHTML=SUGGEST.map(function(s){var c=bestByName(s[0],s[1]);if(!c)return '';var on=isPinned(c);
+    return '<button class="wc2-chip'+(on?' on':'')+'" type="button" data-chip="'+s[0]+'|'+s[1]+'" aria-label="'+(on?s[0]+' is in your cities':'Add '+s[0])+'">'+(on?'✓ ':'+ ')+s[0]+'</button>';}).join('');
+}
+$('wcChips').addEventListener('click',function(e){var b=e.target.closest('[data-chip]');if(!b)return;var s=b.dataset.chip.split('|');addCity(bestByName(s[0],s[1]),'chip');});
+$('wcAddBtn').addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){$('wcQ').focus();},250);});
+
+/* --- toolbar --- */
+document.querySelectorAll('.wc2-seg [data-view]').forEach(function(b){b.addEventListener('click',function(){VIEW=b.dataset.view;ls('wc_view',VIEW);renderMine();track('view_toggle',{view:VIEW});});});
+function syncFmt(){document.querySelectorAll('.wc2-seg [data-fmt]').forEach(function(b){b.setAttribute('aria-pressed',(b.dataset.fmt==='24')===!!WC.is24h?'true':'false');});}
+document.querySelectorAll('.wc2-seg [data-fmt]').forEach(function(b){b.addEventListener('click',function(){if((b.dataset.fmt==='24')!==!!WC.is24h)toggle24h();});});
+window.onFmtChange=function(){syncFmt();paint();setShiftLabel();};
+window.onPinsChanged=function(){renderMine();renderPop();};
+$('wcShare').addEventListener('click',function(){
+  if(!WC.pinned.length){toast('Add some cities first');return;}
+  var url=location.origin+'/world-clock/?cities='+WC.pinned.map(function(c){return encodeURIComponent(c.name)+'~'+c.cc;}).join(',');
+  var done=function(){toast('Link copied — anyone with it can see these clocks');};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,function(){prompt('Copy this link:',url);});else prompt('Copy this link:',url);
+  track('share_clocks',{count:WC.pinned.length});
+});
+$('wcMoreBtn').addEventListener('click',function(e){e.stopPropagation();var m=$('wcMenu');m.hidden=!m.hidden;this.setAttribute('aria-expanded',String(!m.hidden));resetClear();});
+document.addEventListener('click',function(e){if(!e.target.closest('.wc2-more')){$('wcMenu').hidden=true;$('wcMoreBtn').setAttribute('aria-expanded','false');resetClear();}});
+var CLEAR_ARMED=false;
+function resetClear(){CLEAR_ARMED=false;$('wcClear').querySelector('span').textContent='Clear all cities';}
+$('wcClear').addEventListener('click',function(e){
+  e.stopPropagation();
+  if(!CLEAR_ARMED){CLEAR_ARMED=true;this.querySelector('span').textContent='Tap again to clear all';return;}
+  var backup=WC.pinned.slice();WC.pinned=[];savePins();ls('wc_home',null);$('wcMenu').hidden=true;resetClear();renderMine();renderPop();
+  window.wcUndoClear=function(){WC.pinned=backup;savePins();renderMine();renderPop();toast('Restored');};
+  toastLong('All cities cleared <button type="button" onclick="wcUndoClear()">Undo</button>');track('clear_all');
+});
+$('wcReset').addEventListener('click',function(){WC.pinned=DEFAULT_PINS.map(function(c){return {name:c.name,country:c.country,cc:c.cc,tz:c.tz};});savePins();ls('wc_home',null);$('wcMenu').hidden=true;renderMine();renderPop();toast('Default cities restored');});
+
+/* --- time travel slider --- */
+function setShiftLabel(){
+  var h=home(),t=now();
+  $('wcShiftVal').textContent=SHIFT===0?'Now':(SHIFT>0?'+':'−')+hm(SHIFT)+' → '+fmt(h.tz,{date:t});
+  $('wcScrub').classList.toggle('moved',SHIFT!==0); $('wcShiftReset').hidden=SHIFT===0;
+}
+var shiftTracked=false;
+$('wcShift').addEventListener('input',function(){SHIFT=+this.value;setShiftLabel();paint();if(!shiftTracked){shiftTracked=true;track('time_travel');}});
+$('wcShiftReset').addEventListener('click',function(){SHIFT=0;$('wcShift').value=0;setShiftLabel();paint();});
+
+/* --- shared link (?cities=Name~cc,…) --- */
+(function(){
+  var q=new URLSearchParams(location.search).get('cities'); if(!q) return;
+  var list=q.split(',').map(function(s){var p=s.split('~');return bestByName(decodeURIComponent(p[0]),(p[1]||'').toLowerCase());}).filter(Boolean).slice(0,20);
+  var missing=list.filter(function(c){return !isPinned(c);});
+  var box=$('wcShared'); if(!list.length) return;
+  box.hidden=false;
+  box.innerHTML='<i class="ti ti-share" style="font-size:18px"></i><span>Shared clocks: <b>'+list.map(function(c){return esc(c.name);}).join(', ')+'</b></span>'
+    +(missing.length?'<button class="wc2-btn pri" type="button" id="wcAddShared" style="margin-left:auto;min-height:38px">Add '+missing.length+' to my cities</button>':'<span style="margin-left:auto">All already in your cities ✓</span>')
+    +'<button class="wc2-ib" type="button" id="wcCloseShared" aria-label="Dismiss"><i class="ti ti-x"></i></button>';
+  var add=$('wcAddShared'); if(add) add.addEventListener('click',function(){missing.forEach(function(c){if(!isPinned(c))WC.pinned.push(pinOf(c));});savePins();renderMine();renderPop();box.hidden=true;toast('Added '+missing.length+' cities');track('add_shared',{count:missing.length});});
+  $('wcCloseShared').addEventListener('click',function(){box.hidden=true;});
+})();
+
+/* --- popular cities (same data as before: up to 50 per region) --- */
 var SA_CC={ar:1,bo:1,br:1,cl:1,co:1,ec:1,gy:1,py:1,pe:1,sr:1,uy:1,ve:1,gf:1,fk:1};
 function popRegion(c){return c.region==='americas'?(SA_CC[c.cc]?'sa':'na'):c.region;}
 var POP={asia:[],europe:[],na:[],sa:[],africa:[],oceania:[]},POP_ALL=[];
 (function(){
-  var src=(typeof CITIES!=='undefined'?CITIES:[]).filter(function(c){return c.cc&&c.tz&&POP[popRegion(c)];});
-  src.sort(function(a,b){return (b.pop||0)-(a.pop||0);});
-  var seen={};
-  src.forEach(function(c){
-    var r=popRegion(c),k=c.name+'|'+c.country;if(seen[k])return;seen[k]=1;
-    var row=[c.name,c.country,c.cc,c.tz,r];
-    if(POP[r].length<50)POP[r].push(row);
-    if(POP_ALL.length<30)POP_ALL.push(row);
-  });
+  var src=(window.CITIES||[]).filter(function(c){return c.cc&&c.tz&&POP[popRegion(c)];}).sort(function(a,b){return (b.pop||0)-(a.pop||0);}),seen={};
+  src.forEach(function(c){var r=popRegion(c),k=c.name+'|'+c.country;if(seen[k])return;seen[k]=1;var p=pinOf(c);if(POP[r].length<50)POP[r].push(p);if(POP_ALL.length<30)POP_ALL.push(p);});
 })();
-var curRegion='all',showAll=false,sortMode='time',INIT=12;
-function offNum(tz){var m=/([+-])(\d{2}):(\d{2})/.exec(utcOff(tz));return m?(m[1]==='-'?-1:1)*(+m[2]*60+ +m[3]):0;}
-function sortList(l){return l.slice().sort(sortMode==='az'
-  ?function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:0;}
-  :function(a,b){return offNum(a[3])-offNum(b[3])||(a[0]<b[0]?-1:1);});}
-function renderPopular(){
-  var host=document.getElementById('popular');host.innerHTML='';
-  var full=sortList(curRegion==='all'?POP_ALL:(POP[curRegion]||[]));
-  var list=showAll?full:full.slice(0,INIT);
-  list.forEach(function(c){
-    host.appendChild(elc('<div class="wc-pcard" data-tz="'+c[3]+'">'
-      +'<div class="top">'+flag(c[2],26)+'<span class="cn">'+c[0]+'<small>'+c[1]+'</small></span></div>'
-      +'<div class="bot"><div><div class="tm t-time"></div><div class="znw"><span class="zn t-zone"></span></div></div><span class="t-icon"></span></div>'
-      +'</div>'));
+var REGIONS=[['all','All'],['asia','Asia'],['europe','Europe'],['na','North America'],['sa','South America'],['africa','Africa'],['oceania','Oceania']];
+var REG='all',SHOWALL=false,SORT='time',DIR=1,INIT=12;
+function renderTabs(){$('wcTabs').innerHTML=REGIONS.map(function(r){return '<button type="button" data-r="'+r[0]+'" aria-pressed="'+(r[0]===REG)+'">'+r[1]+'</button>';}).join('');}
+$('wcTabs').addEventListener('click',function(e){var b=e.target.closest('[data-r]');if(!b)return;REG=b.dataset.r;SHOWALL=false;renderTabs();renderPop();track('popular_region',{region:REG});});
+$('wcSort').addEventListener('change',function(){var v=this.value.split('-');SORT=v[0];DIR=v.length>2?-1:1;renderPop();});
+function popList(){
+  var t=new Date();
+  return (REG==='all'?POP_ALL:POP[REG]).slice().sort(function(a,b){
+    var r=SORT==='az'?(fold(a.name)<fold(b.name)?-1:fold(a.name)>fold(b.name)?1:0):(offMin(t,a.tz)-offMin(t,b.tz)||(a.name<b.name?-1:1));
+    return r*DIR;
   });
-  document.getElementById('moreBtn').style.display=(!showAll&&full.length>INIT)?'':'none';
-  tick();
 }
-function renderFilters(){
-  var host=document.getElementById('filters');host.innerHTML='';
-  REGIONS.forEach(function(r){
-    var b=document.createElement('button');b.textContent=r[1];if(r[0]===curRegion)b.className='active';
-    b.addEventListener('click',function(){curRegion=r[0];showAll=false;renderFilters();renderPopular();});
-    host.appendChild(b);});
+function renderPop(){
+  var full=popList(),list=SHOWALL?full:full.slice(0,INIT);
+  $('wcPop').innerHTML=list.map(function(c){var on=isPinned(c);
+    return '<div class="wc2-pc" data-k="'+esc(key(c))+'" data-tz="'+c.tz+'"><div class="r1">'+flag(c.cc,20)+'<b>'+esc(c.name)+'</b><i class="ti" aria-hidden="true"></i></div>'
+      +'<small>'+esc(c.country)+' · <span class="off"></span></small>'
+      +'<div class="r3"><span class="tm"></span><button class="wc2-plus'+(on?' on':'')+'" type="button" data-pop="'+esc(key(c))+'" aria-label="'+(on?esc(c.name)+' is in your cities':'Add '+esc(c.name)+' to your cities')+'" title="'+(on?'In your cities':'Add to your cities')+'"><i class="ti ti-'+(on?'check':'plus')+'"></i></button></div></div>';
+  }).join('');
+  $('wcPopMore').style.display=!SHOWALL&&full.length>INIT?'':'none';
+  paintPopTimes(now());
 }
-function renderSort(){
-  var host=document.getElementById('sortCtl');if(!host)return;host.innerHTML='';
-  [['time','Sort by Time'],['az','Sort A\u2013Z']].forEach(function(s){
-    var b=document.createElement('button');b.textContent=s[1];if(s[0]===sortMode)b.className='active';
-    b.addEventListener('click',function(){sortMode=s[0];renderSort();renderPopular();});
-    host.appendChild(b);});
-}
-
-/* Tick — respects AM/PM toggle via util.fmt(); updates every second */
-function tick(){
-  document.querySelectorAll('[data-tz]').forEach(function(n){
-    var tz=n.dataset.tz;
-    var t=n.querySelector('.t-time');if(t)t.textContent=fmt(tz);
-    var d=n.querySelector('.t-date');if(d)d.textContent=fmtDate(tz);
-    var z=n.querySelector('.t-zone');if(z)z.textContent=zoneText(tz);
-    var ic=n.querySelector('.t-icon');if(ic)ic.innerHTML=dayIcon(tz);
+function paintPopTimes(t){
+  document.querySelectorAll('#wcPop .wc2-pc').forEach(function(p){
+    var tz=p.dataset.tz,c={name:'',tz:tz};
+    p.querySelector('.tm').textContent=fmt(tz,{date:t});
+    p.querySelector('.off').textContent=(function(){var d=offMin(t,tz)-offMin(t,home().tz);return d===0?'same time as you':(d>0?'+':'−')+hm(d)+' from you';})();
+    var h=hourFrac(tz,t)*24,ic=p.querySelector('.r1 i'),cls='ti '+(h>=6&&h<18?'ti-sun':'ti-moon');
+    if(ic.className!==cls)ic.className=cls;
   });
-  updateDiff();
 }
-
-/* Wire up */
-document.getElementById('clearBtn').addEventListener('click',function(){mine=[];saveS(mine);renderMine();});
-document.getElementById('moreBtn').addEventListener('click',function(){showAll=true;renderPopular();});
-
-/* Time Difference — same searchable city behaviour as the Time Difference Calculator */
-var DIFF_ALIASES={usa:'United States',america:'United States',uk:'United Kingdom',britain:'United Kingdom',england:'London',uae:'United Arab Emirates',nyc:'New York',bombay:'Mumbai',calcutta:'Kolkata',bangalore:'Bengaluru',saigon:'Ho Chi Minh City',peking:'Beijing'};
-var diffIndex=null;
-function diffFold(s){return(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();}
-function diffScore(c,q){
-  var n=diffFold(c.name),co=diffFold(c.country),tz=diffFold(c.tz),al=diffFold(c.alias||'');
-  if(n===q)return 0;if(n.indexOf(q)===0)return 1;if(al.indexOf(q)===0)return 2;if(co.indexOf(q)===0)return 3;
-  if(tz.indexOf(q)>-1)return 4;if(n.indexOf(q)>-1)return 5;if(co.indexOf(q)>-1)return 6;if(al.indexOf(q)>-1)return 7;return 99;
-}
-function buildDiffIndex(){
-  if(diffIndex)return diffIndex;
-  var map={},out=[];
-  function add(x){if(!x||!x.name||!x.tz)return;var k=diffFold(x.name)+'|'+x.tz;if(map[k]){if(x.alias)map[k].alias=(map[k].alias||'')+' '+x.alias;return;}map[k]={name:x.name,country:x.country||'',cc:(x.cc||'').toLowerCase(),tz:x.tz,pop:x.pop||0,alias:x.alias||''};}
-  if(window.CITIES_FULL&&window.CITIES_FULL.length)window.CITIES_FULL.forEach(add);
-  if(window.CITIES&&window.CITIES.length)window.CITIES.forEach(function(c){add({name:c.name,country:c.country,cc:c.cc,tz:c.tz,pop:c.pop});});
-  C.forEach(function(c){add({name:c[0],country:c[1],cc:c[2],tz:c[3]});});
-  out=Object.keys(map).map(function(k){return map[k];});
-  Object.keys(DIFF_ALIASES).forEach(function(a){var name=DIFF_ALIASES[a],base=out.find(function(c){return diffFold(c.name)===diffFold(name);});if(base)base.alias=(base.alias||'')+' '+a;});
-  diffIndex=out;return out;
-}
-function diffCityArray(c){return [c.name,c.country,c.cc,c.tz,'',0,0];}
-function setupDiffSearch(box){
-  var side=box.dataset.diffSide,input=box.querySelector('input'),drop=box.querySelector('.wc-diff-drop'),hi=-1,list=[];
-  function render(q){
-    var data=buildDiffIndex(),ql=diffFold(q).trim();
-    if(!ql){list=data.filter(function(c){return c.pop;}).sort(function(a,b){return(b.pop||0)-(a.pop||0)||a.name.length-b.name.length;}).slice(0,10);}
-    else{list=data.filter(function(c){return diffFold(c.name+' '+c.country+' '+(c.alias||'')).indexOf(ql)>-1||diffFold(c.tz).indexOf(ql)>-1;}).sort(function(a,b){var sa=diffScore(a,ql),sb=diffScore(b,ql);return sa-sb||(b.pop||0)-(a.pop||0)||a.name.length-b.name.length;}).slice(0,10);}
-    drop.innerHTML=list.map(function(c,i){return '<div class="wc-diff-opt" data-i="'+i+'" role="option">'+flag(c.cc,22)+'<span class="nm">'+c.name+'</span><span class="ct">'+(c.country||c.tz)+'</span></div>';}).join('');
-    drop.classList.toggle('open',list.length>0);hi=-1;
-  }
-  function label(c){return c.name+' ('+(tzAbbr(c.tz)||utcOff(c.tz))+')';}
-  function pick(c){if(!c)return;var arr=diffCityArray(c);diffState[side]=arr;input.value=label(c);drop.classList.remove('open');updateDiff();}
-  input.addEventListener('focus',function(){input.select();render('');});
-  input.addEventListener('click',function(){if(!drop.classList.contains('open')){input.select();render('');}});
-  input.addEventListener('input',function(){diffState[side]=null;render(input.value);});
-  input.addEventListener('keydown',function(e){
-    if(e.key==='Escape'){drop.classList.remove('open');return;}
-    if(!drop.classList.contains('open'))return;
-    if(e.key==='ArrowDown')hi=Math.min(hi+1,list.length-1);
-    else if(e.key==='ArrowUp')hi=Math.max(hi-1,0);
-    else if(e.key==='Enter'){pick(list[hi]||list[0]);e.preventDefault();return;}
-    else return;
-    [].forEach.call(drop.children,function(el,i){el.classList.toggle('hl',i===hi);});e.preventDefault();
-  });
-  drop.addEventListener('mousedown',function(e){var o=e.target.closest('.wc-diff-opt');if(o){pick(list[+o.dataset.i]);e.preventDefault();}});
-  document.addEventListener('click',function(e){if(!box.contains(e.target))drop.classList.remove('open');});
-}
-document.querySelectorAll('.wc-diff-search').forEach(setupDiffSearch);
-document.getElementById('swapBtn').addEventListener('click',function(){
-  var A=document.getElementById('diffA'),B=document.getElementById('diffB'),t=diffState.a;diffState.a=diffState.b;diffState.b=t;
-  var v=A.value;A.value=B.value;B.value=v;updateDiff();
+$('wcPop').addEventListener('click',function(e){
+  var b=e.target.closest('[data-pop]'); if(!b) return;
+  var k=b.dataset.pop,all=POP_ALL.concat(POP.asia,POP.europe,POP.na,POP.sa,POP.africa,POP.oceania),c=all.filter(function(x){return key(x)===k;})[0]; if(!c) return;
+  if(isPinned(c)){var i=WC.pinned.map(key).indexOf(k);if(i>-1)removeAt(i);} else {addPin(pinOf(c));track('add_city',{city:c.name,source:'popular'});}
 });
-var ov=document.getElementById('ov');
-/* Add City — searchable picker (reuses C, flag, utcOff, tzAbbr) */
-var pickSel=null,searchEl=document.getElementById('citySearch'),resultsEl=document.getElementById('cityResults');
-function renderPicker(){
-  var q=searchEl.value.trim().toLowerCase();resultsEl.innerHTML='';pickSel=null;
-  var list=C.filter(function(c){return mine.indexOf(c[0])===-1;});
-  if(q)list=list.filter(function(c){
-    var off=utcOff(c[3]).toLowerCase(),ab=(tzAbbr(c[3])||'').toLowerCase();
-    return c[0].toLowerCase().indexOf(q)>-1||c[1].toLowerCase().indexOf(q)>-1||off.indexOf(q)>-1||ab.indexOf(q)>-1;
-  });
-  list.sort(function(a,b){return a[0]<b[0]?-1:1;});
-  if(!list.length){resultsEl.innerHTML='<div class="wc-none">No matching cities found.</div>';return;}
-  list.forEach(function(c){
-    var row=elc('<div class="wc-opt" role="option">'+flag(c[2],22)
-      +'<span class="oc"><b>'+c[0]+'</b><small>'+c[1]+'</small></span>'
-      +'<span class="off">'+utcOff(c[3])+'</span></div>');
-    row.addEventListener('click',function(){
-      resultsEl.querySelectorAll('.wc-opt.sel').forEach(function(o){o.classList.remove('sel');});
-      row.classList.add('sel');pickSel=c[0];
-    });
-    resultsEl.appendChild(row);
-  });
-}
-document.getElementById('addBtn').addEventListener('click',function(){searchEl.value='';renderPicker();ov.classList.add('open');setTimeout(function(){searchEl.focus();},50);});
-document.getElementById('cancelAdd').addEventListener('click',function(){ov.classList.remove('open');});
-ov.addEventListener('click',function(e){if(e.target===ov)ov.classList.remove('open');});
-searchEl.addEventListener('input',renderPicker);
-document.getElementById('confirmAdd').addEventListener('click',function(){
-  if(pickSel&&mine.indexOf(pickSel)===-1){mine.push(pickSel);saveS(mine);renderMine();}
-  ov.classList.remove('open');
-});
+$('wcPopMore').addEventListener('click',function(){SHOWALL=true;renderPop();});
 
-/* Init */
-diffState.a=city('Mumbai');diffState.b=city('New York');
-document.getElementById('diffA').value='Mumbai ('+(tzAbbr(diffState.a[3])||utcOff(diffState.a[3]))+')';
-document.getElementById('diffB').value='New York ('+(tzAbbr(diffState.b[3])||utcOff(diffState.b[3]))+')';
-renderMine();renderFilters();renderSort();renderPopular();updateDiff();
-setInterval(tick,1000);
+/* --- sticky slider sits under the nav on mobile --- */
+function navH(){var n=document.querySelector('.topnav');if(!n)return;var cs=getComputedStyle(n);document.documentElement.style.setProperty('--wc2-navh',(cs.position==='sticky'||cs.position==='fixed')?n.offsetHeight+'px':'0px');}
+window.addEventListener('resize',navH);
+
+/* --- scroll depth --- */
+var marks={25:0,50:0,75:0,90:0};
+window.addEventListener('scroll',function(){var h=document.documentElement,pc=(h.scrollTop+innerHeight)/h.scrollHeight*100;Object.keys(marks).forEach(function(k){if(!marks[k]&&pc>=+k){marks[k]=1;track('scroll_depth',{percent:+k});}});},{passive:true});
+
+/* --- boot --- */
+syncFmt(); renderTabs(); renderMine(); renderPop(); setShiftLabel(); navH(); setTimeout(navH,600);
+setInterval(function(){paint();if(SHIFT)setShiftLabel();},1000);
+setInterval(function(){loadWeather(false);},600000);
+})();
 </script>
-
 <script src="/nav.js?v=3"></script>
 </body>
 </html>
