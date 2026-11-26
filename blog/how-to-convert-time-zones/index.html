@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Convert Time Zones: Step-by-Step Guide | TimezoneBuddy</title>
+<meta name="description" content="Convert time between any two time zones in 3 steps: find both UTC offsets for the date, work out the gap, then check whether the date changes. Examples inside.">
+<link rel="canonical" href="https://timezonebudy.com/blog/how-to-convert-time-zones/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta property="og:site_name" content="TimezoneBuddy">
+<meta property="og:title" content="How to Convert Time Zones: Step-by-Step Guide | TimezoneBuddy">
+<meta property="og:description" content="Convert time between any two time zones in 3 steps: find both UTC offsets for the date, work out the gap, then check whether the date changes. Examples inside.">
+<meta property="og:url" content="https://timezonebudy.com/blog/how-to-convert-time-zones/">
+<meta property="og:image" content="https://timezonebudy.com/blog/img/how-to-convert-time-zones.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="article">
+<meta property="article:published_time" content="2026-11-26">
+<link rel="preload" as="image" href="/blog/img/how-to-convert-time-zones.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BlogPosting", "headline": "How to Convert Time Zones (and Never Get the Date Wrong)", "description": "Convert time between any two time zones in 3 steps: find both UTC offsets for the date, work out the gap, then check whether the date changes. Examples inside.", "image": "https://timezonebudy.com/blog/img/how-to-convert-time-zones.png", "datePublished": "2026-11-26", "dateModified": "2026-11-26", "mainEntityOfPage": "https://timezonebudy.com/blog/how-to-convert-time-zones/", "inLanguage": "en", "author": {"@type": "Person", "name": "Nazz", "url": "https://timezonebudy.com/blog/"}, "publisher": {"@type": "Organization", "name": "TimezoneBuddy", "url": "https://timezonebudy.com"}, "articleSection": "Time zones", "keywords": "time-zones, utc, converter"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://timezonebudy.com/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://timezonebudy.com/blog/"}, {"@type": "ListItem", "position": 3, "name": "How to Convert Time Zones (and Never Get the Date Wrong)", "item": "https://timezonebudy.com/blog/how-to-convert-time-zones/"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I convert time zones manually?", "acceptedAnswer": {"@type": "Answer", "text": "Find the UTC offset of both places for the date you care about, subtract one from the other to get the gap, then add or subtract that gap from your time. Example: New York is UTC−5 and Mumbai is UTC+5:30 in January, so Mumbai is 10 hours 30 minutes ahead. 9:00 AM in New York is 7:30 PM in Mumbai."}}, {"@type": "Question", "name": "Why is my time zone conversion off by one hour?", "acceptedAnswer": {"@type": "Answer", "text": "Almost always daylight saving time. One of the two places has moved its clocks and the other hasn't, or you used last season's offset. The US and Europe also change on different dates, so for a few weeks each year the usual gap shrinks by an hour."}}, {"@type": "Question", "name": "Is UTC the same as GMT?", "acceptedAnswer": {"@type": "Answer", "text": "For everyday conversions, yes: both are UTC+0. Technically UTC is the atomic time standard and GMT is a time zone used by the UK in winter. The UK switches to BST (UTC+1) in summer, while UTC never changes."}}, {"@type": "Question", "name": "How do I show two time zones in Google Calendar?", "acceptedAnswer": {"@type": "Answer", "text": "Open Settings → General → Time zone and tick 'Display secondary time zone'. Pick the second city and both appear down the side of your calendar."}}, {"@type": "Question", "name": "What is the easiest way to convert time zones?", "acceptedAnswer": {"@type": "Answer", "text": "Use a converter that asks for a date as well as a time, such as the TimezoneBuddy Time Difference tool. It applies the correct daylight saving rules for that exact day, which mental maths usually forgets."}}]}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap">
+<link rel="stylesheet" href="/blog/blog.css?v=1">
+</head>
+<body>
+<header class="bl-hd"><div class="bl-w"><button class="bl-burger" aria-label="Menu" aria-expanded="false">☰</button><a class="bl-logo" href="/"><i></i>TimezoneBuddy</a>
+<nav class="bl-nav" aria-label="Main"><a href="/world-clock/">World Clock</a><a href="/time-difference/">Time Difference</a><a href="/meeting-planner/">Meeting Planner</a><a href="/world-map/">World Map</a><a href="/holiday/">Holidays</a><a href="/location/">Locations</a><a href="/blog/" class="on">Blog</a></nav></div></header>
+<div class="bl-progress" aria-hidden="true"><i></i></div>
+<main>
+<div class="bl-w bl-crumb bl-meta"><a href="/">Home</a> › <a href="/blog/">Blog</a> › Time zones</div>
+<div class="bl-w bl-grid">
+<aside class="bl-toc" aria-label="On this page"><b>ON THIS PAGE</b><a href="#why">Why time zone conversion trips people up</a><a href="#steps">Convert any time zone in 3 steps</a><a href="#examples">Worked examples: 9:00 AM in New York</a><a href="#mistakes">5 mistakes that break time zone conversions</a><a href="#tools">Converting time zones in your everyday tools</a><a href="#faq">FAQ</a><div class="bl-toc-bar"><i></i></div></aside>
+<article class="bl-art">
+<span class="bl-tag">Time zones</span>
+<h1>How to Convert Time Zones (and Never Get the Date Wrong)</h1>
+<p class="bl-dek">Three steps, a worked example table and the five mistakes that make conversions off by an hour or a whole day.</p>
+<div class="bl-byline"><span class="bl-av">N</span><span><b style="color:#1B2430">Nazz</b> · SEO &amp; time-zone nerd</span><span>· Updated <time datetime="2026-11-26">26 Nov 2026</time> · 5 min read</span><button class="bl-share" type="button">⧉ Share</button></div>
+<details class="bl-mtoc"><summary>On this page (6)</summary><a href="#why">Why time zone conversion trips people up</a><a href="#steps">Convert any time zone in 3 steps</a><a href="#examples">Worked examples: 9:00 AM in New York</a><a href="#mistakes">5 mistakes that break time zone conversions</a><a href="#tools">Converting time zones in your everyday tools</a><a href="#faq">FAQ</a></details>
+<div class="bl-take"><b>Key takeaways</b><ul><li>Convert through UTC: find each city's UTC offset <em>on that date</em>, then subtract.</li><li>Use city names, not abbreviations. IST and CST each mean three different zones.</li><li>Always check the date as well as the hour. Asia and Australia are often already on tomorrow.</li></ul></div>
+<div class="bl-hero"><img src="/blog/img/how-to-convert-time-zones.png" alt="How to Convert Time Zones (and Never Get the Date Wrong)" width="1200" height="630" fetchpriority="high"></div>
+<div class="bl-body">
+
+<div class="bl-answer"><p><b>Quick answer:</b> to convert a time between two time zones, look up each location's UTC offset for that specific date, subtract the two offsets to get the difference, and add (or subtract) that difference from your time. If the result goes past midnight, the date changes too.</p></div>
+
+<h2 id="why">Why time zone conversion trips people up</h2>
+<p>Converting time sounds like simple addition, and most of the time it is. The trouble is that the "number" you're adding isn't fixed. New York is five hours behind London for most of the year, but four hours behind for a few weeks in spring and autumn. India is 10.5 hours ahead of New York in winter and 9.5 hours ahead in summer, even though India never changes its clocks.</p>
+<p>I'm based in India, so I do this sum several times a week for calls with the UK and the US. The mistakes I see (and have made) are rarely about arithmetic. They come from using the wrong offset, the wrong abbreviation or forgetting the date. Fix those three and conversions become boring, which is exactly what you want.</p>
+
+<h2 id="steps">Convert any time zone in 3 steps</h2>
+<h3>Step 1: Find each place's UTC offset on that date</h3>
+<p>Every time zone is defined as a number of hours ahead of or behind UTC (Coordinated Universal Time). London is UTC+0 in winter, Mumbai is UTC+5:30, Tokyo is UTC+9. The words "on that date" matter: places with <a href="/blog/daylight-saving-time-clock-change-dates/">daylight saving time</a> have two offsets a year. New York is UTC−5 in winter (EST) and UTC−4 in summer (EDT).</p>
+<h3>Step 2: Subtract to get the difference</h3>
+<p>Take the destination's offset minus your offset. Mumbai (+5:30) minus New York (−5) gives +10:30, so Mumbai is 10 hours 30 minutes ahead. A positive answer means the other place is ahead; a negative one means it's behind.</p>
+<h3>Step 3: Apply it, and check the date</h3>
+<p>Add the difference to your time. 9:00 AM in New York plus 10:30 is 7:30 PM in Mumbai, same day. But 6:00 PM in New York plus 10:30 is 4:30 AM, and that's 4:30 AM <em>the next day</em>. Writing the date next to every converted time saves a lot of "wait, is that Tuesday or Wednesday?" messages.</p>
+<p>If maths isn't your thing, the shortcut is to convert through UTC: turn your time into UTC first, then turn UTC into the destination time. It's two small steps instead of one awkward one, and it works for any pair of cities.</p>
+
+<div class="bl-tool"><div><b>Convert a time right now</b><div class="bl-live" data-zones="America/New_York|New York,Europe/London|London,Asia/Kolkata|Mumbai,Asia/Tokyo|Tokyo"></div><span class="bl-meta">Live times, updated every 30 seconds</span></div><a class="bl-btn" href="/time-difference/">Open Time Difference →</a></div>
+
+<h2 id="examples">Worked examples: 9:00 AM in New York</h2>
+<p>Here's the same meeting time converted for January and July 2027. Notice how the answers shift even though nobody moved.</p>
+<div class="bl-tbl"><table>
+<thead><tr><th>City</th><th>15 Jan 2027 (NY on EST, UTC−5)</th><th>15 Jul 2027 (NY on EDT, UTC−4)</th></tr></thead>
+<tbody>
+<tr><td>London</td><td>2:00 PM</td><td>2:00 PM (UK on BST)</td></tr>
+<tr><td>Dubai</td><td>6:00 PM</td><td>5:00 PM</td></tr>
+<tr><td>Mumbai</td><td>7:30 PM</td><td>6:30 PM</td></tr>
+<tr><td>Tokyo</td><td>11:00 PM</td><td>10:00 PM</td></tr>
+<tr><td>Sydney</td><td>1:00 AM, 16 Jan</td><td>11:00 PM, same day</td></tr>
+</tbody><caption>Sydney is on daylight saving (UTC+11) in January and standard time (UTC+10) in July.</caption></table></div>
+<p>The Sydney row is the one that catches people out. In January it's already the next morning there, which is why Monday meetings with Australia need to be booked on Sunday evening US time. For more pairs, see the <a href="/blog/time-difference-between-major-cities/">time difference between major cities</a>.</p>
+
+<h2 id="mistakes">5 mistakes that break time zone conversions</h2>
+<ol>
+<li><b>Trusting abbreviations.</b> IST can mean India, Ireland or Israel Standard Time. CST is used for US Central, China and Cuba. Use a city name instead: "3 PM Chicago time" is unambiguous.</li>
+<li><b>Using a fixed difference all year.</b> If either place observes daylight saving time, the gap changes. Look up the offset for the actual date.</li>
+<li><b>Forgetting the "gap weeks".</b> The US moves its clocks about two to three weeks before Europe in spring and one week after in autumn. During those weeks, US–UK and US–Europe gaps are an hour smaller than usual.</li>
+<li><b>Ignoring half-hour zones.</b> India (+5:30), Iran (+3:30), Newfoundland (−3:30) and parts of Australia aren't whole hours from UTC. Nepal is +5:45. Rounding these causes 30-minute no-shows.</li>
+<li><b>Mixing up 12 AM and 12 PM.</b> 12 AM is midnight, 12 PM is noon. In invites, writing 00:00 or "midnight" is safer.</li>
+</ol>
+<div class="bl-tip">💡 <b>Tip:</b> when you send an invite to people in several countries, add the UTC time in brackets, e.g. "Call at 9:00 AM New York (14:00 UTC)". Everyone can convert from UTC, and it removes any doubt about daylight saving.</div>
+
+<h2 id="tools">Converting time zones in your everyday tools</h2>
+<ul>
+<li><b>Google Calendar and Outlook</b> both let you show a second time zone alongside your own, which is handy if you work with one other region every day.</li>
+<li><b>Your phone's world clock</b> is great for a quick glance, but it only shows "now". For a future date, use a date-aware converter.</li>
+<li><b>Spreadsheets:</b> store times in UTC and convert only for display. It avoids double conversion errors when files move between people.</li>
+</ul>
+<p>Planning something with three or more cities? The overlap gets tight quickly. Our guide to the <a href="/blog/best-time-for-international-meeting/">best time to schedule an international meeting</a> walks through real examples.</p>
+
+<h2 id="faq">Frequently asked questions</h2>
+<div class="bl-faq"><details><summary>How do I convert time zones manually?</summary><p>Find the UTC offset of both places for the date you care about, subtract one from the other to get the gap, then add or subtract that gap from your time. Example: New York is UTC−5 and Mumbai is UTC+5:30 in January, so Mumbai is 10 hours 30 minutes ahead. 9:00 AM in New York is 7:30 PM in Mumbai.</p></details><details><summary>Why is my time zone conversion off by one hour?</summary><p>Almost always daylight saving time. One of the two places has moved its clocks and the other hasn&#x27;t, or you used last season&#x27;s offset. The US and Europe also change on different dates, so for a few weeks each year the usual gap shrinks by an hour.</p></details><details><summary>Is UTC the same as GMT?</summary><p>For everyday conversions, yes: both are UTC+0. Technically UTC is the atomic time standard and GMT is a time zone used by the UK in winter. The UK switches to BST (UTC+1) in summer, while UTC never changes.</p></details><details><summary>How do I show two time zones in Google Calendar?</summary><p>Open Settings → General → Time zone and tick &#x27;Display secondary time zone&#x27;. Pick the second city and both appear down the side of your calendar.</p></details><details><summary>What is the easiest way to convert time zones?</summary><p>Use a converter that asks for a date as well as a time, such as the TimezoneBuddy Time Difference tool. It applies the correct daylight saving rules for that exact day, which mental maths usually forgets.</p></details></div>
+</div>
+<div class="bl-tags"><span class="bl-chip">#time-zones</span><span class="bl-chip">#utc</span><span class="bl-chip">#converter</span></div>
+<div class="bl-author"><span class="bl-av">N</span><div><b>Nazz</b><div class="bl-meta">Writes about time zones, remote work and global scheduling. 8+ years in SEO, based in India and working daily with teams in the UK and US. <a href="/blog/">All articles →</a></div></div></div>
+</article>
+<aside class="bl-side"><div class="bl-tools"><b>TOOLS FOR THIS TOPIC</b><a href="/time-difference/">⇄ Time Difference</a><a href="/world-clock/">🕐 World Clock</a></div></aside>
+</div>
+<section class="bl-more"><div class="bl-w"><h2>Keep reading</h2><div class="bl-cards"><a class="bl-card " href="/blog/pst-to-est-time-zone-conversions/" data-cat="time-zones"><div class="bl-img"><img src="/blog/img/pst-to-est-time-zone-conversions.png" alt="" width="1200" height="630" loading="lazy"></div><div class="b"><span class="bl-tag">Time zones</span><h3>PST to EST, CST, GMT and IST: Time Zone Conversions Made Simple</h3><span class="bl-meta">4 min read · 26 Nov 2026</span></div></a><a class="bl-card " href="/blog/time-difference-between-major-cities/" data-cat="time-zones"><div class="bl-img"><img src="/blog/img/time-difference-between-major-cities.png" alt="" width="1200" height="630" loading="lazy"></div><div class="b"><span class="bl-tag">Time zones</span><h3>Time Difference Between New York, London, Dubai, India and Other Major Cities</h3><span class="bl-meta">5 min read · 26 Nov 2026</span></div></a><a class="bl-card " href="/blog/daylight-saving-time-clock-change-dates/" data-cat="daylight-saving"><div class="bl-img"><img src="/blog/img/daylight-saving-time-clock-change-dates.png" alt="" width="1200" height="630" loading="lazy"></div><div class="b"><span class="bl-tag">Daylight saving</span><h3>When Do the Clocks Change? Daylight Saving Time 2027 Dates</h3><span class="bl-meta">5 min read · 26 Nov 2026</span></div></a></div></div></section>
+</main>
+<div class="bl-sticky"><span>⇄ Convert a time</span><a class="bl-btn" href="/time-difference/">Open tool</a><button class="bl-share" type="button" aria-label="Share" style="margin:0">⧉</button></div>
+<footer class="bl-ft"><div class="bl-w">© 2026 TimezoneBuddy · <a href="/">Tools</a> · <a href="/location/">Locations</a> · <a href="/blog/">Blog</a></div></footer>
+<script src="/blog/blog.js?v=1" defer></script>
+</body>
+</html>
